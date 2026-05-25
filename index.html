@@ -4,6 +4,36 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SIGDE — Sistema de Geração de Despachos</title>
+
+<!-- 
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                    🔑 CONFIGURAÇÃO GOOGLE DRIVE                              ║
+║                                                                              ║
+║  ⚠️ ANTES DE USAR: Substitua os valores abaixo pelas suas credenciais       ║
+║                                                                              ║
+║  📍 Onde conseguir:                                                          ║
+║     1. Acesse: https://console.cloud.google.com                              ║
+║     2. Vá em "APIs e serviços" → "Credenciais"                              ║
+║     3. Crie um "ID do cliente OAuth" para aplicativo web                     ║
+║     4. Crie uma "Chave de API"                                              ║
+║                                                                              ║
+║  📝 Cole abaixo (mantenha as aspas simples ' '):                            ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+-->
+<script>
+// ⬇️⬇️⬇️ COLE SUAS CREDENCIAIS AQUI ⬇️⬇️⬇️
+
+const GOOGLE_CREDENTIALS = {
+  // Cole o ID do cliente OAuth aqui (parece com: 123456-abc...apps.googleusercontent.com)
+  CLIENT_ID: 'COLE_SEU_GOOGLE_CLIENT_ID_AQUI',
+  
+  // Cole a chave de API aqui (parece com: AIzaSyAbc123...)
+  API_KEY: 'COLE_SUA_GOOGLE_API_KEY_AQUI'
+};
+
+// ⬆️⬆️⬆️ NÃO ALTERE NADA ABAIXO DESTA LINHA ⬆️⬆️⬆️
+</script>
+
 <style>
 /* ============================================================
    DESIGN TOKENS & VARIABLES
@@ -2433,14 +2463,9 @@ document.addEventListener('keydown', e => {
    Salva um único arquivo JSON: sigde_data.json na raiz do Drive
    ============================================================ */
 const GDRIVE = {
-  /* ── CONFIGURE AQUI: crie em console.cloud.google.com ──────
-     1. Crie projeto → APIs & Services → Enable "Drive API"
-     2. Credentials → OAuth 2.0 Client ID → Web application
-     3. Authorized origins: https://<seu-usuario>.github.io
-     4. Cole CLIENT_ID abaixo
-     ─────────────────────────────────────────────────────── */
-  CLIENT_ID: 'SEU_CLIENT_ID_AQUI.apps.googleusercontent.com',
-  API_KEY:   'SUA_API_KEY_AQUI',          // opcional para Drive API v3
+  // ✅ Configuração movida para o topo do arquivo (procure por GOOGLE_CREDENTIALS)
+  CLIENT_ID: GOOGLE_CREDENTIALS.CLIENT_ID,
+  API_KEY:   GOOGLE_CREDENTIALS.API_KEY,
   SCOPES:    'https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.file',
   FILE_NAME: 'sigde_data.json',
   FOLDER:    'appDataFolder',              // pasta isolada do app
@@ -2749,6 +2774,17 @@ function importBackup(event) {
    INIT
    ============================================================ */
 (function init() {
+  // ⚠️ VERIFICAÇÃO DE CREDENCIAIS
+  if (!GOOGLE_CREDENTIALS.CLIENT_ID || GOOGLE_CREDENTIALS.CLIENT_ID.includes('COLE_SEU')) {
+    showToast('⚠️ Configure o CLIENT_ID do Google no topo do arquivo HTML!', 'error');
+    console.error('❌ CLIENT_ID não configurado! Procure por GOOGLE_CREDENTIALS no código.');
+  } else if (!GOOGLE_CREDENTIALS.API_KEY || GOOGLE_CREDENTIALS.API_KEY.includes('COLE_SUA')) {
+    showToast('⚠️ Configure a API_KEY do Google no topo do arquivo HTML!', 'error');
+    console.error('❌ API_KEY não configurada! Procure por GOOGLE_CREDENTIALS no código.');
+  } else {
+    console.log('✅ Credenciais do Google configuradas corretamente!');
+  }
+  
   renderFornecedoresTable();
   updateStats();
 
