@@ -236,6 +236,10 @@ body::before {
   from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: none; }
+  50% { box-shadow: 0 0 12px rgba(59,130,246,0.6), 0 0 24px rgba(59,130,246,0.3); }
+}
 
 /* ============================================================
    DASHBOARD CARDS
@@ -1342,6 +1346,745 @@ body::before {
 @media (max-width: 480px) {
   .stats-row { grid-template-columns: 1fr 1fr; }
 }
+
+/* ============================================================
+   CONTAS A PAGAR — MODULE STYLES
+   ============================================================ */
+/* Card financeiro no dashboard */
+.module-card.financeiro {
+  background: linear-gradient(145deg, rgba(20,184,166,0.06) 0%, var(--bg-card) 50%);
+  border-color: rgba(20,184,166,0.18);
+}
+.module-card.financeiro::before {
+  background: linear-gradient(135deg, rgba(20,184,166,0.14), transparent);
+}
+.module-card.financeiro:hover {
+  box-shadow: 0 0 28px rgba(20,184,166,0.35), var(--shadow-card);
+  border-color: rgba(20,184,166,0.4);
+}
+.financeiro .card-icon-wrap {
+  background: linear-gradient(135deg, rgba(20,184,166,0.2), rgba(13,148,136,0.15));
+  border: 1px solid rgba(20,184,166,0.35);
+}
+.financeiro .card-icon-wrap svg { color: var(--accent-teal); }
+.financeiro .card-tag { color: var(--accent-teal); }
+
+/* Mini cards EXE/RAP no dashboard */
+.fin-mini-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  margin-bottom: 30px;
+}
+.fin-mini-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition);
+}
+.fin-mini-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+.fin-mini-card.exe-card::after { background: linear-gradient(90deg, var(--accent-teal), #0891b2); }
+.fin-mini-card.rap-card::after { background: linear-gradient(90deg, var(--accent-amber), #d97706); }
+.fin-mini-card:hover { border-color: var(--border-bright); transform: translateY(-2px); }
+.fin-mini-label {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  margin-bottom: 4px;
+}
+.exe-card .fin-mini-label { color: var(--accent-teal); }
+.rap-card .fin-mini-label { color: var(--accent-amber); }
+.fin-mini-fonte { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; }
+.fin-mini-value { font-size: 20px; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+
+/* Page Contas a Pagar */
+#page-financeiro { padding-bottom: 60px; }
+.cap-header-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 28px; flex-wrap: wrap; gap: 12px;
+}
+.cap-title-group { display: flex; flex-direction: column; }
+.cap-page-tag {
+  font-size: 10px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 0.2em; color: var(--accent-teal); margin-bottom: 4px;
+}
+.cap-page-title {
+  font-family: var(--font-display);
+  font-size: 26px; font-weight: 700; letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #fff 30%, #5eead4);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.cap-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* Semana atual bar */
+.semana-bar {
+  background: var(--bg-card);
+  border: 1px solid rgba(20,184,166,0.2);
+  border-radius: var(--radius-md);
+  padding: 14px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 24px; gap: 16px; flex-wrap: wrap;
+}
+.semana-info { display: flex; align-items: center; gap: 12px; }
+.semana-badge {
+  background: rgba(20,184,166,0.15);
+  color: var(--accent-teal);
+  border: 1px solid rgba(20,184,166,0.3);
+  border-radius: 6px; padding: 4px 10px;
+  font-size: 11px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 0.1em;
+}
+.semana-text { font-size: 13px; color: var(--text-secondary); font-weight: 600; }
+.semana-num { color: var(--text-primary); font-weight: 700; }
+.semana-totals { display: flex; gap: 20px; }
+.semana-tot-item { display: flex; flex-direction: column; align-items: flex-end; }
+.semana-tot-label { font-size: 10px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; }
+.semana-tot-val { font-size: 16px; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+
+/* Form Contas a Pagar */
+.cap-form-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+.cap-form-header {
+  padding: 20px 28px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(20,184,166,0.04);
+}
+.cap-form-title {
+  font-family: var(--font-display);
+  font-size: 16px; font-weight: 700; color: var(--text-primary);
+  display: flex; align-items: center; gap: 10px;
+}
+.cap-form-title svg { width: 18px; height: 18px; color: var(--accent-teal); }
+.cap-form-body { padding: 24px 28px; }
+
+/* ── TIPO SELECTOR (EXE / RAP) ── redesign premium */
+.tipo-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.tipo-btn {
+  padding: 0;
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--border);
+  background: var(--bg-elevated);
+  cursor: pointer;
+  display: flex;
+  align-items: stretch;
+  transition: var(--transition);
+  text-align: left;
+  overflow: hidden;
+  position: relative;
+  min-height: 80px;
+}
+.tipo-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+.tipo-btn:hover::after { opacity: 1; }
+.tipo-btn:hover { border-color: var(--border-bright); }
+.tipo-btn.active-exe {
+  border-color: var(--accent-teal);
+  box-shadow: 0 0 28px rgba(20,184,166,0.25), inset 0 1px 0 rgba(20,184,166,0.15);
+}
+.tipo-btn.active-rap {
+  border-color: var(--accent-amber);
+  box-shadow: 0 0 28px rgba(245,158,11,0.25), inset 0 1px 0 rgba(245,158,11,0.15);
+}
+.tipo-btn.active-exe::after { background: linear-gradient(135deg, rgba(20,184,166,0.08), transparent); }
+.tipo-btn.active-rap::after { background: linear-gradient(135deg, rgba(245,158,11,0.08), transparent); }
+/* Faixa lateral colorida */
+.tipo-stripe {
+  width: 6px;
+  flex-shrink: 0;
+  background: var(--border);
+  transition: background 0.25s;
+}
+.exe .tipo-stripe { background: rgba(20,184,166,0.4); }
+.rap .tipo-stripe { background: rgba(245,158,11,0.4); }
+.tipo-btn.active-exe .tipo-stripe { background: var(--accent-teal); }
+.tipo-btn.active-rap .tipo-stripe { background: var(--accent-amber); }
+/* Conteúdo interno */
+.tipo-inner {
+  display: flex; align-items: center; gap: 16px;
+  padding: 18px 20px;
+  flex: 1;
+}
+.tipo-icon {
+  width: 52px; height: 52px; border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 900; font-family: var(--font-mono);
+  flex-shrink: 0;
+  letter-spacing: 0.04em;
+  transition: var(--transition);
+}
+.exe .tipo-icon {
+  background: rgba(20,184,166,0.15);
+  color: var(--accent-teal);
+  border: 1.5px solid rgba(20,184,166,0.35);
+  box-shadow: 0 0 16px rgba(20,184,166,0.15);
+}
+.rap .tipo-icon {
+  background: rgba(245,158,11,0.15);
+  color: var(--accent-amber);
+  border: 1.5px solid rgba(245,158,11,0.35);
+  box-shadow: 0 0 16px rgba(245,158,11,0.15);
+}
+.tipo-btn.active-exe .tipo-icon { background: rgba(20,184,166,0.25); box-shadow: 0 0 20px rgba(20,184,166,0.3); }
+.tipo-btn.active-rap .tipo-icon { background: rgba(245,158,11,0.25); box-shadow: 0 0 20px rgba(245,158,11,0.3); }
+.tipo-info { display: flex; flex-direction: column; gap: 3px; }
+.tipo-info .tipo-name {
+  font-size: 16px; font-weight: 800;
+  color: var(--text-secondary);
+  letter-spacing: -0.2px;
+  transition: color 0.2s;
+}
+.tipo-btn.active-exe .tipo-name { color: var(--accent-teal); }
+.tipo-btn.active-rap .tipo-name { color: var(--accent-amber); }
+.tipo-info .tipo-desc { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+/* Checkmark ativo */
+.tipo-check {
+  margin-left: auto;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+.tipo-btn.active-exe .tipo-check {
+  background: var(--accent-teal);
+  border-color: var(--accent-teal);
+  box-shadow: 0 0 8px rgba(20,184,166,0.5);
+}
+.tipo-btn.active-rap .tipo-check {
+  background: var(--accent-amber);
+  border-color: var(--accent-amber);
+  box-shadow: 0 0 8px rgba(245,158,11,0.5);
+}
+.tipo-check svg { width: 11px; height: 11px; color: #000; opacity: 0; transition: opacity 0.2s; }
+.tipo-btn.active-exe .tipo-check svg,
+.tipo-btn.active-rap .tipo-check svg { opacity: 1; }
+
+/* ── CLASS SELECTOR (NP / RP / AV) ── */
+.class-selector {
+  display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap;
+  background: var(--bg-base);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 5px;
+  width: fit-content;
+}
+.class-btn {
+  padding: 8px 22px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 13px; font-weight: 800;
+  transition: var(--transition);
+  letter-spacing: 0.08em;
+  position: relative;
+}
+.class-btn:hover { color: var(--text-secondary); }
+.class-btn.active {
+  background: rgba(20,184,166,0.15);
+  color: var(--accent-teal);
+  box-shadow: 0 0 12px rgba(20,184,166,0.2);
+}
+
+/* ── BOTÃO NOVO REGISTRO — destaque laranja ── */
+.btn-novo-registro {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, var(--accent-orange), var(--accent-orange-dark));
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 16px rgba(249,115,22,0.45), 0 0 0 1px rgba(249,115,22,0.3);
+  transition: var(--transition);
+}
+.btn-novo-registro:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(249,115,22,0.6), 0 0 0 1px rgba(249,115,22,0.5);
+  background: linear-gradient(135deg, #fb923c, var(--accent-orange));
+}
+.btn-novo-registro svg { width: 14px; height: 14px; }
+
+/* ── DATE INPUTS — ícone de calendário visível ── */
+input[type="date"].form-input {
+  position: relative;
+  color-scheme: dark;
+}
+input[type="date"].form-input::-webkit-calendar-picker-indicator {
+  filter: invert(0.7) sepia(1) saturate(3) hue-rotate(140deg);
+  opacity: 0.9;
+  cursor: pointer;
+  width: 18px; height: 18px;
+  padding: 2px;
+  border-radius: 4px;
+  transition: opacity 0.2s, transform 0.15s;
+}
+input[type="date"].form-input::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+  transform: scale(1.15);
+}
+.date-field-wrap {
+  position: relative;
+}
+.date-field-wrap .date-icon {
+  position: absolute;
+  right: 12px; top: 50%; transform: translateY(-50%);
+  color: var(--accent-teal);
+  pointer-events: none;
+  width: 16px; height: 16px;
+}
+
+/* ── FONTE SELECT ── */
+.fonte-select-wrap { position: relative; }
+.fonte-select-wrap select.form-select {
+  appearance: none;
+  padding-right: 32px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2314b8a6' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  border-color: rgba(20,184,166,0.35);
+  color: var(--accent-amber);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 13px;
+}
+.fonte-select-wrap select.form-select option { color: var(--text-primary); font-family: var(--font-body); font-weight: 600; }
+
+/* ── CAP DATE INPUTS ── */
+input.cap-date.form-input {
+  color-scheme: dark;
+  padding-right: 10px;
+}
+input.cap-date.form-input::-webkit-calendar-picker-indicator {
+  filter: brightness(0) saturate(100%) invert(68%) sepia(57%) saturate(443%) hue-rotate(131deg) brightness(95%) contrast(93%);
+  opacity: 1;
+  cursor: pointer;
+  width: 20px; height: 20px;
+  border-radius: 4px;
+  padding: 1px;
+  transition: transform 0.18s, filter 0.18s;
+}
+input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
+  transform: scale(1.2);
+  filter: brightness(0) saturate(100%) invert(68%) sepia(90%) saturate(600%) hue-rotate(131deg) brightness(110%) contrast(100%);
+}
+/* doc-type-toggle spacing */
+.doc-type-toggle { margin-bottom: 8px; }
+
+/* Form grid */
+.cap-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.cap-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+@media (max-width: 768px) {
+  .cap-grid-2, .cap-grid-3 { grid-template-columns: 1fr; }
+  .tipo-selector { grid-template-columns: 1fr; }
+  .cap-table-header { flex-direction: column !important; }
+}
+/* Input highlight */
+.form-input.highlight {
+  border-color: rgba(20,184,166,0.35);
+  background: rgba(20,184,166,0.04);
+}
+.form-input.highlight:focus { border-color: var(--accent-teal); }
+
+/* Document type toggle */
+.doc-type-toggle {
+  display: flex; gap: 8px; margin-bottom: 12px;
+}
+.doc-type-btn {
+  padding: 6px 16px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 12px; font-weight: 700;
+  transition: var(--transition);
+}
+.doc-type-btn.active {
+  border-color: var(--accent-teal);
+  background: rgba(20,184,166,0.12);
+  color: var(--accent-teal);
+}
+
+/* Status badges */
+.status-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px; border-radius: 12px;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+}
+.badge-pago { background: rgba(34,197,94,0.15); color: var(--accent-green); border: 1px solid rgba(34,197,94,0.3); }
+.badge-nao-pago { background: rgba(244,63,94,0.12); color: var(--accent-rose); border: 1px solid rgba(244,63,94,0.25); }
+.badge-exe { background: rgba(20,184,166,0.15); color: var(--accent-teal); border: 1px solid rgba(20,184,166,0.3); }
+.badge-rap { background: rgba(245,158,11,0.15); color: var(--accent-amber); border: 1px solid rgba(245,158,11,0.3); }
+.badge-enviado { background: rgba(59,130,246,0.15); color: var(--accent-blue); border: 1px solid rgba(59,130,246,0.3); }
+.badge-aguard { background: rgba(245,158,11,0.15); color: var(--accent-amber); border: 1px solid rgba(245,158,11,0.3); }
+.badge-anexado { background: rgba(34,197,94,0.12); color: var(--accent-green); border: 1px solid rgba(34,197,94,0.25); }
+.badge-nao-env { background: rgba(148,163,184,0.12); color: var(--text-muted); border: 1px solid var(--border); }
+
+/* Tabela */
+.cap-table-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+.cap-table-header {
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  background: rgba(20,184,166,0.03);
+}
+.cap-table-title {
+  font-family: var(--font-display);
+  font-size: 16px; font-weight: 700; color: var(--text-primary);
+  display: flex; align-items: center; gap: 8px;
+}
+.cap-table-title svg { width: 16px; height: 16px; color: var(--accent-teal); }
+.cap-filters {
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.cap-filter-input {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 12px;
+  padding: 7px 12px;
+  outline: none;
+  transition: var(--transition);
+  min-width: 140px;
+}
+.cap-filter-input:focus { border-color: var(--accent-teal); background: var(--bg-card); }
+.cap-filter-input::placeholder { color: var(--text-muted); }
+.cap-table-wrap { overflow-x: auto; }
+.cap-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 12.5px;
+}
+.cap-table thead tr {
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border);
+}
+.cap-table th {
+  padding: 11px 14px;
+  text-align: left;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+}
+.cap-table th:hover { color: var(--text-secondary); }
+.cap-table tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+.cap-table tbody tr:hover { background: var(--bg-elevated); }
+.cap-table tbody tr:last-child { border-bottom: none; }
+.cap-table td {
+  padding: 11px 14px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.cap-table .td-valor {
+  font-weight: 700; color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+.cap-table .td-doc {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--accent-teal);
+  font-weight: 700;
+}
+.cap-table .td-fonte {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent-amber);
+  font-weight: 700;
+}
+/* CPF/CNPJ e Fornecedor — sempre visíveis e destacados */
+.cap-table .td-cpfcnpj {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--accent-purple);
+  font-weight: 700;
+}
+.cap-table .td-fornecedor {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* Row actions */
+.row-actions { display: flex; gap: 4px; }
+.row-act-btn {
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: var(--transition);
+}
+.row-act-btn svg { width: 13px; height: 13px; }
+.row-act-btn:hover { background: var(--bg-surface); border-color: var(--border-bright); color: var(--text-primary); }
+.row-act-btn.edit:hover { color: var(--accent-blue); border-color: rgba(59,130,246,0.4); }
+.row-act-btn.del:hover { color: var(--accent-rose); border-color: rgba(244,63,94,0.4); }
+.row-act-btn.detail:hover { color: var(--accent-teal); border-color: rgba(20,184,166,0.4); }
+
+/* Paginação */
+.cap-pagination {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 24px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap; gap: 10px;
+}
+.cap-pag-info { font-size: 12px; color: var(--text-muted); }
+.cap-pag-btns { display: flex; gap: 6px; align-items: center; }
+.cap-pag-btn {
+  width: 30px; height: 30px;
+  border-radius: 6px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700;
+  transition: var(--transition);
+}
+.cap-pag-btn:hover { background: var(--bg-card); border-color: var(--border-bright); }
+.cap-pag-btn.active { background: rgba(20,184,166,0.15); border-color: rgba(20,184,166,0.4); color: var(--accent-teal); }
+.cap-pag-btn:disabled { opacity: 0.3; cursor: default; }
+
+/* Saldo Section */
+.saldo-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+.saldo-header {
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(20,184,166,0.03);
+}
+.saldo-title {
+  font-family: var(--font-display);
+  font-size: 16px; font-weight: 700; color: var(--text-primary);
+  display: flex; align-items: center; gap: 8px;
+}
+.saldo-title svg { width: 16px; height: 16px; color: var(--accent-teal); }
+.saldo-body { padding: 20px 24px; }
+.saldo-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.saldo-item {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  gap: 12px;
+}
+.saldo-item-left { display: flex; align-items: center; gap: 10px; }
+.saldo-item-right { display: flex; align-items: center; gap: 12px; }
+.saldo-item-val { font-size: 15px; font-weight: 700; color: var(--accent-green); font-variant-numeric: tabular-nums; }
+.saldo-item-fonte { font-family: var(--font-mono); font-size: 12px; color: var(--text-muted); }
+
+/* Solicitar Financeiro button */
+.btn-solicitar {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 28px;
+  border-radius: var(--radius-md);
+  border: none; cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 15px; font-weight: 800;
+  background: linear-gradient(135deg, var(--accent-teal), #0891b2);
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(20,184,166,0.4);
+  transition: var(--transition);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.btn-solicitar:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(20,184,166,0.5); }
+.btn-solicitar svg { width: 20px; height: 20px; }
+
+/* Solicitação modal */
+.sol-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 16px; }
+.sol-table th {
+  padding: 10px 14px;
+  background: var(--bg-elevated);
+  font-size: 10px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--text-muted); text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.sol-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
+.sol-table tr:last-child td { border-bottom: none; }
+.sol-total-row { background: rgba(20,184,166,0.06); font-weight: 700; }
+.sol-total-row td { color: var(--text-primary); font-weight: 800; }
+.sol-section-title {
+  font-size: 11px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 0.15em; color: var(--accent-teal);
+  margin: 16px 0 8px; display: flex; align-items: center; gap: 6px;
+}
+.sol-cod-row {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 6px;
+  font-size: 12px;
+}
+.sol-cod-fonte { font-family: var(--font-mono); color: var(--text-muted); }
+.sol-cod-val { font-family: var(--font-mono); font-weight: 800; color: var(--accent-amber); font-size: 14px; }
+
+/* Histórico */
+.hist-item {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  margin-bottom: 10px;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+}
+.hist-item-left { display: flex; flex-direction: column; gap: 3px; }
+.hist-semana { font-size: 12px; font-weight: 800; color: var(--accent-teal); text-transform: uppercase; letter-spacing: 0.1em; }
+.hist-periodo { font-size: 11px; color: var(--text-muted); }
+.hist-item-right { display: flex; gap: 20px; }
+.hist-stat { display: flex; flex-direction: column; align-items: flex-end; }
+.hist-stat-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; }
+.hist-stat-val { font-size: 14px; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+
+/* Detalhes modal */
+.det-timeline { display: flex; flex-direction: column; gap: 0; }
+.det-tl-item { display: flex; gap: 14px; padding-bottom: 20px; position: relative; }
+.det-tl-item:last-child { padding-bottom: 0; }
+.det-tl-dot {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(20,184,166,0.15);
+  border: 1px solid rgba(20,184,166,0.3);
+  color: var(--accent-teal);
+  z-index: 1;
+}
+.det-tl-dot svg { width: 14px; height: 14px; }
+.det-tl-item::before {
+  content: '';
+  position: absolute;
+  left: 15px; top: 36px; bottom: 0;
+  width: 2px;
+  background: var(--border);
+}
+.det-tl-item:last-child::before { display: none; }
+.det-tl-content { flex: 1; padding-top: 6px; }
+.det-tl-title { font-size: 13px; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
+.det-tl-sub { font-size: 12px; color: var(--text-muted); }
+
+/* Tab nav */
+.cap-tabs { display: flex; gap: 4px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 0; }
+.cap-tab {
+  padding: 10px 18px;
+  border-radius: 8px 8px 0 0;
+  border: 1px solid transparent;
+  border-bottom: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 13px; font-weight: 600;
+  transition: var(--transition);
+  margin-bottom: -1px;
+}
+.cap-tab:hover { color: var(--text-secondary); background: var(--bg-elevated); }
+.cap-tab.active {
+  background: var(--bg-card);
+  border-color: var(--border);
+  color: var(--accent-teal);
+  border-bottom-color: var(--bg-card);
+}
+.cap-tab-content { display: none; }
+.cap-tab-content.active { display: block; }
+
+/* Fonte color dots */
+.fonte-dot {
+  width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0;
+}
+
+/* Empty state cap */
+.cap-empty {
+  text-align: center; padding: 48px 24px;
+  color: var(--text-muted); font-size: 13px;
+}
+.cap-empty svg { width: 48px; height: 48px; margin: 0 auto 14px; display: block; color: var(--text-muted); opacity: 0.4; }
+
+/* Relatório */
+.rel-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  margin-bottom: 12px;
+}
+.rel-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.rel-row:last-child { border-bottom: none; }
+.rel-label { font-size: 12px; color: var(--text-muted); }
+.rel-val { font-size: 14px; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+
+/* btn teal */
+.btn-teal {
+  background: linear-gradient(135deg, var(--accent-teal), #0891b2);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(20,184,166,0.3);
+}
+.btn-teal:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(20,184,166,0.4); }
+.btn-amber {
+  background: linear-gradient(135deg, var(--accent-amber), #d97706);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(245,158,11,0.3);
+}
+.btn-amber:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(245,158,11,0.4); }
 </style>
 </head>
 <body>
@@ -1371,6 +2114,10 @@ body::before {
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07M8.46 8.46a5 5 0 0 0 0 7.07"/></svg>
       <span class="sb-label">SUAP</span>
     </button>
+    <button class="sidebar-btn" onclick="showPage('financeiro')" title="Contas a Pagar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/><path d="M14 15h4"/></svg>
+      <span class="sb-label">Contas a Pagar</span>
+    </button>
     <button class="sidebar-btn" onclick="showPage('config')" title="Configurações">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
       <span class="sb-label">Configurações</span>
@@ -1393,7 +2140,7 @@ body::before {
         </div>
         <div class="topbar-title">
           <div class="topbar-subtitle">SETOR DE CONTABILIDADE</div>
-          <div class="topbar-main">SIGDE — Sistema de Despachos</div>
+          <div class="topbar-main">SIGDE — Sistema de Despachos e Contas a Pagar</div>
         </div>
       </div>
       <div class="topbar-actions">
@@ -1454,6 +2201,11 @@ body::before {
         </div>
       </div>
 
+      <!-- FIN MINI CARDS — EXE/RAP por fonte -->
+      <div class="fin-mini-cards" id="fin-mini-cards-row">
+        <!-- Populated dynamically -->
+      </div>
+
       <!-- MODULE CARDS -->
       <div class="dash-grid">
         <div class="module-card despachos" onclick="openDespachos()">
@@ -1474,6 +2226,16 @@ body::before {
           <div class="card-desc">Geração de textos padronizados para o sistema SUAP com comprovantes de pagamento por categoria.</div>
           <div class="card-arrow">↗</div>
         </div>
+        
+        <div class="module-card financeiro" onclick="showPage('financeiro')">
+          <div class="card-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M16 14h4v3h-4a2 2 0 0 1 0-4h4"/><path d="M2 10h20"/></svg>
+          </div>
+          <div class="card-tag">Financeiro Semanal</div>
+          <div class="card-name">CONTAS A PAGAR</div>
+          <div class="card-desc">Controle de EXE, RAP, fornecedores, saldos, pagamentos e solicitação semanal automática de recursos.</div>
+          <div class="card-arrow">↗</div>
+        </div>
         <div class="module-card config" onclick="showPage('config')">
           <div class="card-icon-wrap">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -1482,6 +2244,308 @@ body::before {
           <div class="card-name">CONFIGURAÇÕES</div>
           <div class="card-desc">Cadastro de fornecedores, categorias e parametrizações do sistema com persistência local.</div>
           <div class="card-arrow">↗</div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ==================== CONTAS A PAGAR PAGE ==================== -->
+    <div id="page-financeiro" class="page">
+      <div class="cap-header-bar">
+        <div class="cap-title-group">
+          <div class="cap-page-tag">MÓDULO FINANCEIRO</div>
+          <div class="cap-page-title">Contas a Pagar</div>
+          <div class="section-subtitle">Ciclo semanal automatizado de EXE, RAP, saldos, pagamentos e solicitações financeiras</div>
+        </div>
+        <div class="cap-actions">
+          <button class="btn btn-ghost" onclick="exportCapCSV()">Exportar CSV</button>
+          <button class="btn-solicitar" onclick="solicitarFinanceiro()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6"/></svg>
+            Solicitar Financeiro
+          </button>
+        </div>
+      </div>
+
+      <div class="stats-row" id="cap-dashboard-cards"></div>
+
+      <div class="cap-tabs">
+        <button class="cap-tab active" onclick="setCapTab('lancamentos')">Lançamentos</button>
+        <button class="cap-tab" onclick="setCapTab('saldos')">Saldos</button>
+        <button class="cap-tab" onclick="setCapTab('relatorios')">Relatórios</button>
+        <button class="cap-tab" onclick="setCapTab('historico')">Histórico Semanal</button>
+      </div>
+
+      <!-- SEMANA ATUAL BAR -->
+      <div class="semana-bar" id="cap-semana-bar">
+        <div class="semana-info">
+          <span class="semana-badge" id="cap-semana-badge">SEMANA ATUAL</span>
+          <span class="semana-text">Ciclo: <span class="semana-num" id="cap-semana-label">—</span></span>
+        </div>
+        <div class="semana-totals" id="cap-semana-totals">
+          <div class="semana-tot-item"><span class="semana-tot-label">Registros</span><span class="semana-tot-val" id="cap-sem-qtd">0</span></div>
+          <div class="semana-tot-item"><span class="semana-tot-label">EXE Semana</span><span class="semana-tot-val" id="cap-sem-exe">R$ 0,00</span></div>
+          <div class="semana-tot-item"><span class="semana-tot-label">RAP Semana</span><span class="semana-tot-val" id="cap-sem-rap">R$ 0,00</span></div>
+          <div class="semana-tot-item"><span class="semana-tot-label">Total</span><span class="semana-tot-val" id="cap-sem-total">R$ 0,00</span></div>
+        </div>
+      </div>
+
+      <div id="cap-tab-lancamentos" class="cap-tab-content active">
+        <div class="cap-form-card">
+          <div class="cap-form-header">
+            <div class="cap-form-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              Lançamento de Conta a Pagar
+            </div>
+            <button class="btn-novo-registro" id="cap-edit-badge" onclick="resetCapForm()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              NOVO REGISTRO
+            </button>
+          </div>
+          <div class="cap-form-body">
+            <input type="hidden" id="cap-edit-id">
+            <div class="tipo-selector">
+              <button type="button" class="tipo-btn exe" id="cap-tipo-exe" onclick="selectCapTipo('EXE')">
+                <div class="tipo-stripe"></div>
+                <div class="tipo-inner">
+                  <span class="tipo-icon">EXE</span>
+                  <span class="tipo-info">
+                    <span class="tipo-name">Exercício</span>
+                    <span class="tipo-desc">Despesa do exercício corrente</span>
+                  </span>
+                  <div class="tipo-check">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                </div>
+              </button>
+              <button type="button" class="tipo-btn rap" id="cap-tipo-rap" onclick="selectCapTipo('RAP')">
+                <div class="tipo-stripe"></div>
+                <div class="tipo-inner">
+                  <span class="tipo-icon">RAP</span>
+                  <span class="tipo-info">
+                    <span class="tipo-name">Restos a Pagar</span>
+                    <span class="tipo-desc">Obrigação de exercícios anteriores</span>
+                  </span>
+                  <div class="tipo-check">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                </div>
+              </button>
+            </div>
+            <div class="class-selector" id="cap-class-selector">
+              <button type="button" class="class-btn" onclick="selectCapClass('NP')">NP</button>
+              <button type="button" class="class-btn" onclick="selectCapClass('RP')">RP</button>
+              <button type="button" class="class-btn" onclick="selectCapClass('AV')">AV</button>
+            </div>
+
+            <!-- Linha 1: Documento | Fonte | Código -->
+            <div class="cap-grid-3" style="margin-bottom:18px">
+              <div class="form-group">
+                <label class="form-label">Documento</label>
+                <input class="form-input highlight" id="cap-documento" placeholder="2026NP000001" oninput="maskCapDocumento(this)" autocomplete="off">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Fonte</label>
+                <div class="fonte-select-wrap">
+                  <select class="form-select" id="cap-fonte" onchange="onFonteSelectChange()">
+                    <option value="">— Selecione a fonte —</option>
+                  </select>
+                </div>
+                <div id="fonte-hint" style="display:none;font-size:10px;color:var(--text-muted);margin-top:4px;display:flex;align-items:center;gap:5px"></div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Código Solicitação</label>
+                <input class="form-input" id="cap-codigo" placeholder="400" autocomplete="off">
+              </div>
+            </div>
+
+            <!-- Linha 2: CPF/CNPJ | Fornecedor | Valor -->
+            <div class="cap-grid-3" style="margin-bottom:18px;align-items:end">
+              <div class="form-group">
+                <label class="form-label">CPF / CNPJ</label>
+                <div class="doc-type-toggle">
+                  <button type="button" class="doc-type-btn active" onclick="selectDocTipo('CNPJ')">CNPJ</button>
+                  <button type="button" class="doc-type-btn" onclick="selectDocTipo('CPF')">CPF</button>
+                </div>
+                <input class="form-input" id="cap-doc-forn" list="cap-forn-doc-list"
+                  placeholder="00.000.000/0001-00"
+                  oninput="maskCapPessoa(this); autofillFornecedor()"
+                  autocomplete="off">
+                <datalist id="cap-forn-doc-list"></datalist>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Fornecedor</label>
+                <input class="form-input" id="cap-fornecedor" list="cap-forn-list" placeholder="Nome do fornecedor" autocomplete="off">
+                <datalist id="cap-forn-list"></datalist>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Valor (R$)</label>
+                <input class="form-input highlight" id="cap-valor" placeholder="10.000,00" oninput="maskMoneyInput(this)" autocomplete="off">
+              </div>
+            </div>
+
+            <!-- Linha 3: Status | Competência | Situação -->
+            <div class="cap-grid-3" style="margin-bottom:18px">
+              <div class="form-group">
+                <label class="form-label">Status Pagamento</label>
+                <select class="form-select" id="cap-pago">
+                  <option value="nao">Não Pago</option>
+                  <option value="sim">Pago</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Competência</label>
+                <select class="form-select" id="cap-competencia"></select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Situação</label>
+                <select class="form-select" id="cap-situacao">
+                  <option>Aguardando comprovante</option>
+                  <option>Processo enviado</option>
+                  <option>Anexado</option>
+                  <option>Não enviado</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Linha 4: Data Solicitação | Data Pagamento | Observações -->
+            <div class="cap-grid-3" style="margin-bottom:24px">
+              <div class="form-group">
+                <label class="form-label">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;color:var(--accent-teal)"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  Data Solicitação
+                </label>
+                <input type="date" class="form-input cap-date" id="cap-data-solicitacao">
+              </div>
+              <div class="form-group">
+                <label class="form-label">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;color:var(--accent-teal)"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><circle cx="12" cy="16" r="1.5" fill="var(--accent-teal)"/></svg>
+                  Data Pagamento
+                </label>
+                <input type="date" class="form-input cap-date" id="cap-data-pagamento">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Observações</label>
+                <input class="form-input" id="cap-obs" placeholder="Histórico, processo, comprovante...">
+              </div>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <button class="btn btn-teal" onclick="saveCapConta()">Salvar Conta</button>
+              <button class="btn btn-ghost" onclick="resetCapForm()">Limpar Formulário</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="cap-table-card">
+          <div class="cap-table-header" style="flex-direction:column;align-items:stretch;gap:12px">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+              <div class="cap-table-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                Tabela de Lançamentos
+              </div>
+              <div style="display:flex;gap:8px">
+                <button class="btn btn-ghost" onclick="exportCapCSV()" style="font-size:12px;padding:7px 14px">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  CSV
+                </button>
+              </div>
+            </div>
+            <!-- FILTROS AVANÇADOS -->
+            <div style="display:grid;grid-template-columns:2fr repeat(4,1fr) repeat(2,1fr) auto;gap:8px;flex-wrap:wrap">
+              <input class="cap-filter-input" id="cap-filter-search" placeholder="🔍 Busca (doc, fornecedor, CNPJ...)" oninput="renderCapTable()" style="grid-column:1/3">
+              <select class="cap-filter-input" id="cap-filter-tipo" onchange="renderCapTable()"><option value="">EXE/RAP</option><option>EXE</option><option>RAP</option></select>
+              <select class="cap-filter-input" id="cap-filter-classe" onchange="renderCapTable()"><option value="">NP/RP/AV</option><option>NP</option><option>RP</option><option>AV</option></select>
+              <input class="cap-filter-input" id="cap-filter-fonte" placeholder="Fonte..." oninput="renderCapTable()">
+              <select class="cap-filter-input" id="cap-filter-pago" onchange="renderCapTable()"><option value="">Pago?</option><option value="sim">✓ Pago</option><option value="nao">✗ Não Pago</option></select>
+              <select class="cap-filter-input" id="cap-filter-situacao" onchange="renderCapTable()"><option value="">Situação</option><option>Processo enviado</option><option>Aguardando comprovante</option><option>Anexado</option><option>Não enviado</option></select>
+              <select class="cap-filter-input" id="cap-filter-competencia" onchange="renderCapTable()"><option value="">Competência</option></select>
+              <input class="cap-filter-input" id="cap-filter-valor-min" placeholder="Valor mín" oninput="renderCapTable()" style="width:100px">
+              <input class="cap-filter-input" id="cap-filter-valor-max" placeholder="Valor máx" oninput="renderCapTable()" style="width:100px">
+              <input class="cap-filter-input" id="cap-filter-data-ini" type="date" onchange="renderCapTable()" title="Data inicial">
+              <input class="cap-filter-input" id="cap-filter-data-fim" type="date" onchange="renderCapTable()" title="Data final">
+              <button class="btn btn-ghost" onclick="clearCapFilters()" style="font-size:11px;padding:6px 12px;white-space:nowrap">✕ Limpar</button>
+            </div>
+          </div>
+          <div class="cap-table-wrap">
+            <table class="cap-table">
+              <thead><tr><th onclick="sortCap('tipo')">Tipo</th><th onclick="sortCap('classe')">Classe</th><th onclick="sortCap('documento')">Documento</th><th>Fonte</th><th>CPF/CNPJ</th><th>Fornecedor</th><th onclick="sortCap('valor')">Valor</th><th>Pago</th><th>Competência</th><th>Solicitação</th><th>Pagamento</th><th>Situação</th><th>Ações</th></tr></thead>
+              <tbody id="cap-table-body"></tbody>
+            </table>
+          </div>
+          <div class="cap-pagination"><div class="cap-pag-info" id="cap-pag-info"></div><div class="cap-pag-btns" id="cap-pag-btns"></div></div>
+        </div>
+      </div>
+
+      <div id="cap-tab-saldos" class="cap-tab-content">
+        <div class="saldo-section">
+          <div class="saldo-header">
+            <div class="saldo-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              Cadastro de Saldo por Tipo e Fonte
+            </div>
+            <div style="font-size:12px;color:var(--text-muted)">Saldo remanescente é automaticamente abatido na próxima solicitação</div>
+          </div>
+          <div class="saldo-body">
+            <div class="cap-grid-3" style="margin-bottom:16px">
+              <div class="form-group">
+                <label class="form-label">Tipo</label>
+                <select class="form-select" id="saldo-tipo">
+                  <option value="EXE">EXE — Exercício</option>
+                  <option value="RAP">RAP — Restos a Pagar</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Fonte</label>
+                <input class="form-input" id="saldo-fonte" list="cap-fontes-list" placeholder="1000000000">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Valor (R$)</label>
+                <input class="form-input highlight" id="saldo-valor" placeholder="2.500,00" oninput="maskMoneyInput(this)">
+              </div>
+            </div>
+            <div style="display:flex;gap:10px;margin-bottom:24px">
+              <button class="btn btn-teal" onclick="saveSaldo()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Cadastrar Saldo
+              </button>
+              <button class="btn btn-ghost" onclick="zerarTodosSaldos()">Zerar Todos os Saldos</button>
+            </div>
+
+            <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.15em;color:var(--accent-teal);margin-bottom:12px">SALDOS CADASTRADOS</div>
+            <div class="saldo-list" id="saldo-list"></div>
+
+            <div id="saldo-totals" style="margin-top:16px;padding:14px 16px;background:rgba(20,184,166,0.06);border:1px solid rgba(20,184,166,0.2);border-radius:10px;display:none">
+              <div style="display:flex;gap:24px;flex-wrap:wrap">
+                <div><div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em">Total EXE</div><div id="saldo-tot-exe" style="font-size:16px;font-weight:700;color:var(--accent-teal)">R$ 0,00</div></div>
+                <div><div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em">Total RAP</div><div id="saldo-tot-rap" style="font-size:16px;font-weight:700;color:var(--accent-amber)">R$ 0,00</div></div>
+                <div><div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em">Saldo Geral</div><div id="saldo-tot-geral" style="font-size:16px;font-weight:700;color:var(--text-primary)">R$ 0,00</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="cap-tab-relatorios" class="cap-tab-content">
+        <div class="stats-row" id="cap-report-cards" style="grid-template-columns:repeat(3,1fr)"></div>
+        <div class="cap-table-card" style="margin-bottom:16px">
+          <div class="cap-table-header"><div class="cap-table-title">Distribuição EXE × RAP</div></div>
+          <div class="saldo-body" id="cap-pct-bar" style="padding:16px 20px"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+          <div class="cap-table-card"><div class="cap-table-header"><div class="cap-table-title">Ranking por Fornecedor</div></div><div id="cap-ranking-forn" class="saldo-body" style="max-height:320px;overflow-y:auto"></div></div>
+          <div class="cap-table-card"><div class="cap-table-header"><div class="cap-table-title">Distribuição por Fonte</div></div><div id="cap-ranking-fonte" class="saldo-body" style="max-height:320px;overflow-y:auto"></div></div>
+        </div>
+      </div>
+
+      <div id="cap-tab-historico" class="cap-tab-content">
+        <div class="cap-table-card">
+          <div class="cap-table-header">
+            <div class="cap-table-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              Histórico de Solicitações Semanais
+            </div>
+            <div style="font-size:12px;color:var(--text-muted)" id="cap-hist-count"></div>
+          </div>
+          <div class="saldo-body" id="cap-historico-list"></div>
         </div>
       </div>
     </div>
@@ -1519,6 +2583,55 @@ body::before {
           </tbody>
         </table>
       </div>
+
+
+      <div class="section-sep"></div>
+      <div class="section-header">
+        <div>
+          <div class="section-title">Fontes Financeiras</div>
+          <div class="section-subtitle">Cadastro de fontes, cores, códigos de solicitação e status para o módulo Contas a Pagar</div>
+        </div>
+      </div>
+      <div class="cap-form-card">
+        <div class="cap-form-body">
+          <input type="hidden" id="fonte-edit-id">
+          <div class="cap-grid-3">
+            <div class="form-group"><label class="form-label">Código da Fonte</label><input class="form-input" id="fonte-codigo" placeholder="1000000000"></div>
+            <div class="form-group"><label class="form-label">Descrição</label><input class="form-input" id="fonte-desc" placeholder="Fonte Tesouro"></div>
+            <div class="form-group"><label class="form-label">Código Solicitação</label><input class="form-input" id="fonte-codsol" placeholder="400"></div>
+          </div>
+          <div class="cap-grid-3">
+            <div class="form-group"><label class="form-label">Cor Visual</label><input type="color" class="form-input" id="fonte-cor" value="#14b8a6"></div>
+            <div class="form-group"><label class="form-label">Status</label><select class="form-select" id="fonte-status"><option>Ativa</option><option>Inativa</option></select></div>
+            <div class="form-group" style="align-self:end"><button class="btn btn-teal" onclick="saveFonte()">Salvar Fonte</button></div>
+          </div>
+          <div class="cap-table-wrap"><table class="data-table"><thead><tr><th>Fonte</th><th>Descrição</th><th>Código</th><th>Cor</th><th>Status</th><th>Ações</th></tr></thead><tbody id="fontes-tbody"></tbody></table></div>
+        </div>
+      </div>
+      <div class="section-sep"></div>
+      <div class="section-header">
+        <div>
+          <div class="section-title">Fornecedores Financeiros</div>
+          <div class="section-subtitle">Base com CPF/CNPJ para autocomplete e preenchimento automático no Contas a Pagar</div>
+        </div>
+      </div>
+      <div class="cap-form-card">
+        <div class="cap-form-body">
+          <input type="hidden" id="cap-forn-edit-id">
+          <div class="cap-grid-3">
+            <div class="form-group"><label class="form-label">CPF/CNPJ</label><input class="form-input" id="cfg-forn-doc" placeholder="00.000.000/0001-00"></div>
+            <div class="form-group"><label class="form-label">Nome Fornecedor</label><input class="form-input" id="cfg-forn-nome" placeholder="Fornecedor"></div>
+            <div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="cfg-forn-tipo"><option>Pessoa Jurídica</option><option>Pessoa Física</option></select></div>
+          </div>
+          <div class="cap-grid-3">
+            <div class="form-group"><label class="form-label">Telefone</label><input class="form-input" id="cfg-forn-tel" placeholder="(00) 00000-0000"></div>
+            <div class="form-group"><label class="form-label">Observações</label><input class="form-input" id="cfg-forn-obs" placeholder="Dados bancários, contatos..."></div>
+            <div class="form-group" style="align-self:end"><button class="btn btn-teal" onclick="saveCapFornecedor()">Salvar Fornecedor</button></div>
+          </div>
+          <div class="cap-table-wrap"><table class="data-table"><thead><tr><th>CPF/CNPJ</th><th>Nome</th><th>Tipo</th><th>Telefone</th><th>Observações</th><th>Ações</th></tr></thead><tbody id="cap-forn-tbody"></tbody></table></div>
+        </div>
+      </div>
+
 
       <div class="section-sep"></div>
 
@@ -1748,6 +2861,20 @@ body::before {
 </div>
 
 <!-- TOAST CONTAINER -->
+
+<div class="modal-overlay" id="modal-cap-detalhes">
+  <div class="modal wide">
+    <div class="modal-header"><div><div class="modal-title">Detalhes da Conta</div><div class="modal-subtitle">Histórico, timeline e informações completas</div></div><button class="modal-close" onclick="closeModal('modal-cap-detalhes')">✕</button></div>
+    <div class="modal-body" id="cap-detalhes-body"></div>
+  </div>
+</div>
+<div class="modal-overlay" id="modal-cap-solicitacao">
+  <div class="modal wide">
+    <div class="modal-header"><div><div class="modal-title">Solicitação de Recursos da Semana</div><div class="modal-subtitle">Consolidação por tipo e fonte com abatimento de saldo</div></div><button class="modal-close" onclick="closeModal('modal-cap-solicitacao')">✕</button></div>
+    <div class="modal-body" id="cap-solicitacao-body"></div>
+  </div>
+</div>
+
 <div class="toast-container" id="toast-container"></div>
 
 <!-- AUTOSAVE INDICATOR -->
@@ -1819,6 +2946,8 @@ function saveState() {
   Storage.set('favorites', State.favorites);
   Storage.set('dailyStats', State.dailyStats);
   Storage.set('monthlyStats', State.monthlyStats);
+  // Agenda auto-save no Drive (só executa se conectado)
+  if (typeof scheduleAutoSave === 'function') scheduleAutoSave();
 }
 
 /* Incrementa contadores diário e mensal */
@@ -1866,6 +2995,612 @@ function highlightCode(text, code, isRP = false) {
   const escaped = code.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   return text.replace(new RegExp(escaped, 'g'), `<span class="${cls}">${code}</span>`);
 }
+
+
+/* ============================================================
+   CONTAS A PAGAR RUNTIME FIX
+   ============================================================ */
+const CAP_MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const CAP_DEFAULT_FONTES = [
+  { id:'f100', codigo:'1000000000', descricao:'Fonte 1000000000', cor:'#14b8a6', codsol:'400', status:'Ativa' },
+  { id:'f1133', codigo:'1133000000', descricao:'Fonte 1133000000', cor:'#f59e0b', codsol:'499', status:'Ativa' }
+];
+Object.assign(State, {
+  capContas: Storage.get('capContas', []),
+  capSaldos: Storage.get('capSaldos', []),
+  capHistorico: Storage.get('capHistorico', []),
+  capFontes: Storage.get('capFontes', CAP_DEFAULT_FONTES),
+  capFornecedores: Storage.get('capFornecedores', []),
+  capPage: 1,
+  capSort: { key:'createdAt', dir:'desc' },
+  capTipo: 'EXE',
+  capClasse: 'NP',
+  capDocTipo: 'CNPJ'
+});
+function capPersist(){
+  Storage.set('capContas', State.capContas);
+  Storage.set('capSaldos', State.capSaldos);
+  Storage.set('capHistorico', State.capHistorico);
+  Storage.set('capFontes', State.capFontes);
+  Storage.set('capFornecedores', State.capFornecedores);
+  if (typeof scheduleAutoSave === 'function') scheduleAutoSave();
+}
+function capId(p){ return p+'_'+Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+function capDigits(v){ return String(v||'').replace(/\D/g,''); }
+function parseMoneyBR(v){ return Number(String(v||'').replace(/\./g,'').replace(',','.').replace(/[^\d.-]/g,''))||0; }
+function capMoney(n){ return (Number(n)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
+function maskMoneyInput(inp){ let r=inp.value.replace(/\D/g,''); inp.value=r?(Number(r)/100).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}):''; }
+function fonteByCodigo(c){ return State.capFontes.find(f=>f.codigo===c)||{codigo:c,descricao:c,cor:'#64748b',codsol:''}; }
+function capWeekRange(d=new Date()){ const x=new Date(d), day=x.getDay(), diff=day===0?-6:1-day; const s=new Date(x); s.setDate(x.getDate()+diff); s.setHours(0,0,0,0); const e=new Date(s); e.setDate(s.getDate()+6); e.setHours(23,59,59,999); return {start:s,end:e,label:s.toLocaleDateString('pt-BR')+' a '+e.toLocaleDateString('pt-BR')}; }
+function capCurrentWeekContas(){ const w=capWeekRange(); return State.capContas.filter(c=>!c.cicloId && new Date(c.createdAt||c.dataSolicitacao||Date.now())>=w.start && new Date(c.createdAt||c.dataSolicitacao||Date.now())<=w.end); }
+function capStatusBadge(p){ return p==='sim'?'<span class="status-badge badge-pago">Pago</span>':'<span class="status-badge badge-nao-pago">Não Pago</span>'; }
+function capSituacaoBadge(s){ const cls=s==='Anexado'?'badge-anexado':s==='Aguardando comprovante'?'badge-aguard':s==='Processo enviado'?'badge-enviado':'badge-nao-env'; return '<span class="status-badge '+cls+'">'+(s||'Não enviado')+'</span>'; }
+function initCapModule(){ const comp=document.getElementById('cap-competencia'); if(comp&&!comp.children.length) CAP_MONTHS.forEach(m=>comp.add(new Option(m,m))); selectCapTipo(State.capTipo); selectCapClass(State.capClasse); selectDocTipo(State.capDocTipo); refreshCapDatalists(); renderFinanceiro();
+  // Set default dates on init
+  const elSol=document.getElementById('cap-data-solicitacao'); if(elSol&&!elSol.value) elSol.value=getNextWeekday(1);
+  const elPag=document.getElementById('cap-data-pagamento'); if(elPag&&!elPag.value) elPag.value=getNextWeekday(2);
+  // Fix situação default to "Aguardando comprovante"
+  const sit=document.getElementById('cap-situacao'); if(sit) sit.value='Aguardando comprovante';
+}
+function selectCapTipo(t){
+  State.capTipo=t;
+  document.querySelectorAll('.tipo-btn').forEach(b=>b.classList.remove('active-exe','active-rap'));
+  const el=document.getElementById('cap-tipo-'+t.toLowerCase());
+  if(el) el.classList.add(t==='EXE'?'active-exe':'active-rap');
+  updateDocumentoDefault();
+}
+function selectCapClass(c){
+  State.capClasse=c;
+  document.querySelectorAll('#cap-class-selector .class-btn').forEach(b=>b.classList.toggle('active',b.textContent.trim()===c));
+  // Atualiza placeholder e valor do campo Documento
+  const el=document.getElementById('cap-documento');
+  if(el){
+    const num=State.capContas.filter(x=>x.classe===c).length+1;
+    const newVal='2026'+c+String(num).padStart(6,'0');
+    el.placeholder=newVal;
+    el.value=newVal;
+  }
+}
+function selectDocTipo(t){
+  State.capDocTipo=t;
+  document.querySelectorAll('.doc-type-btn').forEach(b=>b.classList.toggle('active',b.textContent.trim()===t));
+  const inp=document.getElementById('cap-doc-forn');
+  if(inp){
+    inp.value='';
+    inp.placeholder=t==='CPF'?'000.000.000-00':'00.000.000/0001-00';
+  }
+}
+function onFonteSelectChange(){
+  const sel=document.getElementById('cap-fonte');
+  const val=sel?sel.value:'';
+  const f=fonteByCodigo(val);
+  const c=document.getElementById('cap-codigo');
+  if(c&&f&&f.codsol) c.value=f.codsol;
+  // Atualiza hint visual
+  const hint=document.getElementById('fonte-hint');
+  if(hint){
+    if(val&&f&&f.codigo){
+      hint.innerHTML='<span class="fonte-dot" style="background:'+f.cor+';width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px"></span><span>'+f.descricao+(f.codsol?' · Cód: '+f.codsol:'')+'</span>';
+      hint.style.display='flex';
+      hint.style.alignItems='center';
+      hint.style.fontSize='10px';
+      hint.style.color='var(--text-muted)';
+      hint.style.marginTop='4px';
+    } else {
+      hint.style.display='none';
+    }
+  }
+}
+function updateDocumentoDefault(){
+  const el=document.getElementById('cap-documento');
+  if(el){
+    const num=State.capContas.filter(c=>c.classe===State.capClasse).length+1;
+    const newVal='2026'+State.capClasse+String(num).padStart(6,'0');
+    el.placeholder=newVal;
+    if(!el.value) el.value=newVal;
+  }
+}
+function maskCapDocumento(inp){ inp.value=inp.value.toUpperCase().replace(/\s/g,'').slice(0,12); }
+function renderFonteHint(){
+  const fonteEl=document.getElementById('cap-fonte');
+  const val=fonteEl?.value||'';
+  const f=fonteByCodigo(val);
+  const c=document.getElementById('cap-codigo');
+  if(c&&f.codsol)c.value=f.codsol;
+  // Show visual dot next to fonte input
+  let hint=document.getElementById('fonte-hint');
+  if(!hint){
+    hint=document.createElement('div');
+    hint.id='fonte-hint';
+    hint.style.cssText='font-size:10px;color:var(--text-muted);margin-top:4px;display:flex;align-items:center;gap:5px';
+    fonteEl?.parentNode?.appendChild(hint);
+  }
+  if(val&&f.codigo){
+    hint.innerHTML='<span class="fonte-dot" style="background:'+f.cor+'"></span><span>'+f.descricao+(f.codsol?' · Cód: '+f.codsol:'')+'</span>';
+    hint.style.display='flex';
+  } else {
+    hint.style.display='none';
+  }
+}
+function maskCapPessoa(inp){
+  let v=capDigits(inp.value);
+  if(State.capDocTipo==='CPF'){
+    v=v.slice(0,11);
+    if(v.length>9)      v=v.slice(0,3)+'.'+v.slice(3,6)+'.'+v.slice(6,9)+'-'+v.slice(9);
+    else if(v.length>6) v=v.slice(0,3)+'.'+v.slice(3,6)+'.'+v.slice(6);
+    else if(v.length>3) v=v.slice(0,3)+'.'+v.slice(3);
+  } else {
+    v=v.slice(0,14);
+    if(v.length>12)      v=v.slice(0,2)+'.'+v.slice(2,5)+'.'+v.slice(5,8)+'/'+v.slice(8,12)+'-'+v.slice(12);
+    else if(v.length>8)  v=v.slice(0,2)+'.'+v.slice(2,5)+'.'+v.slice(5,8)+'/'+v.slice(8);
+    else if(v.length>5)  v=v.slice(0,2)+'.'+v.slice(2,5)+'.'+v.slice(5);
+    else if(v.length>2)  v=v.slice(0,2)+'.'+v.slice(2);
+  }
+  inp.value=v;
+}
+function autofillFornecedor(){ const d=capDigits(document.getElementById('cap-doc-forn')?.value); const f=State.capFornecedores.find(x=>capDigits(x.doc)===d); if(f) document.getElementById('cap-fornecedor').value=f.nome; }
+function saveCapConta(){
+  const id=document.getElementById('cap-edit-id').value||capId('cap');
+  const val=parseMoneyBR(document.getElementById('cap-valor').value);
+  const doc=document.getElementById('cap-documento').value.trim();
+  const fonteEl=document.getElementById('cap-fonte');
+  const fonte=(fonteEl?.value||'').trim();
+  const forn=document.getElementById('cap-fornecedor').value.trim();
+  if(!doc||!fonte||!forn||val<=0){showToast('Preencha documento, fonte, fornecedor e valor.','error');return;}
+  const old=State.capContas.find(c=>c.id===id);
+  const item={
+    id,tipo:State.capTipo,classe:State.capClasse,documento:doc,fonte,
+    codigo:document.getElementById('cap-codigo').value.trim()||fonteByCodigo(fonte).codsol,
+    docTipo:State.capDocTipo,
+    docFornecedor:document.getElementById('cap-doc-forn').value.trim(),
+    fornecedor:forn,valor:val,
+    pago:document.getElementById('cap-pago').value,
+    competencia:document.getElementById('cap-competencia').value,
+    dataSolicitacao:document.getElementById('cap-data-solicitacao').value,
+    dataPagamento:document.getElementById('cap-data-pagamento').value,
+    situacao:document.getElementById('cap-situacao').value,
+    obs:document.getElementById('cap-obs').value.trim(),
+    createdAt:old?.createdAt||new Date().toISOString(),
+    historico:[...(old?.historico||[]),{at:new Date().toISOString(),msg:old?'Registro atualizado':'Registro criado'}]
+  };
+  const i=State.capContas.findIndex(c=>c.id===id);
+  i>=0?State.capContas[i]=item:State.capContas.unshift(item);
+  capPersist(); resetCapForm(); renderFinanceiro(); showToast('Conta salva.','success');
+}
+function getNextWeekday(dayOfWeek) {
+  // dayOfWeek: 1=Monday, 2=Tuesday
+  const today = new Date();
+  const d = new Date(today);
+  const todayDay = today.getDay(); // 0=Sun,1=Mon,...6=Sat
+  let diff = dayOfWeek - todayDay;
+  if (diff <= 0) diff += 7; // always go to NEXT week
+  d.setDate(today.getDate() + diff);
+  return d.toISOString().slice(0, 10); // returns YYYY-MM-DD for <input type="date">
+}
+function resetCapForm(){
+  ['cap-edit-id','cap-codigo','cap-doc-forn','cap-fornecedor','cap-valor','cap-obs'].forEach(id=>{
+    const e=document.getElementById(id); if(e)e.value='';
+  });
+  // Auto-fill dates: próxima segunda para solicitação, próxima terça para pagamento
+  const elSol=document.getElementById('cap-data-solicitacao'); if(elSol) elSol.value=getNextWeekday(1);
+  const elPag=document.getElementById('cap-data-pagamento'); if(elPag) elPag.value=getNextWeekday(2);
+  // Reset fonte select
+  const fs=document.getElementById('cap-fonte'); if(fs) fs.value='';
+  // Reset documento
+  const docEl=document.getElementById('cap-documento'); if(docEl) docEl.value='';
+  // Reset fonte hint
+  const hint=document.getElementById('fonte-hint'); if(hint) hint.style.display='none';
+  selectCapTipo('EXE');
+  selectCapClass('NP');
+  selectDocTipo('CNPJ');
+  const badge=document.getElementById('cap-edit-badge');
+  if(badge){ badge.textContent='NOVO REGISTRO'; badge.className='btn-novo-registro'; }
+}
+function getFilteredCapContas(){
+  const q=(document.getElementById('cap-filter-search')?.value||'').toLowerCase();
+  const tipo=document.getElementById('cap-filter-tipo')?.value||'';
+  const classe=document.getElementById('cap-filter-classe')?.value||'';
+  const fonte=(document.getElementById('cap-filter-fonte')?.value||'').toLowerCase();
+  const pago=document.getElementById('cap-filter-pago')?.value||'';
+  const sit=document.getElementById('cap-filter-situacao')?.value||'';
+  const comp=document.getElementById('cap-filter-competencia')?.value||'';
+  const vMin=parseFloat(String(document.getElementById('cap-filter-valor-min')?.value||'').replace(',','.'))||0;
+  const vMax=parseFloat(String(document.getElementById('cap-filter-valor-max')?.value||'').replace(',','.'))||Infinity;
+  const dIni=document.getElementById('cap-filter-data-ini')?.value||'';
+  const dFim=document.getElementById('cap-filter-data-fim')?.value||'';
+  return State.capContas.filter(c=>{
+    if(tipo&&c.tipo!==tipo)return false;
+    if(classe&&c.classe!==classe)return false;
+    if(pago&&c.pago!==pago)return false;
+    if(sit&&c.situacao!==sit)return false;
+    if(comp&&c.competencia!==comp)return false;
+    if(fonte&&!c.fonte.toLowerCase().includes(fonte))return false;
+    if(vMin&&c.valor<vMin)return false;
+    if(vMax!==Infinity&&c.valor>vMax)return false;
+    if(dIni&&c.dataSolicitacao&&c.dataSolicitacao<dIni)return false;
+    if(dFim&&c.dataSolicitacao&&c.dataSolicitacao>dFim)return false;
+    if(q&&![c.documento,c.fonte,c.docFornecedor,c.fornecedor,c.competencia,c.situacao].join(' ').toLowerCase().includes(q))return false;
+    return true;
+  }).sort((a,b)=>((a[State.capSort.key]||'')>(b[State.capSort.key]||'')?1:-1)*(State.capSort.dir==='asc'?1:-1));
+}
+function capFmtDate(d){ if(!d)return '-'; const p=d.split('-'); if(p.length===3)return p[2]+'/'+p[1]+'/'+p[0]; return d; }
+function sortCap(k){ State.capSort={key:k,dir:State.capSort.key===k&&State.capSort.dir==='asc'?'desc':'asc'}; renderCapTable(); }
+function renderCapTable(){ const tb=document.getElementById('cap-table-body'); if(!tb)return; const rows=getFilteredCapContas(); const per=20,pages=Math.max(1,Math.ceil(rows.length/per)); State.capPage=Math.min(State.capPage||1,pages); const page=rows.slice((State.capPage-1)*per,State.capPage*per); tb.innerHTML=page.length?page.map(c=>{const f=fonteByCodigo(c.fonte); return '<tr><td><span class="status-badge '+(c.tipo==='EXE'?'badge-exe':'badge-rap')+'">'+c.tipo+'</span></td><td>'+c.classe+'</td><td class="td-doc">'+c.documento+'</td><td class="td-fonte"><span class="fonte-dot" style="background:'+f.cor+'"></span> <strong>'+c.fonte+'</strong></td><td class="td-cpfcnpj">'+(c.docFornecedor||'-')+'</td><td class="td-fornecedor">'+c.fornecedor+'</td><td class="td-valor">'+capMoney(c.valor)+'</td><td>'+capStatusBadge(c.pago)+'</td><td>'+(c.competencia||'-')+'</td><td>'+capFmtDate(c.dataSolicitacao)+'</td><td>'+capFmtDate(c.dataPagamento)+'</td><td>'+capSituacaoBadge(c.situacao)+'</td><td><div class="row-actions"><button class="row-act-btn edit" onclick="editCapConta(\''+c.id+'\')">✎</button><button class="row-act-btn detail" onclick="detailCapConta(\''+c.id+'\')">i</button><button class="row-act-btn del" onclick="deleteCapConta(\''+c.id+'\')">×</button></div></td></tr>';}).join(''):'<tr><td colspan="13"><div class="cap-empty">Nenhuma conta cadastrada.</div></td></tr>'; const info=document.getElementById('cap-pag-info'); if(info)info.textContent=rows.length+' registros | página '+State.capPage+' de '+pages; const btns=document.getElementById('cap-pag-btns'); if(btns)btns.innerHTML='<button class="cap-pag-btn" onclick="State.capPage--;renderCapTable()" '+(State.capPage<=1?'disabled':'')+'>‹</button><button class="cap-pag-btn active">'+State.capPage+'</button><button class="cap-pag-btn" onclick="State.capPage++;renderCapTable()" '+(State.capPage>=pages?'disabled':'')+'>›</button>'; }
+function clearCapFilters(){ ['cap-filter-search','cap-filter-tipo','cap-filter-classe','cap-filter-fonte','cap-filter-pago','cap-filter-situacao','cap-filter-competencia','cap-filter-valor-min','cap-filter-valor-max','cap-filter-data-ini','cap-filter-data-fim'].forEach(id=>{const e=document.getElementById(id); if(e)e.value='';}); renderCapTable(); }
+function editCapConta(id){
+  const c=State.capContas.find(x=>x.id===id);
+  if(!c)return;
+  setCapTab('lancamentos');
+  selectCapTipo(c.tipo);
+  selectCapClass(c.classe);
+  selectDocTipo(c.docTipo||'CNPJ');
+  document.getElementById('cap-edit-id').value=c.id;
+  document.getElementById('cap-documento').value=c.documento;
+  // Fonte: setar select
+  const fs=document.getElementById('cap-fonte');
+  if(fs){ fs.value=c.fonte; onFonteSelectChange(); }
+  document.getElementById('cap-codigo').value=c.codigo||'';
+  document.getElementById('cap-doc-forn').value=c.docFornecedor||'';
+  document.getElementById('cap-fornecedor').value=c.fornecedor;
+  document.getElementById('cap-valor').value=(c.valor/1).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  document.getElementById('cap-pago').value=c.pago;
+  document.getElementById('cap-competencia').value=c.competencia;
+  document.getElementById('cap-data-solicitacao').value=c.dataSolicitacao||'';
+  document.getElementById('cap-data-pagamento').value=c.dataPagamento||'';
+  document.getElementById('cap-situacao').value=c.situacao;
+  document.getElementById('cap-obs').value=c.obs||'';
+  const badge=document.getElementById('cap-edit-badge');
+  if(badge){ badge.textContent='Editando: '+c.documento; badge.className='badge'; badge.onclick=null; }
+  // Scroll para o form
+  document.getElementById('cap-documento')?.scrollIntoView({behavior:'smooth',block:'center'});
+}
+function deleteCapConta(id){ if(confirm('Excluir esta conta?')){State.capContas=State.capContas.filter(c=>c.id!==id); capPersist(); renderFinanceiro();} }
+function detailCapConta(id){
+  const c=State.capContas.find(x=>x.id===id);
+  if(!c)return;
+  const f=fonteByCodigo(c.fonte);
+  const hist=c.historico||[];
+  document.getElementById('cap-detalhes-body').innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+      <div class="rel-card">
+        <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.15em;color:var(--accent-teal);margin-bottom:12px">Informações Gerais</div>
+        <div class="rel-row"><span class="rel-label">Tipo</span><span class="rel-val">${c.tipo==='EXE'?'<span class="status-badge badge-exe">EXE</span>':'<span class="status-badge badge-rap">RAP</span>'}</span></div>
+        <div class="rel-row"><span class="rel-label">Classe</span><span class="rel-val">${c.classe||'-'}</span></div>
+        <div class="rel-row"><span class="rel-label">Documento</span><span class="rel-val" style="font-family:var(--font-mono);color:var(--accent-orange)">${c.documento}</span></div>
+        <div class="rel-row"><span class="rel-label">Fonte</span><span class="rel-val"><span class="fonte-dot" style="background:${f.cor}"></span> ${c.fonte}</span></div>
+        <div class="rel-row"><span class="rel-label">Código Sol.</span><span class="rel-val">${c.codigo||f.codsol||'-'}</span></div>
+        <div class="rel-row"><span class="rel-label">Competência</span><span class="rel-val">${c.competencia||'-'}</span></div>
+      </div>
+      <div class="rel-card">
+        <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.15em;color:var(--accent-teal);margin-bottom:12px">Fornecedor & Valores</div>
+        <div class="rel-row"><span class="rel-label">CPF/CNPJ</span><span class="rel-val" style="font-family:var(--font-mono);color:var(--accent-purple);font-weight:700">${c.docFornecedor||'-'}</span></div>
+        <div class="rel-row"><span class="rel-label">Fornecedor</span><span class="rel-val" style="color:var(--text-primary);font-weight:700">${c.fornecedor}</span></div>
+        <div class="rel-row"><span class="rel-label">Valor</span><span class="rel-val" style="color:var(--accent-green);font-size:18px">${capMoney(c.valor)}</span></div>
+        <div class="rel-row"><span class="rel-label">Status</span><span class="rel-val">${capStatusBadge(c.pago)}</span></div>
+        <div class="rel-row"><span class="rel-label">Situação</span><span class="rel-val">${capSituacaoBadge(c.situacao)}</span></div>
+      </div>
+    </div>
+    <div class="rel-card" style="margin-bottom:16px">
+      <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.15em;color:var(--accent-teal);margin-bottom:12px">Datas & Observações</div>
+      <div class="rel-row"><span class="rel-label">Data Solicitação</span><span class="rel-val">${capFmtDate(c.dataSolicitacao)}</span></div>
+      <div class="rel-row"><span class="rel-label">Data Pagamento</span><span class="rel-val">${capFmtDate(c.dataPagamento)}</span></div>
+      <div class="rel-row"><span class="rel-label">Observações</span><span class="rel-val" style="font-size:12px;max-width:320px;text-align:right">${c.obs||'—'}</span></div>
+    </div>
+    <div class="rel-card">
+      <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.15em;color:var(--accent-teal);margin-bottom:16px">Timeline de Movimentações</div>
+      <div class="det-timeline">${hist.length?hist.map((h,i)=>`
+        <div class="det-tl-item">
+          <div class="det-tl-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4" fill="var(--accent-teal)" stroke="none"/></svg></div>
+          <div class="det-tl-content">
+            <div class="det-tl-title">${h.msg}</div>
+            <div class="det-tl-sub">${new Date(h.at).toLocaleString('pt-BR')}</div>
+          </div>
+        </div>`).join(''):'<div class="cap-empty" style="padding:20px">Nenhum histórico disponível.</div>'}</div>
+    </div>`;
+  openModal('modal-cap-detalhes');
+}
+function saveSaldo(){ const tipo=document.getElementById('saldo-tipo').value, fonte=document.getElementById('saldo-fonte').value.trim(), valor=parseMoneyBR(document.getElementById('saldo-valor').value); if(!fonte||valor<=0){showToast('Informe fonte e valor.','error');return;} const key=tipo+'_'+fonte; const old=State.capSaldos.find(s=>s.key===key); old?old.valor+=valor:State.capSaldos.push({id:capId('saldo'),key,tipo,fonte,valor,historico:[]}); capPersist(); renderFinanceiro(); }
+function renderSaldos(){
+  const el=document.getElementById('saldo-list');
+  if(!el)return;
+  if(!State.capSaldos.length){
+    el.innerHTML='<div class="cap-empty">Nenhum saldo cadastrado.</div>';
+    const tots=document.getElementById('saldo-totals');
+    if(tots)tots.style.display='none';
+    return;
+  }
+  el.innerHTML=State.capSaldos.map(s=>{
+    const f=fonteByCodigo(s.fonte);
+    return '<div class="saldo-item"><div class="saldo-item-left"><span class="status-badge '+(s.tipo==='EXE'?'badge-exe':'badge-rap')+'">'+s.tipo+'</span><span class="fonte-dot" style="background:'+f.cor+'"></span><div><div class="saldo-item-fonte" style="font-weight:700;color:var(--accent-amber)">'+s.fonte+'</div><div style="font-size:10px;color:var(--text-secondary)">'+(f.descricao||s.fonte)+' · Cód: '+(f.codsol||'—')+'</div></div></div><div class="saldo-item-right"><span class="saldo-item-val">'+capMoney(s.valor)+'</span><button class="row-act-btn edit" onclick="editSaldo(\''+s.id+'\')">✎</button><button class="row-act-btn del" onclick="deleteSaldo(\''+s.id+'\')">×</button></div></div>';
+  }).join('');
+  const tots=document.getElementById('saldo-totals');
+  if(tots){
+    tots.style.display='block';
+    const exeT=State.capSaldos.filter(s=>s.tipo==='EXE').reduce((a,s)=>a+s.valor,0);
+    const rapT=State.capSaldos.filter(s=>s.tipo==='RAP').reduce((a,s)=>a+s.valor,0);
+    document.getElementById('saldo-tot-exe').textContent=capMoney(exeT);
+    document.getElementById('saldo-tot-rap').textContent=capMoney(rapT);
+    document.getElementById('saldo-tot-geral').textContent=capMoney(exeT+rapT);
+  }
+}
+function editSaldo(id){ const s=State.capSaldos.find(x=>x.id===id); if(!s)return; document.getElementById('saldo-tipo').value=s.tipo; document.getElementById('saldo-fonte').value=s.fonte; document.getElementById('saldo-valor').value=(s.valor/1).toLocaleString('pt-BR',{minimumFractionDigits:2}); State.capSaldos=State.capSaldos.filter(x=>x.id!==id); capPersist(); renderSaldos(); showToast('Edite e salve novamente.','info'); }
+function zerarTodosSaldos(){ if(!State.capSaldos.length)return showToast('Nenhum saldo para zerar.','info'); if(confirm('Zerar todos os saldos?')){ State.capSaldos=[]; capPersist(); renderFinanceiro(); showToast('Saldos zerados.','success'); } }
+function deleteSaldo(id){ State.capSaldos=State.capSaldos.filter(s=>s.id!==id); capPersist(); renderFinanceiro(); }
+function solicitarFinanceiro(){
+  const contas=capCurrentWeekContas();
+  if(!contas.length){showToast('Não há contas abertas nesta semana.','info');return;}
+  const g={};
+  contas.forEach(c=>{
+    const k=c.tipo+'_'+c.fonte;
+    g[k]??={tipo:c.tipo,fonte:c.fonte,codigo:c.codigo||fonteByCodigo(c.fonte).codsol||'',bruto:0};
+    g[k].bruto+=c.valor;
+  });
+  const rows=Object.values(g).map(r=>{
+    const s=State.capSaldos.find(x=>x.key===r.tipo+'_'+r.fonte);
+    const ab=Math.min(s?.valor||0,r.bruto);
+    return {...r,abatido:ab,solicitar:Math.max(0,r.bruto-ab),saldoRestante:Math.max(0,(s?.valor||0)-r.bruto)};
+  });
+  State._capPreviewSolicitacao=rows;
+  const wk=capWeekRange();
+  const totalSolic=rows.reduce((a,r)=>a+r.solicitar,0);
+
+  // Group unique codes
+  const codsMap={};
+  rows.forEach(r=>{if(r.codigo)codsMap[r.fonte]=r.codigo;});
+
+  document.getElementById('cap-solicitacao-body').innerHTML=`
+    <div style="background:rgba(20,184,166,0.06);border:1px solid rgba(20,184,166,0.2);border-radius:10px;padding:16px 20px;margin-bottom:20px">
+      <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.18em;color:var(--accent-teal);margin-bottom:6px">SOLICITAÇÃO DE RECURSOS DA SEMANA</div>
+      <div style="font-size:13px;color:var(--text-secondary)">${wk.label} · ${contas.length} conta(s) lançada(s)</div>
+    </div>
+    <table class="sol-table">
+      <thead><tr><th>Tipo</th><th>Fonte</th><th>Bruto</th><th>Saldo Abatido</th><th>A SOLICITAR</th><th>Código</th></tr></thead>
+      <tbody>
+        ${rows.map(r=>{
+          const f=fonteByCodigo(r.fonte);
+          const tipoBadge=r.tipo==='EXE'?'<span class="status-badge badge-exe">EXE</span>':'<span class="status-badge badge-rap">RAP</span>';
+          return `<tr>
+            <td>${tipoBadge}</td>
+            <td><span class="fonte-dot" style="background:${f.cor}"></span> <span style="font-family:var(--font-mono)">${r.fonte}</span></td>
+            <td>${capMoney(r.bruto)}</td>
+            <td style="color:var(--accent-green)">${r.abatido>0?'- '+capMoney(r.abatido):'—'}</td>
+            <td><strong style="color:${r.solicitar>0?'var(--accent-amber)':'var(--accent-green)'};font-size:14px">${capMoney(r.solicitar)}</strong></td>
+            <td><span style="font-family:var(--font-mono);font-weight:800;color:var(--accent-orange)">${r.codigo||'—'}</span></td>
+          </tr>`;
+        }).join('')}
+        <tr class="sol-total-row">
+          <td colspan="4" style="text-align:right;font-weight:800">TOTAL A SOLICITAR</td>
+          <td style="color:var(--accent-amber);font-size:16px;font-weight:900">${capMoney(totalSolic)}</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="sol-section-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      CÓDIGOS DE SOLICITAÇÃO POR FONTE
+    </div>
+    ${Object.entries(codsMap).map(([fonte,cod])=>`
+      <div class="sol-cod-row">
+        <span>CÓDIGO DE SOLICITAÇÃO DA FONTE <span class="sol-cod-fonte">${fonte}</span></span>
+        <span class="sol-cod-val">${cod}</span>
+      </div>`).join('')}
+    <div style="margin-top:20px;padding:16px;background:rgba(244,63,94,0.06);border:1px solid rgba(244,63,94,0.2);border-radius:10px;margin-bottom:16px">
+      <div style="font-size:12px;font-weight:700;color:var(--accent-rose);margin-bottom:6px">⚠️ ATENÇÃO: Ação irreversível</div>
+      <div style="font-size:12px;color:var(--text-muted)">Ao finalizar o ciclo semanal, os saldos serão atualizados, as contas serão arquivadas no histórico e um novo ciclo iniciará automaticamente.</div>
+    </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <button class="btn-solicitar" onclick="finalizarCicloSemanal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Finalizar Ciclo Semanal
+      </button>
+      <button class="btn btn-ghost" onclick="closeModal('modal-cap-solicitacao')">Cancelar</button>
+    </div>`;
+  openModal('modal-cap-solicitacao');
+}
+function finalizarCicloSemanal(){
+  if(!confirm('Confirmar finalização do ciclo semanal?\n\nIsso irá:\n• Arquivar as contas da semana\n• Atualizar os saldos remanescentes\n• Iniciar um novo ciclo automaticamente'))return;
+
+  const rows=State._capPreviewSolicitacao||[];
+  const contas=capCurrentWeekContas();
+  const id=capId('ciclo');
+  const wk=capWeekRange();
+
+  // Atualiza saldos remanescentes
+  rows.forEach(r=>{
+    const s=State.capSaldos.find(x=>x.key===r.tipo+'_'+r.fonte);
+    if(s){
+      s.valor=r.saldoRestante;
+      if(!s.historico)s.historico=[];
+      s.historico.push({at:new Date().toISOString(),msg:'Ciclo '+wk.label+': abatido '+capMoney(r.abatido)});
+    }
+  });
+
+  // Arquiva contas da semana
+  contas.forEach(c=>{
+    c.cicloId=id;
+    if(!c.historico)c.historico=[];
+    c.historico.push({at:new Date().toISOString(),msg:'Arquivado no ciclo: '+wk.label});
+  });
+
+  // Registra histórico
+  State.capHistorico.unshift({
+    id,
+    semana:wk.label,
+    rows,
+    totalSolicitado:rows.reduce((a,r)=>a+r.solicitar,0),
+    totalPago:contas.filter(c=>c.pago==='sim').reduce((a,c)=>a+c.valor,0),
+    contas:contas.length,
+    finalizadoEm:new Date().toISOString()
+  });
+
+  capPersist();
+  closeModal('modal-cap-solicitacao');
+  renderFinanceiro();
+  showToast('Ciclo semanal finalizado! Novo ciclo iniciado automaticamente.','success');
+}
+function setCapTab(tab){ const map={lancamentos:0,saldos:1,relatorios:2,historico:3}; document.querySelectorAll('.cap-tab').forEach((b,i)=>b.classList.toggle('active',i===map[tab])); document.querySelectorAll('.cap-tab-content').forEach(c=>c.classList.remove('active')); document.getElementById('cap-tab-'+tab)?.classList.add('active'); }
+function renderCapDashboard(){
+  const contas=capCurrentWeekContas();
+  const total=contas.reduce((a,c)=>a+c.valor,0);
+  const pago=contas.filter(c=>c.pago==='sim').reduce((a,c)=>a+c.valor,0);
+  const saldos=State.capSaldos.reduce((a,s)=>a+s.valor,0);
+  const exeTotal=contas.filter(c=>c.tipo==='EXE').reduce((a,c)=>a+c.valor,0);
+  const rapTotal=contas.filter(c=>c.tipo==='RAP').reduce((a,c)=>a+c.valor,0);
+
+  // Semana bar
+  const wk=capWeekRange();
+  const semLabel=document.getElementById('cap-semana-label');
+  if(semLabel)semLabel.textContent=wk.label;
+  const semQtd=document.getElementById('cap-sem-qtd');
+  if(semQtd)semQtd.textContent=contas.length;
+  const semExe=document.getElementById('cap-sem-exe');
+  if(semExe)semExe.textContent=capMoney(exeTotal);
+  const semRap=document.getElementById('cap-sem-rap');
+  if(semRap)semRap.textContent=capMoney(rapTotal);
+  const semT=document.getElementById('cap-sem-total');
+  if(semT)semT.textContent=capMoney(total);
+
+  const el=document.getElementById('cap-dashboard-cards');
+  if(el)el.innerHTML=[
+    {lbl:'Contas Semana',val:contas.length,cls:'stat-teal',icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>',col:'var(--accent-teal)'},
+    {lbl:'EXE Semana',val:capMoney(exeTotal),cls:'stat-teal',icon:'<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M7 14h3M14 14h3"/>',col:'var(--accent-teal)'},
+    {lbl:'RAP Semana',val:capMoney(rapTotal),cls:'stat-amber',icon:'<path d="M12 2L2 7l10 5 10-5-10-5"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>',col:'var(--accent-amber)'},
+    {lbl:'Total Pago',val:capMoney(pago),cls:'stat-green',icon:'<polyline points="20 6 9 17 4 12"/>',col:'var(--accent-green)'},
+    {lbl:'Pendente',val:capMoney(total-pago),cls:'stat-orange',icon:'<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>',col:'var(--accent-orange)'},
+    {lbl:'Saldo Total',val:capMoney(saldos),cls:'stat-blue',icon:'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',col:'var(--accent-blue)'},
+  ].map(x=>`<div class="stat-card ${x.cls}"><div class="stat-icon" style="background:rgba(0,0,0,0.15)"><svg viewBox="0 0 24 24" fill="none" stroke="${x.col}" stroke-width="2">${x.icon}</svg></div><div class="stat-info"><div class="stat-label">${x.lbl}</div><div class="stat-value" style="font-size:${typeof x.val==='number'?'24px':'16px'}">${x.val}</div></div></div>`).join('');
+
+  // Mini cards EXE por fonte + RAP por fonte com cores distintas
+  const mini=document.getElementById('fin-mini-cards-row');
+  if(mini){
+    const mExe={}, mRap={};
+    contas.forEach(c=>{
+      if(c.tipo==='EXE') mExe[c.fonte]=(mExe[c.fonte]||0)+c.valor;
+      else mRap[c.fonte]=(mRap[c.fonte]||0)+c.valor;
+    });
+    const exeCards=Object.entries(mExe).map(([fonte,val])=>{
+      const f=fonteByCodigo(fonte);
+      return `<div class="fin-mini-card exe-card"><div class="fin-mini-label">EXE</div><div class="fin-mini-fonte">${fonte} · ${f.descricao||fonte}</div><div class="fin-mini-value" style="color:var(--accent-teal)">${capMoney(val)}</div><div style="font-size:10px;color:var(--text-muted);margin-top:2px">Cód: ${f.codsol||'-'}</div></div>`;
+    });
+    const rapCards=Object.entries(mRap).map(([fonte,val])=>{
+      const f=fonteByCodigo(fonte);
+      return `<div class="fin-mini-card rap-card"><div class="fin-mini-label">RAP</div><div class="fin-mini-fonte">${fonte} · ${f.descricao||fonte}</div><div class="fin-mini-value" style="color:var(--accent-amber)">${capMoney(val)}</div><div style="font-size:10px;color:var(--text-muted);margin-top:2px">Cód: ${f.codsol||'-'}</div></div>`;
+    });
+    mini.innerHTML=[...exeCards,...rapCards].join('')||'';
+  }
+
+  // Populate competencia filter
+  const compFilter=document.getElementById('cap-filter-competencia');
+  if(compFilter&&compFilter.children.length<=1){
+    CAP_MONTHS.forEach(m=>compFilter.add(new Option(m,m)));
+  }
+}
+function renderRelatorios(){
+  const el=document.getElementById('cap-report-cards');
+  if(!el)return;
+  const contas=State.capContas;
+  const total=contas.reduce((a,c)=>a+c.valor,0);
+  const pago=contas.filter(c=>c.pago==='sim').reduce((a,c)=>a+c.valor,0);
+  const pendente=contas.filter(c=>c.pago==='nao').reduce((a,c)=>a+c.valor,0);
+  const exeT=contas.filter(c=>c.tipo==='EXE').reduce((a,c)=>a+c.valor,0);
+  const rapT=contas.filter(c=>c.tipo==='RAP').reduce((a,c)=>a+c.valor,0);
+  const saldos=State.capSaldos.reduce((a,s)=>a+s.valor,0);
+  el.innerHTML=[
+    {lbl:'Total Geral',val:capMoney(total),cls:'stat-teal',col:'var(--accent-teal)'},
+    {lbl:'Total Pago',val:capMoney(pago),cls:'stat-green',col:'var(--accent-green)'},
+    {lbl:'Total Pendente',val:capMoney(pendente),cls:'stat-orange',col:'var(--accent-orange)'},
+    {lbl:'Total EXE',val:capMoney(exeT),cls:'stat-teal',col:'var(--accent-teal)'},
+    {lbl:'Total RAP',val:capMoney(rapT),cls:'stat-amber',col:'var(--accent-amber)'},
+    {lbl:'Saldo Atual',val:capMoney(saldos),cls:'stat-blue',col:'var(--accent-blue)'},
+  ].map(x=>`<div class="stat-card ${x.cls}"><div class="stat-info"><div class="stat-label">${x.lbl}</div><div class="stat-value" style="font-size:16px;color:${x.col}">${x.val}</div></div></div>`).join('');
+
+  // Percentual EXE vs RAP
+  const pctExe=total>0?Math.round(exeT/total*100):0;
+  const pctRap=100-pctExe;
+  const percEl=document.getElementById('cap-pct-bar');
+  if(percEl)percEl.innerHTML=`
+    <div style="margin-bottom:10px;display:flex;justify-content:space-between;font-size:12px">
+      <span style="color:var(--accent-teal)">EXE: ${pctExe}% (${capMoney(exeT)})</span>
+      <span style="color:var(--accent-amber)">RAP: ${pctRap}% (${capMoney(rapT)})</span>
+    </div>
+    <div style="height:12px;border-radius:6px;background:var(--bg-elevated);overflow:hidden;display:flex">
+      <div style="width:${pctExe}%;background:var(--accent-teal);transition:width .5s"></div>
+      <div style="width:${pctRap}%;background:var(--accent-amber);transition:width .5s"></div>
+    </div>`;
+
+  renderRanking('cap-ranking-forn','fornecedor');
+  renderRanking('cap-ranking-fonte','fonte');
+}
+function renderRanking(id,key){
+  const d={};
+  State.capContas.forEach(c=>{const k=c[key]||'-'; d[k]=(d[k]||0)+c.valor;});
+  const el=document.getElementById(id);
+  if(!el)return;
+  const entries=Object.entries(d).sort((a,b)=>b[1]-a[1]);
+  const total=entries.reduce((a,[,v])=>a+v,0);
+  el.innerHTML=entries.length?entries.map(([k,v],i)=>{
+    const pct=total>0?Math.round(v/total*100):0;
+    let dot='';
+    if(key==='fonte'){const f=fonteByCodigo(k);dot='<span class="fonte-dot" style="background:'+f.cor+';margin-right:4px"></span>';}
+    return '<div class="rel-row" style="flex-direction:column;align-items:stretch;gap:4px">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center">'+
+        '<span class="rel-label" style="display:flex;align-items:center">'+dot+'<b style="color:var(--text-secondary)">'+(i+1)+'.</b> '+k+'</span>'+
+        '<span class="rel-val">'+capMoney(v)+' <span style="font-size:10px;color:var(--text-muted)">('+pct+'%)</span></span>'+
+      '</div>'+
+      '<div style="height:4px;border-radius:2px;background:var(--bg-elevated)"><div style="width:'+pct+'%;height:100%;background:var(--accent-teal);border-radius:2px;transition:width .5s"></div></div>'+
+    '</div>';
+  }).join(''):'<div class="cap-empty" style="padding:20px">Sem dados para exibir.</div>';
+}
+function renderHistorico(){
+  const el=document.getElementById('cap-historico-list');
+  if(!el)return;
+  const cnt=document.getElementById('cap-hist-count');
+  if(cnt)cnt.textContent=State.capHistorico.length+' ciclos finalizados';
+  el.innerHTML=State.capHistorico.length?State.capHistorico.map((h,idx)=>`
+    <div class="hist-item">
+      <div class="hist-item-left">
+        <div class="hist-semana">🗓 ${h.semana}</div>
+        <div class="hist-periodo">${h.contas} conta(s) registrada(s)</div>
+      </div>
+      <div class="hist-item-right">
+        <div class="hist-stat"><span class="hist-stat-label">EXE Solic.</span><span class="hist-stat-val" style="color:var(--accent-teal)">${capMoney(h.rows?.filter(r=>r.tipo==='EXE').reduce((a,r)=>a+r.solicitar,0)||0)}</span></div>
+        <div class="hist-stat"><span class="hist-stat-label">RAP Solic.</span><span class="hist-stat-val" style="color:var(--accent-amber)">${capMoney(h.rows?.filter(r=>r.tipo==='RAP').reduce((a,r)=>a+r.solicitar,0)||0)}</span></div>
+        <div class="hist-stat"><span class="hist-stat-label">Total Solic.</span><span class="hist-stat-val">${capMoney(h.totalSolicitado)}</span></div>
+        <div class="hist-stat"><span class="hist-stat-label">Total Pago</span><span class="hist-stat-val" style="color:var(--accent-green)">${capMoney(h.totalPago||0)}</span></div>
+      </div>
+    </div>
+    ${h.rows&&h.rows.length?`<div style="padding:0 18px 14px;display:flex;gap:8px;flex-wrap:wrap">${h.rows.map(r=>`<div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:11px"><span class="status-badge ${r.tipo==='EXE'?'badge-exe':'badge-rap'}" style="margin-right:6px">${r.tipo}</span><span style="font-family:var(--font-mono);color:var(--accent-amber);font-weight:700">${r.fonte}</span> → <b style="color:var(--accent-amber)">${capMoney(r.solicitar)}</b></div>`).join('')}</div>`:''}
+  `).join(''):'<div class="cap-empty" style="padding:40px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Nenhum ciclo finalizado.</div>';
+}
+function refreshCapDatalists(){
+  // Datalist para fonte (legado / filtros)
+  const fl=document.getElementById('cap-fontes-list');
+  if(fl) fl.innerHTML=State.capFontes.map(f=>'<option value="'+f.codigo+'">'+f.descricao+'</option>').join('');
+
+  // SELECT de fonte no formulário principal
+  const fs=document.getElementById('cap-fonte');
+  if(fs){
+    const cur=fs.value;
+    fs.innerHTML='<option value="">— Selecione a fonte —</option>'+
+      State.capFontes.map(f=>'<option value="'+f.codigo+'" data-codsol="'+f.codsol+'" data-cor="'+f.cor+'" data-desc="'+f.descricao+'">'+f.codigo+' — '+f.descricao+'</option>').join('');
+    if(cur) fs.value=cur;
+  }
+
+  const dl=document.getElementById('cap-forn-doc-list');
+  if(dl) dl.innerHTML=State.capFornecedores.map(f=>'<option value="'+f.doc+'">'+f.nome+'</option>').join('');
+  const nl=document.getElementById('cap-forn-list');
+  if(nl) nl.innerHTML=State.capFornecedores.map(f=>'<option value="'+f.nome+'">'+f.doc+'</option>').join('');
+}
+function saveFonte(){ const id=document.getElementById('fonte-edit-id').value||capId('fonte'), codigo=document.getElementById('fonte-codigo').value.trim(); if(!codigo)return showToast('Informe a fonte.','error'); const item={id,codigo,descricao:document.getElementById('fonte-desc').value.trim()||codigo,cor:document.getElementById('fonte-cor').value,codsol:document.getElementById('fonte-codsol').value.trim(),status:document.getElementById('fonte-status').value}; const i=State.capFontes.findIndex(f=>f.id===id||f.codigo===codigo); i>=0?State.capFontes[i]=item:State.capFontes.push(item); capPersist(); renderFinanceiro(); }
+function editFonte(id){ const f=State.capFontes.find(x=>x.id===id); if(!f)return; document.getElementById('fonte-edit-id').value=f.id; document.getElementById('fonte-codigo').value=f.codigo; document.getElementById('fonte-desc').value=f.descricao; document.getElementById('fonte-cor').value=f.cor; document.getElementById('fonte-codsol').value=f.codsol||''; document.getElementById('fonte-status').value=f.status; }
+function deleteFonte(id){ State.capFontes=State.capFontes.filter(f=>f.id!==id); capPersist(); renderFinanceiro(); }
+function renderFontesTable(){ const tb=document.getElementById('fontes-tbody'); if(tb)tb.innerHTML=State.capFontes.map(f=>'<tr><td>'+f.codigo+'</td><td>'+f.descricao+'</td><td>'+(f.codsol||'-')+'</td><td><span class="fonte-dot" style="background:'+f.cor+'"></span></td><td>'+f.status+'</td><td><button class="row-act-btn edit" onclick="editFonte(\''+f.id+'\')">✎</button><button class="row-act-btn del" onclick="deleteFonte(\''+f.id+'\')">×</button></td></tr>').join(''); }
+function saveCapFornecedor(){ const id=document.getElementById('cap-forn-edit-id').value||capId('forn'), doc=document.getElementById('cfg-forn-doc').value.trim(), nome=document.getElementById('cfg-forn-nome').value.trim(); if(!doc||!nome)return showToast('Informe documento e nome.','error'); const item={id,doc,nome,tipo:document.getElementById('cfg-forn-tipo').value,telefone:document.getElementById('cfg-forn-tel').value,obs:document.getElementById('cfg-forn-obs').value}; const i=State.capFornecedores.findIndex(f=>f.id===id||capDigits(f.doc)===capDigits(doc)); i>=0?State.capFornecedores[i]=item:State.capFornecedores.push(item); capPersist(); renderFinanceiro(); }
+function editCapFornecedor(id){ const f=State.capFornecedores.find(x=>x.id===id); if(!f)return; document.getElementById('cap-forn-edit-id').value=f.id; document.getElementById('cfg-forn-doc').value=f.doc; document.getElementById('cfg-forn-nome').value=f.nome; document.getElementById('cfg-forn-tipo').value=f.tipo; document.getElementById('cfg-forn-tel').value=f.telefone||''; document.getElementById('cfg-forn-obs').value=f.obs||''; }
+function deleteCapFornecedor(id){ State.capFornecedores=State.capFornecedores.filter(f=>f.id!==id); capPersist(); renderFinanceiro(); }
+function renderCapFornecedoresTable(){ const tb=document.getElementById('cap-forn-tbody'); if(tb)tb.innerHTML=State.capFornecedores.map(f=>'<tr><td>'+f.doc+'</td><td>'+f.nome+'</td><td>'+f.tipo+'</td><td>'+(f.telefone||'-')+'</td><td>'+(f.obs||'-')+'</td><td><button class="row-act-btn edit" onclick="editCapFornecedor(\''+f.id+'\')">✎</button><button class="row-act-btn del" onclick="deleteCapFornecedor(\''+f.id+'\')">×</button></td></tr>').join('')||'<tr><td colspan="6"><div class="cap-empty">Nenhum fornecedor financeiro.</div></td></tr>'; }
+function exportCapCSV(){ const rows=getFilteredCapContas(); const csv=[['Tipo','Classe','Documento','Fonte','Fornecedor','Valor'],...rows.map(c=>[c.tipo,c.classe,c.documento,c.fonte,c.fornecedor,c.valor])].map(r=>r.join(';')).join('\n'); const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='contas_a_pagar.csv'; a.click(); }
+function renderFinanceiro(){ refreshCapDatalists(); renderCapDashboard(); renderCapTable(); renderSaldos(); renderRelatorios(); renderHistorico(); renderFontesTable(); renderCapFornecedoresTable(); }
 
 /* ============================================================
    DESPACHO TEMPLATES
@@ -2579,47 +4314,6 @@ function updateStats() {
 }
 
 /* ============================================================
-   BACKUP & RESTORE
-   ============================================================ */
-function exportBackup() {
-  const data = {
-    version: '1.0',
-    exportedAt: new Date().toISOString(),
-    fornecedores: State.fornecedores,
-    stats: State.stats,
-    favorites: State.favorites,
-  };
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'sigde_backup_' + new Date().toISOString().slice(0,10) + '.json';
-  a.click();
-  showToast('Backup exportado com sucesso!', 'success');
-}
-
-function importBackup(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    try {
-      const data = JSON.parse(e.target.result);
-      if (data.fornecedores) State.fornecedores = data.fornecedores;
-      if (data.stats) State.stats = data.stats;
-      if (data.favorites) State.favorites = data.favorites;
-      saveState();
-      renderFornecedoresTable();
-      updateStats();
-      showToast('Backup importado com sucesso!', 'success');
-    } catch {
-      showToast('Erro ao importar backup!', 'error');
-    }
-  };
-  reader.readAsText(file);
-  event.target.value = '';
-}
-
-/* ============================================================
    LIMPAR TODOS OS DADOS
    ============================================================ */
 function openClearModal() {
@@ -2633,9 +4327,15 @@ function clearAllData() {
   State.favorites     = [];
   State.dailyStats    = { date: '', count: 0 };
   State.monthlyStats  = { month: '', count: 0 };
+  State.capContas = [];
+  State.capSaldos = [];
+  State.capHistorico = [];
+  State.capFontes = CAP_DEFAULT_FONTES.slice();
+  State.capFornecedores = [];
 
   saveState();
   renderFornecedoresTable();
+  initCapModule();
   updateStats();
   closeModal('modal-clear-data');
   showToast('Todos os dados foram apagados.', 'info');
@@ -2776,13 +4476,18 @@ async function driveSaveData() {
   showAutosave('saving');
 
   const payload = {
-    version: '2.0',
+    version: '2.1',
     savedAt: new Date().toISOString(),
-    fornecedores: State.fornecedores,
-    stats: State.stats,
-    favorites: State.favorites,
-    dailyStats: State.dailyStats,
-    monthlyStats: State.monthlyStats,
+    fornecedores:    State.fornecedores,
+    stats:           State.stats,
+    favorites:       State.favorites,
+    dailyStats:      State.dailyStats,
+    monthlyStats:    State.monthlyStats,
+    capContas:       State.capContas       || [],
+    capSaldos:       State.capSaldos       || [],
+    capHistorico:    State.capHistorico    || [],
+    capFontes:       State.capFontes       || [],
+    capFornecedores: State.capFornecedores || [],
   };
   const content = JSON.stringify(payload, null, 2);
 
@@ -2848,14 +4553,23 @@ async function driveLoadData() {
     );
     const backup = await contentResp.json();
 
-    if (backup.fornecedores) State.fornecedores = backup.fornecedores;
-    if (backup.stats)        State.stats = backup.stats;
-    if (backup.favorites)    State.favorites = backup.favorites;
-    if (backup.dailyStats)   State.dailyStats = backup.dailyStats;
-    if (backup.monthlyStats) State.monthlyStats = backup.monthlyStats;
+    if (backup.fornecedores)     State.fornecedores    = backup.fornecedores;
+    if (backup.stats)            State.stats           = backup.stats;
+    if (backup.favorites)        State.favorites       = backup.favorites;
+    if (backup.dailyStats)       State.dailyStats      = backup.dailyStats;
+    if (backup.monthlyStats)     State.monthlyStats    = backup.monthlyStats;
+    if (backup.capContas)        State.capContas       = backup.capContas;
+    if (backup.capSaldos)        State.capSaldos       = backup.capSaldos;
+    if (backup.capHistorico)     State.capHistorico    = backup.capHistorico;
+    if (backup.capFontes)        State.capFontes       = backup.capFontes;
+    if (backup.capFornecedores)  State.capFornecedores = backup.capFornecedores;
 
+    // Persiste localmente
     saveState();
+    capPersist();
+    // Re-renderiza todos os módulos
     renderFornecedoresTable();
+    renderFinanceiro();
     updateStats();
     setDriveStatus('connected', 'Drive sincronizado');
     showToast('Dados restaurados do Google Drive!', 'success');
@@ -2905,20 +4619,6 @@ function toggleNoShow(checkbox) {
 }
 
 /* ============================================================
-   PATCH: saveState agora também agenda auto-save no Drive
-   ============================================================ */
-const _origSaveState = saveState;
-// Sobrescreve para injetar agendamento
-function saveState() {
-  Storage.set('fornecedores', State.fornecedores);
-  Storage.set('stats', State.stats);
-  Storage.set('favorites', State.favorites);
-  Storage.set('dailyStats', State.dailyStats);
-  Storage.set('monthlyStats', State.monthlyStats);
-  scheduleAutoSave();
-}
-
-/* ============================================================
    BACKUP & RESTORE (JSON)
    ============================================================ */
 function exportBackup() {
@@ -2930,6 +4630,11 @@ function exportBackup() {
     favorites: State.favorites,
     dailyStats: State.dailyStats,
     monthlyStats: State.monthlyStats,
+    capContas: State.capContas||[],
+    capSaldos: State.capSaldos||[],
+    capHistorico: State.capHistorico||[],
+    capFontes: State.capFontes||[],
+    capFornecedores: State.capFornecedores||[],
   };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
@@ -2949,10 +4654,19 @@ function importBackup(event) {
       if (data.fornecedores) State.fornecedores = data.fornecedores;
       if (data.stats)        State.stats = data.stats;
       if (data.favorites)    State.favorites = data.favorites;
+      if (data.capContas)       State.capContas = data.capContas;
+      if (data.capSaldos)       State.capSaldos = data.capSaldos;
+      if (data.capHistorico)    State.capHistorico = data.capHistorico;
+      if (data.capFontes)       State.capFontes = data.capFontes;
+      if (data.capFornecedores) State.capFornecedores = data.capFornecedores;
+      if (data.dailyStats)   State.dailyStats = data.dailyStats;
+      if (data.monthlyStats) State.monthlyStats = data.monthlyStats;
+      if (data.capFornecedores) State.capFornecedores = data.capFornecedores;
       if (data.dailyStats)   State.dailyStats = data.dailyStats;
       if (data.monthlyStats) State.monthlyStats = data.monthlyStats;
       saveState();
       renderFornecedoresTable();
+      renderFinanceiro();
       updateStats();
       showToast('Backup JSON importado com sucesso!', 'success');
     } catch {
@@ -2979,6 +4693,7 @@ function importBackup(event) {
   }
   
   renderFornecedoresTable();
+  initCapModule();
   updateStats();
 
   // Carrega bibliotecas Google em background
@@ -2993,12 +4708,12 @@ function importBackup(event) {
   const alreadyConnected = Storage.get('driveStatus', '') === 'connected';
 
   if (!noShow && !alreadyConnected) {
-    // Pequeno delay para a UI carregar
-    setTimeout(() => {
-      openModal('modal-gdrive');
-      const chk = document.getElementById('gdrive-no-show-check');
-      if (chk) chk.checked = false;
-    }, 800);
+    // Mostra o botão do Drive pulsando para chamar atenção, sem bloquear a UI
+    const statusBtn = document.getElementById('gdrive-status-btn');
+    if (statusBtn) {
+      statusBtn.style.animation = 'pulse-glow 1.5s ease-in-out 3';
+      statusBtn.title = 'Clique para conectar ao Google Drive';
+    }
   }
 
   if (alreadyConnected) {
