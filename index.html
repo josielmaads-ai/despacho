@@ -2259,6 +2259,9 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
         </div>
         <div class="cap-actions">
           <button class="btn btn-ghost" onclick="exportCapCSV()">Exportar CSV</button>
+          <div id="ciclo-status-indicator" style="display:none;align-items:center;gap:6px;font-size:11px;font-weight:700;padding:6px 12px;border-radius:8px;background:rgba(20,184,166,0.12);border:1px solid rgba(20,184,166,0.3);color:var(--accent-teal)">
+            ✅ Solicitação gerada — ciclo pronto para encerrar
+          </div>
           <button class="btn-solicitar" onclick="solicitarFinanceiro()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6"/></svg>
             Solicitar Financeiro
@@ -2273,6 +2276,7 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
         <button class="cap-tab" onclick="setCapTab('saldos')">Saldos</button>
         <button class="cap-tab" onclick="setCapTab('relatorios')">Relatórios</button>
         <button class="cap-tab" onclick="setCapTab('historico')">Histórico Semanal</button>
+        <button class="cap-tab" onclick="setCapTab('auditoria')">🔍 Auditoria</button>
       </div>
 
       <!-- SEMANA ATUAL BAR -->
@@ -2546,6 +2550,38 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
             <div style="font-size:12px;color:var(--text-muted)" id="cap-hist-count"></div>
           </div>
           <div class="saldo-body" id="cap-historico-list"></div>
+        </div>
+      </div>
+
+      <!-- ── ABA AUDITORIA ── -->
+      <div id="cap-tab-auditoria" class="cap-tab-content">
+        <div class="cap-table-card">
+          <div class="cap-table-header">
+            <div class="cap-table-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              Log de Auditoria de Operações
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-size:12px;color:var(--text-muted)" id="cap-audit-count"></span>
+              <button class="btn btn-ghost" onclick="exportAuditLog()" style="font-size:12px;padding:6px 12px">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Exportar CSV
+              </button>
+              <button class="btn btn-danger" onclick="clearAuditLog()" style="font-size:12px;padding:6px 12px">Limpar Log</button>
+            </div>
+          </div>
+          <div class="cap-table-wrap">
+            <table class="cap-table">
+              <thead><tr>
+                <th>Data/Hora</th>
+                <th>Operação</th>
+                <th>Registro</th>
+                <th>Detalhes</th>
+              </tr></thead>
+              <tbody id="cap-audit-tbody"></tbody>
+            </table>
+          </div>
+          <div class="cap-pagination"><div class="cap-pag-info" id="cap-audit-pag-info"></div><div class="cap-pag-btns" id="cap-audit-pag-btns"></div></div>
         </div>
       </div>
     </div>
@@ -3011,18 +3047,36 @@ Object.assign(State, {
   capHistorico: Storage.get('capHistorico', []),
   capFontes: Storage.get('capFontes', CAP_DEFAULT_FONTES),
   capFornecedores: Storage.get('capFornecedores', []),
+  capAuditLog: Storage.get('capAuditLog', []),
   capPage: 1,
   capSort: { key:'createdAt', dir:'desc' },
   capTipo: 'EXE',
   capClasse: 'NP',
-  capDocTipo: 'CNPJ'
+  capDocTipo: 'CNPJ',
+  _solicitacaoExecutada: false,   // ← CORREÇÃO 1: flag de controle de fluxo
 });
+
+/* ── AUDIT LOG ── */
+function capAudit(operacao, registro, valoresAntes, valoresDepois) {
+  const entry = {
+    id: capId('audit'),
+    at: new Date().toISOString(),
+    operacao,
+    registro: registro || '—',
+    antes: valoresAntes || null,
+    depois: valoresDepois || null,
+  };
+  State.capAuditLog.unshift(entry);
+  if (State.capAuditLog.length > 500) State.capAuditLog.length = 500; // limite de 500 entradas
+  Storage.set('capAuditLog', State.capAuditLog);
+}
 function capPersist(){
   Storage.set('capContas', State.capContas);
   Storage.set('capSaldos', State.capSaldos);
   Storage.set('capHistorico', State.capHistorico);
   Storage.set('capFontes', State.capFontes);
   Storage.set('capFornecedores', State.capFornecedores);
+  Storage.set('capAuditLog', State.capAuditLog);
   if (typeof scheduleAutoSave === 'function') scheduleAutoSave();
 }
 function capId(p){ return p+'_'+Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
@@ -3147,6 +3201,23 @@ function saveCapConta(){
   const fonte=(fonteEl?.value||'').trim();
   const forn=document.getElementById('cap-fornecedor').value.trim();
   if(!doc||!fonte||!forn||val<=0){showToast('Preencha documento, fonte, fornecedor e valor.','error');return;}
+
+  // ← MELHORIA: verificação de duplicidade (mesmo documento e fonte)
+  const isNew=!document.getElementById('cap-edit-id').value;
+  if(isNew){
+    const dup=State.capContas.find(c=>c.documento===doc&&c.fonte===fonte&&!c.cicloId);
+    if(dup){
+      if(!confirm('⚠️ Já existe um lançamento com o documento "'+doc+'" na fonte "'+fonte+'" no ciclo ativo.\n\nDeseja continuar e salvar mesmo assim?'))return;
+    }
+  }
+
+  // ← MELHORIA: valida fonte existente
+  const fonteObj=fonteByCodigo(fonte);
+  if(!fonteObj||!fonteObj.codigo){
+    showToast('⚠️ A fonte selecionada não foi encontrada no cadastro.','error');
+    return;
+  }
+
   const old=State.capContas.find(c=>c.id===id);
   const item={
     id,tipo:State.capTipo,classe:State.capClasse,documento:doc,fonte,
@@ -3163,6 +3234,10 @@ function saveCapConta(){
     createdAt:old?.createdAt||new Date().toISOString(),
     historico:[...(old?.historico||[]),{at:new Date().toISOString(),msg:old?'Registro atualizado':'Registro criado'}]
   };
+
+  // Auditoria
+  capAudit(old?'CONTA ATUALIZADA':'CONTA CRIADA', doc, old||null, item);
+
   const i=State.capContas.findIndex(c=>c.id===id);
   i>=0?State.capContas[i]=item:State.capContas.unshift(item);
   capPersist(); resetCapForm(); renderFinanceiro(); showToast('Conta salva.','success');
@@ -3254,7 +3329,7 @@ function editCapConta(id){
   // Scroll para o form
   document.getElementById('cap-documento')?.scrollIntoView({behavior:'smooth',block:'center'});
 }
-function deleteCapConta(id){ if(confirm('Excluir esta conta?')){State.capContas=State.capContas.filter(c=>c.id!==id); capPersist(); renderFinanceiro();} }
+function deleteCapConta(id){ const c=State.capContas.find(x=>x.id===id); if(confirm('Excluir esta conta?')){capAudit('CONTA EXCLUÍDA',c?.documento||id,c,null); State.capContas=State.capContas.filter(c=>c.id!==id); capPersist(); renderFinanceiro();} }
 function detailCapConta(id){
   const c=State.capContas.find(x=>x.id===id);
   if(!c)return;
@@ -3299,7 +3374,23 @@ function detailCapConta(id){
     </div>`;
   openModal('modal-cap-detalhes');
 }
-function saveSaldo(){ const tipo=document.getElementById('saldo-tipo').value, fonte=document.getElementById('saldo-fonte').value.trim(), valor=parseMoneyBR(document.getElementById('saldo-valor').value); if(!fonte||valor<=0){showToast('Informe fonte e valor.','error');return;} const key=tipo+'_'+fonte; const old=State.capSaldos.find(s=>s.key===key); old?old.valor+=valor:State.capSaldos.push({id:capId('saldo'),key,tipo,fonte,valor,historico:[]}); capPersist(); renderFinanceiro(); }
+function saveSaldo(){
+  const tipo=document.getElementById('saldo-tipo').value;
+  const fonte=document.getElementById('saldo-fonte').value.trim();
+  const valor=parseMoneyBR(document.getElementById('saldo-valor').value);
+  if(!fonte||valor<=0){showToast('Informe fonte e valor (maior que zero).','error');return;}
+  // ← MELHORIA: valida se fonte existe no cadastro
+  const fonteObj=fonteByCodigo(fonte);
+  if(!fonteObj||!fonteObj.codigo){
+    if(!confirm('⚠️ Fonte "'+fonte+'" não encontrada no cadastro. Deseja cadastrar o saldo mesmo assim?'))return;
+  }
+  const key=tipo+'_'+fonte;
+  const old=State.capSaldos.find(s=>s.key===key);
+  const valAntes=old?.valor||0;
+  old?old.valor+=valor:State.capSaldos.push({id:capId('saldo'),key,tipo,fonte,valor,historico:[]});
+  capAudit('SALDO CADASTRADO',fonte+' ('+tipo+')',{valor:valAntes},{valor:(valAntes+valor)});
+  capPersist(); renderFinanceiro(); showToast('Saldo cadastrado.','success');
+}
 function renderSaldos(){
   const el=document.getElementById('saldo-list');
   if(!el)return;
@@ -3311,7 +3402,18 @@ function renderSaldos(){
   }
   el.innerHTML=State.capSaldos.map(s=>{
     const f=fonteByCodigo(s.fonte);
-    return '<div class="saldo-item"><div class="saldo-item-left"><span class="status-badge '+(s.tipo==='EXE'?'badge-exe':'badge-rap')+'">'+s.tipo+'</span><span class="fonte-dot" style="background:'+f.cor+'"></span><div><div class="saldo-item-fonte" style="font-weight:700;color:var(--accent-amber)">'+s.fonte+'</div><div style="font-size:10px;color:var(--text-secondary)">'+(f.descricao||s.fonte)+' · Cód: '+(f.codsol||'—')+'</div></div></div><div class="saldo-item-right"><span class="saldo-item-val">'+capMoney(s.valor)+'</span><button class="row-act-btn edit" onclick="editSaldo(\''+s.id+'\')">✎</button><button class="row-act-btn del" onclick="deleteSaldo(\''+s.id+'\')">×</button></div></div>';
+    const isNegativo=s.valor<0;
+    return '<div class="saldo-item" style="'+(isNegativo?'border-color:rgba(244,63,94,0.4);background:rgba(244,63,94,0.04)':'')+'">' +
+      '<div class="saldo-item-left"><span class="status-badge '+(s.tipo==='EXE'?'badge-exe':'badge-rap')+'">'+s.tipo+'</span><span class="fonte-dot" style="background:'+f.cor+'"></span><div>' +
+      '<div class="saldo-item-fonte" style="font-weight:700;color:var(--accent-amber)">'+s.fonte+'</div>' +
+      '<div style="font-size:10px;color:var(--text-secondary)">'+(f.descricao||s.fonte)+' · Cód: '+(f.codsol||'—')+'</div>' +
+      '</div></div>' +
+      '<div class="saldo-item-right">' +
+      (isNegativo?'<span style="font-size:11px;color:var(--accent-rose);font-weight:700">⚠️ SALDO NEGATIVO</span>':'') +
+      '<span class="saldo-item-val" style="color:'+(isNegativo?'var(--accent-rose)':'var(--accent-green)')+'">'+capMoney(s.valor)+'</span>' +
+      '<button class="row-act-btn edit" onclick="editSaldo(\''+s.id+'\')">✎</button>' +
+      '<button class="row-act-btn del" onclick="deleteSaldo(\''+s.id+'\')">×</button>' +
+      '</div></div>';
   }).join('');
   const tots=document.getElementById('saldo-totals');
   if(tots){
@@ -3329,39 +3431,63 @@ function deleteSaldo(id){ State.capSaldos=State.capSaldos.filter(s=>s.id!==id); 
 function solicitarFinanceiro(){
   const contas=capCurrentWeekContas();
   if(!contas.length){showToast('Não há contas abertas nesta semana.','info');return;}
+
   const g={};
   contas.forEach(c=>{
     const k=c.tipo+'_'+c.fonte;
-    g[k]??={tipo:c.tipo,fonte:c.fonte,codigo:c.codigo||fonteByCodigo(c.fonte).codsol||'',bruto:0};
+    if(!g[k]) g[k]={tipo:c.tipo,fonte:c.fonte,codigo:c.codigo||fonteByCodigo(c.fonte).codsol||'',bruto:0,lancamentos:[]};
     g[k].bruto+=c.valor;
+    g[k].lancamentos.push(c);  // ← CORREÇÃO 2: coleta lançamentos individuais por card
   });
+
   const rows=Object.values(g).map(r=>{
     const s=State.capSaldos.find(x=>x.key===r.tipo+'_'+r.fonte);
     const ab=Math.min(s?.valor||0,r.bruto);
     return {...r,abatido:ab,solicitar:Math.max(0,r.bruto-ab),saldoRestante:Math.max(0,(s?.valor||0)-r.bruto)};
   });
+
   State._capPreviewSolicitacao=rows;
+  // ← CORREÇÃO 1: marca que a solicitação foi gerada (pré-requisito para encerrar)
+  State._solicitacaoExecutada=true;
+
   const wk=capWeekRange();
   const totalSolic=rows.reduce((a,r)=>a+r.solicitar,0);
-
-  // Group unique codes
   const codsMap={};
   rows.forEach(r=>{if(r.codigo)codsMap[r.fonte]=r.codigo;});
+
+  // ── AUDITORIA ──
+  capAudit('SOLICITAÇÃO GERADA', wk.label, null, {rows: rows.map(r=>({tipo:r.tipo,fonte:r.fonte,bruto:r.bruto,solicitar:r.solicitar})), totalSolic});
 
   document.getElementById('cap-solicitacao-body').innerHTML=`
     <div style="background:rgba(20,184,166,0.06);border:1px solid rgba(20,184,166,0.2);border-radius:10px;padding:16px 20px;margin-bottom:20px">
       <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.18em;color:var(--accent-teal);margin-bottom:6px">SOLICITAÇÃO DE RECURSOS DA SEMANA</div>
       <div style="font-size:13px;color:var(--text-secondary)">${wk.label} · ${contas.length} conta(s) lançada(s)</div>
+      <div style="font-size:11px;color:var(--accent-green);margin-top:6px;font-weight:700">✓ Solicitação gerada — clique em "Encerrar Ciclo" para arquivar</div>
     </div>
     <table class="sol-table">
-      <thead><tr><th>Tipo</th><th>Fonte</th><th>Bruto</th><th>Saldo Abatido</th><th>A SOLICITAR</th><th>Código</th></tr></thead>
+      <thead><tr><th>Tipo</th><th>Fonte</th><th>Lançamentos</th><th>Bruto</th><th>Saldo Abatido</th><th>A SOLICITAR</th><th>Código</th></tr></thead>
       <tbody>
         ${rows.map(r=>{
           const f=fonteByCodigo(r.fonte);
           const tipoBadge=r.tipo==='EXE'?'<span class="status-badge badge-exe">EXE</span>':'<span class="status-badge badge-rap">RAP</span>';
+          // ← CORREÇÃO 2: detalha lançamentos no card
+          const lancDetail=r.lancamentos.map(l=>`
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);font-size:11px">
+              <span style="font-family:var(--font-mono);color:var(--accent-teal)">${l.documento}</span>
+              <span style="color:var(--text-secondary);max-width:160px;overflow:hidden;text-overflow:ellipsis">${l.fornecedor}</span>
+              <span style="font-weight:700;color:var(--text-primary)">${capMoney(l.valor)}</span>
+            </div>`).join('');
           return `<tr>
             <td>${tipoBadge}</td>
             <td><span class="fonte-dot" style="background:${f.cor}"></span> <span style="font-family:var(--font-mono)">${r.fonte}</span></td>
+            <td>
+              <details style="cursor:pointer">
+                <summary style="font-size:11px;color:var(--accent-teal);font-weight:700;list-style:none;cursor:pointer">
+                  ${r.lancamentos.length} lançamento(s) ▼
+                </summary>
+                <div style="margin-top:8px;padding:8px;background:var(--bg-elevated);border-radius:6px">${lancDetail}</div>
+              </details>
+            </td>
             <td>${capMoney(r.bruto)}</td>
             <td style="color:var(--accent-green)">${r.abatido>0?'- '+capMoney(r.abatido):'—'}</td>
             <td><strong style="color:${r.solicitar>0?'var(--accent-amber)':'var(--accent-green)'};font-size:14px">${capMoney(r.solicitar)}</strong></td>
@@ -3369,7 +3495,7 @@ function solicitarFinanceiro(){
           </tr>`;
         }).join('')}
         <tr class="sol-total-row">
-          <td colspan="4" style="text-align:right;font-weight:800">TOTAL A SOLICITAR</td>
+          <td colspan="5" style="text-align:right;font-weight:800">TOTAL A SOLICITAR</td>
           <td style="color:var(--accent-amber);font-size:16px;font-weight:900">${capMoney(totalSolic)}</td>
           <td></td>
         </tr>
@@ -3384,34 +3510,59 @@ function solicitarFinanceiro(){
         <span>CÓDIGO DE SOLICITAÇÃO DA FONTE <span class="sol-cod-fonte">${fonte}</span></span>
         <span class="sol-cod-val">${cod}</span>
       </div>`).join('')}
-    <div style="margin-top:20px;padding:16px;background:rgba(244,63,94,0.06);border:1px solid rgba(244,63,94,0.2);border-radius:10px;margin-bottom:16px">
-      <div style="font-size:12px;font-weight:700;color:var(--accent-rose);margin-bottom:6px">⚠️ ATENÇÃO: Ação irreversível</div>
-      <div style="font-size:12px;color:var(--text-muted)">Ao finalizar o ciclo semanal, os saldos serão atualizados, as contas serão arquivadas no histórico e um novo ciclo iniciará automaticamente.</div>
+    <div style="margin-top:20px;padding:16px;background:rgba(20,184,166,0.08);border:1px solid rgba(20,184,166,0.25);border-radius:10px;margin-bottom:16px">
+      <div style="font-size:12px;font-weight:700;color:var(--accent-teal);margin-bottom:4px">✅ Solicitação Financeira Gerada</div>
+      <div style="font-size:12px;color:var(--text-muted)">Revise os valores acima. Para arquivar e encerrar o ciclo semanal, clique em <strong style="color:var(--accent-rose)">Encerrar Ciclo</strong>.</div>
+    </div>
+    <div style="margin-bottom:16px;padding:14px;background:rgba(244,63,94,0.06);border:1px solid rgba(244,63,94,0.2);border-radius:10px">
+      <div style="font-size:11px;font-weight:700;color:var(--accent-rose)">⚠️ ATENÇÃO: Encerrar é irreversível — saldos serão atualizados e contas arquivadas</div>
     </div>
     <div style="display:flex;gap:12px;flex-wrap:wrap">
-      <button class="btn-solicitar" onclick="finalizarCicloSemanal()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-        Finalizar Ciclo Semanal
+      <button class="btn btn-ghost" onclick="closeModal('modal-cap-solicitacao')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><polyline points="15 18 9 12 15 6"/></svg>
+        Fechar (sem encerrar)
       </button>
-      <button class="btn btn-ghost" onclick="closeModal('modal-cap-solicitacao')">Cancelar</button>
+      <button class="btn-solicitar" style="background:linear-gradient(135deg,var(--accent-rose),#c0122b)" onclick="finalizarCicloSemanal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Encerrar Ciclo Semanal
+      </button>
     </div>`;
   openModal('modal-cap-solicitacao');
 }
 function finalizarCicloSemanal(){
-  if(!confirm('Confirmar finalização do ciclo semanal?\n\nIsso irá:\n• Arquivar as contas da semana\n• Atualizar os saldos remanescentes\n• Iniciar um novo ciclo automaticamente'))return;
+  // ← CORREÇÃO 1: impede encerramento sem solicitação financeira prévia
+  if(!State._solicitacaoExecutada){
+    showToast('⛔ Execute primeiro "Solicitar Financeiro" para gerar a solicitação antes de encerrar o ciclo.','error');
+    return;
+  }
+  if(!confirm('Confirmar ENCERRAMENTO do ciclo semanal?\n\nIsso irá:\n• Arquivar as contas da semana no Histórico\n• Atualizar os saldos remanescentes\n• Iniciar um novo ciclo automaticamente\n\n⚠️ Esta ação é IRREVERSÍVEL.'))return;
 
   const rows=State._capPreviewSolicitacao||[];
   const contas=capCurrentWeekContas();
   const id=capId('ciclo');
   const wk=capWeekRange();
 
+  // Backup automático antes de operação crítica
+  const backupAntes={
+    capContas:[...State.capContas],
+    capSaldos:[...State.capSaldos],
+    capHistorico:[...State.capHistorico]
+  };
+
+  // Valida consistência antes de prosseguir
+  if(!rows.length&&!contas.length){
+    showToast('Sem dados para encerrar o ciclo.','error');
+    return;
+  }
+
   // Atualiza saldos remanescentes
   rows.forEach(r=>{
     const s=State.capSaldos.find(x=>x.key===r.tipo+'_'+r.fonte);
     if(s){
-      s.valor=r.saldoRestante;
+      const saldoAntes=s.valor;
+      s.valor=Math.max(0,r.saldoRestante);
       if(!s.historico)s.historico=[];
-      s.historico.push({at:new Date().toISOString(),msg:'Ciclo '+wk.label+': abatido '+capMoney(r.abatido)});
+      s.historico.push({at:new Date().toISOString(),msg:'Ciclo '+wk.label+': abatido '+capMoney(r.abatido)+' | saldo anterior: '+capMoney(saldoAntes)});
     }
   });
 
@@ -3422,7 +3573,7 @@ function finalizarCicloSemanal(){
     c.historico.push({at:new Date().toISOString(),msg:'Arquivado no ciclo: '+wk.label});
   });
 
-  // Registra histórico
+  // ← CORREÇÃO 3: histórico só registrado APÓS encerramento formal do ciclo
   State.capHistorico.unshift({
     id,
     semana:wk.label,
@@ -3430,15 +3581,73 @@ function finalizarCicloSemanal(){
     totalSolicitado:rows.reduce((a,r)=>a+r.solicitar,0),
     totalPago:contas.filter(c=>c.pago==='sim').reduce((a,c)=>a+c.valor,0),
     contas:contas.length,
-    finalizadoEm:new Date().toISOString()
+    finalizadoEm:new Date().toISOString(),
+    // Detalhes completos dos lançamentos para rastreabilidade
+    lancamentosDetalhes: contas.map(c=>({
+      id:c.id, tipo:c.tipo, fonte:c.fonte, documento:c.documento,
+      fornecedor:c.fornecedor, docFornecedor:c.docFornecedor,
+      valor:c.valor, pago:c.pago, situacao:c.situacao
+    }))
+  });
+
+  // Reset flag para próximo ciclo
+  State._solicitacaoExecutada=false;
+  State._capPreviewSolicitacao=[];
+
+  // Auditoria
+  capAudit('CICLO ENCERRADO', wk.label, backupAntes, {
+    cicloId:id, totalContas:contas.length,
+    totalSolicitado:rows.reduce((a,r)=>a+r.solicitar,0)
   });
 
   capPersist();
   closeModal('modal-cap-solicitacao');
   renderFinanceiro();
-  showToast('Ciclo semanal finalizado! Novo ciclo iniciado automaticamente.','success');
+  showToast('✅ Ciclo semanal encerrado! Histórico arquivado. Novo ciclo iniciado automaticamente.','success');
 }
-function setCapTab(tab){ const map={lancamentos:0,saldos:1,relatorios:2,historico:3}; document.querySelectorAll('.cap-tab').forEach((b,i)=>b.classList.toggle('active',i===map[tab])); document.querySelectorAll('.cap-tab-content').forEach(c=>c.classList.remove('active')); document.getElementById('cap-tab-'+tab)?.classList.add('active'); }
+function setCapTab(tab){
+  const map={lancamentos:0,saldos:1,relatorios:2,historico:3,auditoria:4};
+  document.querySelectorAll('.cap-tab').forEach((b,i)=>b.classList.toggle('active',i===map[tab]));
+  document.querySelectorAll('.cap-tab-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('cap-tab-'+tab)?.classList.add('active');
+  if(tab==='auditoria') renderAuditLog();
+}
+
+/* ── RENDER AUDIT LOG ── */
+let _auditPage=1;
+function renderAuditLog(){
+  const tb=document.getElementById('cap-audit-tbody');
+  if(!tb)return;
+  const log=State.capAuditLog||[];
+  const cnt=document.getElementById('cap-audit-count');
+  if(cnt)cnt.textContent=log.length+' entradas';
+  const per=30, pages=Math.max(1,Math.ceil(log.length/per));
+  _auditPage=Math.min(_auditPage,pages);
+  const page=log.slice((_auditPage-1)*per,_auditPage*per);
+  const opColors={'CONTA CRIADA':'var(--accent-green)','CONTA ATUALIZADA':'var(--accent-blue)','CONTA EXCLUÍDA':'var(--accent-rose)','CICLO ENCERRADO':'var(--accent-amber)','SOLICITAÇÃO GERADA':'var(--accent-teal)','BACKUP EXPORTADO':'var(--accent-purple)','BACKUP IMPORTADO':'var(--accent-orange)',};
+  tb.innerHTML=page.length?page.map(e=>{
+    const cor=opColors[e.operacao]||'var(--text-muted)';
+    const detalhes=e.depois?JSON.stringify(e.depois).slice(0,80)+'…':'—';
+    return `<tr>
+      <td style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted);white-space:nowrap">${new Date(e.at).toLocaleString('pt-BR')}</td>
+      <td><span style="font-size:11px;font-weight:800;color:${cor};background:rgba(0,0,0,0.2);padding:2px 8px;border-radius:4px">${e.operacao}</span></td>
+      <td style="font-family:var(--font-mono);font-size:11.5px;color:var(--accent-teal)">${e.registro||'—'}</td>
+      <td style="font-size:11px;color:var(--text-muted);max-width:260px;overflow:hidden;text-overflow:ellipsis">${detalhes}</td>
+    </tr>`;
+  }).join(''):'<tr><td colspan="4"><div class="cap-empty" style="padding:30px">Nenhuma entrada de auditoria.</div></td></tr>';
+  const info=document.getElementById('cap-audit-pag-info');
+  if(info)info.textContent=log.length+' entradas | página '+_auditPage+' de '+pages;
+  const btns=document.getElementById('cap-audit-pag-btns');
+  if(btns)btns.innerHTML='<button class="cap-pag-btn" onclick="_auditPage--;renderAuditLog()" '+(_auditPage<=1?'disabled':'')+'>‹</button><button class="cap-pag-btn active">'+_auditPage+'</button><button class="cap-pag-btn" onclick="_auditPage++;renderAuditLog()" '+(_auditPage>=pages?'disabled':'')+'>›</button>';
+}
+function exportAuditLog(){
+  const log=State.capAuditLog||[];
+  if(!log.length){showToast('Log de auditoria vazio.','info');return;}
+  const csv=[['Data/Hora','Operação','Registro','Valores Antes','Valores Depois'],...log.map(e=>[new Date(e.at).toLocaleString('pt-BR'),e.operacao,e.registro,JSON.stringify(e.antes||''),JSON.stringify(e.depois||'')])].map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(';')).join('\n');
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'})); a.download='sigde_auditoria_'+new Date().toISOString().slice(0,10)+'.csv'; a.click();
+  showToast('Log de auditoria exportado!','success');
+}
+function clearAuditLog(){ if(confirm('Limpar todo o log de auditoria? Esta ação não pode ser desfeita.')){ State.capAuditLog=[]; Storage.set('capAuditLog',[]); renderAuditLog(); showToast('Log de auditoria limpo.','info'); } }
 function renderCapDashboard(){
   const contas=capCurrentWeekContas();
   const total=contas.reduce((a,c)=>a+c.valor,0);
@@ -3556,21 +3765,51 @@ function renderHistorico(){
   if(!el)return;
   const cnt=document.getElementById('cap-hist-count');
   if(cnt)cnt.textContent=State.capHistorico.length+' ciclos finalizados';
-  el.innerHTML=State.capHistorico.length?State.capHistorico.map((h,idx)=>`
-    <div class="hist-item">
-      <div class="hist-item-left">
-        <div class="hist-semana">🗓 ${h.semana}</div>
-        <div class="hist-periodo">${h.contas} conta(s) registrada(s)</div>
+  el.innerHTML=State.capHistorico.length?State.capHistorico.map((h,idx)=>{
+    const exeSol=h.rows?.filter(r=>r.tipo==='EXE').reduce((a,r)=>a+r.solicitar,0)||0;
+    const rapSol=h.rows?.filter(r=>r.tipo==='RAP').reduce((a,r)=>a+r.solicitar,0)||0;
+    // ← CORREÇÃO 3: usa lancamentosDetalhes (registrado só após encerramento formal)
+    const lancs=h.lancamentosDetalhes||[];
+    const lancHtml=lancs.length?`
+      <div style="padding:0 18px 14px">
+        <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);margin-bottom:8px">
+          Lançamentos do Ciclo (${lancs.length})
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          ${lancs.map(l=>`<div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:11px;min-width:220px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+              <span class="status-badge ${l.tipo==='EXE'?'badge-exe':'badge-rap'}">${l.tipo}</span>
+              <span style="font-family:var(--font-mono);color:var(--accent-amber);font-weight:700;font-size:10px">${l.fonte}</span>
+            </div>
+            <div style="font-family:var(--font-mono);color:var(--accent-teal);font-weight:700;font-size:11px;margin-bottom:2px">${l.documento}</div>
+            <div style="color:var(--text-secondary);font-size:11px;margin-bottom:2px">${l.fornecedor}</div>
+            ${l.docFornecedor?`<div style="font-family:var(--font-mono);color:var(--accent-purple);font-size:10px;margin-bottom:2px">${l.docFornecedor}</div>`:''}
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+              <span class="status-badge ${l.pago==='sim'?'badge-pago':'badge-nao-pago'}" style="font-size:9px">${l.pago==='sim'?'Pago':'Não Pago'}</span>
+              <strong style="color:var(--text-primary)">${capMoney(l.valor)}</strong>
+            </div>
+          </div>`).join('')}
+        </div>
+      </div>`
+    // Fallback: usa rows (formato legado, sem detalhe completo)
+    :h.rows&&h.rows.length?`<div style="padding:0 18px 14px;display:flex;gap:8px;flex-wrap:wrap">${h.rows.map(r=>`<div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:11px"><span class="status-badge ${r.tipo==='EXE'?'badge-exe':'badge-rap'}" style="margin-right:6px">${r.tipo}</span><span style="font-family:var(--font-mono);color:var(--accent-amber);font-weight:700">${r.fonte}</span> → <b style="color:var(--accent-amber)">${capMoney(r.solicitar)}</b></div>`).join('')}</div>`
+    :'';
+    return `
+      <div class="hist-item">
+        <div class="hist-item-left">
+          <div class="hist-semana">🗓 ${h.semana}</div>
+          <div class="hist-periodo">${h.contas} conta(s) · Encerrado em ${h.finalizadoEm?new Date(h.finalizadoEm).toLocaleString('pt-BR'):'—'}</div>
+        </div>
+        <div class="hist-item-right">
+          <div class="hist-stat"><span class="hist-stat-label">EXE Solic.</span><span class="hist-stat-val" style="color:var(--accent-teal)">${capMoney(exeSol)}</span></div>
+          <div class="hist-stat"><span class="hist-stat-label">RAP Solic.</span><span class="hist-stat-val" style="color:var(--accent-amber)">${capMoney(rapSol)}</span></div>
+          <div class="hist-stat"><span class="hist-stat-label">Total Solic.</span><span class="hist-stat-val">${capMoney(h.totalSolicitado)}</span></div>
+          <div class="hist-stat"><span class="hist-stat-label">Total Pago</span><span class="hist-stat-val" style="color:var(--accent-green)">${capMoney(h.totalPago||0)}</span></div>
+        </div>
       </div>
-      <div class="hist-item-right">
-        <div class="hist-stat"><span class="hist-stat-label">EXE Solic.</span><span class="hist-stat-val" style="color:var(--accent-teal)">${capMoney(h.rows?.filter(r=>r.tipo==='EXE').reduce((a,r)=>a+r.solicitar,0)||0)}</span></div>
-        <div class="hist-stat"><span class="hist-stat-label">RAP Solic.</span><span class="hist-stat-val" style="color:var(--accent-amber)">${capMoney(h.rows?.filter(r=>r.tipo==='RAP').reduce((a,r)=>a+r.solicitar,0)||0)}</span></div>
-        <div class="hist-stat"><span class="hist-stat-label">Total Solic.</span><span class="hist-stat-val">${capMoney(h.totalSolicitado)}</span></div>
-        <div class="hist-stat"><span class="hist-stat-label">Total Pago</span><span class="hist-stat-val" style="color:var(--accent-green)">${capMoney(h.totalPago||0)}</span></div>
-      </div>
-    </div>
-    ${h.rows&&h.rows.length?`<div style="padding:0 18px 14px;display:flex;gap:8px;flex-wrap:wrap">${h.rows.map(r=>`<div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:11px"><span class="status-badge ${r.tipo==='EXE'?'badge-exe':'badge-rap'}" style="margin-right:6px">${r.tipo}</span><span style="font-family:var(--font-mono);color:var(--accent-amber);font-weight:700">${r.fonte}</span> → <b style="color:var(--accent-amber)">${capMoney(r.solicitar)}</b></div>`).join('')}</div>`:''}
-  `).join(''):'<div class="cap-empty" style="padding:40px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Nenhum ciclo finalizado.</div>';
+      ${lancHtml}
+    `;
+  }).join(''):'<div class="cap-empty" style="padding:40px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Nenhum ciclo finalizado.</div>';
 }
 function refreshCapDatalists(){
   // Datalist para fonte (legado / filtros)
@@ -3600,7 +3839,12 @@ function editCapFornecedor(id){ const f=State.capFornecedores.find(x=>x.id===id)
 function deleteCapFornecedor(id){ State.capFornecedores=State.capFornecedores.filter(f=>f.id!==id); capPersist(); renderFinanceiro(); }
 function renderCapFornecedoresTable(){ const tb=document.getElementById('cap-forn-tbody'); if(tb)tb.innerHTML=State.capFornecedores.map(f=>'<tr><td>'+f.doc+'</td><td>'+f.nome+'</td><td>'+f.tipo+'</td><td>'+(f.telefone||'-')+'</td><td>'+(f.obs||'-')+'</td><td><button class="row-act-btn edit" onclick="editCapFornecedor(\''+f.id+'\')">✎</button><button class="row-act-btn del" onclick="deleteCapFornecedor(\''+f.id+'\')">×</button></td></tr>').join('')||'<tr><td colspan="6"><div class="cap-empty">Nenhum fornecedor financeiro.</div></td></tr>'; }
 function exportCapCSV(){ const rows=getFilteredCapContas(); const csv=[['Tipo','Classe','Documento','Fonte','Fornecedor','Valor'],...rows.map(c=>[c.tipo,c.classe,c.documento,c.fonte,c.fornecedor,c.valor])].map(r=>r.join(';')).join('\n'); const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='contas_a_pagar.csv'; a.click(); }
-function renderFinanceiro(){ refreshCapDatalists(); renderCapDashboard(); renderCapTable(); renderSaldos(); renderRelatorios(); renderHistorico(); renderFontesTable(); renderCapFornecedoresTable(); }
+function renderFinanceiro(){
+  refreshCapDatalists(); renderCapDashboard(); renderCapTable(); renderSaldos(); renderRelatorios(); renderHistorico(); renderFontesTable(); renderCapFornecedoresTable();
+  // ← MELHORIA: atualiza indicador de status do ciclo
+  const ind=document.getElementById('ciclo-status-indicator');
+  if(ind) ind.style.display=State._solicitacaoExecutada?'flex':'none';
+}
 
 /* ============================================================
    DESPACHO TEMPLATES
@@ -4488,7 +4732,10 @@ async function driveSaveData() {
     capHistorico:    State.capHistorico    || [],
     capFontes:       State.capFontes       || [],
     capFornecedores: State.capFornecedores || [],
+    capAuditLog:     State.capAuditLog     || [],
   };
+  // Checksum de integridade
+  payload._checksum = (payload.capContas.length * 7 + payload.capSaldos.length * 13 + payload.capHistorico.length * 31).toString(36);
   const content = JSON.stringify(payload, null, 2);
 
   try {
@@ -4553,6 +4800,16 @@ async function driveLoadData() {
     );
     const backup = await contentResp.json();
 
+    // ← CORREÇÃO 4: validação de integridade no restore do Drive
+    if (backup._checksum) {
+      const expectedChecksum = ((backup.capContas||[]).length * 7 + (backup.capSaldos||[]).length * 13 + (backup.capHistorico||[]).length * 31).toString(36);
+      if (expectedChecksum !== backup._checksum) {
+        setDriveStatus('error', 'Checksum inválido');
+        showToast('⚠️ Dados do Drive com checksum inconsistente — restauração abortada por segurança.', 'error');
+        return;
+      }
+    }
+
     if (backup.fornecedores)     State.fornecedores    = backup.fornecedores;
     if (backup.stats)            State.stats           = backup.stats;
     if (backup.favorites)        State.favorites       = backup.favorites;
@@ -4563,6 +4820,7 @@ async function driveLoadData() {
     if (backup.capHistorico)     State.capHistorico    = backup.capHistorico;
     if (backup.capFontes)        State.capFontes       = backup.capFontes;
     if (backup.capFornecedores)  State.capFornecedores = backup.capFornecedores;
+    if (backup.capAuditLog)      State.capAuditLog     = backup.capAuditLog;
 
     // Persiste localmente
     saveState();
@@ -4572,9 +4830,10 @@ async function driveLoadData() {
     renderFinanceiro();
     updateStats();
     setDriveStatus('connected', 'Drive sincronizado');
-    showToast('Dados restaurados do Google Drive!', 'success');
+    showToast('✅ Dados restaurados do Google Drive! (v'+(backup.version||'?')+')', 'success');
   } catch(e) {
     setDriveStatus('error', 'Erro ao restaurar');
+    console.error('Drive restore error:', e);
   }
 }
 
@@ -4622,8 +4881,9 @@ function toggleNoShow(checkbox) {
    BACKUP & RESTORE (JSON)
    ============================================================ */
 function exportBackup() {
-  const data = {
-    version: '2.0',
+  // ← CORREÇÃO 4: backup inclui auditLog e checksum de integridade
+  const payload = {
+    version: '2.1',
     exportedAt: new Date().toISOString(),
     fornecedores: State.fornecedores,
     stats: State.stats,
@@ -4635,13 +4895,18 @@ function exportBackup() {
     capHistorico: State.capHistorico||[],
     capFontes: State.capFontes||[],
     capFornecedores: State.capFornecedores||[],
+    capAuditLog: State.capAuditLog||[],
   };
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  // Checksum simples de integridade
+  payload._checksum = (payload.capContas.length * 7 + payload.capSaldos.length * 13 + payload.capHistorico.length * 31).toString(36);
+
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'sigde_backup_' + new Date().toISOString().slice(0,10) + '.json';
   a.click();
-  showToast('Backup JSON exportado!', 'success');
+  capAudit('BACKUP EXPORTADO', new Date().toISOString(), null, {versao: payload.version, contas: payload.capContas.length});
+  showToast('Backup JSON exportado com sucesso!', 'success');
 }
 
 function importBackup(event) {
@@ -4651,6 +4916,27 @@ function importBackup(event) {
   reader.onload = e => {
     try {
       const data = JSON.parse(e.target.result);
+
+      // ← CORREÇÃO 4: validação de integridade do JSON
+      if (!data.version || !data.exportedAt) {
+        showToast('⚠️ Arquivo de backup inválido ou corrompido!', 'error');
+        return;
+      }
+      // Verifica checksum se disponível (versão 2.1+)
+      if (data._checksum) {
+        const expectedChecksum = ((data.capContas||[]).length * 7 + (data.capSaldos||[]).length * 13 + (data.capHistorico||[]).length * 31).toString(36);
+        if (expectedChecksum !== data._checksum) {
+          if (!confirm('⚠️ O checksum do backup não confere — os dados podem estar corrompidos ou modificados.\n\nDeseja importar mesmo assim?')) {
+            event.target.value = ''; return;
+          }
+        }
+      }
+
+      if (!confirm('Isso substituirá os dados atuais pelo conteúdo do backup.\n\nVersão do backup: '+data.version+'\nData: '+new Date(data.exportedAt).toLocaleString('pt-BR')+'\n\nDeseja continuar?')) {
+        event.target.value = ''; return;
+      }
+
+      // ← CORREÇÃO 4: restauração integral com todos os campos, sem duplicatas
       if (data.fornecedores) State.fornecedores = data.fornecedores;
       if (data.stats)        State.stats = data.stats;
       if (data.favorites)    State.favorites = data.favorites;
@@ -4661,16 +4947,20 @@ function importBackup(event) {
       if (data.capFornecedores) State.capFornecedores = data.capFornecedores;
       if (data.dailyStats)   State.dailyStats = data.dailyStats;
       if (data.monthlyStats) State.monthlyStats = data.monthlyStats;
-      if (data.capFornecedores) State.capFornecedores = data.capFornecedores;
-      if (data.dailyStats)   State.dailyStats = data.dailyStats;
-      if (data.monthlyStats) State.monthlyStats = data.monthlyStats;
+      if (data.capAuditLog)  State.capAuditLog = data.capAuditLog;
+
+      // Auditoria da importação
+      capAudit('BACKUP IMPORTADO', file.name, null, {versao: data.version, contas: (data.capContas||[]).length, historico: (data.capHistorico||[]).length});
+
       saveState();
+      capPersist();
       renderFornecedoresTable();
       renderFinanceiro();
       updateStats();
-      showToast('Backup JSON importado com sucesso!', 'success');
-    } catch {
-      showToast('Erro ao importar backup!', 'error');
+      showToast('✅ Backup importado com sucesso! (v'+data.version+')', 'success');
+    } catch(err) {
+      showToast('❌ Erro ao importar backup: JSON inválido!', 'error');
+      console.error('Importação falhou:', err);
     }
   };
   reader.readAsText(file);
