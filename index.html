@@ -535,6 +535,128 @@ body::before {
 }
 .form-input.highlight-rp::placeholder { color: rgba(168,85,247,0.4); }
 .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* === CAMPO PROGRAMAÇÃO FINANCEIRA === */
+.pf-field-wrap {
+  margin-top: 20px;
+  background: linear-gradient(135deg, rgba(168,85,247,0.07), rgba(99,102,241,0.05));
+  border: 1.5px solid rgba(168,85,247,0.35);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  position: relative;
+  overflow: hidden;
+}
+.pf-field-wrap::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px; height: 100%;
+  background: linear-gradient(180deg, var(--accent-purple), var(--accent-indigo));
+}
+.pf-field-label {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--accent-purple);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.pf-input-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.pf-input {
+  flex: 1;
+  background: rgba(168,85,247,0.08);
+  border: 1.5px solid rgba(168,85,247,0.4);
+  border-radius: var(--radius-sm);
+  color: var(--accent-purple);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 10px 14px;
+  outline: none;
+  letter-spacing: 0.05em;
+  transition: var(--transition);
+}
+.pf-input:focus {
+  border-color: var(--accent-purple);
+  box-shadow: 0 0 0 3px rgba(168,85,247,0.2);
+  background: rgba(168,85,247,0.12);
+}
+.pf-input::placeholder { color: rgba(168,85,247,0.35); }
+.pf-save-btn {
+  background: linear-gradient(135deg, var(--accent-purple), var(--accent-indigo));
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 10px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+.pf-save-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+.pf-saved-indicator {
+  font-size: 11px;
+  color: var(--accent-emerald);
+  font-weight: 700;
+  display: none;
+  align-items: center;
+  gap: 4px;
+  margin-top: 6px;
+}
+.pf-saved-indicator.show { display: flex; }
+/* Badge PF no histórico */
+.pf-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(168,85,247,0.12);
+  border: 1px solid rgba(168,85,247,0.3);
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--accent-purple);
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.pf-badge:hover {
+  background: rgba(168,85,247,0.2);
+  border-color: var(--accent-purple);
+}
+.pf-edit-inline {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+.pf-edit-inline.show { display: flex; }
+.pf-edit-input {
+  flex: 1;
+  background: rgba(168,85,247,0.08);
+  border: 1.5px solid rgba(168,85,247,0.4);
+  border-radius: var(--radius-sm);
+  color: var(--accent-purple);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 10px;
+  outline: none;
+}
+.pf-edit-input:focus {
+  border-color: var(--accent-purple);
+  box-shadow: 0 0 0 2px rgba(168,85,247,0.2);
+}
+
 .option-cards {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1996,6 +2118,99 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
 .hist-stat-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; }
 .hist-stat-val { font-size: 14px; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; }
 
+/* ── PROGRAMAÇÃO FINANCEIRA — bloco inline no histórico ── */
+.hist-pf-block {
+  background: linear-gradient(135deg, rgba(249,115,22,0.05) 0%, rgba(168,85,247,0.04) 100%);
+  border: 1px solid rgba(249,115,22,0.22);
+  border-radius: 10px;
+  padding: 12px 18px;
+  margin: 0 18px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.hist-pf-label {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .16em;
+  color: var(--accent-orange);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.hist-pf-label svg { width: 13px; height: 13px; flex-shrink: 0; }
+.hist-pf-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 220px;
+}
+.hist-pf-input {
+  flex: 1;
+  background: var(--bg-elevated);
+  border: 1.5px solid rgba(249,115,22,0.35);
+  border-radius: 7px;
+  color: var(--accent-orange);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 7px 12px;
+  outline: none;
+  transition: var(--transition);
+  letter-spacing: .04em;
+  min-width: 200px;
+}
+.hist-pf-input::placeholder { color: var(--text-muted); font-weight: 400; letter-spacing: 0; }
+.hist-pf-input:focus {
+  border-color: var(--accent-orange);
+  background: rgba(249,115,22,0.07);
+  box-shadow: 0 0 0 3px rgba(249,115,22,0.14);
+}
+.hist-pf-input.pf-saved { border-color: rgba(34,197,94,0.5); color: var(--accent-green); }
+.hist-pf-save-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 16px;
+  border-radius: 7px;
+  border: none; cursor: pointer;
+  font-size: 12px; font-weight: 700;
+  background: linear-gradient(135deg, var(--accent-orange), var(--accent-orange-dark));
+  color: #fff;
+  box-shadow: 0 3px 10px rgba(249,115,22,0.3);
+  transition: var(--transition);
+  white-space: nowrap;
+}
+.hist-pf-save-btn:hover { transform: translateY(-1px); box-shadow: 0 5px 14px rgba(249,115,22,0.4); }
+.hist-pf-save-btn svg { width: 13px; height: 13px; }
+.hist-pf-link {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 700;
+  color: var(--accent-orange);
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 7px;
+  border: 1px solid rgba(249,115,22,0.3);
+  background: rgba(249,115,22,0.08);
+  transition: var(--transition);
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  letter-spacing: .04em;
+}
+.hist-pf-link:hover { background: rgba(249,115,22,0.14); border-color: rgba(249,115,22,0.5); color: #fff; }
+.hist-pf-link svg { width: 12px; height: 12px; }
+.hist-pf-saved-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--accent-green);
+  padding: 3px 9px;
+  border-radius: 12px;
+  background: rgba(34,197,94,0.12);
+  border: 1px solid rgba(34,197,94,0.25);
+}
+
 /* Detalhes modal */
 .det-timeline { display: flex; flex-direction: column; gap: 0; }
 .det-tl-item { display: flex; gap: 14px; padding-bottom: 20px; position: relative; }
@@ -3449,6 +3664,8 @@ function solicitarFinanceiro(){
   State._capPreviewSolicitacao=rows;
   // ← CORREÇÃO 1: marca que a solicitação foi gerada (pré-requisito para encerrar)
   State._solicitacaoExecutada=true;
+  // ← PF: reseta o número pendente para o novo ciclo
+  State._pfNumeroPendente='';
 
   const wk=capWeekRange();
   const totalSolic=rows.reduce((a,r)=>a+r.solicitar,0);
@@ -3514,7 +3731,25 @@ function solicitarFinanceiro(){
       <div style="font-size:12px;font-weight:700;color:var(--accent-teal);margin-bottom:4px">✅ Solicitação Financeira Gerada</div>
       <div style="font-size:12px;color:var(--text-muted)">Revise os valores acima. Para arquivar e encerrar o ciclo semanal, clique em <strong style="color:var(--accent-rose)">Encerrar Ciclo</strong>.</div>
     </div>
-    <div style="margin-bottom:16px;padding:14px;background:rgba(244,63,94,0.06);border:1px solid rgba(244,63,94,0.2);border-radius:10px">
+    <div class="pf-field-wrap" id="pf-field-solicitacao">
+      <div class="pf-field-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="12" y2="16"/></svg>
+        Número da Programação Financeira (PF)
+      </div>
+      <div class="pf-input-row">
+        <input type="text" class="pf-input" id="pf-numero-input" placeholder="Ex: 154704/2026PF000001" value="" oninput="pfValidateInput(this)">
+        <button class="pf-save-btn" onclick="pfSalvarNumero()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;vertical-align:middle;margin-right:4px"><polyline points="20 6 9 17 4 12"/></svg>
+          Salvar PF
+        </button>
+      </div>
+      <div class="pf-saved-indicator" id="pf-saved-ok">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:13px;height:13px"><polyline points="20 6 9 17 4 12"/></svg>
+        PF vinculada ao ciclo
+      </div>
+      <div style="font-size:10px;color:var(--text-muted);margin-top:8px">Informe o número oficial gerado externamente. Exemplo: <span style="font-family:var(--font-mono);color:rgba(168,85,247,0.7)">154704/2026PF000001</span></div>
+    </div>
+    <div style="margin-top:16px;margin-bottom:16px;padding:14px;background:rgba(244,63,94,0.06);border:1px solid rgba(244,63,94,0.2);border-radius:10px">
       <div style="font-size:11px;font-weight:700;color:var(--accent-rose)">⚠️ ATENÇÃO: Encerrar é irreversível — saldos serão atualizados e contas arquivadas</div>
     </div>
     <div style="display:flex;gap:12px;flex-wrap:wrap">
@@ -3582,6 +3817,8 @@ function finalizarCicloSemanal(){
     totalPago:contas.filter(c=>c.pago==='sim').reduce((a,c)=>a+c.valor,0),
     contas:contas.length,
     finalizadoEm:new Date().toISOString(),
+    // ← PF: vincula o número da Programação Financeira ao ciclo
+    numeroPF: (State._pfNumeroPendente||'').trim(),
     // Detalhes completos dos lançamentos para rastreabilidade
     lancamentosDetalhes: contas.map(c=>({
       id:c.id, tipo:c.tipo, fonte:c.fonte, documento:c.documento,
@@ -3593,11 +3830,14 @@ function finalizarCicloSemanal(){
   // Reset flag para próximo ciclo
   State._solicitacaoExecutada=false;
   State._capPreviewSolicitacao=[];
+  // ← PF: reset número pendente
+  State._pfNumeroPendente='';
 
   // Auditoria
   capAudit('CICLO ENCERRADO', wk.label, backupAntes, {
     cicloId:id, totalContas:contas.length,
-    totalSolicitado:rows.reduce((a,r)=>a+r.solicitar,0)
+    totalSolicitado:rows.reduce((a,r)=>a+r.solicitar,0),
+    numeroPF: State.capHistorico[0]?.numeroPF||''
   });
 
   capPersist();
@@ -3760,6 +4000,71 @@ function renderRanking(id,key){
     '</div>';
   }).join(''):'<div class="cap-empty" style="padding:20px">Sem dados para exibir.</div>';
 }
+/* ============================================================
+   PROGRAMAÇÃO FINANCEIRA — FUNÇÕES
+   ============================================================ */
+function pfValidateInput(inp){
+  // Remove espaços desnecessários em tempo real
+  if(inp.value !== inp.value.trimStart()) inp.value = inp.value.trimStart();
+}
+
+function pfSalvarNumero(){
+  const inp = document.getElementById('pf-numero-input');
+  if(!inp) return;
+  const val = inp.value.trim();
+  if(!val){
+    showToast('⚠️ Informe o número da Programação Financeira antes de salvar.','error');
+    return;
+  }
+  // Verifica duplicidade com ciclos já encerrados
+  const dup = State.capHistorico.find(h => h.numeroPF && h.numeroPF.replace(/\s/g,'').toUpperCase() === val.replace(/\s/g,'').toUpperCase());
+  if(dup){
+    if(!confirm('⚠️ O número "'+val+'" já está vinculado ao ciclo:\n'+dup.semana+'\n\nDeseja usar este mesmo número mesmo assim?')) return;
+  }
+  State._pfNumeroPendente = val;
+  const ok = document.getElementById('pf-saved-ok');
+  if(ok){ ok.textContent='✔ PF "'+val+'" vinculada — será salva ao encerrar o ciclo'; ok.style.display='flex'; }
+  showToast('✅ Número PF registrado: '+val,'success');
+  capAudit('PF REGISTRADA (PENDENTE)', val, null, {status:'pendente_encerramento'});
+}
+
+function pfToggleEdit(cicloId){
+  const el = document.getElementById('pf-edit-'+cicloId);
+  if(!el) return;
+  const isOpen = el.classList.contains('show');
+  // Fecha todos os outros editores abertos
+  document.querySelectorAll('.pf-edit-inline.show').forEach(x=>x.classList.remove('show'));
+  if(!isOpen) el.classList.add('show');
+}
+
+function pfSalvarHistorico(cicloId){
+  const inp = document.getElementById('pf-edit-input-'+cicloId);
+  if(!inp) return;
+  const val = inp.value.trim();
+  if(!val){
+    showToast('⚠️ O número da PF não pode ficar vazio.','error');
+    return;
+  }
+  // Verifica duplicidade com outros ciclos (exceto o atual)
+  const dup = State.capHistorico.find(h => h.id !== cicloId && h.numeroPF && h.numeroPF.replace(/\s/g,'').toUpperCase() === val.replace(/\s/g,'').toUpperCase());
+  if(dup){
+    if(!confirm('⚠️ O número "'+val+'" já está vinculado ao ciclo:\n'+dup.semana+'\n\nDeseja usar mesmo assim?')) return;
+  }
+  const ciclo = State.capHistorico.find(h=>h.id===cicloId);
+  if(!ciclo){showToast('Ciclo não encontrado.','error');return;}
+  const anterior = ciclo.numeroPF||'';
+  ciclo.numeroPF = val;
+  capPersist();
+  // Fecha editor inline
+  const el = document.getElementById('pf-edit-'+cicloId);
+  if(el) el.classList.remove('show');
+  // Auditoria da alteração
+  capAudit('PF ALTERADA', ciclo.semana, {numeroPF:anterior}, {numeroPF:val});
+  renderHistorico();
+  scheduleAutoSave();
+  showToast('✅ Programação Financeira atualizada: '+val,'success');
+}
+
 function renderHistorico(){
   const el=document.getElementById('cap-historico-list');
   if(!el)return;
@@ -3768,8 +4073,10 @@ function renderHistorico(){
   el.innerHTML=State.capHistorico.length?State.capHistorico.map((h,idx)=>{
     const exeSol=h.rows?.filter(r=>r.tipo==='EXE').reduce((a,r)=>a+r.solicitar,0)||0;
     const rapSol=h.rows?.filter(r=>r.tipo==='RAP').reduce((a,r)=>a+r.solicitar,0)||0;
-    // ← CORREÇÃO 3: usa lancamentosDetalhes (registrado só após encerramento formal)
     const lancs=h.lancamentosDetalhes||[];
+    // Fontes envolvidas
+    const fontesSet=new Set([...(h.rows||[]).map(r=>r.fonte),...lancs.map(l=>l.fonte)].filter(Boolean));
+    const fontesHtml=[...fontesSet].map(f=>{const fo=fonteByCodigo(f);return `<span style="display:inline-flex;align-items:center;gap:4px;font-family:var(--font-mono);font-size:10px;font-weight:700;color:var(--accent-amber);background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25);border-radius:5px;padding:2px 7px"><span style="width:6px;height:6px;border-radius:50%;background:${fo.cor};display:inline-block"></span>${f}</span>`;}).join('');
     const lancHtml=lancs.length?`
       <div style="padding:0 18px 14px">
         <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);margin-bottom:8px">
@@ -3791,23 +4098,51 @@ function renderHistorico(){
           </div>`).join('')}
         </div>
       </div>`
-    // Fallback: usa rows (formato legado, sem detalhe completo)
     :h.rows&&h.rows.length?`<div style="padding:0 18px 14px;display:flex;gap:8px;flex-wrap:wrap">${h.rows.map(r=>`<div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:11px"><span class="status-badge ${r.tipo==='EXE'?'badge-exe':'badge-rap'}" style="margin-right:6px">${r.tipo}</span><span style="font-family:var(--font-mono);color:var(--accent-amber);font-weight:700">${r.fonte}</span> → <b style="color:var(--accent-amber)">${capMoney(r.solicitar)}</b></div>`).join('')}</div>`
     :'';
+
+    // ── Bloco PF: sempre visível com input direto editável ──
+    const pfSaved = h.numeroPF ? ' pf-saved' : '';
+    const pfPfBlock = `
+      <div class="hist-pf-block">
+        <div class="hist-pf-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="12" y2="16"/></svg>
+          Nº Prog. Financeira
+        </div>
+        <div class="hist-pf-input-wrap">
+          <input type="text"
+            class="hist-pf-input${pfSaved}"
+            id="hist-pf-input-${h.id}"
+            value="${h.numeroPF||''}"
+            placeholder="Ex: 154704/2026PF000001"
+            oninput="pfHistValidate(this)"
+            onkeydown="if(event.key==='Enter')pfSalvarHistoricoInline('${h.id}')">
+          <button class="hist-pf-save-btn" onclick="pfSalvarHistoricoInline('${h.id}')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Salvar PF
+          </button>
+          ${h.numeroPF?`<span style="font-size:10px;color:var(--accent-emerald);font-weight:700;white-space:nowrap;display:flex;align-items:center;gap:3px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:12px;height:12px"><polyline points="20 6 9 17 4 12"/></svg>Vinculada</span>`:'<span style="font-size:10px;color:var(--text-muted);white-space:nowrap">⚠ Não vinculada</span>'}
+        </div>
+      </div>`;
+
     return `
-      <div class="hist-item">
-        <div class="hist-item-left">
-          <div class="hist-semana">🗓 ${h.semana}</div>
-          <div class="hist-periodo">${h.contas} conta(s) · Encerrado em ${h.finalizadoEm?new Date(h.finalizadoEm).toLocaleString('pt-BR'):'—'}</div>
+      <div class="hist-item" style="flex-direction:column;align-items:stretch;gap:0;padding:0;overflow:hidden">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;padding:14px 18px">
+          <div class="hist-item-left">
+            <div class="hist-semana">🗓 ${h.semana}</div>
+            <div class="hist-periodo">${h.contas} conta(s) · Encerrado em ${h.finalizadoEm?new Date(h.finalizadoEm).toLocaleString('pt-BR'):'—'}</div>
+            ${fontesSet.size?`<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:6px">${fontesHtml}</div>`:''}
+          </div>
+          <div class="hist-item-right">
+            <div class="hist-stat"><span class="hist-stat-label">EXE Solic.</span><span class="hist-stat-val" style="color:var(--accent-teal)">${capMoney(exeSol)}</span></div>
+            <div class="hist-stat"><span class="hist-stat-label">RAP Solic.</span><span class="hist-stat-val" style="color:var(--accent-amber)">${capMoney(rapSol)}</span></div>
+            <div class="hist-stat"><span class="hist-stat-label">Total Solic.</span><span class="hist-stat-val">${capMoney(h.totalSolicitado)}</span></div>
+            <div class="hist-stat"><span class="hist-stat-label">Total Pago</span><span class="hist-stat-val" style="color:var(--accent-green)">${capMoney(h.totalPago||0)}</span></div>
+          </div>
         </div>
-        <div class="hist-item-right">
-          <div class="hist-stat"><span class="hist-stat-label">EXE Solic.</span><span class="hist-stat-val" style="color:var(--accent-teal)">${capMoney(exeSol)}</span></div>
-          <div class="hist-stat"><span class="hist-stat-label">RAP Solic.</span><span class="hist-stat-val" style="color:var(--accent-amber)">${capMoney(rapSol)}</span></div>
-          <div class="hist-stat"><span class="hist-stat-label">Total Solic.</span><span class="hist-stat-val">${capMoney(h.totalSolicitado)}</span></div>
-          <div class="hist-stat"><span class="hist-stat-label">Total Pago</span><span class="hist-stat-val" style="color:var(--accent-green)">${capMoney(h.totalPago||0)}</span></div>
-        </div>
+        ${pfPfBlock}
+        ${lancHtml}
       </div>
-      ${lancHtml}
     `;
   }).join(''):'<div class="cap-empty" style="padding:40px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Nenhum ciclo finalizado.</div>';
 }
