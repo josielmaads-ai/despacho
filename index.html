@@ -3197,6 +3197,13 @@ function saveState() {
   Storage.set('favorites', State.favorites);
   Storage.set('dailyStats', State.dailyStats);
   Storage.set('monthlyStats', State.monthlyStats);
+  // ← CORREÇÃO 1: persiste também todos os módulos CAP para garantir integridade total
+  if (State.capContas       !== undefined) Storage.set('capContas',       State.capContas);
+  if (State.capSaldos       !== undefined) Storage.set('capSaldos',       State.capSaldos);
+  if (State.capHistorico    !== undefined) Storage.set('capHistorico',    State.capHistorico);
+  if (State.capFontes       !== undefined) Storage.set('capFontes',       State.capFontes);
+  if (State.capFornecedores !== undefined) Storage.set('capFornecedores', State.capFornecedores);
+  if (State.capAuditLog     !== undefined) Storage.set('capAuditLog',     State.capAuditLog);
   // Agenda auto-save no Drive (só executa se conectado)
   if (typeof scheduleAutoSave === 'function') scheduleAutoSave();
 }
@@ -4911,8 +4918,10 @@ function clearAllData() {
   State.capHistorico = [];
   State.capFontes = CAP_DEFAULT_FONTES.slice();
   State.capFornecedores = [];
+  State.capAuditLog = []; // ← CORREÇÃO 2: limpa também o audit log
 
   saveState();
+  capPersist(); // ← CORREÇÃO 2: persiste módulos CAP no localStorage
   renderFornecedoresTable();
   initCapModule();
   updateStats();
@@ -5075,8 +5084,8 @@ async function driveSaveData() {
 
   try {
     if (GDRIVE._fileId) {
-      // PATCH: atualiza conteúdo
-      await fetch(`https://www.googleapis.com/upload/drive/v3/files/${GDRIVE._fileId}?uploadType=media`, {
+      // PATCH: atualiza conteúdo — ← CORREÇÃO 6: verifica resposta para detectar falha silenciosa
+      const patchResp = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${GDRIVE._fileId}?uploadType=media`, {
         method: 'PATCH',
         headers: {
           Authorization: `Bearer ${GDRIVE._accessToken}`,
@@ -5084,6 +5093,16 @@ async function driveSaveData() {
         },
         body: content,
       });
+      if (!patchResp.ok) {
+        // fileId pode estar inválido (arquivo deletado no Drive); força criação de novo arquivo
+        if (patchResp.status === 404) {
+          GDRIVE._fileId = null;
+          Storage.set('driveFileId', null);
+          // Chamada recursiva única para criar novo arquivo
+          return driveSaveData();
+        }
+        throw new Error('PATCH falhou: ' + patchResp.status);
+      }
     } else {
       // POST: cria arquivo
       const meta = JSON.stringify({ name: GDRIVE.FILE_NAME, parents: [GDRIVE.FOLDER] });
@@ -5113,10 +5132,10 @@ async function driveLoadData() {
   setDriveStatus('syncing', 'Restaurando…');
 
   try {
-    // Procura o arquivo pelo nome
+    // ← CORREÇÃO 4: parâmetro spaces correto para busca no appDataFolder
     const q = encodeURIComponent(`name='${GDRIVE.FILE_NAME}' and trashed=false`);
     const listResp = await fetch(
-      `https://www.googleapis.com/drive/v3/files?spaces=${GDRIVE.FOLDER}&q=${q}&fields=files(id,name,modifiedTime)`,
+      `https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=${q}&fields=files(id,name,modifiedTime)`,
       { headers: { Authorization: `Bearer ${GDRIVE._accessToken}` } }
     );
     const listData = await listResp.json();
@@ -5160,10 +5179,12 @@ async function driveLoadData() {
     // Persiste localmente
     saveState();
     capPersist();
-    // Re-renderiza todos os módulos
+    // ← CORREÇÃO 5: re-renderiza todos os módulos, incluindo fontes e fornecedores CAP
     renderFornecedoresTable();
     renderFinanceiro();
     updateStats();
+    // Re-popula datalists para autocomplete
+    if (typeof refreshCapDatalists === 'function') refreshCapDatalists();
     setDriveStatus('connected', 'Drive sincronizado');
     showToast('✅ Dados restaurados do Google Drive! (v'+(backup.version||'?')+')', 'success');
   } catch(e) {
@@ -5292,6 +5313,8 @@ function importBackup(event) {
       renderFornecedoresTable();
       renderFinanceiro();
       updateStats();
+      // ← CORREÇÃO 7: atualiza datalists de autocomplete após importação
+      if (typeof refreshCapDatalists === 'function') refreshCapDatalists();
       showToast('✅ Backup importado com sucesso! (v'+data.version+')', 'success');
     } catch(err) {
       showToast('❌ Erro ao importar backup: JSON inválido!', 'error');
@@ -5344,6 +5367,19 @@ function importBackup(event) {
   if (alreadyConnected) {
     setDriveStatus('connected', 'Drive conectado');
     updateDrivePanel(true);
+    // ← CORREÇÃO 3: tenta reautenticar silenciosamente ao abrir o sistema.
+    // O token OAuth expira e não é persistido entre sessões/computadores.
+    // Aguardamos a biblioteca Google carregar e então solicitamos token silencioso.
+    function _tryDriveSilentReconnect(attemptsLeft) {
+      if (attemptsLeft <= 0) return;
+      if (GDRIVE._tokenClient) {
+        // prompt: '' tenta obter token sem tela de login (se a conta já está autorizada)
+        GDRIVE._tokenClient.requestAccessToken({ prompt: '' });
+      } else {
+        setTimeout(() => _tryDriveSilentReconnect(attemptsLeft - 1), 1000);
+      }
+    }
+    setTimeout(() => _tryDriveSilentReconnect(10), 1500);
   }
 })();
 </script>
