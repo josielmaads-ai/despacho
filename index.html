@@ -1575,7 +1575,7 @@ body::before {
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   margin-bottom: 24px;
-  overflow: hidden;
+  overflow: visible;
 }
 .cap-form-header {
   padding: 20px 28px;
@@ -2303,6 +2303,11 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
   box-shadow: 0 4px 12px rgba(245,158,11,0.3);
 }
 .btn-amber:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(245,158,11,0.4); }
+
+/* ── Spin animation (loading indicator) ── */
+@keyframes spin { to { transform: rotate(360deg); } }
+/* ── Cap Forn Item keyboard focus ── */
+.cap-forn-item:focus { outline: none; background: rgba(20,184,166,0.10) !important; }
 </style>
 </head>
 <body>
@@ -2591,25 +2596,54 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
             <!-- Linha 2: Fornecedor/Benefício | Valor -->
             <div class="cap-grid-3" style="margin-bottom:18px;align-items:end">
               <div class="form-group" style="grid-column:1/3;position:relative">
-                <label class="form-label">Fornecedor / Benefício</label>
-                <input class="form-input" id="cap-forn-busca"
-                  placeholder="Digite nome, CPF ou CNPJ para buscar..."
-                  oninput="capFornBuscaInput(this)"
-                  autocomplete="off"
-                  style="padding-right:36px">
-                <div id="cap-forn-busca-dropdown" style="display:none;position:absolute;left:0;right:0;top:100%;z-index:200;background:var(--bg-elevated);border:1px solid var(--border-bright);border-radius:0 0 var(--radius-sm) var(--radius-sm);max-height:220px;overflow-y:auto;box-shadow:var(--shadow-card)"></div>
+                <label class="form-label" style="display:flex;align-items:center;gap:6px">
+                  Fornecedor / Benefício
+                  <span id="cap-forn-busca-loading" style="display:none">
+                    <svg style="width:12px;height:12px;animation:spin 1s linear infinite" viewBox="0 0 24 24" fill="none" stroke="var(--accent-teal)" stroke-width="2.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                  </span>
+                </label>
+                <div style="position:relative">
+                  <svg style="position:absolute;left:10px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--text-muted);pointer-events:none;z-index:1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  <input class="form-input" id="cap-forn-busca"
+                    placeholder="Digite nome, CPF ou CNPJ para buscar..."
+                    oninput="capFornBuscaInput(this)"
+                    onfocus="capFornBuscaFocus(this)"
+                    autocomplete="off"
+                    style="padding-left:34px;padding-right:36px">
+                  <button type="button" id="cap-forn-busca-clear-btn" onclick="capFornLimpar()" title="Limpar seleção"
+                    style="display:none;position:absolute;right:8px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.08);border:none;cursor:pointer;color:var(--text-muted);font-size:13px;width:22px;height:22px;border-radius:4px;line-height:1;transition:all .15s">✕</button>
+                </div>
                 <!-- Dados ocultos do fornecedor selecionado -->
                 <input type="hidden" id="cap-doc-forn">
                 <input type="hidden" id="cap-fornecedor">
                 <!-- Badge do fornecedor selecionado -->
-                <div id="cap-forn-selected-badge" style="display:none;margin-top:6px;padding:8px 12px;background:rgba(20,184,166,0.08);border:1px solid rgba(20,184,166,0.25);border-radius:var(--radius-sm);font-size:12px">
-                  <div style="display:flex;align-items:center;justify-content:space-between">
-                    <span id="cap-forn-sel-nome" style="font-weight:700;color:var(--text-primary)"></span>
-                    <button type="button" onclick="capFornLimpar()" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:14px;padding:0 4px">✕</button>
-                  </div>
-                  <div style="display:flex;gap:12px;margin-top:3px;flex-wrap:wrap">
-                    <span id="cap-forn-sel-doc" style="font-family:var(--font-mono);font-size:11px;color:var(--accent-purple)"></span>
-                    <span id="cap-forn-sel-tipo" style="font-size:11px;color:var(--text-muted)"></span>
+                <div id="cap-forn-selected-badge" style="display:none;margin-top:8px;padding:10px 14px;background:linear-gradient(135deg,rgba(20,184,166,0.06),rgba(20,184,166,0.02));border:1px solid rgba(20,184,166,0.3);border-radius:var(--radius-sm)">
+                  <div style="display:flex;align-items:flex-start;gap:10px">
+                    <div id="cap-forn-sel-icon" style="width:36px;height:36px;border-radius:8px;background:rgba(20,184,166,0.12);border:1px solid rgba(20,184,166,0.25);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🏢</div>
+                    <div style="flex:1;min-width:0">
+                      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                        <span id="cap-forn-sel-nome" style="font-weight:700;font-size:13px;color:var(--text-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+                        <button type="button" onclick="capFornLimpar()" title="Remover fornecedor"
+                          style="flex-shrink:0;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);cursor:pointer;color:#ef4444;font-size:11px;padding:2px 8px;border-radius:4px;font-weight:700;letter-spacing:.04em;white-space:nowrap">
+                          ✕ Limpar
+                        </button>
+                      </div>
+                      <div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap;align-items:center">
+                        <span id="cap-forn-sel-doc" style="font-family:var(--font-mono);font-size:11px;color:var(--accent-purple);background:rgba(139,92,246,0.08);padding:2px 7px;border-radius:4px"></span>
+                        <span id="cap-forn-sel-tipo" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);background:rgba(255,255,255,0.05);padding:2px 7px;border-radius:4px"></span>
+                        <span id="cap-forn-sel-status" style="font-size:10px;padding:2px 7px;border-radius:4px;font-weight:700;display:none"></span>
+                      </div>
+                      <div id="cap-forn-sel-extras" style="display:none;margin-top:5px;display:flex;gap:12px;flex-wrap:wrap">
+                        <span id="cap-forn-sel-tel" style="font-size:11px;color:var(--text-muted);display:none">
+                          <svg style="width:11px;height:11px;vertical-align:middle;margin-right:3px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12.9 19.79 19.79 0 0 1 1.6 4.27 2 2 0 0 1 3.57 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                          <span id="cap-forn-sel-tel-val"></span>
+                        </span>
+                        <span id="cap-forn-sel-email" style="font-size:11px;color:var(--accent-teal);display:none">
+                          <svg style="width:11px;height:11px;vertical-align:middle;margin-right:3px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                          <span id="cap-forn-sel-email-val"></span>
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -2904,10 +2938,14 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
           </div>
           <div class="cap-grid-3">
             <div class="form-group"><label class="form-label">Telefone</label><input class="form-input" id="cfg-forn-tel" placeholder="(00) 00000-0000"></div>
+            <div class="form-group"><label class="form-label">E-mail</label><input class="form-input" id="cfg-forn-email" placeholder="contato@empresa.com.br" type="email"></div>
+            <div class="form-group"><label class="form-label">Status</label><select class="form-select" id="cfg-forn-status"><option value="ativo">✅ Ativo</option><option value="inativo">🔴 Inativo</option><option value="pendente">⚠️ Pendente</option></select></div>
+          </div>
+          <div class="cap-grid-3">
             <div class="form-group"><label class="form-label">Observações</label><input class="form-input" id="cfg-forn-obs" placeholder="Dados bancários, contatos..."></div>
             <div class="form-group" style="align-self:end"><button class="btn btn-teal" onclick="saveCapFornecedor()">Salvar Fornecedor</button></div>
           </div>
-          <div class="cap-table-wrap"><table class="data-table"><thead><tr><th>CPF/CNPJ</th><th>Nome</th><th>Tipo</th><th>Telefone</th><th>Observações</th><th>Ações</th></tr></thead><tbody id="cap-forn-tbody"></tbody></table></div>
+          <div class="cap-table-wrap"><table class="data-table"><thead><tr><th>CPF/CNPJ</th><th>Nome</th><th>Tipo</th><th>Telefone</th><th>E-mail</th><th>Status</th><th>Observações</th><th>Ações</th></tr></thead><tbody id="cap-forn-tbody"></tbody></table></div>
         </div>
       </div>
 
@@ -3155,6 +3193,17 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
 </div>
 
 <div class="toast-container" id="toast-container"></div>
+
+<!-- DROPDOWN FORNECEDOR — posicionado via JS (fora de qualquer overflow:hidden) -->
+<div id="cap-forn-busca-dropdown"
+  style="display:none;position:fixed;z-index:9000;
+         background:var(--bg-elevated);
+         border:1px solid var(--border-bright);
+         border-radius:var(--radius-sm);
+         max-height:320px;overflow-y:auto;
+         box-shadow:0 12px 40px rgba(0,0,0,0.55),0 2px 10px rgba(0,0,0,0.35);
+         min-width:340px;">
+</div>
 
 <!-- AUTOSAVE INDICATOR -->
 <div class="autosave-indicator" id="autosave-indicator">
@@ -3449,71 +3498,304 @@ function maskCapPessoa(inp){
   inp.value=v;
 }
 function autofillFornecedor(){ const d=capDigits(document.getElementById('cap-doc-forn')?.value); const f=State.capFornecedores.find(x=>capDigits(x.doc)===d); if(f) document.getElementById('cap-fornecedor').value=f.nome; }
+
+/* ══════════════════════════════════════════════════════════════
+   BUSCA INTELIGENTE DE FORNECEDOR/BENEFÍCIO — v2.4
+   - Autocomplete em tempo real (nome, CPF, CNPJ parcial)
+   - Cards de preview com: nome, doc, tipo, telefone, email, status
+   - Badge de selecionado com Limpar
+   - Dropdown fixed (escapa overflow:hidden)
+   - Teclado: ESC fecha, ↓ navega, Enter seleciona
+   ══════════════════════════════════════════════════════════════ */
+
+let _capFornDebounce = null;
+
+function _capFornDropdownPosition(){
+  const inp = document.getElementById('cap-forn-busca');
+  const dd  = document.getElementById('cap-forn-busca-dropdown');
+  if(!inp || !dd) return;
+  const r = inp.getBoundingClientRect();
+  dd.style.top   = (r.bottom + 4) + 'px';
+  dd.style.left  = r.left + 'px';
+  dd.style.width = r.width + 'px';
+}
+
+function capFornBuscaFocus(inp){
+  // No foco, mostra todos se o campo estiver vazio; ou re-busca se houver texto
+  capFornBuscaInput(inp);
+}
+
 function capFornBuscaInput(inp){
-  const q=(inp.value||'').toLowerCase().trim();
-  const dd=document.getElementById('cap-forn-busca-dropdown');
-  if(!dd)return;
-  if(!q){dd.style.display='none';return;}
-  const matches=State.capFornecedores.filter(f=>
-    (f.nome||'').toLowerCase().includes(q)||
-    (f.doc||'').toLowerCase().includes(q)||
-    capDigits(f.doc||'').includes(capDigits(q))
-  ).slice(0,10);
-  if(!matches.length){
-    dd.innerHTML='<div style="padding:10px 14px;font-size:12px;color:var(--text-muted)">Nenhum fornecedor encontrado. Cadastre em Configurações → Fornecedores Financeiros.</div>';
-    dd.style.display='block';
+  clearTimeout(_capFornDebounce);
+  const loadEl = document.getElementById('cap-forn-busca-loading');
+  if(loadEl) loadEl.style.display = 'inline-block';
+
+  _capFornDebounce = setTimeout(() => {
+    if(loadEl) loadEl.style.display = 'none';
+    _capFornRenderDropdown(inp);
+  }, 120);
+}
+
+function _capFornRenderDropdown(inp){
+  const q   = (inp.value || '').toLowerCase().trim();
+  const dd  = document.getElementById('cap-forn-busca-dropdown');
+  if(!dd) return;
+
+  const lista = State.capFornecedores || [];
+
+  // Lista vazia
+  if(!lista.length){
+    dd.innerHTML = '<div style="padding:14px 16px;font-size:12px;color:var(--accent-amber);display:flex;align-items:center;gap:8px">'
+      + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'
+      + 'Nenhum fornecedor cadastrado. Acesse <strong style="margin-left:4px">Configurações → Fornecedores Financeiros</strong>.</div>';
+    _capFornDropdownPosition();
+    dd.style.display = 'block';
     return;
   }
-  dd.innerHTML=matches.map(f=>`
-    <div onclick="capFornSelecionar('${f.id}')" style="padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .15s" onmouseover="this.style.background='rgba(255,255,255,0.04)'" onmouseout="this.style.background=''">
-      <div style="font-size:13px;font-weight:700;color:var(--text-primary)">${f.nome||'—'}</div>
-      <div style="display:flex;gap:10px;margin-top:2px">
-        <span style="font-size:11px;font-family:var(--font-mono);color:var(--accent-purple)">${f.doc||'—'}</span>
-        <span style="font-size:11px;color:var(--text-muted)">${f.tipo||''}</span>
+
+  // Filtra — busca por nome, doc (com e sem pontuação), email, tipo
+  const qDigits = capDigits(q);
+  const matches = q
+    ? lista.filter(f => {
+        const nomeLow  = (f.nome  || '').toLowerCase();
+        const docLow   = (f.doc   || '').toLowerCase();
+        const emailLow = (f.email || '').toLowerCase();
+        const tipoLow  = (f.tipo  || '').toLowerCase();
+        return nomeLow.includes(q)
+            || docLow.includes(q)
+            || emailLow.includes(q)
+            || tipoLow.includes(q)
+            || (qDigits.length >= 3 && capDigits(f.doc || '').includes(qDigits));
+      }).slice(0, 15)
+    : lista.slice(0, 12);
+
+  if(!matches.length){
+    dd.innerHTML = '<div style="padding:14px 16px;font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:8px">'
+      + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;flex-shrink:0"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'
+      + 'Nenhum resultado para <strong style="color:var(--text-primary);margin-left:4px">"' + (inp.value||'').replace(/</g,'&lt;') + '"</strong>.'
+      + '<span style="margin-left:4px">Verifique o cadastro em Configurações.</span></div>';
+    _capFornDropdownPosition();
+    dd.style.display = 'block';
+    return;
+  }
+
+  // Função auxiliar: highlight do termo buscado
+  const highlight = (str) => {
+    if(!q || !str) return str || '';
+    try {
+      return String(str).replace(
+        new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')', 'gi'),
+        '<mark style="background:rgba(20,184,166,0.22);color:var(--accent-teal);border-radius:2px;padding:0 1px">$1</mark>'
+      );
+    } catch(e){ return str; }
+  };
+
+  // Ícone e cor por tipo
+  const tipoMeta = (tipo) => {
+    if(tipo === 'beneficio')    return { icon:'★', color:'var(--accent-teal)', bg:'rgba(20,184,166,0.12)' };
+    if(tipo === 'Pessoa Física') return { icon:'👤', color:'var(--accent-green)', bg:'rgba(34,197,94,0.10)' };
+    return { icon:'🏢', color:'var(--accent-purple)', bg:'rgba(139,92,246,0.10)' };
+  };
+
+  // Badge de status
+  const statusBadge = (s) => {
+    if(!s || s === 'ativo') return '<span style="font-size:10px;padding:1px 6px;border-radius:4px;background:rgba(20,184,166,0.12);color:var(--accent-teal);font-weight:700">✅ Ativo</span>';
+    if(s === 'inativo') return '<span style="font-size:10px;padding:1px 6px;border-radius:4px;background:rgba(239,68,68,0.12);color:#ef4444;font-weight:700">🔴 Inativo</span>';
+    return '<span style="font-size:10px;padding:1px 6px;border-radius:4px;background:rgba(245,158,11,0.12);color:#f59e0b;font-weight:700">⚠️ Pendente</span>';
+  };
+
+  dd.innerHTML = matches.map((f, idx) => {
+    const m       = tipoMeta(f.tipo);
+    const docEx   = (f.doc && f.doc !== 'BENEFÍCIO') ? f.doc : '—';
+    const telLine = f.telefone ? `<span style="font-size:11px;color:var(--text-muted)"><svg style="width:10px;height:10px;vertical-align:middle;margin-right:2px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12.9 19.79 19.79 0 0 1 1.6 4.27 2 2 0 0 1 3.57 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>${highlight(f.telefone)}</span>` : '';
+    const emailLine = f.email ? `<span style="font-size:11px;color:var(--accent-teal);overflow:hidden;text-overflow:ellipsis;max-width:180px"><svg style="width:10px;height:10px;vertical-align:middle;margin-right:2px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>${highlight(f.email)}</span>` : '';
+    return `<div class="cap-forn-item" data-forn-idx="${idx}" tabindex="0"
+      style="padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .12s">
+      <div style="display:flex;align-items:flex-start;gap:10px">
+        <div style="width:34px;height:34px;border-radius:8px;background:${m.bg};border:1px solid ${m.color}33;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;margin-top:1px">${m.icon}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:700;color:var(--text-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${highlight(f.nome || '—')}</div>
+          <div style="display:flex;gap:8px;margin-top:3px;flex-wrap:wrap;align-items:center">
+            <span style="font-size:11px;font-family:var(--font-mono);color:${m.color}">${highlight(docEx)}</span>
+            <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:${m.color};background:rgba(255,255,255,0.05);padding:1px 6px;border-radius:4px">${f.tipo || ''}</span>
+            ${statusBadge(f.status)}
+          </div>
+          ${(telLine || emailLine) ? `<div style="display:flex;gap:12px;margin-top:4px;flex-wrap:wrap">${telLine}${emailLine}</div>` : ''}
+        </div>
       </div>
-    </div>`).join('');
-  dd.style.display='block';
+    </div>`;
+  }).join('');
+
+  // Eventos de clique/hover
+  dd.querySelectorAll('.cap-forn-item').forEach((el, idx) => {
+    el.addEventListener('mouseenter', () => el.style.background = 'rgba(20,184,166,0.07)');
+    el.addEventListener('mouseleave', () => el.style.background = '');
+    el.addEventListener('mousedown',  (e) => {
+      e.preventDefault();
+      capFornSelecionar(matches[idx].id);
+    });
+    el.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter'){ e.preventDefault(); capFornSelecionar(matches[idx].id); }
+    });
+  });
+
+  // Rodapé de contagem
+  if(lista.length > 12 || (q && lista.length > matches.length)){
+    const footer = document.createElement('div');
+    footer.style.cssText = 'padding:7px 16px;font-size:10px;color:var(--text-muted);text-align:center;border-top:1px solid var(--border);letter-spacing:.06em;text-transform:uppercase';
+    footer.textContent = q
+      ? `${matches.length} resultado${matches.length !== 1 ? 's' : ''} de ${lista.length} cadastros`
+      : `Mostrando ${matches.length} de ${lista.length} cadastros`;
+    dd.appendChild(footer);
+  }
+
+  _capFornDropdownPosition();
+  dd.style.display = 'block';
 }
+
 function capFornSelecionar(id){
-  const f=State.capFornecedores.find(x=>x.id===id);
-  if(!f)return;
+  const f = State.capFornecedores.find(x => x.id === id);
+  if(!f) return;
+
   // Preenche campos ocultos
-  const docEl=document.getElementById('cap-doc-forn');
-  const fornEl=document.getElementById('cap-fornecedor');
-  if(docEl)docEl.value=f.doc||'';
-  if(fornEl)fornEl.value=f.nome||'';
-  // Mostra badge
-  const badge=document.getElementById('cap-forn-selected-badge');
-  const nomeEl=document.getElementById('cap-forn-sel-nome');
-  const docBadge=document.getElementById('cap-forn-sel-doc');
-  const tipoEl=document.getElementById('cap-forn-sel-tipo');
-  if(badge){badge.style.display='block';}
-  if(nomeEl)nomeEl.textContent=f.nome||'—';
-  if(docBadge)docBadge.textContent=f.doc||'—';
-  if(tipoEl)tipoEl.textContent=f.tipo||'';
-  // Limpa campo de busca e fecha dropdown
-  const buscaEl=document.getElementById('cap-forn-busca');
-  if(buscaEl)buscaEl.value='';
-  const dd=document.getElementById('cap-forn-busca-dropdown');
-  if(dd)dd.style.display='none';
+  const docEl  = document.getElementById('cap-doc-forn');
+  const fornEl = document.getElementById('cap-fornecedor');
+  if(docEl)  docEl.value  = (f.doc && f.doc !== 'BENEFÍCIO') ? f.doc : '';
+  if(fornEl) fornEl.value = f.nome || '';
+
+  // Atualiza badge visual
+  const badge     = document.getElementById('cap-forn-selected-badge');
+  const nomeEl    = document.getElementById('cap-forn-sel-nome');
+  const docBadge  = document.getElementById('cap-forn-sel-doc');
+  const tipoEl    = document.getElementById('cap-forn-sel-tipo');
+  const statusEl  = document.getElementById('cap-forn-sel-status');
+  const iconEl    = document.getElementById('cap-forn-sel-icon');
+  const telEl     = document.getElementById('cap-forn-sel-tel');
+  const telValEl  = document.getElementById('cap-forn-sel-tel-val');
+  const emailEl   = document.getElementById('cap-forn-sel-email');
+  const emailValEl= document.getElementById('cap-forn-sel-email-val');
+  const extrasEl  = document.getElementById('cap-forn-sel-extras');
+
+  if(badge) badge.style.display = 'block';
+  if(nomeEl) nomeEl.textContent  = f.nome || '—';
+  if(docBadge) docBadge.textContent = (f.doc && f.doc !== 'BENEFÍCIO') ? f.doc : '—';
+  if(tipoEl)   tipoEl.textContent   = f.tipo || '';
+
+  // Ícone
+  if(iconEl){
+    iconEl.textContent = f.tipo === 'beneficio' ? '★' : f.tipo === 'Pessoa Física' ? '👤' : '🏢';
+  }
+
+  // Status badge
+  if(statusEl){
+    const s = f.status || 'ativo';
+    if(s === 'ativo'){
+      statusEl.textContent = '✅ Ativo'; statusEl.style.cssText = 'font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(20,184,166,0.15);color:var(--accent-teal);font-weight:700;display:inline-block';
+    } else if(s === 'inativo'){
+      statusEl.textContent = '🔴 Inativo'; statusEl.style.cssText = 'font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(239,68,68,0.15);color:#ef4444;font-weight:700;display:inline-block';
+    } else {
+      statusEl.textContent = '⚠️ Pendente'; statusEl.style.cssText = 'font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(245,158,11,0.15);color:#f59e0b;font-weight:700;display:inline-block';
+    }
+  }
+
+  // Telefone e Email
+  const hasExtra = f.telefone || f.email;
+  if(extrasEl) extrasEl.style.display = hasExtra ? 'flex' : 'none';
+  if(telEl && telValEl){
+    if(f.telefone){ telEl.style.display = 'inline-flex'; telValEl.textContent = f.telefone; }
+    else { telEl.style.display = 'none'; }
+  }
+  if(emailEl && emailValEl){
+    if(f.email){ emailEl.style.display = 'inline-flex'; emailValEl.textContent = f.email; }
+    else { emailEl.style.display = 'none'; }
+  }
+
+  // Campo de busca: esconde, mostra botão limpar no input
+  const buscaEl   = document.getElementById('cap-forn-busca');
+  const clearBtn  = document.getElementById('cap-forn-busca-clear-btn');
+  if(buscaEl){
+    buscaEl.value = f.nome || '';
+    buscaEl.style.paddingRight = '36px';
+    buscaEl.readOnly = true;
+    buscaEl.style.color = 'var(--accent-teal)';
+    buscaEl.style.fontWeight = '600';
+  }
+  if(clearBtn) clearBtn.style.display = 'block';
+  _capFornFecharDropdown();
 }
+
+function _capFornFecharDropdown(){
+  const dd = document.getElementById('cap-forn-busca-dropdown');
+  if(dd) dd.style.display = 'none';
+}
+
 function capFornLimpar(){
-  const docEl=document.getElementById('cap-doc-forn');
-  const fornEl=document.getElementById('cap-fornecedor');
-  if(docEl)docEl.value='';
-  if(fornEl)fornEl.value='';
-  const badge=document.getElementById('cap-forn-selected-badge');
-  if(badge)badge.style.display='none';
-  const buscaEl=document.getElementById('cap-forn-busca');
-  if(buscaEl){buscaEl.value='';buscaEl.focus();}
+  const docEl  = document.getElementById('cap-doc-forn');
+  const fornEl = document.getElementById('cap-fornecedor');
+  if(docEl)  docEl.value  = '';
+  if(fornEl) fornEl.value = '';
+
+  const badge = document.getElementById('cap-forn-selected-badge');
+  if(badge) badge.style.display = 'none';
+
+  const buscaEl  = document.getElementById('cap-forn-busca');
+  const clearBtn = document.getElementById('cap-forn-busca-clear-btn');
+  if(buscaEl){
+    buscaEl.value = '';
+    buscaEl.readOnly = false;
+    buscaEl.style.color = '';
+    buscaEl.style.fontWeight = '';
+    buscaEl.focus();
+  }
+  if(clearBtn) clearBtn.style.display = 'none';
+  _capFornFecharDropdown();
 }
-// Fecha dropdown ao clicar fora
-document.addEventListener('click',function(e){
-  if(!e.target.closest('#cap-forn-busca')&&!e.target.closest('#cap-forn-busca-dropdown')){
-    const dd=document.getElementById('cap-forn-busca-dropdown');
-    if(dd)dd.style.display='none';
+
+// Fecha ao clicar fora
+document.addEventListener('click', function(e){
+  if(!e.target.closest('#cap-forn-busca') && !e.target.closest('#cap-forn-busca-dropdown') && !e.target.closest('#cap-forn-busca-clear-btn')){
+    _capFornFecharDropdown();
   }
 });
+// Reposiciona ao rolar/redimensionar
+window.addEventListener('scroll', _capFornDropdownPosition, true);
+window.addEventListener('resize', _capFornDropdownPosition);
+
+// Teclado: ESC fecha, ↓ navega, Enter seleciona
+document.addEventListener('keydown', function(e){
+  const inp = document.getElementById('cap-forn-busca');
+  const dd  = document.getElementById('cap-forn-busca-dropdown');
+  if(!inp || !dd || dd.style.display === 'none') return;
+  const active = document.activeElement;
+  const inInput = active === inp;
+  const inItem  = active && active.classList.contains('cap-forn-item');
+  if(!inInput && !inItem) return;
+
+  if(e.key === 'Escape'){
+    e.preventDefault();
+    _capFornFecharDropdown();
+    inp.blur();
+  } else if(e.key === 'ArrowDown'){
+    e.preventDefault();
+    const items = [...dd.querySelectorAll('.cap-forn-item')];
+    if(!items.length) return;
+    if(inInput){ items[0].focus(); }
+    else {
+      const ci = items.indexOf(active);
+      if(ci < items.length - 1) items[ci+1].focus();
+    }
+  } else if(e.key === 'ArrowUp'){
+    e.preventDefault();
+    const items = [...dd.querySelectorAll('.cap-forn-item')];
+    if(!items.length) return;
+    const ci = items.indexOf(active);
+    if(ci > 0) items[ci-1].focus(); else inp.focus();
+  } else if(e.key === 'Enter' && inItem){
+    e.preventDefault();
+    active.dispatchEvent(new MouseEvent('mousedown', {bubbles:true}));
+  }
+});
+
 function saveCapConta(){
   const id=document.getElementById('cap-edit-id').value||capId('cap');
   const val=parseMoneyBR(document.getElementById('cap-valor').value);
@@ -3574,14 +3856,14 @@ function getNextWeekday(dayOfWeek) {
   return d.toISOString().slice(0, 10); // returns YYYY-MM-DD for <input type="date">
 }
 function resetCapForm(){
-  ['cap-edit-id','cap-codigo','cap-doc-forn','cap-fornecedor','cap-valor','cap-obs','cap-forn-busca'].forEach(id=>{
+  ['cap-edit-id','cap-codigo','cap-doc-forn','cap-fornecedor','cap-valor','cap-obs'].forEach(id=>{
     const e=document.getElementById(id); if(e)e.value='';
   });
-  // Ocultar badge de fornecedor selecionado
+  // Limpa campo de busca e estado visual do fornecedor
+  capFornLimpar();
+  // Ocultar badge de fornecedor selecionado (garantia extra)
   const badge=document.getElementById('cap-forn-selected-badge');
   if(badge)badge.style.display='none';
-  const dd=document.getElementById('cap-forn-busca-dropdown');
-  if(dd)dd.style.display='none';
   // Auto-fill dates: próxima segunda para solicitação, próxima terça para pagamento
   const elSol=document.getElementById('cap-data-solicitacao'); if(elSol) elSol.value=getNextWeekday(1);
   const elPag=document.getElementById('cap-data-pagamento'); if(elPag) elPag.value=getNextWeekday(2);
@@ -3643,16 +3925,27 @@ function editCapConta(id){
   document.getElementById('cap-codigo').value=c.codigo||'';
   document.getElementById('cap-doc-forn').value=c.docFornecedor||'';
   document.getElementById('cap-fornecedor').value=c.fornecedor;
-  // Populate busca badge
-  const badge2=document.getElementById('cap-forn-selected-badge');
-  const nomeEl2=document.getElementById('cap-forn-sel-nome');
-  const docBadge2=document.getElementById('cap-forn-sel-doc');
-  const tipoEl2=document.getElementById('cap-forn-sel-tipo');
-  if(badge2)badge2.style.display='block';
-  if(nomeEl2)nomeEl2.textContent=c.fornecedor||'—';
-  if(docBadge2)docBadge2.textContent=c.docFornecedor||'—';
-  const fObj=State.capFornecedores.find(x=>capDigits(x.doc)===capDigits(c.docFornecedor||''));
-  if(tipoEl2)tipoEl2.textContent=fObj?.tipo||'';
+  // Populate busca badge via capFornSelecionar se possível
+  if(c.docFornecedor || c.fornecedor){
+    const fObj=State.capFornecedores.find(x=>capDigits(x.doc)===capDigits(c.docFornecedor||'') || x.nome===c.fornecedor);
+    if(fObj){
+      capFornSelecionar(fObj.id);
+    } else {
+      // Fornecedor não está mais cadastrado — mostra badge manual
+      const badge2=document.getElementById('cap-forn-selected-badge');
+      const nomeEl2=document.getElementById('cap-forn-sel-nome');
+      const docBadge2=document.getElementById('cap-forn-sel-doc');
+      const tipoEl2=document.getElementById('cap-forn-sel-tipo');
+      const buscaEl2=document.getElementById('cap-forn-busca');
+      const clearBtn2=document.getElementById('cap-forn-busca-clear-btn');
+      if(badge2) badge2.style.display='block';
+      if(nomeEl2) nomeEl2.textContent=c.fornecedor||'—';
+      if(docBadge2) docBadge2.textContent=c.docFornecedor||'—';
+      if(tipoEl2) tipoEl2.textContent='';
+      if(buscaEl2){ buscaEl2.value=c.fornecedor||''; buscaEl2.readOnly=true; buscaEl2.style.color='var(--accent-teal)'; buscaEl2.style.fontWeight='600'; }
+      if(clearBtn2) clearBtn2.style.display='block';
+    }
+  }
   document.getElementById('cap-valor').value=(c.valor/1).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
   document.getElementById('cap-pago').value=c.pago;
   document.getElementById('cap-competencia').value=c.competencia;
@@ -4362,10 +4655,48 @@ function capFornTipoChange(sel){
   const docEl=document.getElementById('cfg-forn-doc');
   if(docEl) docEl.placeholder=isBeneficio?'(Não obrigatório para Benefício)':'00.000.000/0001-00';
 }
-function saveCapFornecedor(){ const id=document.getElementById('cap-forn-edit-id').value||capId('forn'), doc=document.getElementById('cfg-forn-doc').value.trim(), nome=document.getElementById('cfg-forn-nome').value.trim(), tipo=document.getElementById('cfg-forn-tipo').value; if(!nome)return showToast('Informe o nome.','error'); const isBeneficio=tipo==='beneficio'; if(!isBeneficio&&!doc)return showToast('Informe o CPF/CNPJ.','error'); const item={id,doc:isBeneficio?(doc||'BENEFÍCIO'):doc,nome,tipo,telefone:document.getElementById('cfg-forn-tel').value,obs:document.getElementById('cfg-forn-obs').value}; const i=State.capFornecedores.findIndex(f=>f.id===id||(doc&&capDigits(f.doc)===capDigits(doc))); i>=0?State.capFornecedores[i]=item:State.capFornecedores.push(item); capPersist(); renderFinanceiro(); showToast('Fornecedor/Benefício salvo.','success'); }
-function editCapFornecedor(id){ const f=State.capFornecedores.find(x=>x.id===id); if(!f)return; document.getElementById('cap-forn-edit-id').value=f.id; document.getElementById('cfg-forn-doc').value=f.doc; document.getElementById('cfg-forn-nome').value=f.nome; document.getElementById('cfg-forn-tipo').value=f.tipo; document.getElementById('cfg-forn-tel').value=f.telefone||''; document.getElementById('cfg-forn-obs').value=f.obs||''; }
+function saveCapFornecedor(){
+  const id   = document.getElementById('cap-forn-edit-id').value || capId('forn');
+  const doc  = document.getElementById('cfg-forn-doc').value.trim();
+  const nome = document.getElementById('cfg-forn-nome').value.trim();
+  const tipo = document.getElementById('cfg-forn-tipo').value;
+  if(!nome) return showToast('Informe o nome do fornecedor/benefício.','error');
+  const isBeneficio = tipo === 'beneficio';
+  if(!isBeneficio && !doc) return showToast('Informe o CPF/CNPJ (obrigatório para Fornecedor/Pessoa Física).','error');
+  const item = {
+    id, doc: isBeneficio ? (doc||'BENEFÍCIO') : doc,
+    nome, tipo,
+    telefone: document.getElementById('cfg-forn-tel').value,
+    email:    document.getElementById('cfg-forn-email').value.trim(),
+    status:   document.getElementById('cfg-forn-status').value || 'ativo',
+    obs:      document.getElementById('cfg-forn-obs').value
+  };
+  const i = State.capFornecedores.findIndex(f => f.id === id || (doc && capDigits(f.doc) === capDigits(doc)));
+  if(i >= 0) State.capFornecedores[i] = item;
+  else       State.capFornecedores.push(item);
+  // Limpa form de cadastro
+  ['cap-forn-edit-id','cfg-forn-doc','cfg-forn-nome','cfg-forn-tel','cfg-forn-email','cfg-forn-obs'].forEach(eid=>{
+    const el=document.getElementById(eid); if(el) el.value='';
+  });
+  const tipoEl = document.getElementById('cfg-forn-tipo');
+  if(tipoEl) tipoEl.value = 'Pessoa Jurídica';
+  capPersist();
+  refreshCapDatalists();
+  renderFinanceiro();
+  showToast('✅ ' + (isBeneficio?'Benefício':'Fornecedor') + ' "' + nome + '" salvo! (' + State.capFornecedores.length + ' cadastros disponíveis para busca)', 'success');
+}
+function editCapFornecedor(id){ const f=State.capFornecedores.find(x=>x.id===id); if(!f)return; document.getElementById('cap-forn-edit-id').value=f.id; document.getElementById('cfg-forn-doc').value=f.doc; document.getElementById('cfg-forn-nome').value=f.nome; document.getElementById('cfg-forn-tipo').value=f.tipo; document.getElementById('cfg-forn-tel').value=f.telefone||''; document.getElementById('cfg-forn-email').value=f.email||''; const statusEl=document.getElementById('cfg-forn-status'); if(statusEl) statusEl.value=f.status||'ativo'; document.getElementById('cfg-forn-obs').value=f.obs||''; }
 function deleteCapFornecedor(id){ State.capFornecedores=State.capFornecedores.filter(f=>f.id!==id); capPersist(); renderFinanceiro(); }
-function renderCapFornecedoresTable(){ const tb=document.getElementById('cap-forn-tbody'); if(tb)tb.innerHTML=State.capFornecedores.map(f=>'<tr><td>'+f.doc+'</td><td>'+f.nome+'</td><td>'+f.tipo+'</td><td>'+(f.telefone||'-')+'</td><td>'+(f.obs||'-')+'</td><td><button class="row-act-btn edit" onclick="editCapFornecedor(\''+f.id+'\')">✎</button><button class="row-act-btn del" onclick="deleteCapFornecedor(\''+f.id+'\')">×</button></td></tr>').join('')||'<tr><td colspan="6"><div class="cap-empty">Nenhum fornecedor financeiro.</div></td></tr>'; }
+function renderCapFornecedoresTable(){ 
+  const tb=document.getElementById('cap-forn-tbody'); 
+  if(!tb) return;
+  const statusBadge = s => {
+    if(s==='inativo') return '<span style="font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(239,68,68,0.15);color:#ef4444;font-weight:700">🔴 Inativo</span>';
+    if(s==='pendente') return '<span style="font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(245,158,11,0.15);color:#f59e0b;font-weight:700">⚠️ Pendente</span>';
+    return '<span style="font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(20,184,166,0.15);color:var(--accent-teal);font-weight:700">✅ Ativo</span>';
+  };
+  tb.innerHTML=State.capFornecedores.map(f=>'<tr><td>'+f.doc+'</td><td>'+f.nome+'</td><td>'+f.tipo+'</td><td>'+(f.telefone||'-')+'</td><td>'+(f.email?'<a href="mailto:'+f.email+'" style="color:var(--accent-teal)">'+f.email+'</a>':'-')+'</td><td>'+statusBadge(f.status||'ativo')+'</td><td>'+(f.obs||'-')+'</td><td><button class="row-act-btn edit" onclick="editCapFornecedor(\''+f.id+'\')">✎</button><button class="row-act-btn del" onclick="deleteCapFornecedor(\''+f.id+'\')">×</button></td></tr>').join('')||'<tr><td colspan="8"><div class="cap-empty">Nenhum fornecedor financeiro.</div></td></tr>'; 
+}
 function exportCapCSV(){ const rows=getFilteredCapContas(); const csv=[['Tipo','Classe','Documento','Fonte','Fornecedor','Valor'],...rows.map(c=>[c.tipo,c.classe,c.documento,c.fonte,c.fornecedor,c.valor])].map(r=>r.join(';')).join('\n'); const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='contas_a_pagar.csv'; a.click(); }
 function renderFinanceiro(){
   refreshCapDatalists(); renderCapDashboard(); renderCapTable(); renderSaldos(); renderRelatorios(); renderHistorico(); renderFontesTable(); renderCapFornecedoresTable();
