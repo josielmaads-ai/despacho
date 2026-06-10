@@ -128,18 +128,16 @@ body::before {
 .sidebar {
   position: fixed;
   top: 0; left: 0; bottom: 0;
-  width: 64px;
+  width: 180px;
   background: var(--bg-surface);
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   padding: 16px 0;
-  gap: 8px;
+  gap: 4px;
   z-index: 100;
-  transition: width 0.3s cubic-bezier(0.4,0,0.2,1);
 }
-.sidebar:hover { width: 200px; }
 .sidebar-logo {
   width: 36px; height: 36px;
   background: linear-gradient(135deg, var(--accent-blue), var(--accent-indigo));
@@ -149,42 +147,39 @@ body::before {
   letter-spacing: -1px;
   flex-shrink: 0;
   box-shadow: var(--glow-blue);
+  margin: 0 auto 4px;
 }
-.sidebar-divider { width: 32px; height: 1px; background: var(--border); margin: 8px 0; flex-shrink: 0; }
+.sidebar-divider { width: calc(100% - 24px); height: 1px; background: var(--border); margin: 8px 12px; flex-shrink: 0; }
 .sidebar-btn {
-  width: 40px; height: 40px;
+  width: calc(100% - 16px);
+  margin: 0 8px;
+  height: 40px;
   border-radius: var(--radius-sm);
   background: transparent;
   border: none;
   cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
+  display: flex; align-items: center; gap: 10px;
   color: var(--text-muted);
   transition: var(--transition);
   position: relative;
-  overflow: hidden;
   flex-shrink: 0;
+  padding: 0 10px;
 }
 .sidebar-btn:hover { background: var(--bg-elevated); color: var(--text-primary); }
 .sidebar-btn.active { background: rgba(59,130,246,0.15); color: var(--accent-blue); }
 .sidebar-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
 .sidebar-btn .sb-label {
-  position: absolute;
-  left: 48px;
   white-space: nowrap;
   font-size: 12px;
   font-weight: 600;
-  opacity: 0;
-  transition: opacity 0.2s;
-  pointer-events: none;
+  opacity: 1;
 }
-.sidebar:hover .sb-label { opacity: 1; }
 
 /* MAIN CONTENT */
 .main {
-  margin-left: 64px;
+  margin-left: 180px;
   padding: 32px 40px;
   min-height: 100vh;
-  transition: margin-left 0.3s;
 }
 
 /* TOPBAR */
@@ -937,26 +932,26 @@ body::before {
 }
 .data-table th {
   background: var(--bg-elevated);
-  padding: 10px 14px;
+  padding: 11px 14px;
   text-align: left;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: var(--text-muted);
-  border-bottom: 1px solid var(--border);
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-bright);
 }
 .data-table th:first-child { border-radius: var(--radius-sm) 0 0 0; }
 .data-table th:last-child { border-radius: 0 var(--radius-sm) 0 0; }
 .data-table td {
-  padding: 12px 14px;
+  padding: 13px 14px;
   border-bottom: 1px solid var(--border);
-  font-size: 13px;
-  color: var(--text-secondary);
+  font-size: 13.5px;
+  color: var(--text-primary);
   vertical-align: middle;
 }
 .data-table tr:last-child td { border-bottom: none; }
-.data-table tr:hover td { background: rgba(255,255,255,0.02); }
+.data-table tr:hover td { background: rgba(255,255,255,0.04); }
 .pill {
   display: inline-flex; align-items: center;
   padding: 3px 10px;
@@ -1156,6 +1151,7 @@ body::before {
   border: 1px solid rgba(249,115,22,0.5);
   position: relative;
   overflow: hidden;
+  margin: 0 auto 4px;
 }
 .sidebar-logo::before {
   content: '';
@@ -1917,62 +1913,64 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
 .cap-table-wrap { overflow-x: auto; }
 .cap-table {
   width: 100%; border-collapse: collapse;
-  font-size: 12.5px;
+  font-size: 13px;
 }
 .cap-table thead tr {
   background: var(--bg-elevated);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 2px solid var(--border-bright);
 }
 .cap-table th {
-  padding: 11px 14px;
+  padding: 12px 14px;
   text-align: left;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: var(--text-muted);
+  color: #cbd5e1;
   white-space: nowrap;
   cursor: pointer;
   user-select: none;
 }
-.cap-table th:hover { color: var(--text-secondary); }
+.cap-table th:hover { color: #f1f5f9; }
 .cap-table tbody tr {
   border-bottom: 1px solid var(--border);
   transition: background 0.15s;
 }
-.cap-table tbody tr:hover { background: var(--bg-elevated); }
+.cap-table tbody tr:hover { background: rgba(255,255,255,0.06); }
 .cap-table tbody tr:last-child { border-bottom: none; }
 .cap-table td {
-  padding: 11px 14px;
-  color: var(--text-secondary);
+  padding: 12px 14px;
+  color: var(--text-primary);
   white-space: nowrap;
+  font-size: 13.5px;
+  font-weight: 500;
 }
 .cap-table .td-valor {
-  font-weight: 700; color: var(--text-primary);
+  font-weight: 800; color: #f1f5f9;
   font-variant-numeric: tabular-nums;
 }
 .cap-table .td-doc {
   font-family: var(--font-mono);
-  font-size: 11.5px;
-  color: var(--accent-teal);
+  font-size: 12px;
+  color: #2dd4bf;
   font-weight: 700;
 }
 .cap-table .td-fonte {
   font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--accent-amber);
-  font-weight: 700;
+  font-size: 12px;
+  color: #fbbf24;
+  font-weight: 800;
 }
 /* CPF/CNPJ e Fornecedor — sempre visíveis e destacados */
 .cap-table .td-cpfcnpj {
   font-family: var(--font-mono);
-  font-size: 11.5px;
-  color: var(--accent-purple);
+  font-size: 12px;
+  color: #c084fc;
   font-weight: 700;
 }
 .cap-table .td-fornecedor {
-  color: var(--text-primary);
-  font-weight: 600;
+  color: #f1f5f9;
+  font-weight: 700;
 }
 
 /* Row actions */
@@ -2274,7 +2272,6 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
 }
 .cap-empty svg { width: 48px; height: 48px; margin: 0 auto 14px; display: block; color: var(--text-muted); opacity: 0.4; }
 
-/* Relatório */
 .rel-card {
   background: var(--bg-elevated);
   border: 1px solid var(--border);
@@ -2284,11 +2281,17 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
 }
 .rel-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
 .rel-row:last-child { border-bottom: none; }
-.rel-label { font-size: 12px; color: var(--text-muted); }
-.rel-val { font-size: 14px; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+.rel-label { font-size: 12.5px; color: #94a3b8; font-weight: 600; }
+.rel-val { font-size: 14px; font-weight: 800; color: #f1f5f9; font-variant-numeric: tabular-nums; }
 
-/* btn teal */
-.btn-teal {
+/* ── data-table global readability boost ── */
+.data-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.data-table thead tr { background: var(--bg-elevated); border-bottom: 2px solid var(--border-bright); }
+.data-table th { padding: 12px 14px; text-align: left; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .12em; color: #cbd5e1; white-space: nowrap; }
+.data-table tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; }
+.data-table tbody tr:hover { background: rgba(255,255,255,0.05); }
+.data-table tbody tr:last-child { border-bottom: none; }
+.data-table td { padding: 12px 14px; color: #f1f5f9; font-size: 13.5px; font-weight: 500; }
   background: linear-gradient(135deg, var(--accent-teal), #0891b2);
   color: #fff;
   box-shadow: 0 4px 12px rgba(20,184,166,0.3);
@@ -2332,6 +2335,10 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
     <button class="sidebar-btn" onclick="showPage('financeiro')" title="Contas a Pagar">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/><path d="M14 15h4"/></svg>
       <span class="sb-label">Contas a Pagar</span>
+    </button>
+    <button class="sidebar-btn" onclick="showPage('financeiro');setTimeout(()=>setCapTab('relatorios'),100)" title="Relatórios">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="11" y2="17"/></svg>
+      <span class="sb-label">Relatórios</span>
     </button>
     <button class="sidebar-btn" onclick="showPage('config')" title="Configurações">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -2448,7 +2455,7 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
           </div>
           <div class="card-tag">Financeiro Semanal</div>
           <div class="card-name">CONTAS A PAGAR</div>
-          <div class="card-desc">Controle de EXE, RAP, fornecedores, saldos, pagamentos e solicitação semanal automática de recursos.</div>
+          <div class="card-desc">Controle de EXE, RAP, fornecedores, saldos, pagamentos e ciclos manuais de solicitação de recursos.</div>
           <div class="card-arrow">↗</div>
         </div>
         <div class="module-card config" onclick="showPage('config')">
@@ -2470,13 +2477,17 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
         <div class="cap-title-group">
           <div class="cap-page-tag">MÓDULO FINANCEIRO</div>
           <div class="cap-page-title">Contas a Pagar</div>
-          <div class="section-subtitle">Ciclo semanal automatizado de EXE, RAP, saldos, pagamentos e solicitações financeiras</div>
+          <div class="section-subtitle">Controle de ciclo manual de EXE, RAP, saldos, pagamentos e solicitações financeiras</div>
         </div>
         <div class="cap-actions">
           <button class="btn btn-ghost" onclick="exportCapCSV()">Exportar CSV</button>
           <div id="ciclo-status-indicator" style="display:none;align-items:center;gap:6px;font-size:11px;font-weight:700;padding:6px 12px;border-radius:8px;background:rgba(20,184,166,0.12);border:1px solid rgba(20,184,166,0.3);color:var(--accent-teal)">
             ✅ Solicitação gerada — ciclo pronto para encerrar
           </div>
+          <button class="btn btn-ghost" id="btn-novo-ciclo" onclick="abrirNovoCiclo()" style="display:none;border-color:rgba(34,197,94,0.4);color:var(--accent-green)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Abrir Novo Ciclo
+          </button>
           <button class="btn-solicitar" onclick="solicitarFinanceiro()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6"/></svg>
             Solicitar Financeiro
@@ -2497,7 +2508,7 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
       <!-- SEMANA ATUAL BAR -->
       <div class="semana-bar" id="cap-semana-bar">
         <div class="semana-info">
-          <span class="semana-badge" id="cap-semana-badge">SEMANA ATUAL</span>
+          <span class="semana-badge" id="cap-semana-badge">CICLO ABERTO</span>
           <span class="semana-text">Ciclo: <span class="semana-num" id="cap-semana-label">—</span></span>
         </div>
         <div class="semana-totals" id="cap-semana-totals">
@@ -2577,24 +2588,30 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
               </div>
             </div>
 
-            <!-- Linha 2: CPF/CNPJ | Fornecedor | Valor -->
+            <!-- Linha 2: Fornecedor/Benefício | Valor -->
             <div class="cap-grid-3" style="margin-bottom:18px;align-items:end">
-              <div class="form-group">
-                <label class="form-label">CPF / CNPJ</label>
-                <div class="doc-type-toggle">
-                  <button type="button" class="doc-type-btn active" onclick="selectDocTipo('CNPJ')">CNPJ</button>
-                  <button type="button" class="doc-type-btn" onclick="selectDocTipo('CPF')">CPF</button>
+              <div class="form-group" style="grid-column:1/3;position:relative">
+                <label class="form-label">Fornecedor / Benefício</label>
+                <input class="form-input" id="cap-forn-busca"
+                  placeholder="Digite nome, CPF ou CNPJ para buscar..."
+                  oninput="capFornBuscaInput(this)"
+                  autocomplete="off"
+                  style="padding-right:36px">
+                <div id="cap-forn-busca-dropdown" style="display:none;position:absolute;left:0;right:0;top:100%;z-index:200;background:var(--bg-elevated);border:1px solid var(--border-bright);border-radius:0 0 var(--radius-sm) var(--radius-sm);max-height:220px;overflow-y:auto;box-shadow:var(--shadow-card)"></div>
+                <!-- Dados ocultos do fornecedor selecionado -->
+                <input type="hidden" id="cap-doc-forn">
+                <input type="hidden" id="cap-fornecedor">
+                <!-- Badge do fornecedor selecionado -->
+                <div id="cap-forn-selected-badge" style="display:none;margin-top:6px;padding:8px 12px;background:rgba(20,184,166,0.08);border:1px solid rgba(20,184,166,0.25);border-radius:var(--radius-sm);font-size:12px">
+                  <div style="display:flex;align-items:center;justify-content:space-between">
+                    <span id="cap-forn-sel-nome" style="font-weight:700;color:var(--text-primary)"></span>
+                    <button type="button" onclick="capFornLimpar()" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:14px;padding:0 4px">✕</button>
+                  </div>
+                  <div style="display:flex;gap:12px;margin-top:3px;flex-wrap:wrap">
+                    <span id="cap-forn-sel-doc" style="font-family:var(--font-mono);font-size:11px;color:var(--accent-purple)"></span>
+                    <span id="cap-forn-sel-tipo" style="font-size:11px;color:var(--text-muted)"></span>
+                  </div>
                 </div>
-                <input class="form-input" id="cap-doc-forn" list="cap-forn-doc-list"
-                  placeholder="00.000.000/0001-00"
-                  oninput="maskCapPessoa(this); autofillFornecedor()"
-                  autocomplete="off">
-                <datalist id="cap-forn-doc-list"></datalist>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Fornecedor</label>
-                <input class="form-input" id="cap-fornecedor" list="cap-forn-list" placeholder="Nome do fornecedor" autocomplete="off">
-                <datalist id="cap-forn-list"></datalist>
               </div>
               <div class="form-group">
                 <label class="form-label">Valor (R$)</label>
@@ -2753,6 +2770,17 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
           <div class="cap-table-card"><div class="cap-table-header"><div class="cap-table-title">Ranking por Fornecedor</div></div><div id="cap-ranking-forn" class="saldo-body" style="max-height:320px;overflow-y:auto"></div></div>
           <div class="cap-table-card"><div class="cap-table-header"><div class="cap-table-title">Distribuição por Fonte</div></div><div id="cap-ranking-fonte" class="saldo-body" style="max-height:320px;overflow-y:auto"></div></div>
         </div>
+        <!-- RELATÓRIO DE CICLOS -->
+        <div class="cap-table-card" style="margin-bottom:16px">
+          <div class="cap-table-header">
+            <div class="cap-table-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+              Relatório por Ciclo
+            </div>
+            <div style="font-size:12px;color:var(--text-muted)">Consolidação por fonte/período de cada ciclo encerrado</div>
+          </div>
+          <div style="padding:16px" id="cap-rel-ciclos"></div>
+        </div>
       </div>
 
       <div id="cap-tab-historico" class="cap-tab-content">
@@ -2870,9 +2898,9 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
         <div class="cap-form-body">
           <input type="hidden" id="cap-forn-edit-id">
           <div class="cap-grid-3">
-            <div class="form-group"><label class="form-label">CPF/CNPJ</label><input class="form-input" id="cfg-forn-doc" placeholder="00.000.000/0001-00"></div>
-            <div class="form-group"><label class="form-label">Nome Fornecedor</label><input class="form-input" id="cfg-forn-nome" placeholder="Fornecedor"></div>
-            <div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="cfg-forn-tipo"><option>Pessoa Jurídica</option><option>Pessoa Física</option></select></div>
+            <div class="form-group"><label class="form-label">CPF/CNPJ <span id="cfg-forn-doc-opcional" style="color:var(--text-muted);font-weight:400;font-size:10px">(opcional para Benefício)</span></label><input class="form-input" id="cfg-forn-doc" placeholder="00.000.000/0001-00 ou deixe em branco"></div>
+            <div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="cfg-forn-nome" placeholder="Fornecedor ou Benefício"></div>
+            <div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="cfg-forn-tipo" onchange="capFornTipoChange(this)"><option>Pessoa Jurídica</option><option>Pessoa Física</option><option value="beneficio">Benefício</option></select></div>
           </div>
           <div class="cap-grid-3">
             <div class="form-group"><label class="form-label">Telefone</label><input class="form-input" id="cfg-forn-tel" placeholder="(00) 00000-0000"></div>
@@ -3121,7 +3149,7 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
 </div>
 <div class="modal-overlay" id="modal-cap-solicitacao">
   <div class="modal wide">
-    <div class="modal-header"><div><div class="modal-title">Solicitação de Recursos da Semana</div><div class="modal-subtitle">Consolidação por tipo e fonte com abatimento de saldo</div></div><button class="modal-close" onclick="closeModal('modal-cap-solicitacao')">✕</button></div>
+    <div class="modal-header"><div><div class="modal-title">Solicitação de Recursos do Ciclo</div><div class="modal-subtitle">Consolidação por tipo e fonte com abatimento de saldo</div></div><button class="modal-close" onclick="closeModal('modal-cap-solicitacao')">✕</button></div>
     <div class="modal-body" id="cap-solicitacao-body"></div>
   </div>
 </div>
@@ -3270,6 +3298,9 @@ Object.assign(State, {
   capFontes: Storage.get('capFontes', CAP_DEFAULT_FONTES),
   capFornecedores: Storage.get('capFornecedores', []),
   capAuditLog: Storage.get('capAuditLog', []),
+  capCicloLabel: Storage.get('capCicloLabel', ''),
+  capCicloInicioAt: Storage.get('capCicloInicioAt', null),
+  capRelatoriosCiclos: Storage.get('capRelatoriosCiclos', []),
   capPage: 1,
   capSort: { key:'createdAt', dir:'desc' },
   capTipo: 'EXE',
@@ -3299,6 +3330,9 @@ function capPersist(){
   Storage.set('capFontes', State.capFontes);
   Storage.set('capFornecedores', State.capFornecedores);
   Storage.set('capAuditLog', State.capAuditLog);
+  Storage.set('capCicloLabel', State.capCicloLabel||'');
+  Storage.set('capCicloInicioAt', State.capCicloInicioAt||null);
+  Storage.set('capRelatoriosCiclos', State.capRelatoriosCiclos||[]);
   if (typeof scheduleAutoSave === 'function') scheduleAutoSave();
 }
 function capId(p){ return p+'_'+Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
@@ -3308,7 +3342,7 @@ function capMoney(n){ return (Number(n)||0).toLocaleString('pt-BR',{style:'curre
 function maskMoneyInput(inp){ let r=inp.value.replace(/\D/g,''); inp.value=r?(Number(r)/100).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}):''; }
 function fonteByCodigo(c){ return State.capFontes.find(f=>f.codigo===c)||{codigo:c,descricao:c,cor:'#64748b',codsol:''}; }
 function capWeekRange(d=new Date()){ const x=new Date(d), day=x.getDay(), diff=day===0?-6:1-day; const s=new Date(x); s.setDate(x.getDate()+diff); s.setHours(0,0,0,0); const e=new Date(s); e.setDate(s.getDate()+6); e.setHours(23,59,59,999); return {start:s,end:e,label:s.toLocaleDateString('pt-BR')+' a '+e.toLocaleDateString('pt-BR')}; }
-function capCurrentWeekContas(){ const w=capWeekRange(); return State.capContas.filter(c=>!c.cicloId && new Date(c.createdAt||c.dataSolicitacao||Date.now())>=w.start && new Date(c.createdAt||c.dataSolicitacao||Date.now())<=w.end); }
+function capCurrentWeekContas(){ return State.capContas.filter(c=>!c.cicloId); }
 function capStatusBadge(p){ return p==='sim'?'<span class="status-badge badge-pago">Pago</span>':'<span class="status-badge badge-nao-pago">Não Pago</span>'; }
 function capSituacaoBadge(s){ const cls=s==='Anexado'?'badge-anexado':s==='Aguardando comprovante'?'badge-aguard':s==='Processo enviado'?'badge-enviado':'badge-nao-env'; return '<span class="status-badge '+cls+'">'+(s||'Não enviado')+'</span>'; }
 function initCapModule(){ const comp=document.getElementById('cap-competencia'); if(comp&&!comp.children.length) CAP_MONTHS.forEach(m=>comp.add(new Option(m,m))); selectCapTipo(State.capTipo); selectCapClass(State.capClasse); selectDocTipo(State.capDocTipo); refreshCapDatalists(); renderFinanceiro();
@@ -3415,6 +3449,71 @@ function maskCapPessoa(inp){
   inp.value=v;
 }
 function autofillFornecedor(){ const d=capDigits(document.getElementById('cap-doc-forn')?.value); const f=State.capFornecedores.find(x=>capDigits(x.doc)===d); if(f) document.getElementById('cap-fornecedor').value=f.nome; }
+function capFornBuscaInput(inp){
+  const q=(inp.value||'').toLowerCase().trim();
+  const dd=document.getElementById('cap-forn-busca-dropdown');
+  if(!dd)return;
+  if(!q){dd.style.display='none';return;}
+  const matches=State.capFornecedores.filter(f=>
+    (f.nome||'').toLowerCase().includes(q)||
+    (f.doc||'').toLowerCase().includes(q)||
+    capDigits(f.doc||'').includes(capDigits(q))
+  ).slice(0,10);
+  if(!matches.length){
+    dd.innerHTML='<div style="padding:10px 14px;font-size:12px;color:var(--text-muted)">Nenhum fornecedor encontrado. Cadastre em Configurações → Fornecedores Financeiros.</div>';
+    dd.style.display='block';
+    return;
+  }
+  dd.innerHTML=matches.map(f=>`
+    <div onclick="capFornSelecionar('${f.id}')" style="padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .15s" onmouseover="this.style.background='rgba(255,255,255,0.04)'" onmouseout="this.style.background=''">
+      <div style="font-size:13px;font-weight:700;color:var(--text-primary)">${f.nome||'—'}</div>
+      <div style="display:flex;gap:10px;margin-top:2px">
+        <span style="font-size:11px;font-family:var(--font-mono);color:var(--accent-purple)">${f.doc||'—'}</span>
+        <span style="font-size:11px;color:var(--text-muted)">${f.tipo||''}</span>
+      </div>
+    </div>`).join('');
+  dd.style.display='block';
+}
+function capFornSelecionar(id){
+  const f=State.capFornecedores.find(x=>x.id===id);
+  if(!f)return;
+  // Preenche campos ocultos
+  const docEl=document.getElementById('cap-doc-forn');
+  const fornEl=document.getElementById('cap-fornecedor');
+  if(docEl)docEl.value=f.doc||'';
+  if(fornEl)fornEl.value=f.nome||'';
+  // Mostra badge
+  const badge=document.getElementById('cap-forn-selected-badge');
+  const nomeEl=document.getElementById('cap-forn-sel-nome');
+  const docBadge=document.getElementById('cap-forn-sel-doc');
+  const tipoEl=document.getElementById('cap-forn-sel-tipo');
+  if(badge){badge.style.display='block';}
+  if(nomeEl)nomeEl.textContent=f.nome||'—';
+  if(docBadge)docBadge.textContent=f.doc||'—';
+  if(tipoEl)tipoEl.textContent=f.tipo||'';
+  // Limpa campo de busca e fecha dropdown
+  const buscaEl=document.getElementById('cap-forn-busca');
+  if(buscaEl)buscaEl.value='';
+  const dd=document.getElementById('cap-forn-busca-dropdown');
+  if(dd)dd.style.display='none';
+}
+function capFornLimpar(){
+  const docEl=document.getElementById('cap-doc-forn');
+  const fornEl=document.getElementById('cap-fornecedor');
+  if(docEl)docEl.value='';
+  if(fornEl)fornEl.value='';
+  const badge=document.getElementById('cap-forn-selected-badge');
+  if(badge)badge.style.display='none';
+  const buscaEl=document.getElementById('cap-forn-busca');
+  if(buscaEl){buscaEl.value='';buscaEl.focus();}
+}
+// Fecha dropdown ao clicar fora
+document.addEventListener('click',function(e){
+  if(!e.target.closest('#cap-forn-busca')&&!e.target.closest('#cap-forn-busca-dropdown')){
+    const dd=document.getElementById('cap-forn-busca-dropdown');
+    if(dd)dd.style.display='none';
+  }
+});
 function saveCapConta(){
   const id=document.getElementById('cap-edit-id').value||capId('cap');
   const val=parseMoneyBR(document.getElementById('cap-valor').value);
@@ -3475,9 +3574,14 @@ function getNextWeekday(dayOfWeek) {
   return d.toISOString().slice(0, 10); // returns YYYY-MM-DD for <input type="date">
 }
 function resetCapForm(){
-  ['cap-edit-id','cap-codigo','cap-doc-forn','cap-fornecedor','cap-valor','cap-obs'].forEach(id=>{
+  ['cap-edit-id','cap-codigo','cap-doc-forn','cap-fornecedor','cap-valor','cap-obs','cap-forn-busca'].forEach(id=>{
     const e=document.getElementById(id); if(e)e.value='';
   });
+  // Ocultar badge de fornecedor selecionado
+  const badge=document.getElementById('cap-forn-selected-badge');
+  if(badge)badge.style.display='none';
+  const dd=document.getElementById('cap-forn-busca-dropdown');
+  if(dd)dd.style.display='none';
   // Auto-fill dates: próxima segunda para solicitação, próxima terça para pagamento
   const elSol=document.getElementById('cap-data-solicitacao'); if(elSol) elSol.value=getNextWeekday(1);
   const elPag=document.getElementById('cap-data-pagamento'); if(elPag) elPag.value=getNextWeekday(2);
@@ -3490,8 +3594,8 @@ function resetCapForm(){
   selectCapTipo('EXE');
   selectCapClass('NP');
   selectDocTipo('CNPJ');
-  const badge=document.getElementById('cap-edit-badge');
-  if(badge){ badge.textContent='NOVO REGISTRO'; badge.className='btn-novo-registro'; }
+  const badgeEl=document.getElementById('cap-edit-badge');
+  if(badgeEl){ badgeEl.textContent='NOVO REGISTRO'; badgeEl.className='btn-novo-registro'; }
 }
 function getFilteredCapContas(){
   const q=(document.getElementById('cap-filter-search')?.value||'').toLowerCase();
@@ -3539,6 +3643,16 @@ function editCapConta(id){
   document.getElementById('cap-codigo').value=c.codigo||'';
   document.getElementById('cap-doc-forn').value=c.docFornecedor||'';
   document.getElementById('cap-fornecedor').value=c.fornecedor;
+  // Populate busca badge
+  const badge2=document.getElementById('cap-forn-selected-badge');
+  const nomeEl2=document.getElementById('cap-forn-sel-nome');
+  const docBadge2=document.getElementById('cap-forn-sel-doc');
+  const tipoEl2=document.getElementById('cap-forn-sel-tipo');
+  if(badge2)badge2.style.display='block';
+  if(nomeEl2)nomeEl2.textContent=c.fornecedor||'—';
+  if(docBadge2)docBadge2.textContent=c.docFornecedor||'—';
+  const fObj=State.capFornecedores.find(x=>capDigits(x.doc)===capDigits(c.docFornecedor||''));
+  if(tipoEl2)tipoEl2.textContent=fObj?.tipo||'';
   document.getElementById('cap-valor').value=(c.valor/1).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
   document.getElementById('cap-pago').value=c.pago;
   document.getElementById('cap-competencia').value=c.competencia;
@@ -3652,14 +3766,14 @@ function zerarTodosSaldos(){ if(!State.capSaldos.length)return showToast('Nenhum
 function deleteSaldo(id){ State.capSaldos=State.capSaldos.filter(s=>s.id!==id); capPersist(); renderFinanceiro(); }
 function solicitarFinanceiro(){
   const contas=capCurrentWeekContas();
-  if(!contas.length){showToast('Não há contas abertas nesta semana.','info');return;}
+  if(!contas.length){showToast('Não há contas abertas no ciclo atual.','info');return;}
 
   const g={};
   contas.forEach(c=>{
     const k=c.tipo+'_'+c.fonte;
     if(!g[k]) g[k]={tipo:c.tipo,fonte:c.fonte,codigo:c.codigo||fonteByCodigo(c.fonte).codsol||'',bruto:0,lancamentos:[]};
     g[k].bruto+=c.valor;
-    g[k].lancamentos.push(c);  // ← CORREÇÃO 2: coleta lançamentos individuais por card
+    g[k].lancamentos.push(c);
   });
 
   const rows=Object.values(g).map(r=>{
@@ -3669,23 +3783,21 @@ function solicitarFinanceiro(){
   });
 
   State._capPreviewSolicitacao=rows;
-  // ← CORREÇÃO 1: marca que a solicitação foi gerada (pré-requisito para encerrar)
   State._solicitacaoExecutada=true;
-  // ← PF: reseta o número pendente para o novo ciclo
   State._pfNumeroPendente='';
 
-  const wk=capWeekRange();
+  const cicloLabel=State.capCicloLabel||('Iniciado em '+new Date(State.capCicloInicioAt||Date.now()).toLocaleDateString('pt-BR'));
   const totalSolic=rows.reduce((a,r)=>a+r.solicitar,0);
   const codsMap={};
   rows.forEach(r=>{if(r.codigo)codsMap[r.fonte]=r.codigo;});
 
   // ── AUDITORIA ──
-  capAudit('SOLICITAÇÃO GERADA', wk.label, null, {rows: rows.map(r=>({tipo:r.tipo,fonte:r.fonte,bruto:r.bruto,solicitar:r.solicitar})), totalSolic});
+  capAudit('SOLICITAÇÃO GERADA', cicloLabel, null, {rows: rows.map(r=>({tipo:r.tipo,fonte:r.fonte,bruto:r.bruto,solicitar:r.solicitar})), totalSolic});
 
   document.getElementById('cap-solicitacao-body').innerHTML=`
     <div style="background:rgba(20,184,166,0.06);border:1px solid rgba(20,184,166,0.2);border-radius:10px;padding:16px 20px;margin-bottom:20px">
-      <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.18em;color:var(--accent-teal);margin-bottom:6px">SOLICITAÇÃO DE RECURSOS DA SEMANA</div>
-      <div style="font-size:13px;color:var(--text-secondary)">${wk.label} · ${contas.length} conta(s) lançada(s)</div>
+      <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.18em;color:var(--accent-teal);margin-bottom:6px">SOLICITAÇÃO DE RECURSOS DO CICLO</div>
+      <div style="font-size:13px;color:var(--text-secondary)">${cicloLabel} · ${contas.length} conta(s) lançada(s)</div>
       <div style="font-size:11px;color:var(--accent-green);margin-top:6px;font-weight:700">✓ Solicitação gerada — clique em "Encerrar Ciclo" para arquivar</div>
     </div>
     <table class="sol-table">
@@ -3694,7 +3806,6 @@ function solicitarFinanceiro(){
         ${rows.map(r=>{
           const f=fonteByCodigo(r.fonte);
           const tipoBadge=r.tipo==='EXE'?'<span class="status-badge badge-exe">EXE</span>':'<span class="status-badge badge-rap">RAP</span>';
-          // ← CORREÇÃO 2: detalha lançamentos no card
           const lancDetail=r.lancamentos.map(l=>`
             <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);font-size:11px">
               <span style="font-family:var(--font-mono);color:var(--accent-teal)">${l.documento}</span>
@@ -3736,7 +3847,7 @@ function solicitarFinanceiro(){
       </div>`).join('')}
     <div style="margin-top:20px;padding:16px;background:rgba(20,184,166,0.08);border:1px solid rgba(20,184,166,0.25);border-radius:10px;margin-bottom:16px">
       <div style="font-size:12px;font-weight:700;color:var(--accent-teal);margin-bottom:4px">✅ Solicitação Financeira Gerada</div>
-      <div style="font-size:12px;color:var(--text-muted)">Revise os valores acima. Para arquivar e encerrar o ciclo semanal, clique em <strong style="color:var(--accent-rose)">Encerrar Ciclo</strong>.</div>
+      <div style="font-size:12px;color:var(--text-muted)">Revise os valores acima. Para arquivar e encerrar o ciclo, clique em <strong style="color:var(--accent-rose)">Encerrar Ciclo</strong>.</div>
     </div>
     <div class="pf-field-wrap" id="pf-field-solicitacao">
       <div class="pf-field-label">
@@ -3766,32 +3877,29 @@ function solicitarFinanceiro(){
       </button>
       <button class="btn-solicitar" style="background:linear-gradient(135deg,var(--accent-rose),#c0122b)" onclick="finalizarCicloSemanal()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-        Encerrar Ciclo Semanal
+        Encerrar Ciclo
       </button>
     </div>`;
   openModal('modal-cap-solicitacao');
 }
 function finalizarCicloSemanal(){
-  // ← CORREÇÃO 1: impede encerramento sem solicitação financeira prévia
   if(!State._solicitacaoExecutada){
     showToast('⛔ Execute primeiro "Solicitar Financeiro" para gerar a solicitação antes de encerrar o ciclo.','error');
     return;
   }
-  if(!confirm('Confirmar ENCERRAMENTO do ciclo semanal?\n\nIsso irá:\n• Arquivar as contas da semana no Histórico\n• Atualizar os saldos remanescentes\n• Iniciar um novo ciclo automaticamente\n\n⚠️ Esta ação é IRREVERSÍVEL.'))return;
+  if(!confirm('Confirmar ENCERRAMENTO do ciclo?\n\nIsso irá:\n• Arquivar as contas do ciclo no Histórico\n• Atualizar os saldos remanescentes\n• Gerar relatório do ciclo na aba Relatórios\n\n⚠️ Esta ação é IRREVERSÍVEL.'))return;
 
   const rows=State._capPreviewSolicitacao||[];
   const contas=capCurrentWeekContas();
   const id=capId('ciclo');
-  const wk=capWeekRange();
+  const cicloLabel=State.capCicloLabel||('Iniciado em '+new Date(State.capCicloInicioAt||Date.now()).toLocaleDateString('pt-BR'));
 
-  // Backup automático antes de operação crítica
   const backupAntes={
     capContas:[...State.capContas],
     capSaldos:[...State.capSaldos],
     capHistorico:[...State.capHistorico]
   };
 
-  // Valida consistência antes de prosseguir
   if(!rows.length&&!contas.length){
     showToast('Sem dados para encerrar o ciclo.','error');
     return;
@@ -3804,53 +3912,83 @@ function finalizarCicloSemanal(){
       const saldoAntes=s.valor;
       s.valor=Math.max(0,r.saldoRestante);
       if(!s.historico)s.historico=[];
-      s.historico.push({at:new Date().toISOString(),msg:'Ciclo '+wk.label+': abatido '+capMoney(r.abatido)+' | saldo anterior: '+capMoney(saldoAntes)});
+      s.historico.push({at:new Date().toISOString(),msg:'Ciclo '+cicloLabel+': abatido '+capMoney(r.abatido)+' | saldo anterior: '+capMoney(saldoAntes)});
     }
   });
 
-  // Arquiva contas da semana
+  // Arquiva contas do ciclo
   contas.forEach(c=>{
     c.cicloId=id;
     if(!c.historico)c.historico=[];
-    c.historico.push({at:new Date().toISOString(),msg:'Arquivado no ciclo: '+wk.label});
+    c.historico.push({at:new Date().toISOString(),msg:'Arquivado no ciclo: '+cicloLabel});
   });
 
-  // ← CORREÇÃO 3: histórico só registrado APÓS encerramento formal do ciclo
-  State.capHistorico.unshift({
+  // Registra histórico
+  const historicoEntry={
     id,
-    semana:wk.label,
+    semana:cicloLabel,
     rows,
     totalSolicitado:rows.reduce((a,r)=>a+r.solicitar,0),
     totalPago:contas.filter(c=>c.pago==='sim').reduce((a,c)=>a+c.valor,0),
     contas:contas.length,
     finalizadoEm:new Date().toISOString(),
-    // ← PF: vincula o número da Programação Financeira ao ciclo
     numeroPF: (State._pfNumeroPendente||'').trim(),
-    // Detalhes completos dos lançamentos para rastreabilidade
     lancamentosDetalhes: contas.map(c=>({
       id:c.id, tipo:c.tipo, fonte:c.fonte, documento:c.documento,
       fornecedor:c.fornecedor, docFornecedor:c.docFornecedor,
       valor:c.valor, pago:c.pago, situacao:c.situacao
     }))
-  });
+  };
+  State.capHistorico.unshift(historicoEntry);
 
-  // Reset flag para próximo ciclo
+  // Adiciona relatório do ciclo
+  if(!State.capRelatoriosCiclos) State.capRelatoriosCiclos=[];
+  State.capRelatoriosCiclos.unshift({
+    id, cicloLabel,
+    finalizadoEm: new Date().toISOString(),
+    totalContas: contas.length,
+    totalSolicitado: rows.reduce((a,r)=>a+r.solicitar,0),
+    totalPago: contas.filter(c=>c.pago==='sim').reduce((a,c)=>a+c.valor,0),
+    exeTotal: rows.filter(r=>r.tipo==='EXE').reduce((a,r)=>a+r.solicitar,0),
+    rapTotal: rows.filter(r=>r.tipo==='RAP').reduce((a,r)=>a+r.solicitar,0),
+    rows: rows.map(r=>({tipo:r.tipo,fonte:r.fonte,bruto:r.bruto,solicitar:r.solicitar,abatido:r.abatido})),
+    numeroPF: (State._pfNumeroPendente||'').trim()
+  });
+  Storage.set('capRelatoriosCiclos', State.capRelatoriosCiclos);
+
+  // Reset para novo ciclo
   State._solicitacaoExecutada=false;
   State._capPreviewSolicitacao=[];
-  // ← PF: reset número pendente
   State._pfNumeroPendente='';
+  State.capCicloLabel='';
+  State.capCicloInicioAt=null;
 
-  // Auditoria
-  capAudit('CICLO ENCERRADO', wk.label, backupAntes, {
+  capAudit('CICLO ENCERRADO', cicloLabel, backupAntes, {
     cicloId:id, totalContas:contas.length,
     totalSolicitado:rows.reduce((a,r)=>a+r.solicitar,0),
-    numeroPF: State.capHistorico[0]?.numeroPF||''
+    numeroPF: historicoEntry.numeroPF||''
   });
 
   capPersist();
+  // Mostra botão "Abrir Novo Ciclo"
+  const btnNovoCiclo=document.getElementById('btn-novo-ciclo');
+  if(btnNovoCiclo)btnNovoCiclo.style.display='inline-flex';
   closeModal('modal-cap-solicitacao');
   renderFinanceiro();
-  showToast('✅ Ciclo semanal encerrado! Histórico arquivado. Novo ciclo iniciado automaticamente.','success');
+  showToast('✅ Ciclo encerrado! Histórico arquivado. Clique em "Abrir Novo Ciclo" para continuar.','success');
+}
+function abrirNovoCiclo(){
+  const nome=prompt('Nome do novo ciclo (ex: Ciclo 02/2026):\n\nDeixe em branco para usar a data atual.');
+  const label=nome?nome.trim():('Ciclo iniciado em '+new Date().toLocaleDateString('pt-BR'));
+  if(!label)return;
+  State.capCicloLabel=label;
+  State.capCicloInicioAt=new Date().toISOString();
+  State._solicitacaoExecutada=false;
+  capPersist();
+  const btnNovoCiclo=document.getElementById('btn-novo-ciclo');
+  if(btnNovoCiclo)btnNovoCiclo.style.display='none';
+  renderFinanceiro();
+  showToast('✅ Novo ciclo "'+label+'" aberto!','success');
 }
 function setCapTab(tab){
   const map={lancamentos:0,saldos:1,relatorios:2,historico:3,auditoria:4};
@@ -3906,7 +4044,7 @@ function renderCapDashboard(){
   // Semana bar
   const wk=capWeekRange();
   const semLabel=document.getElementById('cap-semana-label');
-  if(semLabel)semLabel.textContent=wk.label;
+  if(semLabel)semLabel.textContent=State.capCicloLabel||('Iniciado em '+new Date(State.capCicloInicioAt||Date.now()).toLocaleDateString('pt-BR'));
   const semQtd=document.getElementById('cap-sem-qtd');
   if(semQtd)semQtd.textContent=contas.length;
   const semExe=document.getElementById('cap-sem-exe');
@@ -3986,6 +4124,49 @@ function renderRelatorios(){
 
   renderRanking('cap-ranking-forn','fornecedor');
   renderRanking('cap-ranking-fonte','fonte');
+
+  // ── RELATÓRIO DE CICLOS ──
+  const relCiclosEl=document.getElementById('cap-rel-ciclos');
+  if(relCiclosEl){
+    const ciclos=State.capRelatoriosCiclos||[];
+    if(!ciclos.length){
+      relCiclosEl.innerHTML='<div class="cap-empty" style="padding:32px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:40px;height:40px;display:block;margin:0 auto 12px;opacity:.4"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Nenhum ciclo finalizado ainda.</div>';
+    } else {
+      relCiclosEl.innerHTML=ciclos.map(c=>{
+        // Tabela por fonte
+        const linhasFonte=(c.rows||[]).map(r=>`
+          <tr>
+            <td><span class="fonte-dot" style="background:${fonteByCodigo(r.fonte).cor}"></span> <span style="font-family:var(--font-mono);color:var(--accent-amber);font-weight:700">${r.fonte}</span></td>
+            <td style="font-weight:700;color:${r.solicitar>0?'var(--accent-amber)':'var(--accent-green)'};">${capMoney(r.solicitar)}</td>
+            <td><span class="status-badge ${r.tipo==='EXE'?'badge-exe':'badge-rap'}">${r.tipo}</span></td>
+          </tr>`).join('');
+        return `
+        <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+            <div>
+              <div style="font-size:13px;font-weight:800;color:var(--accent-teal)">${c.cicloLabel}</div>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:2px">Encerrado em ${new Date(c.finalizadoEm).toLocaleString('pt-BR')} · ${c.totalContas} conta(s)</div>
+              ${c.numeroPF?`<div style="font-size:11px;margin-top:4px;color:var(--accent-purple);font-family:var(--font-mono)">PF: ${c.numeroPF}</div>`:''}
+            </div>
+            <div style="display:flex;gap:16px;flex-wrap:wrap">
+              <div style="text-align:right"><div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em">EXE</div><div style="font-size:14px;font-weight:700;color:var(--accent-teal)">${capMoney(c.exeTotal||0)}</div></div>
+              <div style="text-align:right"><div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em">RAP</div><div style="font-size:14px;font-weight:700;color:var(--accent-amber)">${capMoney(c.rapTotal||0)}</div></div>
+              <div style="text-align:right"><div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em">Total Solic.</div><div style="font-size:14px;font-weight:700;color:var(--text-primary)">${capMoney(c.totalSolicitado)}</div></div>
+              <div style="text-align:right"><div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em">Total Pago</div><div style="font-size:14px;font-weight:700;color:var(--accent-green)">${capMoney(c.totalPago||0)}</div></div>
+            </div>
+          </div>
+          <table style="width:100%;border-collapse:collapse;font-size:12px">
+            <thead><tr style="background:var(--bg-card)">
+              <th style="padding:6px 10px;text-align:left;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);border-bottom:1px solid var(--border)">Fonte</th>
+              <th style="padding:6px 10px;text-align:left;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);border-bottom:1px solid var(--border)">Valor R$</th>
+              <th style="padding:6px 10px;text-align:left;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);border-bottom:1px solid var(--border)">Período</th>
+            </tr></thead>
+            <tbody>${linhasFonte||'<tr><td colspan="3" style="padding:10px;color:var(--text-muted);font-size:12px">—</td></tr>'}</tbody>
+          </table>
+        </div>`;
+      }).join('');
+    }
+  }
 }
 function renderRanking(id,key){
   const d={};
@@ -4176,16 +4357,28 @@ function saveFonte(){ const id=document.getElementById('fonte-edit-id').value||c
 function editFonte(id){ const f=State.capFontes.find(x=>x.id===id); if(!f)return; document.getElementById('fonte-edit-id').value=f.id; document.getElementById('fonte-codigo').value=f.codigo; document.getElementById('fonte-desc').value=f.descricao; document.getElementById('fonte-cor').value=f.cor; document.getElementById('fonte-codsol').value=f.codsol||''; document.getElementById('fonte-status').value=f.status; }
 function deleteFonte(id){ State.capFontes=State.capFontes.filter(f=>f.id!==id); capPersist(); renderFinanceiro(); }
 function renderFontesTable(){ const tb=document.getElementById('fontes-tbody'); if(tb)tb.innerHTML=State.capFontes.map(f=>'<tr><td>'+f.codigo+'</td><td>'+f.descricao+'</td><td>'+(f.codsol||'-')+'</td><td><span class="fonte-dot" style="background:'+f.cor+'"></span></td><td>'+f.status+'</td><td><button class="row-act-btn edit" onclick="editFonte(\''+f.id+'\')">✎</button><button class="row-act-btn del" onclick="deleteFonte(\''+f.id+'\')">×</button></td></tr>').join(''); }
-function saveCapFornecedor(){ const id=document.getElementById('cap-forn-edit-id').value||capId('forn'), doc=document.getElementById('cfg-forn-doc').value.trim(), nome=document.getElementById('cfg-forn-nome').value.trim(); if(!doc||!nome)return showToast('Informe documento e nome.','error'); const item={id,doc,nome,tipo:document.getElementById('cfg-forn-tipo').value,telefone:document.getElementById('cfg-forn-tel').value,obs:document.getElementById('cfg-forn-obs').value}; const i=State.capFornecedores.findIndex(f=>f.id===id||capDigits(f.doc)===capDigits(doc)); i>=0?State.capFornecedores[i]=item:State.capFornecedores.push(item); capPersist(); renderFinanceiro(); }
+function capFornTipoChange(sel){
+  const isBeneficio=sel.value==='beneficio';
+  const docEl=document.getElementById('cfg-forn-doc');
+  if(docEl) docEl.placeholder=isBeneficio?'(Não obrigatório para Benefício)':'00.000.000/0001-00';
+}
+function saveCapFornecedor(){ const id=document.getElementById('cap-forn-edit-id').value||capId('forn'), doc=document.getElementById('cfg-forn-doc').value.trim(), nome=document.getElementById('cfg-forn-nome').value.trim(), tipo=document.getElementById('cfg-forn-tipo').value; if(!nome)return showToast('Informe o nome.','error'); const isBeneficio=tipo==='beneficio'; if(!isBeneficio&&!doc)return showToast('Informe o CPF/CNPJ.','error'); const item={id,doc:isBeneficio?(doc||'BENEFÍCIO'):doc,nome,tipo,telefone:document.getElementById('cfg-forn-tel').value,obs:document.getElementById('cfg-forn-obs').value}; const i=State.capFornecedores.findIndex(f=>f.id===id||(doc&&capDigits(f.doc)===capDigits(doc))); i>=0?State.capFornecedores[i]=item:State.capFornecedores.push(item); capPersist(); renderFinanceiro(); showToast('Fornecedor/Benefício salvo.','success'); }
 function editCapFornecedor(id){ const f=State.capFornecedores.find(x=>x.id===id); if(!f)return; document.getElementById('cap-forn-edit-id').value=f.id; document.getElementById('cfg-forn-doc').value=f.doc; document.getElementById('cfg-forn-nome').value=f.nome; document.getElementById('cfg-forn-tipo').value=f.tipo; document.getElementById('cfg-forn-tel').value=f.telefone||''; document.getElementById('cfg-forn-obs').value=f.obs||''; }
 function deleteCapFornecedor(id){ State.capFornecedores=State.capFornecedores.filter(f=>f.id!==id); capPersist(); renderFinanceiro(); }
 function renderCapFornecedoresTable(){ const tb=document.getElementById('cap-forn-tbody'); if(tb)tb.innerHTML=State.capFornecedores.map(f=>'<tr><td>'+f.doc+'</td><td>'+f.nome+'</td><td>'+f.tipo+'</td><td>'+(f.telefone||'-')+'</td><td>'+(f.obs||'-')+'</td><td><button class="row-act-btn edit" onclick="editCapFornecedor(\''+f.id+'\')">✎</button><button class="row-act-btn del" onclick="deleteCapFornecedor(\''+f.id+'\')">×</button></td></tr>').join('')||'<tr><td colspan="6"><div class="cap-empty">Nenhum fornecedor financeiro.</div></td></tr>'; }
 function exportCapCSV(){ const rows=getFilteredCapContas(); const csv=[['Tipo','Classe','Documento','Fonte','Fornecedor','Valor'],...rows.map(c=>[c.tipo,c.classe,c.documento,c.fonte,c.fornecedor,c.valor])].map(r=>r.join(';')).join('\n'); const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='contas_a_pagar.csv'; a.click(); }
 function renderFinanceiro(){
   refreshCapDatalists(); renderCapDashboard(); renderCapTable(); renderSaldos(); renderRelatorios(); renderHistorico(); renderFontesTable(); renderCapFornecedoresTable();
-  // ← MELHORIA: atualiza indicador de status do ciclo
+  // Atualiza indicador de status do ciclo
   const ind=document.getElementById('ciclo-status-indicator');
   if(ind) ind.style.display=State._solicitacaoExecutada?'flex':'none';
+  // Mostra/oculta botão de novo ciclo com base em se há ciclo aberto
+  const btnNovoCiclo=document.getElementById('btn-novo-ciclo');
+  if(btnNovoCiclo){
+    // Mostra o botão se o último ciclo foi encerrado (sem ciclo ativo) e há histórico
+    const hasCicloAberto=State.capCicloLabel||capCurrentWeekContas().length>0;
+    btnNovoCiclo.style.display=(State.capHistorico.length>0&&!hasCicloAberto)?'inline-flex':'none';
+  }
 }
 
 /* ============================================================
@@ -4257,8 +4450,15 @@ const DESPACHOS = {
    ============================================================ */
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + id).classList.add('active');
+  const pg = document.getElementById('page-' + id);
+  if (pg) pg.classList.add('active');
   document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active'));
+  // Highlight the matching sidebar button (skip those with setTimeout to avoid matching Relatórios)
+  document.querySelectorAll('.sidebar-btn').forEach(b => {
+    const oc = b.getAttribute('onclick') || '';
+    if (oc.includes("showPage('"+id+"')") && !oc.includes('setTimeout')) b.classList.add('active');
+  });
+  if (id === 'financeiro') renderFinanceiro();
 }
 
 /* ============================================================
@@ -5064,19 +5264,22 @@ async function driveSaveData() {
   showAutosave('saving');
 
   const payload = {
-    version: '2.1',
+    version: '2.2',
     savedAt: new Date().toISOString(),
-    fornecedores:    State.fornecedores,
-    stats:           State.stats,
-    favorites:       State.favorites,
-    dailyStats:      State.dailyStats,
-    monthlyStats:    State.monthlyStats,
-    capContas:       State.capContas       || [],
-    capSaldos:       State.capSaldos       || [],
-    capHistorico:    State.capHistorico    || [],
-    capFontes:       State.capFontes       || [],
-    capFornecedores: State.capFornecedores || [],
-    capAuditLog:     State.capAuditLog     || [],
+    fornecedores:         State.fornecedores,
+    stats:                State.stats,
+    favorites:            State.favorites,
+    dailyStats:           State.dailyStats,
+    monthlyStats:         State.monthlyStats,
+    capContas:            State.capContas            || [],
+    capSaldos:            State.capSaldos            || [],
+    capHistorico:         State.capHistorico         || [],
+    capFontes:            State.capFontes            || [],
+    capFornecedores:      State.capFornecedores      || [],
+    capAuditLog:          State.capAuditLog          || [],
+    capRelatoriosCiclos:  State.capRelatoriosCiclos  || [],
+    capCicloLabel:        State.capCicloLabel        || '',
+    capCicloInicioAt:     State.capCicloInicioAt     || null,
   };
   // Checksum de integridade
   payload._checksum = (payload.capContas.length * 7 + payload.capSaldos.length * 13 + payload.capHistorico.length * 31).toString(36);
@@ -5164,21 +5367,28 @@ async function driveLoadData() {
       }
     }
 
-    if (backup.fornecedores)     State.fornecedores    = backup.fornecedores;
-    if (backup.stats)            State.stats           = backup.stats;
-    if (backup.favorites)        State.favorites       = backup.favorites;
-    if (backup.dailyStats)       State.dailyStats      = backup.dailyStats;
-    if (backup.monthlyStats)     State.monthlyStats    = backup.monthlyStats;
-    if (backup.capContas)        State.capContas       = backup.capContas;
-    if (backup.capSaldos)        State.capSaldos       = backup.capSaldos;
-    if (backup.capHistorico)     State.capHistorico    = backup.capHistorico;
-    if (backup.capFontes)        State.capFontes       = backup.capFontes;
-    if (backup.capFornecedores)  State.capFornecedores = backup.capFornecedores;
-    if (backup.capAuditLog)      State.capAuditLog     = backup.capAuditLog;
+    if (backup.fornecedores)           State.fornecedores       = backup.fornecedores;
+    if (backup.stats)                  State.stats              = backup.stats;
+    if (backup.favorites)              State.favorites          = backup.favorites;
+    if (backup.dailyStats)             State.dailyStats         = backup.dailyStats;
+    if (backup.monthlyStats)           State.monthlyStats       = backup.monthlyStats;
+    if (backup.capContas)              State.capContas          = backup.capContas;
+    if (backup.capSaldos)              State.capSaldos          = backup.capSaldos;
+    if (backup.capHistorico)           State.capHistorico       = backup.capHistorico;
+    if (backup.capFontes)              State.capFontes          = backup.capFontes;
+    if (backup.capFornecedores)        State.capFornecedores    = backup.capFornecedores;
+    if (backup.capAuditLog)            State.capAuditLog        = backup.capAuditLog;
+    if (backup.capRelatoriosCiclos)    State.capRelatoriosCiclos= backup.capRelatoriosCiclos;
+    if (backup.capCicloLabel !== undefined)  State.capCicloLabel = backup.capCicloLabel || '';
+    if (backup.capCicloInicioAt !== undefined) State.capCicloInicioAt = backup.capCicloInicioAt || null;
 
     // Persiste localmente
     saveState();
     capPersist();
+    // Persiste campos de ciclo adicionais
+    Storage.set('capRelatoriosCiclos', State.capRelatoriosCiclos||[]);
+    Storage.set('capCicloLabel', State.capCicloLabel||'');
+    Storage.set('capCicloInicioAt', State.capCicloInicioAt||null);
     // ← CORREÇÃO 5: re-renderiza todos os módulos, incluindo fontes e fornecedores CAP
     renderFornecedoresTable();
     renderFinanceiro();
@@ -5239,7 +5449,7 @@ function toggleNoShow(checkbox) {
 function exportBackup() {
   // ← CORREÇÃO 4: backup inclui auditLog e checksum de integridade
   const payload = {
-    version: '2.1',
+    version: '2.2',
     exportedAt: new Date().toISOString(),
     fornecedores: State.fornecedores,
     stats: State.stats,
@@ -5252,6 +5462,9 @@ function exportBackup() {
     capFontes: State.capFontes||[],
     capFornecedores: State.capFornecedores||[],
     capAuditLog: State.capAuditLog||[],
+    capRelatoriosCiclos: State.capRelatoriosCiclos||[],
+    capCicloLabel: State.capCicloLabel||'',
+    capCicloInicioAt: State.capCicloInicioAt||null,
   };
   // Checksum simples de integridade
   payload._checksum = (payload.capContas.length * 7 + payload.capSaldos.length * 13 + payload.capHistorico.length * 31).toString(36);
@@ -5304,12 +5517,19 @@ function importBackup(event) {
       if (data.dailyStats)   State.dailyStats = data.dailyStats;
       if (data.monthlyStats) State.monthlyStats = data.monthlyStats;
       if (data.capAuditLog)  State.capAuditLog = data.capAuditLog;
+      if (data.capRelatoriosCiclos)      State.capRelatoriosCiclos = data.capRelatoriosCiclos;
+      if (data.capCicloLabel !== undefined)    State.capCicloLabel = data.capCicloLabel || '';
+      if (data.capCicloInicioAt !== undefined) State.capCicloInicioAt = data.capCicloInicioAt || null;
 
       // Auditoria da importação
       capAudit('BACKUP IMPORTADO', file.name, null, {versao: data.version, contas: (data.capContas||[]).length, historico: (data.capHistorico||[]).length});
 
       saveState();
       capPersist();
+      // Persiste campos adicionais de ciclo
+      Storage.set('capRelatoriosCiclos', State.capRelatoriosCiclos||[]);
+      Storage.set('capCicloLabel', State.capCicloLabel||'');
+      Storage.set('capCicloInicioAt', State.capCicloInicioAt||null);
       renderFornecedoresTable();
       renderFinanceiro();
       updateStats();
