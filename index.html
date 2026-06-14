@@ -5533,6 +5533,8 @@ const GDRIVE = {
   _autoSaveTimer: null,
   _pendingSave: false,
   _connected: false,
+  // ▼ CORREÇÃO PRINCIPAL: bloqueia saves até que o load da nuvem termine
+  _dataLoaded: false,
 };
 
 /* Inicializa o client do Supabase */
