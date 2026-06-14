@@ -3319,6 +3319,25 @@ function saveState() {
   if (typeof scheduleAutoSave === 'function') scheduleAutoSave();
 }
 
+/* ← CORREÇÃO SYNC: versão de saveState que persiste apenas em localStorage,
+   sem agendar autosave para o Supabase. Usada exclusivamente após
+   driveLoadData() para cachear localmente os dados recém-restaurados da
+   nuvem, sem disparar um upload imediato (que seria redundante e poderia
+   competir com o próprio load em andamento). */
+function saveStateLocalOnly() {
+  Storage.set('fornecedores', State.fornecedores);
+  Storage.set('stats', State.stats);
+  Storage.set('favorites', State.favorites);
+  Storage.set('dailyStats', State.dailyStats);
+  Storage.set('monthlyStats', State.monthlyStats);
+  if (State.capContas       !== undefined) Storage.set('capContas',       State.capContas);
+  if (State.capSaldos       !== undefined) Storage.set('capSaldos',       State.capSaldos);
+  if (State.capHistorico    !== undefined) Storage.set('capHistorico',    State.capHistorico);
+  if (State.capFontes       !== undefined) Storage.set('capFontes',       State.capFontes);
+  if (State.capFornecedores !== undefined) Storage.set('capFornecedores', State.capFornecedores);
+  if (State.capAuditLog     !== undefined) Storage.set('capAuditLog',     State.capAuditLog);
+}
+
 /* Incrementa contadores diário e mensal */
 function incrementDailyMonthly() {
   const today = new Date();
@@ -3418,6 +3437,21 @@ function capPersist(){
   Storage.set('capCicloInicioAt', State.capCicloInicioAt||null);
   Storage.set('capRelatoriosCiclos', State.capRelatoriosCiclos||[]);
   if (typeof scheduleAutoSave === 'function') scheduleAutoSave();
+}
+
+/* ← CORREÇÃO SYNC: equivalente local-only de capPersist, usada após
+   driveLoadData() para não disparar autosave durante/imediatamente após
+   o carregamento inicial. */
+function capPersistLocalOnly(){
+  Storage.set('capContas', State.capContas);
+  Storage.set('capSaldos', State.capSaldos);
+  Storage.set('capHistorico', State.capHistorico);
+  Storage.set('capFontes', State.capFontes);
+  Storage.set('capFornecedores', State.capFornecedores);
+  Storage.set('capAuditLog', State.capAuditLog);
+  Storage.set('capCicloLabel', State.capCicloLabel||'');
+  Storage.set('capCicloInicioAt', State.capCicloInicioAt||null);
+  Storage.set('capRelatoriosCiclos', State.capRelatoriosCiclos||[]);
 }
 function capId(p){ return p+'_'+Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
 function capDigits(v){ return String(v||'').replace(/\D/g,''); }
@@ -5533,8 +5567,12 @@ const GDRIVE = {
   _autoSaveTimer: null,
   _pendingSave: false,
   _connected: false,
-  // ▼ CORREÇÃO PRINCIPAL: bloqueia saves até que o load da nuvem termine
-  _dataLoaded: false,
+  // ← CORREÇÃO SYNC: controla se o carregamento inicial do Supabase já terminou.
+  // Enquanto for false, NENHUM salvamento (driveSaveData) pode ser executado,
+  // para impedir que um estado vazio/local sobrescreva dados remotos válidos.
+  _loadCompleted: false,
+  _loadInProgress: false,
+  _saveQueued: false,
 };
 
 /* Inicializa o client do Supabase */
@@ -5600,13 +5638,16 @@ async function connectGoogleDrive() {
     // Garante que existe a linha 'default'; cria se não existir
     const { data, error } = await GDRIVE._client
       .from('sigde_state')
-      .select('id')
+      .select('id, data')
       .eq('slug', GDRIVE.SLUG)
       .maybeSingle();
 
     if (error) throw error;
 
     if (!data) {
+      // ← CORREÇÃO: só cria registro novo com data:{} quando REALMENTE não existe
+      // nenhuma linha para este slug. Isso evita recriar/zerar dados em conexões
+      // subsequentes (o select acima já cobre o caso de já existir).
       const { error: insErr } = await GDRIVE._client
         .from('sigde_state')
         .insert({ slug: GDRIVE.SLUG, data: {} });
@@ -5618,17 +5659,45 @@ async function connectGoogleDrive() {
     updateDrivePanel(true);
     closeDriveModal();
     showToast('Supabase conectado com sucesso!', 'success');
-    // Restaura dados da nuvem
-    driveLoadData();
+
+    // ← CORREÇÃO SYNC: trava de segurança. Se por qualquer motivo
+    // driveLoadData() não concluir em 15s (rede muito lenta, etc.), libera o
+    // gate de salvamento para não deixar o app permanentemente travado em
+    // "somente leitura". O load em si continua em segundo plano.
+    const safetyTimer = setTimeout(() => {
+      if (!GDRIVE._loadCompleted) {
+        console.warn('Supabase: driveLoadData() demorou demais — liberando salvamentos por segurança.');
+        GDRIVE._loadCompleted = true;
+        if (GDRIVE._saveQueued) {
+          GDRIVE._saveQueued = false;
+          scheduleAutoSave();
+        }
+      }
+    }, 15000);
+
+    // ← CORREÇÃO SYNC: aguarda o carregamento dos dados remotos ANTES de liberar
+    // qualquer operação de salvamento. Enquanto _loadCompleted for false,
+    // driveSaveData() é bloqueado por scheduleAutoSave()/driveSaveData().
+    await driveLoadData();
+    clearTimeout(safetyTimer);
   } catch (e) {
     GDRIVE._connected = false;
     setDriveStatus('error', 'Erro na conexão');
     console.error('Supabase connect error:', e);
+    // ← Mesmo em erro de conexão, libera o flag para não travar o app
+    // indefinidamente em modo "somente local" (sem Supabase).
+    GDRIVE._loadCompleted = true;
   }
 }
 
 function disconnectDrive() {
   GDRIVE._connected = false;
+  // ← CORREÇÃO SYNC: ao desconectar, reseta o gate. Se o usuário reconectar
+  // depois, o fluxo de connectGoogleDrive() fará um novo driveLoadData()
+  // antes de liberar driveSaveData() novamente.
+  GDRIVE._loadCompleted = false;
+  GDRIVE._saveQueued = false;
+  clearTimeout(GDRIVE._autoSaveTimer);
   setDriveStatus('disconnected', 'Drive');
   updateDrivePanel(false);
   Storage.set('driveStatus', 'disconnected');
@@ -5638,6 +5707,17 @@ function disconnectDrive() {
 /* ── SAVE TO SUPABASE ── */
 async function driveSaveData() {
   if (!GDRIVE._client || !GDRIVE._connected) return;
+
+  // ← CORREÇÃO SYNC (causa raiz do bug): nunca salvar antes do carregamento
+  // inicial terminar. Se driveLoadData() ainda não completou, o State local
+  // pode estar vazio/padrão (primeira vez do navegador) e um save aqui
+  // sobrescreveria os dados válidos já existentes no Supabase.
+  // Em vez de descartar, marca para tentar novamente após o load concluir.
+  if (!GDRIVE._loadCompleted) {
+    GDRIVE._saveQueued = true;
+    return;
+  }
+
   setDriveStatus('syncing', 'Salvando…');
   showAutosave('saving');
 
@@ -5682,6 +5762,11 @@ async function driveSaveData() {
 /* ── LOAD FROM SUPABASE ── */
 async function driveLoadData() {
   if (!GDRIVE._client || !GDRIVE._connected) return;
+
+  // Evita execuções concorrentes (ex: clique duplo em "Reconectar")
+  if (GDRIVE._loadInProgress) return;
+  GDRIVE._loadInProgress = true;
+
   setDriveStatus('syncing', 'Restaurando…');
 
   try {
@@ -5695,6 +5780,10 @@ async function driveLoadData() {
 
     const backup = row && row.data ? row.data : null;
     if (!backup || !Object.keys(backup).length) {
+      // ← Registro remoto vazio (primeira vez do sistema). Não há nada para
+      // restaurar — o State local (possivelmente também vazio) permanece.
+      // Isso é seguro pois marcamos _loadCompleted=true a seguir, e o próximo
+      // save fará o upload do estado local para o Supabase normalmente.
       setDriveStatus('connected', 'Supabase conectado');
       return;
     }
@@ -5705,6 +5794,10 @@ async function driveLoadData() {
       if (expectedChecksum !== backup._checksum) {
         setDriveStatus('error', 'Checksum inválido');
         showToast('⚠️ Dados do Supabase com checksum inconsistente — restauração abortada por segurança.', 'error');
+        // ← CORREÇÃO: aborta a restauração, mas NÃO libera salvamentos
+        // automáticos. Isso impede que um estado local divergente sobrescreva
+        // os dados remotos suspeitos. É necessário reconectar/verificar
+        // manualmente para tentar novamente.
         return;
       }
     }
@@ -5724,9 +5817,9 @@ async function driveLoadData() {
     if (backup.capCicloLabel !== undefined)  State.capCicloLabel = backup.capCicloLabel || '';
     if (backup.capCicloInicioAt !== undefined) State.capCicloInicioAt = backup.capCicloInicioAt || null;
 
-    // Persiste localmente
-    saveState();
-    capPersist();
+    // Persiste localmente (cache para a próxima abertura do navegador)
+    saveStateLocalOnly();
+    capPersistLocalOnly();
     // Persiste campos de ciclo adicionais
     Storage.set('capRelatoriosCiclos', State.capRelatoriosCiclos||[]);
     Storage.set('capCicloLabel', State.capCicloLabel||'');
@@ -5742,12 +5835,40 @@ async function driveLoadData() {
   } catch(e) {
     setDriveStatus('error', 'Erro ao restaurar');
     console.error('Supabase restore error:', e);
+  } finally {
+    GDRIVE._loadInProgress = false;
+    // ← CORREÇÃO SYNC: libera o gate de salvamento somente APÓS o carregamento
+    // (sucesso, vazio ou erro de leitura) ter sido concluído. A partir daqui,
+    // driveSaveData() pode operar com segurança, pois o State já reflete os
+    // dados remotos (quando existentes) mesclados/restaurados.
+    // Exceção: se a validação de checksum falhou (return acima dentro do try),
+    // o gate permanece fechado para evitar sobrescrever dados suspeitos.
+    if (!GDRIVE._loadCompleted && GDRIVE._connected) {
+      // Verifica se o motivo de não ter chegado aqui foi checksum inválido
+      // (nesse caso setDriveStatus já está em 'error' com texto específico).
+      const statusTxt = document.getElementById('gdrive-status-text');
+      const checksumFailed = statusTxt && statusTxt.textContent === 'Checksum inválido';
+      if (!checksumFailed) {
+        GDRIVE._loadCompleted = true;
+        if (GDRIVE._saveQueued) {
+          GDRIVE._saveQueued = false;
+          scheduleAutoSave();
+        }
+      }
+    }
   }
 }
 
 /* ── AUTO-SAVE: dispara 3s após qualquer alteração ── */
 function scheduleAutoSave() {
   if (!GDRIVE._client || !GDRIVE._connected) return;
+  // ← CORREÇÃO SYNC: se o carregamento inicial ainda não terminou, não cria
+  // o timer agora — apenas marca que há um save pendente. driveLoadData()
+  // disparará scheduleAutoSave() novamente quando _loadCompleted=true.
+  if (!GDRIVE._loadCompleted) {
+    GDRIVE._saveQueued = true;
+    return;
+  }
   clearTimeout(GDRIVE._autoSaveTimer);
   GDRIVE._autoSaveTimer = setTimeout(() => driveSaveData(), 3000);
 }
