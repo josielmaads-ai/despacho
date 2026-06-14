@@ -5483,7 +5483,10 @@ function showToast(message, type = 'info') {
   toast.className = `toast ${type}`;
   toast.innerHTML = icons[type] + `<span>${message}</span>`;
   container.appendChild(toast);
-  setTimeout(() => toast.remove(), 3100);
+  // ← Mensagens de erro (geralmente mais longas, com detalhes técnicos do
+  // Supabase) ficam visíveis por mais tempo para permitir leitura/diagnóstico.
+  const duration = (type === 'error') ? 9000 : 3100;
+  setTimeout(() => toast.remove(), duration);
 }
 
 /* ============================================================
@@ -5684,6 +5687,8 @@ async function connectGoogleDrive() {
     GDRIVE._connected = false;
     setDriveStatus('error', 'Erro na conexão');
     console.error('Supabase connect error:', e);
+    const msg = (e && (e.message || e.error_description || e.hint || JSON.stringify(e))) || 'desconhecido';
+    showToast('❌ Falha ao conectar no Supabase: ' + msg, 'error');
     // ← Mesmo em erro de conexão, libera o flag para não travar o app
     // indefinidamente em modo "somente local" (sem Supabase).
     GDRIVE._loadCompleted = true;
@@ -5743,10 +5748,24 @@ async function driveSaveData() {
   payload._checksum = (payload.capContas.length * 7 + payload.capSaldos.length * 13 + payload.capHistorico.length * 31).toString(36);
 
   try {
-    const { error } = await GDRIVE._client
+    let { error } = await GDRIVE._client
       .from('sigde_state')
       .update({ data: payload, checksum: payload._checksum, version: payload.version })
       .eq('slug', GDRIVE.SLUG);
+
+    // ← CORREÇÃO: se a tabela não tiver as colunas extras `checksum`/`version`
+    // (schema mínimo: id, slug, data), o update acima falha com erro de coluna
+    // inexistente (ex: PGRST204 / "column ... does not exist"). Nesse caso,
+    // tenta novamente salvando apenas a coluna `data` (que já contém
+    // version/checksum dentro do próprio JSON).
+    if (error && /column|schema cache/i.test(error.message || '')) {
+      console.warn('Supabase: colunas extras (checksum/version) não encontradas, salvando apenas em "data".', error.message);
+      const retry = await GDRIVE._client
+        .from('sigde_state')
+        .update({ data: payload })
+        .eq('slug', GDRIVE.SLUG);
+      error = retry.error;
+    }
 
     if (error) throw error;
 
@@ -5756,6 +5775,10 @@ async function driveSaveData() {
     setDriveStatus('error', 'Erro ao salvar');
     showAutosave('error');
     console.error('Supabase save error:', e);
+    // ← Exibe a mensagem real do erro (RLS, schema, rede, etc.) para
+    // facilitar o diagnóstico — em vez de apenas "Erro ao salvar".
+    const msg = (e && (e.message || e.error_description || e.hint || JSON.stringify(e))) || 'desconhecido';
+    showToast('❌ Falha ao salvar no Supabase: ' + msg, 'error');
   }
 }
 
@@ -5835,6 +5858,8 @@ async function driveLoadData() {
   } catch(e) {
     setDriveStatus('error', 'Erro ao restaurar');
     console.error('Supabase restore error:', e);
+    const msg = (e && (e.message || e.error_description || e.hint || JSON.stringify(e))) || 'desconhecido';
+    showToast('❌ Falha ao restaurar do Supabase: ' + msg, 'error');
   } finally {
     GDRIVE._loadInProgress = false;
     // ← CORREÇÃO SYNC: libera o gate de salvamento somente APÓS o carregamento
