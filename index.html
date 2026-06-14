@@ -11,29 +11,20 @@
 
 <!-- 
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                    🔑 CONFIGURAÇÃO GOOGLE DRIVE                              ║
+║                    🔑 CONFIGURAÇÃO SUPABASE                                  ║
 ║                                                                              ║
-║  ⚠️ ANTES DE USAR: Substitua os valores abaixo pelas suas credenciais       ║
-║                                                                              ║
-║  📍 Onde conseguir:                                                          ║
-║     1. Acesse: https://console.cloud.google.com                              ║
-║     2. Vá em "APIs e serviços" → "Credenciais"                              ║
-║     3. Crie um "ID do cliente OAuth" para aplicativo web                     ║
-║     4. Crie uma "Chave de API"                                              ║
-║                                                                              ║
-║  📝 Cole abaixo (mantenha as aspas simples ' '):                            ║
+║  Backend de persistência e sincronização (substitui o Google Drive).       ║
+║  Project URL e Anon Key já configurados abaixo.                             ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 -->
 <script>
-// ⬇️⬇️⬇️ COLE SUAS CREDENCIAIS AQUI ⬇️⬇️⬇️
-
-const GOOGLE_CREDENTIALS = {
-  CLIENT_ID: '650384223031-5022u8tv9pa4otrhamr77f2lmjsrbppn.apps.googleusercontent.com',
-  API_KEY: 'AIzaSyBWMZ47q6B2fhUyPnbfgB2cKLCH9qQfFVM'
+const SUPABASE_CREDENTIALS = {
+  URL: 'https://qnxhcxhrfxmsbgvvbwhc.supabase.co',
+  ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFueGhjeGhyZnhtc2JndnZid2hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzODM3ODAsImV4cCI6MjA5Njk1OTc4MH0.Q5xzXJWD6Ho915M8ySCYFC_AJRfd-dxU4ODtqC01_dM'
 };
-
-// ⬆️⬆️⬆️ NÃO ALTERE NADA ABAIXO DESTA LINHA ⬆️⬆️⬆️
 </script>
+<!-- Supabase JS Client -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 /* ============================================================
@@ -1973,6 +1964,34 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
   font-weight: 700;
 }
 
+/* Tabela de Lançamentos: layout fixo para caber sem rolagem horizontal */
+.cap-table-lanc {
+  table-layout: fixed;
+}
+.cap-table-lanc th,
+.cap-table-lanc td {
+  padding: 10px 8px;
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cap-table-lanc .td-doc,
+.cap-table-lanc .td-fonte {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cap-table-lanc .td-fornecedor {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cap-table-lanc td:last-child,
+.cap-table-lanc th:last-child {
+  overflow: visible;
+  white-space: nowrap;
+}
+
 /* Row actions */
 .row-actions { display: flex; gap: 4px; }
 .row-act-btn {
@@ -2378,7 +2397,7 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
           Limpar Dados
         </button>
-        <div class="gdrive-status-bar disconnected" id="gdrive-status-btn" onclick="openDriveModal()" title="Status Google Drive">
+        <div class="gdrive-status-bar disconnected" id="gdrive-status-btn" onclick="openDriveModal()" title="Status Supabase">
           <span class="gdrive-status-dot"></span>
           <span id="gdrive-status-text">Drive</span>
         </div>
@@ -2736,8 +2755,21 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
             </div>
           </div>
           <div class="cap-table-wrap">
-            <table class="cap-table">
-              <thead><tr><th onclick="sortCap('tipo')">Tipo</th><th onclick="sortCap('classe')">Classe</th><th onclick="sortCap('documento')">Documento</th><th>Fonte</th><th>CPF/CNPJ</th><th>Fornecedor</th><th onclick="sortCap('valor')">Valor</th><th>Pago</th><th>Competência</th><th>Solicitação</th><th>Pagamento</th><th>Situação</th><th>Ações</th></tr></thead>
+            <table class="cap-table cap-table-lanc">
+              <colgroup>
+                <col style="width:6%">
+                <col style="width:6%">
+                <col style="width:13%">
+                <col style="width:9%">
+                <col style="width:24%">
+                <col style="width:9%">
+                <col style="width:7%">
+                <col style="width:8%">
+                <col style="width:8%">
+                <col style="width:9%">
+                <col style="width:11%">
+              </colgroup>
+              <thead><tr><th onclick="sortCap('tipo')">Tipo</th><th onclick="sortCap('classe')">Classe</th><th onclick="sortCap('documento')">Documento</th><th>Fonte</th><th>Fornecedor</th><th onclick="sortCap('valor')">Valor</th><th>Pago</th><th>Solicitação</th><th>Pagamento</th><th>Situação</th><th>Ações</th></tr></thead>
               <tbody id="cap-table-body"></tbody>
             </table>
           </div>
@@ -2804,7 +2836,10 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
           <div class="cap-table-card"><div class="cap-table-header"><div class="cap-table-title">Ranking por Fornecedor</div></div><div id="cap-ranking-forn" class="saldo-body" style="max-height:320px;overflow-y:auto"></div></div>
           <div class="cap-table-card"><div class="cap-table-header"><div class="cap-table-title">Distribuição por Fonte</div></div><div id="cap-ranking-fonte" class="saldo-body" style="max-height:320px;overflow-y:auto"></div></div>
         </div>
-        <!-- RELATÓRIO DE CICLOS -->
+      </div>
+
+      <div id="cap-tab-historico" class="cap-tab-content">
+        <!-- RELATÓRIO DE CICLOS (movido da aba Relatórios) -->
         <div class="cap-table-card" style="margin-bottom:16px">
           <div class="cap-table-header">
             <div class="cap-table-title">
@@ -2815,9 +2850,6 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
           </div>
           <div style="padding:16px" id="cap-rel-ciclos"></div>
         </div>
-      </div>
-
-      <div id="cap-tab-historico" class="cap-tab-content">
         <div class="cap-table-card">
           <div class="cap-table-header">
             <div class="cap-table-title">
@@ -2827,8 +2859,10 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
             <div style="font-size:12px;color:var(--text-muted)" id="cap-hist-count"></div>
           </div>
           <div class="saldo-body" id="cap-historico-list"></div>
+          <div class="cap-pagination"><div class="cap-pag-info" id="cap-hist-pag-info"></div><div class="cap-pag-btns" id="cap-hist-pag-btns"></div></div>
         </div>
       </div>
+
 
       <!-- ── ABA AUDITORIA ── -->
       <div id="cap-tab-auditoria" class="cap-tab-content">
@@ -2954,7 +2988,7 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
 
       <div class="section-header">
         <div>
-          <div class="section-title">Google Drive</div>
+          <div class="section-title">Supabase</div>
           <div class="section-subtitle">Sincronização automática na nuvem</div>
         </div>
       </div>
@@ -2964,7 +2998,7 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/></svg>
         </div>
         <div class="drive-panel-info">
-          <div class="drive-panel-title" id="drive-panel-title">Google Drive — Desconectado</div>
+          <div class="drive-panel-title" id="drive-panel-title">Supabase — Desconectado</div>
           <div class="drive-panel-sub" id="drive-panel-sub">Conecte para salvar automaticamente seus dados na nuvem</div>
         </div>
         <div class="drive-panel-actions">
@@ -3225,12 +3259,12 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
         <!-- Cloud icon -->
         <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/></svg>
       </div>
-      <div class="gdrive-title">Sincronização com Google Drive</div>
-      <div class="gdrive-desc">Conecte sua conta Google para salvar e restaurar seus dados automaticamente na nuvem.</div>
+      <div class="gdrive-title">Sincronização com Supabase</div>
+      <div class="gdrive-desc">Conecte ao banco de dados Supabase para salvar e restaurar seus dados automaticamente na nuvem.</div>
       <div class="gdrive-actions">
         <button class="btn-gdrive" onclick="connectGoogleDrive()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-          Conectar com Google Drive
+          Conectar com Supabase
         </button>
         <button class="btn-later" onclick="closeDriveModal()">Agora não</button>
       </div>
@@ -3351,6 +3385,7 @@ Object.assign(State, {
   capCicloInicioAt: Storage.get('capCicloInicioAt', null),
   capRelatoriosCiclos: Storage.get('capRelatoriosCiclos', []),
   capPage: 1,
+  capHistPage: 1,
   capSort: { key:'createdAt', dir:'desc' },
   capTipo: 'EXE',
   capClasse: 'NP',
@@ -3908,7 +3943,7 @@ function getFilteredCapContas(){
 }
 function capFmtDate(d){ if(!d)return '-'; const p=d.split('-'); if(p.length===3)return p[2]+'/'+p[1]+'/'+p[0]; return d; }
 function sortCap(k){ State.capSort={key:k,dir:State.capSort.key===k&&State.capSort.dir==='asc'?'desc':'asc'}; renderCapTable(); }
-function renderCapTable(){ const tb=document.getElementById('cap-table-body'); if(!tb)return; const rows=getFilteredCapContas(); const per=20,pages=Math.max(1,Math.ceil(rows.length/per)); State.capPage=Math.min(State.capPage||1,pages); const page=rows.slice((State.capPage-1)*per,State.capPage*per); tb.innerHTML=page.length?page.map(c=>{const f=fonteByCodigo(c.fonte); return '<tr><td><span class="status-badge '+(c.tipo==='EXE'?'badge-exe':'badge-rap')+'">'+c.tipo+'</span></td><td>'+c.classe+'</td><td class="td-doc">'+c.documento+'</td><td class="td-fonte"><span class="fonte-dot" style="background:'+f.cor+'"></span> <strong>'+c.fonte+'</strong></td><td class="td-cpfcnpj">'+(c.docFornecedor||'-')+'</td><td class="td-fornecedor">'+c.fornecedor+'</td><td class="td-valor">'+capMoney(c.valor)+'</td><td>'+capStatusBadge(c.pago)+'</td><td>'+(c.competencia||'-')+'</td><td>'+capFmtDate(c.dataSolicitacao)+'</td><td>'+capFmtDate(c.dataPagamento)+'</td><td>'+capSituacaoBadge(c.situacao)+'</td><td><div class="row-actions"><button class="row-act-btn edit" onclick="editCapConta(\''+c.id+'\')">✎</button><button class="row-act-btn detail" onclick="detailCapConta(\''+c.id+'\')">i</button><button class="row-act-btn del" onclick="deleteCapConta(\''+c.id+'\')">×</button></div></td></tr>';}).join(''):'<tr><td colspan="13"><div class="cap-empty">Nenhuma conta cadastrada.</div></td></tr>'; const info=document.getElementById('cap-pag-info'); if(info)info.textContent=rows.length+' registros | página '+State.capPage+' de '+pages; const btns=document.getElementById('cap-pag-btns'); if(btns)btns.innerHTML='<button class="cap-pag-btn" onclick="State.capPage--;renderCapTable()" '+(State.capPage<=1?'disabled':'')+'>‹</button><button class="cap-pag-btn active">'+State.capPage+'</button><button class="cap-pag-btn" onclick="State.capPage++;renderCapTable()" '+(State.capPage>=pages?'disabled':'')+'>›</button>'; }
+function renderCapTable(){ const tb=document.getElementById('cap-table-body'); if(!tb)return; const rows=getFilteredCapContas(); const per=20,pages=Math.max(1,Math.ceil(rows.length/per)); State.capPage=Math.min(State.capPage||1,pages); const page=rows.slice((State.capPage-1)*per,State.capPage*per); tb.innerHTML=page.length?page.map(c=>{const f=fonteByCodigo(c.fonte); return '<tr><td><span class="status-badge '+(c.tipo==='EXE'?'badge-exe':'badge-rap')+'">'+c.tipo+'</span></td><td>'+c.classe+'</td><td class="td-doc">'+c.documento+'</td><td class="td-fonte"><span class="fonte-dot" style="background:'+f.cor+'"></span> <strong>'+c.fonte+'</strong></td><td class="td-fornecedor">'+c.fornecedor+'</td><td class="td-valor">'+capMoney(c.valor)+'</td><td>'+capStatusBadge(c.pago)+'</td><td>'+capFmtDate(c.dataSolicitacao)+'</td><td>'+capFmtDate(c.dataPagamento)+'</td><td>'+capSituacaoBadge(c.situacao)+'</td><td><div class="row-actions"><button class="row-act-btn edit" onclick="editCapConta(\''+c.id+'\')">✎</button><button class="row-act-btn detail" onclick="detailCapConta(\''+c.id+'\')">i</button><button class="row-act-btn del" onclick="deleteCapConta(\''+c.id+'\')">×</button></div></td></tr>';}).join(''):'<tr><td colspan="11"><div class="cap-empty">Nenhuma conta cadastrada.</div></td></tr>'; const info=document.getElementById('cap-pag-info'); if(info)info.textContent=rows.length+' registros | página '+State.capPage+' de '+pages; const btns=document.getElementById('cap-pag-btns'); if(btns)btns.innerHTML='<button class="cap-pag-btn" onclick="State.capPage--;renderCapTable()" '+(State.capPage<=1?'disabled':'')+'>‹</button><button class="cap-pag-btn active">'+State.capPage+'</button><button class="cap-pag-btn" onclick="State.capPage++;renderCapTable()" '+(State.capPage>=pages?'disabled':'')+'>›</button>'; }
 function clearCapFilters(){ ['cap-filter-search','cap-filter-tipo','cap-filter-classe','cap-filter-fonte','cap-filter-pago','cap-filter-situacao','cap-filter-competencia','cap-filter-valor-min','cap-filter-valor-max','cap-filter-data-ini','cap-filter-data-fim'].forEach(id=>{const e=document.getElementById(id); if(e)e.value='';}); renderCapTable(); }
 function editCapConta(id){
   const c=State.capContas.find(x=>x.id===id);
@@ -4385,7 +4420,8 @@ function renderCapDashboard(){
 function renderRelatorios(){
   const el=document.getElementById('cap-report-cards');
   if(!el)return;
-  const contas=State.capContas;
+  // Apenas o ciclo atualmente aberto (sem cicloId = não arquivado)
+  const contas=capCurrentWeekContas();
   const total=contas.reduce((a,c)=>a+c.valor,0);
   const pago=contas.filter(c=>c.pago==='sim').reduce((a,c)=>a+c.valor,0);
   const pendente=contas.filter(c=>c.pago==='nao').reduce((a,c)=>a+c.valor,0);
@@ -4415,55 +4451,55 @@ function renderRelatorios(){
       <div style="width:${pctRap}%;background:var(--accent-amber);transition:width .5s"></div>
     </div>`;
 
-  renderRanking('cap-ranking-forn','fornecedor');
-  renderRanking('cap-ranking-fonte','fonte');
-
-  // ── RELATÓRIO DE CICLOS ──
+  renderRanking('cap-ranking-forn','fornecedor',contas);
+  renderRanking('cap-ranking-fonte','fonte',contas);
+}
+/* ── RELATÓRIO POR CICLO (movido para a aba Histórico Semanal) ── */
+function renderRelatorioCiclos(){
   const relCiclosEl=document.getElementById('cap-rel-ciclos');
-  if(relCiclosEl){
-    const ciclos=State.capRelatoriosCiclos||[];
-    if(!ciclos.length){
-      relCiclosEl.innerHTML='<div class="cap-empty" style="padding:32px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:40px;height:40px;display:block;margin:0 auto 12px;opacity:.4"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Nenhum ciclo finalizado ainda.</div>';
-    } else {
-      relCiclosEl.innerHTML=ciclos.map(c=>{
-        // Tabela por fonte
-        const linhasFonte=(c.rows||[]).map(r=>`
-          <tr>
-            <td><span class="fonte-dot" style="background:${fonteByCodigo(r.fonte).cor}"></span> <span style="font-family:var(--font-mono);color:var(--accent-amber);font-weight:700">${r.fonte}</span></td>
-            <td style="font-weight:700;color:${r.solicitar>0?'var(--accent-amber)':'var(--accent-green)'};">${capMoney(r.solicitar)}</td>
-            <td><span class="status-badge ${r.tipo==='EXE'?'badge-exe':'badge-rap'}">${r.tipo}</span></td>
-          </tr>`).join('');
-        return `
-        <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px">
-          <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px">
-            <div>
-              <div style="font-size:13px;font-weight:800;color:var(--accent-teal)">${c.cicloLabel}</div>
-              <div style="font-size:11px;color:var(--text-muted);margin-top:2px">Encerrado em ${new Date(c.finalizadoEm).toLocaleString('pt-BR')} · ${c.totalContas} conta(s)</div>
-              ${c.numeroPF?`<div style="font-size:11px;margin-top:4px;color:var(--accent-purple);font-family:var(--font-mono)">PF: ${c.numeroPF}</div>`:''}
-            </div>
-            <div style="display:flex;gap:16px;flex-wrap:wrap">
-              <div style="text-align:right"><div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em">EXE</div><div style="font-size:14px;font-weight:700;color:var(--accent-teal)">${capMoney(c.exeTotal||0)}</div></div>
-              <div style="text-align:right"><div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em">RAP</div><div style="font-size:14px;font-weight:700;color:var(--accent-amber)">${capMoney(c.rapTotal||0)}</div></div>
-              <div style="text-align:right"><div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em">Total Solic.</div><div style="font-size:14px;font-weight:700;color:var(--text-primary)">${capMoney(c.totalSolicitado)}</div></div>
-              <div style="text-align:right"><div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em">Total Pago</div><div style="font-size:14px;font-weight:700;color:var(--accent-green)">${capMoney(c.totalPago||0)}</div></div>
-            </div>
+  if(!relCiclosEl)return;
+  const ciclos=State.capRelatoriosCiclos||[];
+  if(!ciclos.length){
+    relCiclosEl.innerHTML='<div class="cap-empty" style="padding:32px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:40px;height:40px;display:block;margin:0 auto 12px;opacity:.4"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Nenhum ciclo finalizado ainda.</div>';
+  } else {
+    relCiclosEl.innerHTML=ciclos.map(c=>{
+      // Tabela por fonte
+      const linhasFonte=(c.rows||[]).map(r=>`
+        <tr>
+          <td><span class="fonte-dot" style="background:${fonteByCodigo(r.fonte).cor}"></span> <span style="font-family:var(--font-mono);color:var(--accent-amber);font-weight:700">${r.fonte}</span></td>
+          <td style="font-weight:700;color:${r.solicitar>0?'var(--accent-amber)':'var(--accent-green)'};">${capMoney(r.solicitar)}</td>
+          <td><span class="status-badge ${r.tipo==='EXE'?'badge-exe':'badge-rap'}">${r.tipo}</span></td>
+        </tr>`).join('');
+      return `
+      <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+          <div>
+            <div style="font-size:13px;font-weight:800;color:var(--accent-teal)">${c.cicloLabel}</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px">Encerrado em ${new Date(c.finalizadoEm).toLocaleString('pt-BR')} · ${c.totalContas} conta(s)</div>
+            ${c.numeroPF?`<div style="font-size:11px;margin-top:4px;color:var(--accent-purple);font-family:var(--font-mono)">PF: ${c.numeroPF}</div>`:''}
           </div>
-          <table style="width:100%;border-collapse:collapse;font-size:12px">
-            <thead><tr style="background:var(--bg-card)">
-              <th style="padding:6px 10px;text-align:left;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);border-bottom:1px solid var(--border)">Fonte</th>
-              <th style="padding:6px 10px;text-align:left;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);border-bottom:1px solid var(--border)">Valor R$</th>
-              <th style="padding:6px 10px;text-align:left;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);border-bottom:1px solid var(--border)">Período</th>
-            </tr></thead>
-            <tbody>${linhasFonte||'<tr><td colspan="3" style="padding:10px;color:var(--text-muted);font-size:12px">—</td></tr>'}</tbody>
-          </table>
-        </div>`;
-      }).join('');
-    }
+          <div style="display:flex;gap:16px;flex-wrap:wrap">
+            <div style="text-align:right"><div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em">EXE</div><div style="font-size:14px;font-weight:700;color:var(--accent-teal)">${capMoney(c.exeTotal||0)}</div></div>
+            <div style="text-align:right"><div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em">RAP</div><div style="font-size:14px;font-weight:700;color:var(--accent-amber)">${capMoney(c.rapTotal||0)}</div></div>
+            <div style="text-align:right"><div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em">Total Solic.</div><div style="font-size:14px;font-weight:700;color:var(--text-primary)">${capMoney(c.totalSolicitado)}</div></div>
+            <div style="text-align:right"><div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em">Total Pago</div><div style="font-size:14px;font-weight:700;color:var(--accent-green)">${capMoney(c.totalPago||0)}</div></div>
+          </div>
+        </div>
+        <table style="width:100%;border-collapse:collapse;font-size:12px">
+          <thead><tr style="background:var(--bg-card)">
+            <th style="padding:6px 10px;text-align:left;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);border-bottom:1px solid var(--border)">Fonte</th>
+            <th style="padding:6px 10px;text-align:left;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);border-bottom:1px solid var(--border)">Valor R$</th>
+            <th style="padding:6px 10px;text-align:left;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);border-bottom:1px solid var(--border)">Período</th>
+          </tr></thead>
+          <tbody>${linhasFonte||'<tr><td colspan="3" style="padding:10px;color:var(--text-muted);font-size:12px">—</td></tr>'}</tbody>
+        </table>
+      </div>`;
+    }).join('');
   }
 }
-function renderRanking(id,key){
+function renderRanking(id,key,contasList){
   const d={};
-  State.capContas.forEach(c=>{const k=c[key]||'-'; d[k]=(d[k]||0)+c.valor;});
+  (contasList||State.capContas).forEach(c=>{const k=c[key]||'-'; d[k]=(d[k]||0)+c.valor;});
   const el=document.getElementById(id);
   if(!el)return;
   const entries=Object.entries(d).sort((a,b)=>b[1]-a[1]);
@@ -4547,11 +4583,17 @@ function pfSalvarHistorico(cicloId){
 }
 
 function renderHistorico(){
+  renderRelatorioCiclos();
   const el=document.getElementById('cap-historico-list');
   if(!el)return;
   const cnt=document.getElementById('cap-hist-count');
   if(cnt)cnt.textContent=State.capHistorico.length+' ciclos finalizados';
-  el.innerHTML=State.capHistorico.length?State.capHistorico.map((h,idx)=>{
+
+  const per=10, total=State.capHistorico.length, pages=Math.max(1,Math.ceil(total/per));
+  State.capHistPage=Math.min(Math.max(1,State.capHistPage||1),pages);
+  const pageItems=State.capHistorico.slice((State.capHistPage-1)*per,State.capHistPage*per);
+
+  el.innerHTML=pageItems.length?pageItems.map((h,idx)=>{
     const exeSol=h.rows?.filter(r=>r.tipo==='EXE').reduce((a,r)=>a+r.solicitar,0)||0;
     const rapSol=h.rows?.filter(r=>r.tipo==='RAP').reduce((a,r)=>a+r.solicitar,0)||0;
     const lancs=h.lancamentosDetalhes||[];
@@ -4626,6 +4668,11 @@ function renderHistorico(){
       </div>
     `;
   }).join(''):'<div class="cap-empty" style="padding:40px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Nenhum ciclo finalizado.</div>';
+
+  const info=document.getElementById('cap-hist-pag-info');
+  if(info)info.textContent=total+' ciclo(s) | página '+State.capHistPage+' de '+pages;
+  const btns=document.getElementById('cap-hist-pag-btns');
+  if(btns)btns.innerHTML='<button class="cap-pag-btn" onclick="State.capHistPage--;renderHistorico()" '+(State.capHistPage<=1?'disabled':'')+'>‹</button><button class="cap-pag-btn active">'+State.capHistPage+'</button><button class="cap-pag-btn" onclick="State.capHistPage++;renderHistorico()" '+(State.capHistPage>=pages?'disabled':'')+'>›</button>';
 }
 function refreshCapDatalists(){
   // Datalist para fonte (legado / filtros)
@@ -5470,64 +5517,40 @@ document.addEventListener('keydown', e => {
 });
 
 /* ============================================================
-   GOOGLE DRIVE INTEGRATION
-   GitHub Pages compatible: usa gapi + OAuth2 + Drive REST API
-   Salva um único arquivo JSON: sigde_data.json na raiz do Drive
+   SUPABASE INTEGRATION
+   GitHub Pages compatible: usa @supabase/supabase-js (CDN)
+   Salva um único registro JSON na tabela public.sigde_state
+   (substitui o arquivo sigde_data.json que era salvo no Drive)
    ============================================================ */
 const GDRIVE = {
-  // ✅ Configuração movida para o topo do arquivo (procure por GOOGLE_CREDENTIALS)
-  CLIENT_ID: GOOGLE_CREDENTIALS.CLIENT_ID,
-  API_KEY:   GOOGLE_CREDENTIALS.API_KEY,
-  SCOPES:    'https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.file',
-  FILE_NAME: 'sigde_data.json',
-  FOLDER:    'appDataFolder',              // pasta isolada do app
+  URL:      SUPABASE_CREDENTIALS.URL,
+  ANON_KEY: SUPABASE_CREDENTIALS.ANON_KEY,
+  SLUG:     'default',
 
   // Estado interno
-  _tokenClient: null,
-  _accessToken: null,
-  _fileId: null,
+  _client: null,
   _initialized: false,
   _autoSaveTimer: null,
   _pendingSave: false,
+  _connected: false,
 };
 
-/* Carrega a biblioteca gapi + google accounts */
+/* Inicializa o client do Supabase */
 function loadGapiScripts() {
-  if (document.getElementById('gapi-script')) return;
-  const s1 = document.createElement('script');
-  s1.id  = 'gapi-script';
-  s1.src = 'https://apis.google.com/js/api.js';
-  s1.onload = () => {
-    gapi.load('client', () => {
-      gapi.client.init({
-        apiKey: GDRIVE.API_KEY,
-        discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
-      }).then(() => { GDRIVE._initialized = true; });
-    });
-  };
-  document.head.appendChild(s1);
-
-  const s2 = document.createElement('script');
-  s2.src = 'https://accounts.google.com/gsi/client';
-  s2.onload = () => {
-    if (GDRIVE.CLIENT_ID === 'SEU_CLIENT_ID_AQUI.apps.googleusercontent.com') return;
-    GDRIVE._tokenClient = google.accounts.oauth2.initTokenClient({
-      client_id: GDRIVE.CLIENT_ID,
-      scope: GDRIVE.SCOPES,
-      callback: (resp) => {
-        if (resp.error) { setDriveStatus('error', 'Erro na autenticação'); return; }
-        GDRIVE._accessToken = resp.access_token;
-        gapi.client.setToken({ access_token: resp.access_token });
-        setDriveStatus('connected', 'Drive conectado');
-        updateDrivePanel(true);
-        closeDriveModal();
-        showToast('Google Drive conectado com sucesso!', 'success');
-        // Tenta restaurar dados da nuvem
-        driveLoadData();
-      },
-    });
-  };
-  document.head.appendChild(s2);
+  if (GDRIVE._initialized) return;
+  if (typeof supabase === 'undefined' || !supabase.createClient) {
+    // Biblioteca ainda não carregou — tenta novamente em breve
+    setTimeout(loadGapiScripts, 300);
+    return;
+  }
+  if (GDRIVE.URL.includes('SUA_PROJECT_URL') || GDRIVE.ANON_KEY.includes('SUA_ANON_KEY')) {
+    setDriveStatus('error', 'Configure o Supabase');
+    return;
+  }
+  GDRIVE._client = supabase.createClient(GDRIVE.URL, GDRIVE.ANON_KEY);
+  GDRIVE._initialized = true;
+  // Conecta automaticamente (sem necessidade de OAuth/login)
+  connectGoogleDrive();
 }
 
 /* ── STATUS UI ── */
@@ -5546,51 +5569,73 @@ function updateDrivePanel(connected) {
   const btn   = document.getElementById('drive-panel-btn');
   if (!title) return;
   if (connected) {
-    title.textContent = 'Google Drive — Conectado';
+    title.textContent = 'Supabase — Conectado';
     sub.textContent   = 'Dados sincronizados automaticamente a cada 3s após alteração';
-    btn.textContent   = 'Desconectar';
-    btn.onclick       = disconnectDrive;
-    btn.className     = 'btn btn-danger';
+    btn.textContent   = 'Reconectar';
+    btn.onclick       = connectGoogleDrive;
+    btn.className     = 'btn btn-ghost';
   } else {
-    title.textContent = 'Google Drive — Desconectado';
+    title.textContent = 'Supabase — Desconectado';
     sub.textContent   = 'Conecte para salvar automaticamente seus dados na nuvem';
     btn.textContent   = 'Conectar';
-    btn.onclick       = openDriveModal;
+    btn.onclick       = connectGoogleDrive;
     btn.className     = 'btn btn-ghost';
   }
 }
 
 /* ── CONNECT / DISCONNECT ── */
-function connectGoogleDrive() {
-  if (GDRIVE.CLIENT_ID === 'SEU_CLIENT_ID_AQUI.apps.googleusercontent.com') {
-    showToast('Configure o CLIENT_ID do Google no código!', 'error');
+async function connectGoogleDrive() {
+  if (GDRIVE.URL.includes('SUA_PROJECT_URL') || GDRIVE.ANON_KEY.includes('SUA_ANON_KEY')) {
+    showToast('Configure as credenciais do Supabase no código!', 'error');
     return;
   }
-  if (!GDRIVE._tokenClient) {
-    showToast('Aguarde a biblioteca Google carregar...', 'info');
+  if (!GDRIVE._client) {
     loadGapiScripts();
-    setTimeout(connectGoogleDrive, 1500);
     return;
   }
   setDriveStatus('syncing', 'Conectando…');
-  GDRIVE._tokenClient.requestAccessToken({ prompt: '' });
+  try {
+    // Garante que existe a linha 'default'; cria se não existir
+    const { data, error } = await GDRIVE._client
+      .from('sigde_state')
+      .select('id')
+      .eq('slug', GDRIVE.SLUG)
+      .maybeSingle();
+
+    if (error) throw error;
+
+    if (!data) {
+      const { error: insErr } = await GDRIVE._client
+        .from('sigde_state')
+        .insert({ slug: GDRIVE.SLUG, data: {} });
+      if (insErr) throw insErr;
+    }
+
+    GDRIVE._connected = true;
+    setDriveStatus('connected', 'Supabase conectado');
+    updateDrivePanel(true);
+    closeDriveModal();
+    showToast('Supabase conectado com sucesso!', 'success');
+    // Restaura dados da nuvem
+    driveLoadData();
+  } catch (e) {
+    GDRIVE._connected = false;
+    setDriveStatus('error', 'Erro na conexão');
+    console.error('Supabase connect error:', e);
+  }
 }
 
 function disconnectDrive() {
-  if (GDRIVE._accessToken) {
-    google.accounts.oauth2.revoke(GDRIVE._accessToken);
-  }
-  GDRIVE._accessToken = null;
-  GDRIVE._fileId = null;
+  GDRIVE._connected = false;
   setDriveStatus('disconnected', 'Drive');
   updateDrivePanel(false);
   Storage.set('driveStatus', 'disconnected');
-  showToast('Google Drive desconectado.', 'info');
+  showToast('Sincronização com Supabase desativada nesta sessão.', 'info');
 }
 
-/* ── SAVE TO DRIVE ── */
+/* ── SAVE TO SUPABASE ── */
 async function driveSaveData() {
-  if (!GDRIVE._accessToken) return;
+  if (!GDRIVE._client || !GDRIVE._connected) return;
   setDriveStatus('syncing', 'Salvando…');
   showAutosave('saving');
 
@@ -5614,86 +5659,50 @@ async function driveSaveData() {
   };
   // Checksum de integridade
   payload._checksum = (payload.capContas.length * 7 + payload.capSaldos.length * 13 + payload.capHistorico.length * 31).toString(36);
-  const content = JSON.stringify(payload, null, 2);
 
   try {
-    if (GDRIVE._fileId) {
-      // PATCH: atualiza conteúdo — ← CORREÇÃO 6: verifica resposta para detectar falha silenciosa
-      const patchResp = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${GDRIVE._fileId}?uploadType=media`, {
-        method: 'PATCH',
-        headers: {
-          Authorization: `Bearer ${GDRIVE._accessToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: content,
-      });
-      if (!patchResp.ok) {
-        // fileId pode estar inválido (arquivo deletado no Drive); força criação de novo arquivo
-        if (patchResp.status === 404) {
-          GDRIVE._fileId = null;
-          Storage.set('driveFileId', null);
-          // Chamada recursiva única para criar novo arquivo
-          return driveSaveData();
-        }
-        throw new Error('PATCH falhou: ' + patchResp.status);
-      }
-    } else {
-      // POST: cria arquivo
-      const meta = JSON.stringify({ name: GDRIVE.FILE_NAME, parents: [GDRIVE.FOLDER] });
-      const form = new FormData();
-      form.append('metadata', new Blob([meta], { type: 'application/json' }));
-      form.append('file',     new Blob([content], { type: 'application/json' }));
-      const resp = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${GDRIVE._accessToken}` },
-        body: form,
-      });
-      const data = await resp.json();
-      GDRIVE._fileId = data.id;
-      Storage.set('driveFileId', data.id);
-    }
-    setDriveStatus('connected', 'Drive sincronizado');
+    const { error } = await GDRIVE._client
+      .from('sigde_state')
+      .update({ data: payload, checksum: payload._checksum, version: payload.version })
+      .eq('slug', GDRIVE.SLUG);
+
+    if (error) throw error;
+
+    setDriveStatus('connected', 'Supabase sincronizado');
     showAutosave('saved');
   } catch(e) {
     setDriveStatus('error', 'Erro ao salvar');
     showAutosave('error');
+    console.error('Supabase save error:', e);
   }
 }
 
-/* ── LOAD FROM DRIVE ── */
+/* ── LOAD FROM SUPABASE ── */
 async function driveLoadData() {
-  if (!GDRIVE._accessToken) return;
+  if (!GDRIVE._client || !GDRIVE._connected) return;
   setDriveStatus('syncing', 'Restaurando…');
 
   try {
-    // ← CORREÇÃO 4: parâmetro spaces correto para busca no appDataFolder
-    const q = encodeURIComponent(`name='${GDRIVE.FILE_NAME}' and trashed=false`);
-    const listResp = await fetch(
-      `https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=${q}&fields=files(id,name,modifiedTime)`,
-      { headers: { Authorization: `Bearer ${GDRIVE._accessToken}` } }
-    );
-    const listData = await listResp.json();
-    if (!listData.files || listData.files.length === 0) {
-      setDriveStatus('connected', 'Drive conectado');
+    const { data: row, error } = await GDRIVE._client
+      .from('sigde_state')
+      .select('data')
+      .eq('slug', GDRIVE.SLUG)
+      .maybeSingle();
+
+    if (error) throw error;
+
+    const backup = row && row.data ? row.data : null;
+    if (!backup || !Object.keys(backup).length) {
+      setDriveStatus('connected', 'Supabase conectado');
       return;
     }
 
-    const fileId = listData.files[0].id;
-    GDRIVE._fileId = fileId;
-    Storage.set('driveFileId', fileId);
-
-    const contentResp = await fetch(
-      `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
-      { headers: { Authorization: `Bearer ${GDRIVE._accessToken}` } }
-    );
-    const backup = await contentResp.json();
-
-    // ← CORREÇÃO 4: validação de integridade no restore do Drive
+    // Validação de integridade
     if (backup._checksum) {
       const expectedChecksum = ((backup.capContas||[]).length * 7 + (backup.capSaldos||[]).length * 13 + (backup.capHistorico||[]).length * 31).toString(36);
       if (expectedChecksum !== backup._checksum) {
         setDriveStatus('error', 'Checksum inválido');
-        showToast('⚠️ Dados do Drive com checksum inconsistente — restauração abortada por segurança.', 'error');
+        showToast('⚠️ Dados do Supabase com checksum inconsistente — restauração abortada por segurança.', 'error');
         return;
       }
     }
@@ -5720,23 +5729,23 @@ async function driveLoadData() {
     Storage.set('capRelatoriosCiclos', State.capRelatoriosCiclos||[]);
     Storage.set('capCicloLabel', State.capCicloLabel||'');
     Storage.set('capCicloInicioAt', State.capCicloInicioAt||null);
-    // ← CORREÇÃO 5: re-renderiza todos os módulos, incluindo fontes e fornecedores CAP
+    // Re-renderiza todos os módulos, incluindo fontes e fornecedores CAP
     renderFornecedoresTable();
     renderFinanceiro();
     updateStats();
     // Re-popula datalists para autocomplete
     if (typeof refreshCapDatalists === 'function') refreshCapDatalists();
-    setDriveStatus('connected', 'Drive sincronizado');
-    showToast('✅ Dados restaurados do Google Drive! (v'+(backup.version||'?')+')', 'success');
+    setDriveStatus('connected', 'Supabase sincronizado');
+    showToast('✅ Dados restaurados do Supabase! (v'+(backup.version||'?')+')', 'success');
   } catch(e) {
     setDriveStatus('error', 'Erro ao restaurar');
-    console.error('Drive restore error:', e);
+    console.error('Supabase restore error:', e);
   }
 }
 
 /* ── AUTO-SAVE: dispara 3s após qualquer alteração ── */
 function scheduleAutoSave() {
-  if (!GDRIVE._accessToken) return;
+  if (!GDRIVE._client || !GDRIVE._connected) return;
   clearTimeout(GDRIVE._autoSaveTimer);
   GDRIVE._autoSaveTimer = setTimeout(() => driveSaveData(), 3000);
 }
@@ -5750,10 +5759,10 @@ function showAutosave(state) {
   if (!el) return;
   el.className = 'autosave-indicator show ' + state;
   if (state === 'saving') {
-    txt.textContent = 'Salvando no Drive…';
+    txt.textContent = 'Salvando no Supabase…';
     ico.innerHTML = '<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v13a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>';
   } else if (state === 'saved') {
-    txt.textContent = 'Salvo no Drive';
+    txt.textContent = 'Salvo no Supabase';
     ico.innerHTML = '<polyline points="20 6 9 17 4 12"/>';
   } else {
     txt.textContent = 'Erro ao salvar';
@@ -5763,7 +5772,7 @@ function showAutosave(state) {
   _autosaveHideTimer = setTimeout(() => el.classList.remove('show'), 3500);
 }
 
-/* ── MODAL GOOGLE DRIVE ── */
+/* ── MODAL SUPABASE (reaproveita modal antigo do Drive) ── */
 function openDriveModal() {
   openModal('modal-gdrive');
 }
@@ -5773,7 +5782,6 @@ function closeDriveModal() {
 function toggleNoShow(checkbox) {
   Storage.set('driveNoShow', checkbox.checked);
 }
-
 /* ============================================================
    BACKUP & RESTORE (JSON)
    ============================================================ */
@@ -5881,58 +5889,34 @@ function importBackup(event) {
    ============================================================ */
 (function init() {
   // ⚠️ VERIFICAÇÃO DE CREDENCIAIS
-  if (!GOOGLE_CREDENTIALS.CLIENT_ID || GOOGLE_CREDENTIALS.CLIENT_ID.includes('COLE_SEU')) {
-    showToast('⚠️ Configure o CLIENT_ID do Google no topo do arquivo HTML!', 'error');
-    console.error('❌ CLIENT_ID não configurado! Procure por GOOGLE_CREDENTIALS no código.');
-  } else if (!GOOGLE_CREDENTIALS.API_KEY || GOOGLE_CREDENTIALS.API_KEY.includes('COLE_SUA')) {
-    showToast('⚠️ Configure a API_KEY do Google no topo do arquivo HTML!', 'error');
-    console.error('❌ API_KEY não configurada! Procure por GOOGLE_CREDENTIALS no código.');
+  if (!SUPABASE_CREDENTIALS.URL || SUPABASE_CREDENTIALS.URL.includes('SUA_PROJECT_URL')) {
+    showToast('⚠️ Configure o Project URL do Supabase no topo do arquivo HTML!', 'error');
+    console.error('❌ Project URL não configurado! Procure por SUPABASE_CREDENTIALS no código.');
+  } else if (!SUPABASE_CREDENTIALS.ANON_KEY || SUPABASE_CREDENTIALS.ANON_KEY.includes('SUA_ANON_KEY')) {
+    showToast('⚠️ Configure a Anon Key do Supabase no topo do arquivo HTML!', 'error');
+    console.error('❌ Anon Key não configurada! Procure por SUPABASE_CREDENTIALS no código.');
   } else {
-    console.log('✅ Credenciais do Google configuradas corretamente!');
+    console.log('✅ Credenciais do Supabase configuradas corretamente!');
   }
-  
+
   renderFornecedoresTable();
   initCapModule();
   updateStats();
 
-  // Carrega bibliotecas Google em background
+  // Carrega o client Supabase e conecta automaticamente em background
   loadGapiScripts();
 
-  // Restaura fileId salvo
-  const savedFileId = Storage.get('driveFileId', null);
-  if (savedFileId) GDRIVE._fileId = savedFileId;
-
-  // Mostra modal Google Drive na inicialização (se não foi suprimido)
+  // Mostra indicador de conexão pulsando até conectar
   const noShow = Storage.get('driveNoShow', false);
-  const alreadyConnected = Storage.get('driveStatus', '') === 'connected';
-
-  if (!noShow && !alreadyConnected) {
-    // Mostra o botão do Drive pulsando para chamar atenção, sem bloquear a UI
+  if (!noShow) {
     const statusBtn = document.getElementById('gdrive-status-btn');
     if (statusBtn) {
       statusBtn.style.animation = 'pulse-glow 1.5s ease-in-out 3';
-      statusBtn.title = 'Clique para conectar ao Google Drive';
+      statusBtn.title = 'Sincronização com Supabase';
     }
-  }
-
-  if (alreadyConnected) {
-    setDriveStatus('connected', 'Drive conectado');
-    updateDrivePanel(true);
-    // ← CORREÇÃO 3: tenta reautenticar silenciosamente ao abrir o sistema.
-    // O token OAuth expira e não é persistido entre sessões/computadores.
-    // Aguardamos a biblioteca Google carregar e então solicitamos token silencioso.
-    function _tryDriveSilentReconnect(attemptsLeft) {
-      if (attemptsLeft <= 0) return;
-      if (GDRIVE._tokenClient) {
-        // prompt: '' tenta obter token sem tela de login (se a conta já está autorizada)
-        GDRIVE._tokenClient.requestAccessToken({ prompt: '' });
-      } else {
-        setTimeout(() => _tryDriveSilentReconnect(attemptsLeft - 1), 1000);
-      }
-    }
-    setTimeout(() => _tryDriveSilentReconnect(10), 1500);
   }
 })();
+
 </script>
 </body>
 </html>
