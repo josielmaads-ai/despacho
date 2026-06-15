@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SCDP — Sistema Contábil de Despachos e Pagamentos</title>
+<title>SIGPAG — Sistema Integrado de Gestão de Pagamentos</title>
 <!-- Favicon SVG inline como Data URI -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f1220'/%3E%3Crect x='1' y='1' width='30' height='30' rx='7' fill='none' stroke='%23f97316' stroke-width='1.5' opacity='0.6'/%3E%3Cpath d='M9 8h8l6 6v10a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2z' fill='none' stroke='%23f97316' stroke-width='1.8'/%3E%3Cpath d='M17 8v6h6' fill='none' stroke='%23f97316' stroke-width='1.8'/%3E%3Cline x1='10' y1='17' x2='22' y2='17' stroke='%23f97316' stroke-width='1.5' opacity='0.7'/%3E%3Cline x1='10' y1='20' x2='18' y2='20' stroke='%23f97316' stroke-width='1.5' opacity='0.7'/%3E%3C/svg%3E">
 <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH6AUZDicLfplT8gAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAABIElEQVRYw+2WsQ3CMBBFXyIKJAqkYAAYgY0YhQ1YgSVYgi1YgRFoWCCNQqIgByEZ/CXHd4njJIqU9kn+ev987n8nLKWUUkoppZT6myStJO2BHXCStAMWSaP+T3pJp8h+SbpI2knaZs0sHHCTdAFuQAvsJW0WA9yBQ3ADjoHTfwh4A3wAPgA=">
@@ -1793,22 +1793,42 @@ input[type="date"].form-input::-webkit-calendar-picker-indicator:hover {
 .fonte-select-wrap select.form-select option { color: var(--text-primary); font-family: var(--font-body); font-weight: 600; }
 
 /* ── CAP DATE INPUTS ── */
+.cap-date-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.cap-date-text {
+  width: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 40px 12px 16px;
+  transition: var(--transition);
+  outline: none;
+  letter-spacing: 0.04em;
+}
+.cap-date-text:focus {
+  border-color: var(--accent-teal);
+  box-shadow: 0 0 0 3px rgba(20,184,166,0.18);
+}
+.cap-date-text::placeholder { color: var(--text-muted); font-weight: 400; letter-spacing: 0; }
+.cap-date-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--accent-teal);
+  opacity: 0.7;
+  width: 18px; height: 18px;
+}
 input.cap-date.form-input {
-  color-scheme: dark;
-  padding-right: 10px;
-}
-input.cap-date.form-input::-webkit-calendar-picker-indicator {
-  filter: brightness(0) saturate(100%) invert(68%) sepia(57%) saturate(443%) hue-rotate(131deg) brightness(95%) contrast(93%);
-  opacity: 1;
-  cursor: pointer;
-  width: 20px; height: 20px;
-  border-radius: 4px;
-  padding: 1px;
-  transition: transform 0.18s, filter 0.18s;
-}
-input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
-  transform: scale(1.2);
-  filter: brightness(0) saturate(100%) invert(68%) sepia(90%) saturate(600%) hue-rotate(131deg) brightness(110%) contrast(100%);
+  display: none;
 }
 /* doc-type-toggle spacing */
 .doc-type-toggle { margin-bottom: 8px; }
@@ -2385,7 +2405,7 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
         </div>
         <div class="topbar-title">
           <div class="topbar-subtitle">SETOR DE CONTABILIDADE</div>
-          <div class="topbar-main">SCDP — Sistema Contábil de Despachos e Pagamentos</div>
+          <div class="topbar-main">SIGPAG — Sistema Integrado de Gestão de Pagamentos</div>
         </div>
       </div>
       <div class="topbar-actions">
@@ -2710,14 +2730,22 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;color:var(--accent-teal)"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                   Data Solicitação
                 </label>
-                <input type="date" class="form-input cap-date" id="cap-data-solicitacao">
+                <div class="cap-date-wrap">
+                  <input type="text" class="cap-date-text" id="cap-data-solicitacao-display" placeholder="DD/MM/AAAA" maxlength="10" oninput="capDateMask(this,'cap-data-solicitacao')" onblur="capDateValidate(this,'cap-data-solicitacao')">
+                  <svg class="cap-date-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                </div>
+                <input type="hidden" class="form-input cap-date" id="cap-data-solicitacao">
               </div>
               <div class="form-group">
                 <label class="form-label">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;color:var(--accent-teal)"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><circle cx="12" cy="16" r="1.5" fill="var(--accent-teal)"/></svg>
                   Data Pagamento
                 </label>
-                <input type="date" class="form-input cap-date" id="cap-data-pagamento">
+                <div class="cap-date-wrap">
+                  <input type="text" class="cap-date-text" id="cap-data-pagamento-display" placeholder="DD/MM/AAAA" maxlength="10" oninput="capDateMask(this,'cap-data-pagamento')" onblur="capDateValidate(this,'cap-data-pagamento')">
+                  <svg class="cap-date-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><circle cx="12" cy="16" r="1.5" fill="var(--accent-teal)"/></svg>
+                </div>
+                <input type="hidden" class="form-input cap-date" id="cap-data-pagamento">
               </div>
               <div class="form-group">
                 <label class="form-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;color:var(--accent-orange)"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Observações</label>
@@ -3280,11 +3308,19 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
         <div class="form-group">
           <label class="form-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;color:var(--accent-teal)"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Data Solicitação</label>
-          <input type="date" class="form-input cap-date" id="cap-edit-ind-data-sol">
+          <div class="cap-date-wrap">
+                  <input type="text" class="cap-date-text" id="cap-edit-ind-data-sol-display" placeholder="DD/MM/AAAA" maxlength="10" oninput="capDateMask(this,'cap-edit-ind-data-sol')" onblur="capDateValidate(this,'cap-edit-ind-data-sol')">
+                  <svg class="cap-date-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                </div>
+                <input type="hidden" class="form-input cap-date" id="cap-edit-ind-data-sol">
         </div>
         <div class="form-group">
           <label class="form-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;color:var(--accent-teal)"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Data Pagamento</label>
-          <input type="date" class="form-input cap-date" id="cap-edit-ind-data-pag">
+          <div class="cap-date-wrap">
+                  <input type="text" class="cap-date-text" id="cap-edit-ind-data-pag-display" placeholder="DD/MM/AAAA" maxlength="10" oninput="capDateMask(this,'cap-edit-ind-data-pag')" onblur="capDateValidate(this,'cap-edit-ind-data-pag')">
+                  <svg class="cap-date-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><circle cx="12" cy="16" r="1.5" fill="var(--accent-teal)"/></svg>
+                </div>
+                <input type="hidden" class="form-input cap-date" id="cap-edit-ind-data-pag">
         </div>
       </div>
       <div class="form-group" style="margin-bottom:20px">
@@ -3540,9 +3576,9 @@ function capCurrentWeekContas(){ return State.capContas.filter(c=>!c.cicloId); }
 function capStatusBadge(p){ return p==='sim'?'<span class="status-badge badge-pago">Pago</span>':'<span class="status-badge badge-nao-pago">Não Pago</span>'; }
 function capSituacaoBadge(s){ const cls=s==='Anexado'?'badge-anexado':s==='Aguardando comprovante'?'badge-aguard':s==='Processo enviado'?'badge-enviado':'badge-nao-env'; return '<span class="status-badge '+cls+'">'+(s||'Não enviado')+'</span>'; }
 function initCapModule(){ const comp=document.getElementById('cap-competencia'); if(comp&&!comp.children.length) CAP_MONTHS.forEach(m=>comp.add(new Option(m,m))); selectCapTipo(State.capTipo); selectCapClass(State.capClasse); selectDocTipo(State.capDocTipo); refreshCapDatalists(); renderFinanceiro();
-  // Set default dates on init
-  const elSol=document.getElementById('cap-data-solicitacao'); if(elSol&&!elSol.value) elSol.value=getNextWeekday(1);
-  const elPag=document.getElementById('cap-data-pagamento'); if(elPag&&!elPag.value) elPag.value=getNextWeekday(2);
+  // Set default dates on init (DD/MM/AAAA)
+  const hidSol=document.getElementById('cap-data-solicitacao'); if(hidSol&&!hidSol.value) capSetDateDisplay('cap-data-solicitacao',getNextWeekday(1));
+  const hidPag=document.getElementById('cap-data-pagamento'); if(hidPag&&!hidPag.value) capSetDateDisplay('cap-data-pagamento',getNextWeekday(2));
   // Fix situação default to "Aguardando comprovante"
   const sit=document.getElementById('cap-situacao'); if(sit) sit.value='Aguardando comprovante';
 }
@@ -3990,15 +4026,56 @@ function saveCapConta(){
   i>=0?State.capContas[i]=item:State.capContas.unshift(item);
   capPersist(); resetCapForm(); renderFinanceiro(); showToast('Conta salva.','success');
 }
+/* ── DATE MASK HELPERS (DD/MM/AAAA) ── */
+function capDateMask(inp, hiddenId) {
+  let v = inp.value.replace(/\D/g, '').slice(0, 8);
+  if (v.length > 4) v = v.slice(0,2)+'/'+v.slice(2,4)+'/'+v.slice(4);
+  else if (v.length > 2) v = v.slice(0,2)+'/'+v.slice(2);
+  inp.value = v;
+  // Sync hidden field as YYYY-MM-DD
+  if (v.length === 10) {
+    const p = v.split('/');
+    document.getElementById(hiddenId).value = p[2]+'-'+p[1]+'-'+p[0];
+  } else {
+    document.getElementById(hiddenId).value = '';
+  }
+}
+function capDateValidate(inp, hiddenId) {
+  if (inp.value && inp.value.length < 10) {
+    inp.style.borderColor = 'var(--accent-rose)';
+    inp.style.boxShadow = '0 0 0 3px rgba(244,63,94,0.15)';
+  } else {
+    inp.style.borderColor = '';
+    inp.style.boxShadow = '';
+  }
+}
+/* Converte YYYY-MM-DD → DD/MM/AAAA e preenche o campo de exibição */
+function capSetDateDisplay(hiddenId, isoValue) {
+  const hidden = document.getElementById(hiddenId);
+  const display = document.getElementById(hiddenId + '-display');
+  if (hidden) hidden.value = isoValue || '';
+  if (display) {
+    if (isoValue) {
+      const p = isoValue.split('-');
+      if (p.length === 3) display.value = p[2]+'/'+p[1]+'/'+p[0];
+    } else {
+      display.value = '';
+    }
+  }
+}
 function getNextWeekday(dayOfWeek) {
   // dayOfWeek: 1=Monday, 2=Tuesday
+  // dayOfWeek: 1=Segunda, 2=Terça
+  // Sempre vai para a PRÓXIMA semana (não a atual), independente do dia de hoje
   const today = new Date();
+  const todayDay = today.getDay(); // 0=Dom,1=Seg,...6=Sáb
+  // Quantos dias até a próxima segunda (início da próxima semana)
+  const daysToNextMonday = (8 - todayDay) % 7 || 7;
+  // Offset da segunda-feira da próxima semana
+  const offset = daysToNextMonday + (dayOfWeek - 1);
   const d = new Date(today);
-  const todayDay = today.getDay(); // 0=Sun,1=Mon,...6=Sat
-  let diff = dayOfWeek - todayDay;
-  if (diff <= 0) diff += 7; // always go to NEXT week
-  d.setDate(today.getDate() + diff);
-  return d.toISOString().slice(0, 10); // returns YYYY-MM-DD for <input type="date">
+  d.setDate(today.getDate() + offset);
+  return d.toISOString().slice(0, 10); // YYYY-MM-DD
 }
 function resetCapForm(){
   ['cap-edit-id','cap-codigo','cap-doc-forn','cap-fornecedor','cap-valor','cap-obs'].forEach(id=>{
@@ -4010,8 +4087,8 @@ function resetCapForm(){
   const badge=document.getElementById('cap-forn-selected-badge');
   if(badge)badge.style.display='none';
   // Auto-fill dates: próxima segunda para solicitação, próxima terça para pagamento
-  const elSol=document.getElementById('cap-data-solicitacao'); if(elSol) elSol.value=getNextWeekday(1);
-  const elPag=document.getElementById('cap-data-pagamento'); if(elPag) elPag.value=getNextWeekday(2);
+  capSetDateDisplay('cap-data-solicitacao', getNextWeekday(1));
+  capSetDateDisplay('cap-data-pagamento', getNextWeekday(2));
   // Reset fonte select
   const fs=document.getElementById('cap-fonte'); if(fs) fs.value='';
   // Reset documento
@@ -4062,8 +4139,8 @@ function editCapConta(id){
   document.getElementById('cap-edit-ind-id').value=c.id;
   document.getElementById('cap-edit-ind-pago').value=c.pago;
   document.getElementById('cap-edit-ind-situacao').value=c.situacao;
-  document.getElementById('cap-edit-ind-data-sol').value=c.dataSolicitacao||'';
-  document.getElementById('cap-edit-ind-data-pag').value=c.dataPagamento||'';
+  capSetDateDisplay('cap-edit-ind-data-sol', c.dataSolicitacao||'');
+  capSetDateDisplay('cap-edit-ind-data-pag', c.dataPagamento||'');
   document.getElementById('cap-edit-ind-obs').value=c.obs||'';
   // Atualiza título do modal com o documento
   document.querySelector('#modal-cap-edit-ind .modal-title').innerHTML=`
