@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SIGDE — Sistema de Geração de Despachos</title>
+<title>SCDP — Sistema Contábil de Despachos e Pagamentos</title>
 <!-- Favicon SVG inline como Data URI -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f1220'/%3E%3Crect x='1' y='1' width='30' height='30' rx='7' fill='none' stroke='%23f97316' stroke-width='1.5' opacity='0.6'/%3E%3Cpath d='M9 8h8l6 6v10a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2z' fill='none' stroke='%23f97316' stroke-width='1.8'/%3E%3Cpath d='M17 8v6h6' fill='none' stroke='%23f97316' stroke-width='1.8'/%3E%3Cline x1='10' y1='17' x2='22' y2='17' stroke='%23f97316' stroke-width='1.5' opacity='0.7'/%3E%3Cline x1='10' y1='20' x2='18' y2='20' stroke='%23f97316' stroke-width='1.5' opacity='0.7'/%3E%3C/svg%3E">
 <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH6AUZDicLfplT8gAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAABIElEQVRYw+2WsQ3CMBBFXyIKJAqkYAAYgY0YhQ1YgSVYgi1YgRFoWCCNQqIgByEZ/CXHd4njJIqU9kn+ev987n8nLKWUUkoppZT6myStJO2BHXCStAMWSaP+T3pJp8h+SbpI2knaZs0sHHCTdAFuQAvsJW0WA9yBQ3ADjoHTfwh4A3wAPgA=">
@@ -31,13 +31,13 @@ const SUPABASE_CREDENTIALS = {
    DESIGN TOKENS & VARIABLES
    ============================================================ */
 :root {
-  --bg-base: #0a0c14;
-  --bg-surface: #0f1220;
-  --bg-elevated: #141828;
-  --bg-card: #181d2e;
-  --bg-glass: rgba(24,29,46,0.7);
+  --bg-base: #0b0d12;
+  --bg-surface: #0f1118;
+  --bg-elevated: #131720;
+  --bg-card: #171c28;
+  --bg-glass: rgba(23,28,40,0.7);
   --border: rgba(255,255,255,0.07);
-  --border-bright: rgba(255,255,255,0.14);
+  --border-bright: rgba(255,255,255,0.13);
   --accent-blue: #3b82f6;
   --accent-indigo: #6366f1;
   --accent-violet: #8b5cf6;
@@ -45,35 +45,37 @@ const SUPABASE_CREDENTIALS = {
   --accent-amber: #f59e0b;
   --accent-rose: #f43f5e;
   --accent-emerald: #10b981;
-  /* Premium palette: laranja, roxo, verde */
+  /* PRIMARY PALETTE: laranja como referência principal */
   --accent-orange: #f97316;
   --accent-orange-dark: #ea6c0a;
-  --accent-orange-glow: rgba(249,115,22,0.35);
+  --accent-orange-light: #fb923c;
+  --accent-orange-glow: rgba(249,115,22,0.3);
+  --accent-orange-subtle: rgba(249,115,22,0.08);
   --accent-purple: #a855f7;
-  --accent-purple-glow: rgba(168,85,247,0.35);
+  --accent-purple-glow: rgba(168,85,247,0.3);
   --accent-green: #22c55e;
-  --accent-green-glow: rgba(34,197,94,0.35);
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --text-muted: #475569;
-  --text-accent: #93c5fd;
-  --glow-blue: 0 0 24px rgba(59,130,246,0.35);
-  --glow-indigo: 0 0 24px rgba(99,102,241,0.35);
-  --glow-violet: 0 0 24px rgba(139,92,246,0.35);
+  --accent-green-glow: rgba(34,197,94,0.3);
+  --text-primary: #f0f4f8;
+  --text-secondary: #8fa0b4;
+  --text-muted: #3d4f62;
+  --text-accent: #fb923c;
+  --glow-blue: 0 0 24px rgba(59,130,246,0.3);
+  --glow-indigo: 0 0 24px rgba(99,102,241,0.3);
+  --glow-violet: 0 0 24px rgba(139,92,246,0.3);
   --glow-orange: 0 0 28px var(--accent-orange-glow);
   --glow-purple: 0 0 28px var(--accent-purple-glow);
   --glow-green: 0 0 28px var(--accent-green-glow);
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
-  --radius-xl: 24px;
-  --shadow-card: 0 4px 24px rgba(0,0,0,0.4), 0 1px 4px rgba(0,0,0,0.3);
+  --radius-xl: 20px;
+  --shadow-card: 0 4px 20px rgba(0,0,0,0.4), 0 1px 4px rgba(0,0,0,0.3);
   --shadow-modal: 0 24px 80px rgba(0,0,0,0.7), 0 8px 24px rgba(0,0,0,0.5);
-  --transition: all 0.22s cubic-bezier(0.4,0,0.2,1);
-  --font-display: 'Georgia', serif;
+  --transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
+  --font-display: 'Segoe UI', system-ui, sans-serif;
   --font-body: 'Segoe UI', system-ui, sans-serif;
-  --font-mono: 'Courier New', monospace;
-  /* Despacho colors — laranja, roxo, verde, âmbar */
+  --font-mono: 'Cascadia Code', 'Courier New', monospace;
+  /* Despacho colors */
   --d1: #f97316;
   --d2: #a855f7;
   --d3: #22c55e;
@@ -103,9 +105,9 @@ body::before {
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(59,130,246,0.08) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(99,102,241,0.08) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 50% at 50% 50%, rgba(139,92,246,0.04) 0%, transparent 70%);
+    radial-gradient(ellipse 70% 50% at 15% 5%, rgba(249,115,22,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 35% at 85% 85%, rgba(168,85,247,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 35% 45% at 50% 50%, rgba(249,115,22,0.03) 0%, transparent 70%);
   pointer-events: none;
   z-index: 0;
 }
@@ -119,25 +121,25 @@ body::before {
 .sidebar {
   position: fixed;
   top: 0; left: 0; bottom: 0;
-  width: 180px;
+  width: 188px;
   background: var(--bg-surface);
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   padding: 16px 0;
-  gap: 4px;
+  gap: 2px;
   z-index: 100;
 }
 .sidebar-logo {
-  width: 36px; height: 36px;
-  background: linear-gradient(135deg, var(--accent-blue), var(--accent-indigo));
+  width: 38px; height: 38px;
+  background: linear-gradient(135deg, var(--accent-orange), var(--accent-orange-dark));
   border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
   font-size: 16px; font-weight: 900; color: #fff;
   letter-spacing: -1px;
   flex-shrink: 0;
-  box-shadow: var(--glow-blue);
+  box-shadow: 0 4px 14px rgba(249,115,22,0.4);
   margin: 0 auto 4px;
 }
 .sidebar-divider { width: calc(100% - 24px); height: 1px; background: var(--border); margin: 8px 12px; flex-shrink: 0; }
@@ -156,9 +158,9 @@ body::before {
   flex-shrink: 0;
   padding: 0 10px;
 }
-.sidebar-btn:hover { background: var(--bg-elevated); color: var(--text-primary); }
-.sidebar-btn.active { background: rgba(59,130,246,0.15); color: var(--accent-blue); }
-.sidebar-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+.sidebar-btn:hover { background: rgba(249,115,22,0.07); color: var(--text-secondary); }
+.sidebar-btn.active { background: rgba(249,115,22,0.12); color: var(--accent-orange); border-left: 2px solid var(--accent-orange); }
+.sidebar-btn svg { width: 17px; height: 17px; flex-shrink: 0; }
 .sidebar-btn .sb-label {
   white-space: nowrap;
   font-size: 12px;
@@ -168,8 +170,8 @@ body::before {
 
 /* MAIN CONTENT */
 .main {
-  margin-left: 180px;
-  padding: 32px 40px;
+  margin-left: 188px;
+  padding: 28px 36px;
   min-height: 100vh;
 }
 
@@ -184,28 +186,28 @@ body::before {
   display: flex; flex-direction: column;
 }
 .topbar-subtitle {
-  font-size: 11px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  color: var(--accent-blue);
+  color: var(--accent-orange);
   font-weight: 700;
   margin-bottom: 2px;
 }
 .topbar-main {
   font-family: var(--font-display);
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 700;
-  letter-spacing: -0.5px;
-  background: linear-gradient(135deg, #fff 30%, var(--text-accent));
+  letter-spacing: -0.3px;
+  background: linear-gradient(135deg, #fff 40%, var(--accent-orange-light));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 .topbar-actions { display: flex; gap: 10px; align-items: center; }
 .badge {
-  background: rgba(59,130,246,0.15);
-  color: var(--accent-blue);
-  border: 1px solid rgba(59,130,246,0.25);
+  background: rgba(249,115,22,0.12);
+  color: var(--accent-orange);
+  border: 1px solid rgba(249,115,22,0.22);
   border-radius: 20px;
   padding: 4px 12px;
   font-size: 11px;
@@ -896,11 +898,11 @@ body::before {
   outline: none;
 }
 .btn-primary {
-  background: linear-gradient(135deg, var(--accent-blue), var(--accent-indigo));
+  background: linear-gradient(135deg, var(--accent-orange), var(--accent-orange-dark));
   color: #fff;
-  box-shadow: 0 4px 12px rgba(59,130,246,0.3);
+  box-shadow: 0 4px 12px rgba(249,115,22,0.3);
 }
-.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(59,130,246,0.4); }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(249,115,22,0.4); }
 .btn-ghost {
   background: var(--bg-elevated);
   color: var(--text-secondary);
@@ -1451,9 +1453,6 @@ body::before {
   .option-cards { grid-template-columns: 1fr 1fr; }
   .input-row { grid-template-columns: 1fr; }
   .dash-grid { grid-template-columns: 1fr; }
-}
-@media (max-width: 480px) {
-  .stats-row { grid-template-columns: 1fr 1fr; }
 }
 
 /* ============================================================
@@ -2335,7 +2334,7 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <!-- Logo SIGDE -->
-    <div class="sidebar-logo" title="SIGDE — Sistema de Geração de Despachos">
+    <div class="sidebar-logo" title="SCDP — Sistema Contábil de Despachos e Pagamentos">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
         <polyline points="14 2 14 8 20 8"/>
@@ -2386,7 +2385,7 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
         </div>
         <div class="topbar-title">
           <div class="topbar-subtitle">SETOR DE CONTABILIDADE</div>
-          <div class="topbar-main">SIGDE — Sistema de Despachos e Contas a Pagar</div>
+          <div class="topbar-main">SCDP — Sistema Contábil de Despachos e Pagamentos</div>
         </div>
       </div>
       <div class="topbar-actions">
@@ -2504,7 +2503,14 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
           <div class="section-subtitle">Controle de ciclo manual de EXE, RAP, saldos, pagamentos e solicitações financeiras</div>
         </div>
         <div class="cap-actions">
-          <button class="btn btn-ghost" onclick="exportCapCSV()">Exportar CSV</button>
+          <button class="btn btn-ghost" onclick="exportCapCSV()" style="font-size:12px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            CSV
+          </button>
+          <button class="btn btn-ghost" onclick="exportCapPDF()" style="font-size:12px;border-color:rgba(244,63,94,0.3);color:var(--accent-rose)" title="Exportar PDF do ciclo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            PDF
+          </button>
           <div id="ciclo-status-indicator" style="display:none;align-items:center;gap:6px;font-size:11px;font-weight:700;padding:6px 12px;border-radius:8px;background:rgba(20,184,166,0.12);border:1px solid rgba(20,184,166,0.3);color:var(--accent-teal)">
             ✅ Solicitação gerada — ciclo pronto para encerrar
           </div>
@@ -2594,11 +2600,11 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
             <!-- Linha 1: Documento | Fonte | Código -->
             <div class="cap-grid-3" style="margin-bottom:18px">
               <div class="form-group">
-                <label class="form-label">Documento</label>
+                <label class="form-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;color:var(--accent-orange)"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Documento</label>
                 <input class="form-input highlight" id="cap-documento" placeholder="2026NP000001" oninput="maskCapDocumento(this)" autocomplete="off">
               </div>
               <div class="form-group">
-                <label class="form-label">Fonte</label>
+                <label class="form-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;color:var(--accent-orange)"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Fonte</label>
                 <div class="fonte-select-wrap">
                   <select class="form-select" id="cap-fonte" onchange="onFonteSelectChange()">
                     <option value="">— Selecione a fonte —</option>
@@ -2607,7 +2613,7 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
                 <div id="fonte-hint" style="display:none;font-size:10px;color:var(--text-muted);margin-top:4px;display:flex;align-items:center;gap:5px"></div>
               </div>
               <div class="form-group">
-                <label class="form-label">Código Solicitação</label>
+                <label class="form-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;color:var(--accent-orange)"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>Código Solicitação</label>
                 <input class="form-input" id="cap-codigo" placeholder="400" autocomplete="off">
               </div>
             </div>
@@ -2616,6 +2622,7 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
             <div class="cap-grid-3" style="margin-bottom:18px;align-items:end">
               <div class="form-group" style="grid-column:1/3;position:relative">
                 <label class="form-label" style="display:flex;align-items:center;gap:6px">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;color:var(--accent-orange)"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                   Fornecedor / Benefício
                   <span id="cap-forn-busca-loading" style="display:none">
                     <svg style="width:12px;height:12px;animation:spin 1s linear infinite" viewBox="0 0 24 24" fill="none" stroke="var(--accent-teal)" stroke-width="2.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
@@ -2667,7 +2674,7 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
                 </div>
               </div>
               <div class="form-group">
-                <label class="form-label">Valor (R$)</label>
+                <label class="form-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;color:var(--accent-orange)"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6"/></svg>Valor (R$)</label>
                 <input class="form-input highlight" id="cap-valor" placeholder="10.000,00" oninput="maskMoneyInput(this)" autocomplete="off">
               </div>
             </div>
@@ -2675,18 +2682,18 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
             <!-- Linha 3: Status | Competência | Situação -->
             <div class="cap-grid-3" style="margin-bottom:18px">
               <div class="form-group">
-                <label class="form-label">Status Pagamento</label>
+                <label class="form-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;color:var(--accent-orange)"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Status Pagamento</label>
                 <select class="form-select" id="cap-pago">
                   <option value="nao">Não Pago</option>
                   <option value="sim">Pago</option>
                 </select>
               </div>
               <div class="form-group">
-                <label class="form-label">Competência</label>
+                <label class="form-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;color:var(--accent-orange)"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Competência</label>
                 <select class="form-select" id="cap-competencia"></select>
               </div>
               <div class="form-group">
-                <label class="form-label">Situação</label>
+                <label class="form-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;color:var(--accent-orange)"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Situação</label>
                 <select class="form-select" id="cap-situacao">
                   <option>Aguardando comprovante</option>
                   <option>Processo enviado</option>
@@ -2713,13 +2720,19 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
                 <input type="date" class="form-input cap-date" id="cap-data-pagamento">
               </div>
               <div class="form-group">
-                <label class="form-label">Observações</label>
+                <label class="form-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;color:var(--accent-orange)"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Observações</label>
                 <input class="form-input" id="cap-obs" placeholder="Histórico, processo, comprovante...">
               </div>
             </div>
             <div style="display:flex;gap:10px;flex-wrap:wrap">
-              <button class="btn btn-teal" onclick="saveCapConta()">Salvar Conta</button>
-              <button class="btn btn-ghost" onclick="resetCapForm()">Limpar Formulário</button>
+              <button class="btn btn-teal" onclick="saveCapConta()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v13a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                Salvar Conta
+              </button>
+              <button onclick="resetCapForm()" style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:var(--radius-sm);font-size:13px;font-weight:700;cursor:pointer;transition:var(--transition);background:rgba(244,63,94,0.12);color:var(--accent-rose);border:1.5px solid rgba(244,63,94,0.35);letter-spacing:0.02em" onmouseover="this.style.background='rgba(244,63,94,0.2)';this.style.borderColor='rgba(244,63,94,0.6)'" onmouseout="this.style.background='rgba(244,63,94,0.12)';this.style.borderColor='rgba(244,63,94,0.35)'">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:15px;height:15px"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.51"/></svg>
+                Limpar Formulário
+              </button>
             </div>
           </div>
         </div>
@@ -3223,6 +3236,69 @@ input.cap-date.form-input::-webkit-calendar-picker-indicator:hover {
   <div class="modal wide">
     <div class="modal-header"><div><div class="modal-title">Solicitação de Recursos do Ciclo</div><div class="modal-subtitle">Consolidação por tipo e fonte com abatimento de saldo</div></div><button class="modal-close" onclick="closeModal('modal-cap-solicitacao')">✕</button></div>
     <div class="modal-body" id="cap-solicitacao-body"></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MODAL: EDIÇÃO INDEPENDENTE DE CONTA (não afeta ciclo atual)
+     ============================================================ -->
+<div class="modal-overlay" id="modal-cap-edit-ind">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" style="display:flex;align-items:center;gap:8px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent-orange)" stroke-width="2" style="width:18px;height:18px"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Editar Registro
+        </div>
+        <div class="modal-subtitle" style="color:var(--accent-rose);font-weight:600">⚠️ Edição apenas para registro — não afeta o ciclo atual em aberto</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('modal-cap-edit-ind')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="cap-edit-ind-id">
+      <div style="background:rgba(244,63,94,0.06);border:1px solid rgba(244,63,94,0.2);border-radius:var(--radius-sm);padding:12px 16px;margin-bottom:20px;font-size:12px;color:var(--accent-rose)">
+        <strong>Atenção:</strong> As alterações feitas aqui são apenas para manter o registro atualizado. Lançamentos já computados no ciclo ativo <strong>não serão recalculados</strong>. Use esta edição para atualizar status, datas e observações sem impactar a solicitação financeira vigente.
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+        <div class="form-group">
+          <label class="form-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;color:var(--accent-orange)"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Status Pagamento</label>
+          <select class="form-select" id="cap-edit-ind-pago">
+            <option value="nao">Não Pago</option>
+            <option value="sim">Pago</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;color:var(--accent-orange)"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Situação</label>
+          <select class="form-select" id="cap-edit-ind-situacao">
+            <option>Aguardando comprovante</option>
+            <option>Processo enviado</option>
+            <option>Anexado</option>
+            <option>Não enviado</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+        <div class="form-group">
+          <label class="form-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;color:var(--accent-teal)"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Data Solicitação</label>
+          <input type="date" class="form-input cap-date" id="cap-edit-ind-data-sol">
+        </div>
+        <div class="form-group">
+          <label class="form-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;color:var(--accent-teal)"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Data Pagamento</label>
+          <input type="date" class="form-input cap-date" id="cap-edit-ind-data-pag">
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:20px">
+        <label class="form-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;color:var(--accent-orange)"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Observações</label>
+        <input class="form-input" id="cap-edit-ind-obs" placeholder="Histórico, processo, comprovante...">
+      </div>
+      <div style="display:flex;gap:10px;justify-content:flex-end">
+        <button class="btn btn-ghost" onclick="closeModal('modal-cap-edit-ind')">Cancelar</button>
+        <button class="btn btn-primary" onclick="saveCapContaIndependente()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v13a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+          Salvar Alterações
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -3980,52 +4056,43 @@ function sortCap(k){ State.capSort={key:k,dir:State.capSort.key===k&&State.capSo
 function renderCapTable(){ const tb=document.getElementById('cap-table-body'); if(!tb)return; const rows=getFilteredCapContas(); const per=20,pages=Math.max(1,Math.ceil(rows.length/per)); State.capPage=Math.min(State.capPage||1,pages); const page=rows.slice((State.capPage-1)*per,State.capPage*per); tb.innerHTML=page.length?page.map(c=>{const f=fonteByCodigo(c.fonte); return '<tr><td><span class="status-badge '+(c.tipo==='EXE'?'badge-exe':'badge-rap')+'">'+c.tipo+'</span></td><td>'+c.classe+'</td><td class="td-doc">'+c.documento+'</td><td class="td-fonte"><span class="fonte-dot" style="background:'+f.cor+'"></span> <strong>'+c.fonte+'</strong></td><td class="td-fornecedor">'+c.fornecedor+'</td><td class="td-valor">'+capMoney(c.valor)+'</td><td>'+capStatusBadge(c.pago)+'</td><td>'+capFmtDate(c.dataSolicitacao)+'</td><td>'+capFmtDate(c.dataPagamento)+'</td><td>'+capSituacaoBadge(c.situacao)+'</td><td><div class="row-actions"><button class="row-act-btn edit" onclick="editCapConta(\''+c.id+'\')">✎</button><button class="row-act-btn detail" onclick="detailCapConta(\''+c.id+'\')">i</button><button class="row-act-btn del" onclick="deleteCapConta(\''+c.id+'\')">×</button></div></td></tr>';}).join(''):'<tr><td colspan="11"><div class="cap-empty">Nenhuma conta cadastrada.</div></td></tr>'; const info=document.getElementById('cap-pag-info'); if(info)info.textContent=rows.length+' registros | página '+State.capPage+' de '+pages; const btns=document.getElementById('cap-pag-btns'); if(btns)btns.innerHTML='<button class="cap-pag-btn" onclick="State.capPage--;renderCapTable()" '+(State.capPage<=1?'disabled':'')+'>‹</button><button class="cap-pag-btn active">'+State.capPage+'</button><button class="cap-pag-btn" onclick="State.capPage++;renderCapTable()" '+(State.capPage>=pages?'disabled':'')+'>›</button>'; }
 function clearCapFilters(){ ['cap-filter-search','cap-filter-tipo','cap-filter-classe','cap-filter-fonte','cap-filter-pago','cap-filter-situacao','cap-filter-competencia','cap-filter-valor-min','cap-filter-valor-max','cap-filter-data-ini','cap-filter-data-fim'].forEach(id=>{const e=document.getElementById(id); if(e)e.value='';}); renderCapTable(); }
 function editCapConta(id){
+  // FIX #3: Abre modal independente — não carrega no form principal, não afeta ciclo
   const c=State.capContas.find(x=>x.id===id);
   if(!c)return;
-  setCapTab('lancamentos');
-  selectCapTipo(c.tipo);
-  selectCapClass(c.classe);
-  selectDocTipo(c.docTipo||'CNPJ');
-  document.getElementById('cap-edit-id').value=c.id;
-  document.getElementById('cap-documento').value=c.documento;
-  // Fonte: setar select
-  const fs=document.getElementById('cap-fonte');
-  if(fs){ fs.value=c.fonte; onFonteSelectChange(); }
-  document.getElementById('cap-codigo').value=c.codigo||'';
-  document.getElementById('cap-doc-forn').value=c.docFornecedor||'';
-  document.getElementById('cap-fornecedor').value=c.fornecedor;
-  // Populate busca badge via capFornSelecionar se possível
-  if(c.docFornecedor || c.fornecedor){
-    const fObj=State.capFornecedores.find(x=>capDigits(x.doc)===capDigits(c.docFornecedor||'') || x.nome===c.fornecedor);
-    if(fObj){
-      capFornSelecionar(fObj.id);
-    } else {
-      // Fornecedor não está mais cadastrado — mostra badge manual
-      const badge2=document.getElementById('cap-forn-selected-badge');
-      const nomeEl2=document.getElementById('cap-forn-sel-nome');
-      const docBadge2=document.getElementById('cap-forn-sel-doc');
-      const tipoEl2=document.getElementById('cap-forn-sel-tipo');
-      const buscaEl2=document.getElementById('cap-forn-busca');
-      const clearBtn2=document.getElementById('cap-forn-busca-clear-btn');
-      if(badge2) badge2.style.display='block';
-      if(nomeEl2) nomeEl2.textContent=c.fornecedor||'—';
-      if(docBadge2) docBadge2.textContent=c.docFornecedor||'—';
-      if(tipoEl2) tipoEl2.textContent='';
-      if(buscaEl2){ buscaEl2.value=c.fornecedor||''; buscaEl2.readOnly=true; buscaEl2.style.color='var(--accent-teal)'; buscaEl2.style.fontWeight='600'; }
-      if(clearBtn2) clearBtn2.style.display='block';
-    }
-  }
-  document.getElementById('cap-valor').value=(c.valor/1).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
-  document.getElementById('cap-pago').value=c.pago;
-  document.getElementById('cap-competencia').value=c.competencia;
-  document.getElementById('cap-data-solicitacao').value=c.dataSolicitacao||'';
-  document.getElementById('cap-data-pagamento').value=c.dataPagamento||'';
-  document.getElementById('cap-situacao').value=c.situacao;
-  document.getElementById('cap-obs').value=c.obs||'';
-  const badge=document.getElementById('cap-edit-badge');
-  if(badge){ badge.textContent='Editando: '+c.documento; badge.className='badge'; badge.onclick=null; }
-  // Scroll para o form
-  document.getElementById('cap-documento')?.scrollIntoView({behavior:'smooth',block:'center'});
+  document.getElementById('cap-edit-ind-id').value=c.id;
+  document.getElementById('cap-edit-ind-pago').value=c.pago;
+  document.getElementById('cap-edit-ind-situacao').value=c.situacao;
+  document.getElementById('cap-edit-ind-data-sol').value=c.dataSolicitacao||'';
+  document.getElementById('cap-edit-ind-data-pag').value=c.dataPagamento||'';
+  document.getElementById('cap-edit-ind-obs').value=c.obs||'';
+  // Atualiza título do modal com o documento
+  document.querySelector('#modal-cap-edit-ind .modal-title').innerHTML=`
+    <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent-orange)" stroke-width="2" style="width:18px;height:18px"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+    Editar: <span style="color:var(--accent-orange);font-family:var(--font-mono)">${c.documento}</span>`;
+  openModal('modal-cap-edit-ind');
+}
+
+function saveCapContaIndependente(){
+  // Salva apenas campos de status/datas/obs, SEM impactar ciclo ou valores
+  const id=document.getElementById('cap-edit-ind-id').value;
+  if(!id)return;
+  const idx=State.capContas.findIndex(c=>c.id===id);
+  if(idx<0){showToast('Conta não encontrada.','error');return;}
+  const c=State.capContas[idx];
+  const oldPago=c.pago;
+  c.pago=document.getElementById('cap-edit-ind-pago').value;
+  c.situacao=document.getElementById('cap-edit-ind-situacao').value;
+  c.dataSolicitacao=document.getElementById('cap-edit-ind-data-sol').value||c.dataSolicitacao;
+  c.dataPagamento=document.getElementById('cap-edit-ind-data-pag').value||c.dataPagamento;
+  c.obs=document.getElementById('cap-edit-ind-obs').value.trim();
+  if(!c.historico)c.historico=[];
+  c.historico.push({at:new Date().toISOString(),msg:'Editado via modal independente (pago: '+oldPago+'→'+c.pago+')'});
+  capAudit('CONTA EDITADA (INDEPENDENTE)', c.documento, {pago:oldPago}, {pago:c.pago,situacao:c.situacao});
+  capPersist();
+  closeModal('modal-cap-edit-ind');
+  renderFinanceiro();
+  showToast('✅ Registro atualizado. O ciclo atual não foi afetado.','success');
+  scheduleAutoSave();
 }
 function deleteCapConta(id){ const c=State.capContas.find(x=>x.id===id); if(confirm('Excluir esta conta?')){capAudit('CONTA EXCLUÍDA',c?.documento||id,c,null); State.capContas=State.capContas.filter(c=>c.id!==id); capPersist(); renderFinanceiro();} }
 function detailCapConta(id){
@@ -4127,8 +4194,13 @@ function editSaldo(id){ const s=State.capSaldos.find(x=>x.id===id); if(!s)return
 function zerarTodosSaldos(){ if(!State.capSaldos.length)return showToast('Nenhum saldo para zerar.','info'); if(confirm('Zerar todos os saldos?')){ State.capSaldos=[]; capPersist(); renderFinanceiro(); showToast('Saldos zerados.','success'); } }
 function deleteSaldo(id){ State.capSaldos=State.capSaldos.filter(s=>s.id!==id); capPersist(); renderFinanceiro(); }
 function solicitarFinanceiro(){
-  const contas=capCurrentWeekContas();
-  if(!contas.length){showToast('Não há contas abertas no ciclo atual.','info');return;}
+  const contasTodas=capCurrentWeekContas();
+  if(!contasTodas.length){showToast('Não há contas abertas no ciclo atual.','info');return;}
+
+  // FIX #5: exclui lançamentos que já estão com status 'pago'
+  const contas=contasTodas.filter(c=>c.pago!=='sim');
+  const totalPagos=contasTodas.filter(c=>c.pago==='sim').length;
+  if(!contas.length){showToast('Todas as contas do ciclo já estão marcadas como PAGAS. Nenhum valor a solicitar.','info');return;}
 
   const g={};
   contas.forEach(c=>{
@@ -4159,7 +4231,7 @@ function solicitarFinanceiro(){
   document.getElementById('cap-solicitacao-body').innerHTML=`
     <div style="background:rgba(20,184,166,0.06);border:1px solid rgba(20,184,166,0.2);border-radius:10px;padding:16px 20px;margin-bottom:20px">
       <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.18em;color:var(--accent-teal);margin-bottom:6px">SOLICITAÇÃO DE RECURSOS DO CICLO</div>
-      <div style="font-size:13px;color:var(--text-secondary)">${cicloLabel} · ${contas.length} conta(s) lançada(s)</div>
+      <div style="font-size:13px;color:var(--text-secondary)">${cicloLabel} · ${contas.length} conta(s) lançada(s) ${totalPagos>0?'<span style="color:var(--accent-green);font-weight:700">('+totalPagos+' paga(s) excluída(s) da solicitação)</span>':''}</div>
       <div style="font-size:11px;color:var(--accent-green);margin-top:6px;font-weight:700">✓ Solicitação gerada — clique em "Encerrar Ciclo" para arquivar</div>
     </div>
     <table class="sol-table">
@@ -4559,6 +4631,46 @@ function pfValidateInput(inp){
   if(inp.value !== inp.value.trimStart()) inp.value = inp.value.trimStart();
 }
 
+// FIX #4: pfHistValidate e pfSalvarHistoricoInline estavam sendo chamados mas não definidos
+function pfHistValidate(inp){
+  if(inp.value !== inp.value.trimStart()) inp.value = inp.value.trimStart();
+  // Visual feedback: remove classe pf-saved enquanto está editando
+  inp.classList.remove('pf-saved');
+}
+
+function pfSalvarHistoricoInline(cicloId){
+  // FIX #4: Esta função é a correta chamada pelo botão Salvar PF no histórico
+  const inp = document.getElementById('hist-pf-input-'+cicloId);
+  if(!inp){showToast('Campo PF não encontrado.','error');return;}
+  const val = inp.value.trim();
+  if(!val){
+    showToast('⚠️ Informe o número da Programação Financeira antes de salvar.','error');
+    inp.focus();
+    return;
+  }
+  // Verifica duplicidade com outros ciclos (exceto o atual)
+  const dup = State.capHistorico.find(h => h.id !== cicloId && h.numeroPF && h.numeroPF.replace(/\s/g,'').toUpperCase() === val.replace(/\s/g,'').toUpperCase());
+  if(dup){
+    if(!confirm('⚠️ O número "'+val+'" já está vinculado ao ciclo:\n'+dup.semana+'\n\nDeseja usar mesmo assim?')) return;
+  }
+  const ciclo = State.capHistorico.find(h=>h.id===cicloId);
+  if(!ciclo){showToast('Ciclo não encontrado.','error');return;}
+  const anterior = ciclo.numeroPF||'';
+  ciclo.numeroPF = val;
+  // Atualiza também em capRelatoriosCiclos se existir
+  const relCiclo = (State.capRelatoriosCiclos||[]).find(r=>r.id===cicloId);
+  if(relCiclo) relCiclo.numeroPF = val;
+  capPersist();
+  Storage.set('capRelatoriosCiclos', State.capRelatoriosCiclos||[]);
+  // Visual feedback direto sem re-renderizar
+  inp.classList.add('pf-saved');
+  capAudit('PF ALTERADA (INLINE)', ciclo.semana, {numeroPF:anterior}, {numeroPF:val});
+  scheduleAutoSave();
+  showToast('✅ PF salva: '+val,'success');
+  // Re-render para atualizar badge "Vinculada"
+  renderHistorico();
+}
+
 function pfSalvarNumero(){
   const inp = document.getElementById('pf-numero-input');
   if(!inp) return;
@@ -4779,6 +4891,64 @@ function renderCapFornecedoresTable(){
   tb.innerHTML=State.capFornecedores.map(f=>'<tr><td>'+f.doc+'</td><td>'+f.nome+'</td><td>'+f.tipo+'</td><td>'+(f.telefone||'-')+'</td><td>'+(f.email?'<a href="mailto:'+f.email+'" style="color:var(--accent-teal)">'+f.email+'</a>':'-')+'</td><td>'+statusBadge(f.status||'ativo')+'</td><td>'+(f.obs||'-')+'</td><td><button class="row-act-btn edit" onclick="editCapFornecedor(\''+f.id+'\')">✎</button><button class="row-act-btn del" onclick="deleteCapFornecedor(\''+f.id+'\')">×</button></td></tr>').join('')||'<tr><td colspan="8"><div class="cap-empty">Nenhum fornecedor financeiro.</div></td></tr>'; 
 }
 function exportCapCSV(){ const rows=getFilteredCapContas(); const csv=[['Tipo','Classe','Documento','Fonte','Fornecedor','Valor'],...rows.map(c=>[c.tipo,c.classe,c.documento,c.fonte,c.fornecedor,c.valor])].map(r=>r.join(';')).join('\n'); const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='contas_a_pagar.csv'; a.click(); }
+
+// FIX #8: Exportação em PDF do ciclo atual usando window.print()
+function exportCapPDF(){
+  const contas=capCurrentWeekContas();
+  if(!contas.length){showToast('Não há lançamentos no ciclo atual para exportar.','info');return;}
+  const cicloLabel=State.capCicloLabel||('Iniciado em '+new Date(State.capCicloInicioAt||Date.now()).toLocaleDateString('pt-BR'));
+  const total=contas.reduce((a,c)=>a+c.valor,0);
+  const exeT=contas.filter(c=>c.tipo==='EXE').reduce((a,c)=>a+c.valor,0);
+  const rapT=contas.filter(c=>c.tipo==='RAP').reduce((a,c)=>a+c.valor,0);
+  const pagoT=contas.filter(c=>c.pago==='sim').reduce((a,c)=>a+c.valor,0);
+  const rows=contas.map(c=>`<tr>
+    <td>${c.tipo}</td><td>${c.classe}</td>
+    <td style="font-family:monospace">${c.documento}</td>
+    <td>${c.fonte}</td>
+    <td>${c.fornecedor}</td>
+    <td style="text-align:right;font-weight:700">${capMoney(c.valor)}</td>
+    <td style="text-align:center">${c.pago==='sim'?'✓ Pago':'— Pendente'}</td>
+    <td>${c.situacao||'—'}</td>
+  </tr>`).join('');
+  const w=window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><title>Relatório SCDP — ${cicloLabel}</title>
+  <style>
+    body{font-family:'Segoe UI',sans-serif;font-size:12px;color:#1a1a1a;padding:32px;max-width:1100px;margin:auto}
+    h1{font-size:20px;font-weight:800;margin-bottom:4px;color:#1a1a1a}
+    .subtitle{font-size:11px;color:#666;margin-bottom:24px;text-transform:uppercase;letter-spacing:.1em}
+    .header-logo{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid #f97316}
+    .logo-box{width:36px;height:36px;background:#f97316;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:13px}
+    .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+    .sum-card{background:#f8f9fa;border:1px solid #e0e0e0;border-radius:8px;padding:12px;text-align:center}
+    .sum-label{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#666;margin-bottom:4px}
+    .sum-val{font-size:16px;font-weight:800;color:#1a1a1a}
+    table{width:100%;border-collapse:collapse;font-size:11px}
+    th{background:#f97316;color:#fff;padding:8px 10px;text-align:left;font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+    td{padding:8px 10px;border-bottom:1px solid #e9ecef}
+    tr:nth-child(even) td{background:#f8f9fa}
+    tr:last-child td{border-bottom:none}
+    .footer{margin-top:20px;padding-top:12px;border-top:1px solid #e0e0e0;font-size:10px;color:#888;display:flex;justify-content:space-between}
+    @media print{body{padding:16px}@page{margin:16mm}}
+  </style></head><body>
+  <div class="header-logo">
+    <div class="logo-box">SC</div>
+    <div><h1>SCDP — Sistema Contábil de Despachos e Pagamentos</h1>
+    <div class="subtitle">Setor de Contabilidade · Relatório de Lançamentos</div></div>
+  </div>
+  <div class="subtitle">${cicloLabel} · Gerado em ${new Date().toLocaleString('pt-BR')}</div>
+  <div class="summary">
+    <div class="sum-card"><div class="sum-label">Total Geral</div><div class="sum-val" style="color:#f97316">${capMoney(total)}</div></div>
+    <div class="sum-card"><div class="sum-label">EXE</div><div class="sum-val" style="color:#14b8a6">${capMoney(exeT)}</div></div>
+    <div class="sum-card"><div class="sum-label">RAP</div><div class="sum-val" style="color:#f59e0b">${capMoney(rapT)}</div></div>
+    <div class="sum-card"><div class="sum-label">Total Pago</div><div class="sum-val" style="color:#22c55e">${capMoney(pagoT)}</div></div>
+  </div>
+  <table><thead><tr><th>Tipo</th><th>Classe</th><th>Documento</th><th>Fonte</th><th>Fornecedor</th><th>Valor</th><th>Status</th><th>Situação</th></tr></thead><tbody>${rows}</tbody></table>
+  <div class="footer"><span>SCDP v3.0 — Relatório gerado automaticamente</span><span>${new Date().toLocaleString('pt-BR')}</span></div>
+  </body></html>`);
+  w.document.close();
+  setTimeout(()=>w.print(),400);
+  showToast('📄 PDF aberto para impressão!','success');
+}
 function renderFinanceiro(){
   refreshCapDatalists(); renderCapDashboard(); renderCapTable(); renderSaldos(); renderRelatorios(); renderHistorico(); renderFontesTable(); renderCapFornecedoresTable();
   // Atualiza indicador de status do ciclo
