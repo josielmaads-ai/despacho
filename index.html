@@ -2335,6 +2335,8 @@ input.cap-date.form-input {
   box-shadow: 0 4px 12px rgba(20,184,166,0.3);
 }
 .btn-teal:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(20,184,166,0.4); }
+.btn-teal:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; transform: none; }
+.btn-teal:disabled:hover { transform: none; box-shadow: none; }
 .btn-amber {
   background: linear-gradient(135deg, var(--accent-amber), #d97706);
   color: #fff;
@@ -2615,6 +2617,7 @@ input.cap-date.form-input {
               <button type="button" class="class-btn" onclick="selectCapClass('NP')">NP</button>
               <button type="button" class="class-btn" onclick="selectCapClass('RP')">RP</button>
               <button type="button" class="class-btn" onclick="selectCapClass('AV')">AV</button>
+              <button type="button" class="class-btn" onclick="selectCapClass('SF')">SF</button>
             </div>
 
             <!-- Linha 1: Documento | Fonte | Código -->
@@ -2753,7 +2756,7 @@ input.cap-date.form-input {
               </div>
             </div>
             <div style="display:flex;gap:10px;flex-wrap:wrap">
-              <button class="btn btn-teal" onclick="saveCapConta()">
+              <button class="btn btn-teal" id="cap-btn-salvar" onclick="saveCapConta()" disabled title="Selecione EXE ou RAP para habilitar">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v13a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                 Salvar Conta
               </button>
@@ -2783,7 +2786,7 @@ input.cap-date.form-input {
             <div style="display:grid;grid-template-columns:2fr repeat(4,1fr) repeat(2,1fr) auto;gap:8px;flex-wrap:wrap">
               <input class="cap-filter-input" id="cap-filter-search" placeholder="🔍 Busca (doc, fornecedor, CNPJ...)" oninput="renderCapTable()" style="grid-column:1/3">
               <select class="cap-filter-input" id="cap-filter-tipo" onchange="renderCapTable()"><option value="">EXE/RAP</option><option>EXE</option><option>RAP</option></select>
-              <select class="cap-filter-input" id="cap-filter-classe" onchange="renderCapTable()"><option value="">NP/RP/AV</option><option>NP</option><option>RP</option><option>AV</option></select>
+              <select class="cap-filter-input" id="cap-filter-classe" onchange="renderCapTable()"><option value="">NP/RP/AV/SF</option><option>NP</option><option>RP</option><option>AV</option><option>SF</option></select>
               <input class="cap-filter-input" id="cap-filter-fonte" placeholder="Fonte..." oninput="renderCapTable()">
               <select class="cap-filter-input" id="cap-filter-pago" onchange="renderCapTable()"><option value="">Pago?</option><option value="sim">✓ Pago</option><option value="nao">✗ Não Pago</option></select>
               <select class="cap-filter-input" id="cap-filter-situacao" onchange="renderCapTable()"><option value="">Situação</option><option>Processo enviado</option><option>Aguardando comprovante</option><option>Anexado</option><option>Não enviado</option></select>
@@ -3285,9 +3288,41 @@ input.cap-date.form-input {
     <div class="modal-body">
       <input type="hidden" id="cap-edit-ind-id">
       <div style="background:rgba(244,63,94,0.06);border:1px solid rgba(244,63,94,0.2);border-radius:var(--radius-sm);padding:12px 16px;margin-bottom:20px;font-size:12px;color:var(--accent-rose)">
-        <strong>Atenção:</strong> As alterações feitas aqui são apenas para manter o registro atualizado. Lançamentos já computados no ciclo ativo <strong>não serão recalculados</strong>. Use esta edição para atualizar status, datas e observações sem impactar a solicitação financeira vigente.
+        <strong>Atenção:</strong> As alterações feitas aqui afetam apenas este registro. Lançamentos já computados no ciclo ativo <strong>não serão recalculados</strong> e nenhum outro registro é impactado.
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+        <div class="form-group">
+          <label class="form-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;color:var(--accent-orange)"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Documento</label>
+          <input class="form-input" id="cap-edit-ind-documento" oninput="maskCapDocumento(this, document.getElementById('cap-edit-ind-classe').value)" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label class="form-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;color:var(--accent-orange)"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Valor (R$)</label>
+          <input class="form-input" id="cap-edit-ind-valor" oninput="maskMoneyInput(this)" autocomplete="off">
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+        <div class="form-group">
+          <label class="form-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;color:var(--accent-orange)"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Fonte</label>
+          <select class="form-select" id="cap-edit-ind-fonte"></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">EXE / RAP</label>
+          <select class="form-select" id="cap-edit-ind-tipo">
+            <option value="EXE">EXE — Exercício</option>
+            <option value="RAP">RAP — Restos a Pagar</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+        <div class="form-group">
+          <label class="form-label">Tipo do Documento</label>
+          <select class="form-select" id="cap-edit-ind-classe">
+            <option value="NP">NP</option>
+            <option value="RP">RP</option>
+            <option value="AV">AV</option>
+            <option value="SF">SF</option>
+          </select>
+        </div>
         <div class="form-group">
           <label class="form-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;color:var(--accent-orange)"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Status Pagamento</label>
           <select class="form-select" id="cap-edit-ind-pago">
@@ -3295,6 +3330,8 @@ input.cap-date.form-input {
             <option value="sim">Pago</option>
           </select>
         </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
         <div class="form-group">
           <label class="form-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;color:var(--accent-orange)"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Situação</label>
           <select class="form-select" id="cap-edit-ind-situacao">
@@ -3304,6 +3341,7 @@ input.cap-date.form-input {
             <option>Não enviado</option>
           </select>
         </div>
+        <div></div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
         <div class="form-group">
@@ -3518,8 +3556,8 @@ Object.assign(State, {
   capPage: 1,
   capHistPage: 1,
   capSort: { key:'createdAt', dir:'desc' },
-  capTipo: 'EXE',
-  capClasse: 'NP',
+  capTipo: '',
+  capClasse: '',
   capDocTipo: 'CNPJ',
   _solicitacaoExecutada: false,   // ← CORREÇÃO 1: flag de controle de fluxo
 });
@@ -3575,28 +3613,50 @@ function capWeekRange(d=new Date()){ const x=new Date(d), day=x.getDay(), diff=d
 function capCurrentWeekContas(){ return State.capContas.filter(c=>!c.cicloId); }
 function capStatusBadge(p){ return p==='sim'?'<span class="status-badge badge-pago">Pago</span>':'<span class="status-badge badge-nao-pago">Não Pago</span>'; }
 function capSituacaoBadge(s){ const cls=s==='Anexado'?'badge-anexado':s==='Aguardando comprovante'?'badge-aguard':s==='Processo enviado'?'badge-enviado':'badge-nao-env'; return '<span class="status-badge '+cls+'">'+(s||'Não enviado')+'</span>'; }
-function initCapModule(){ const comp=document.getElementById('cap-competencia'); if(comp&&!comp.children.length) CAP_MONTHS.forEach(m=>comp.add(new Option(m,m))); selectCapTipo(State.capTipo); selectCapClass(State.capClasse); selectDocTipo(State.capDocTipo); refreshCapDatalists(); renderFinanceiro();
+function initCapModule(){ const comp=document.getElementById('cap-competencia'); if(comp&&!comp.children.length) CAP_MONTHS.forEach(m=>comp.add(new Option(m,m))); selectCapTipo(''); selectCapClass(''); selectDocTipo(State.capDocTipo); refreshCapDatalists(); renderFinanceiro();
   // Set default dates on init (DD/MM/AAAA)
   const hidSol=document.getElementById('cap-data-solicitacao'); if(hidSol&&!hidSol.value) capSetDateDisplay('cap-data-solicitacao',getNextWeekday(1));
   const hidPag=document.getElementById('cap-data-pagamento'); if(hidPag&&!hidPag.value) capSetDateDisplay('cap-data-pagamento',getNextWeekday(2));
   // Fix situação default to "Aguardando comprovante"
   const sit=document.getElementById('cap-situacao'); if(sit) sit.value='Aguardando comprovante';
 }
+function capNextDocNumber(classe){
+  // Localiza o último número já registrado para a modalidade e incrementa +1
+  const nums=State.capContas.filter(c=>c.classe===classe).map(c=>{
+    const m=String(c.documento||'').match(/(\d+)(?!.*\d)/);
+    return m?parseInt(m[1],10):0;
+  });
+  const max=nums.length?Math.max(...nums):0;
+  return max+1;
+}
+function capBuildDocForClasse(c){
+  if(!c) return '';
+  if(c==='RP'){
+    const n=capNextDocNumber('RP');
+    // RP não incrementa: sempre apresenta o par 000001 A 000002
+    return '2026RP000001 A 2026RP000002';
+  }
+  const num=capNextDocNumber(c);
+  return '2026'+c+String(num).padStart(6,'0');
+}
 function selectCapTipo(t){
-  State.capTipo=t;
+  State.capTipo=t||'';
   document.querySelectorAll('.tipo-btn').forEach(b=>b.classList.remove('active-exe','active-rap'));
-  const el=document.getElementById('cap-tipo-'+t.toLowerCase());
-  if(el) el.classList.add(t==='EXE'?'active-exe':'active-rap');
+  if(t){
+    const el=document.getElementById('cap-tipo-'+t.toLowerCase());
+    if(el) el.classList.add(t==='EXE'?'active-exe':'active-rap');
+  }
+  const btnSalvar=document.getElementById('cap-btn-salvar');
+  if(btnSalvar) btnSalvar.disabled=!State.capTipo;
   updateDocumentoDefault();
 }
 function selectCapClass(c){
-  State.capClasse=c;
+  State.capClasse=c||'';
   document.querySelectorAll('#cap-class-selector .class-btn').forEach(b=>b.classList.toggle('active',b.textContent.trim()===c));
   // Atualiza placeholder e valor do campo Documento
   const el=document.getElementById('cap-documento');
-  if(el){
-    const num=State.capContas.filter(x=>x.classe===c).length+1;
-    const newVal='2026'+c+String(num).padStart(6,'0');
+  if(el&&c){
+    const newVal=capBuildDocForClasse(c);
     el.placeholder=newVal;
     el.value=newVal;
   }
@@ -3633,14 +3693,21 @@ function onFonteSelectChange(){
 }
 function updateDocumentoDefault(){
   const el=document.getElementById('cap-documento');
-  if(el){
-    const num=State.capContas.filter(c=>c.classe===State.capClasse).length+1;
-    const newVal='2026'+State.capClasse+String(num).padStart(6,'0');
+  if(el&&State.capClasse){
+    const newVal=capBuildDocForClasse(State.capClasse);
     el.placeholder=newVal;
     if(!el.value) el.value=newVal;
   }
 }
-function maskCapDocumento(inp){ inp.value=inp.value.toUpperCase().replace(/\s/g,'').slice(0,12); }
+function maskCapDocumento(inp, classeOverride){
+  const classe=classeOverride||State.capClasse;
+  if(classe==='RP'){
+    // Formato RP: "2026RP000001 A 2026RP000002" — mantém espaços, sem truncar em 12
+    inp.value=inp.value.toUpperCase().slice(0,40);
+  } else {
+    inp.value=inp.value.toUpperCase().replace(/\s/g,'').slice(0,12);
+  }
+}
 function renderFonteHint(){
   const fonteEl=document.getElementById('cap-fonte');
   const val=fonteEl?.value||'';
@@ -3978,6 +4045,8 @@ document.addEventListener('keydown', function(e){
 });
 
 function saveCapConta(){
+  if(!State.capTipo){showToast('Selecione EXE ou RAP antes de salvar.','error');return;}
+  if(!State.capClasse){showToast('Selecione a modalidade (NP, RP, AV ou SF) antes de salvar.','error');return;}
   const id=document.getElementById('cap-edit-id').value||capId('cap');
   const val=parseMoneyBR(document.getElementById('cap-valor').value);
   const doc=document.getElementById('cap-documento').value.trim();
@@ -4095,8 +4164,8 @@ function resetCapForm(){
   const docEl=document.getElementById('cap-documento'); if(docEl) docEl.value='';
   // Reset fonte hint
   const hint=document.getElementById('fonte-hint'); if(hint) hint.style.display='none';
-  selectCapTipo('EXE');
-  selectCapClass('NP');
+  selectCapTipo('');
+  selectCapClass('');
   selectDocTipo('CNPJ');
   const badgeEl=document.getElementById('cap-edit-badge');
   if(badgeEl){ badgeEl.textContent='NOVO REGISTRO'; badgeEl.className='btn-novo-registro'; }
@@ -4130,13 +4199,32 @@ function getFilteredCapContas(){
 }
 function capFmtDate(d){ if(!d)return '-'; const p=d.split('-'); if(p.length===3)return p[2]+'/'+p[1]+'/'+p[0]; return d; }
 function sortCap(k){ State.capSort={key:k,dir:State.capSort.key===k&&State.capSort.dir==='asc'?'desc':'asc'}; renderCapTable(); }
-function renderCapTable(){ const tb=document.getElementById('cap-table-body'); if(!tb)return; const rows=getFilteredCapContas(); const per=20,pages=Math.max(1,Math.ceil(rows.length/per)); State.capPage=Math.min(State.capPage||1,pages); const page=rows.slice((State.capPage-1)*per,State.capPage*per); tb.innerHTML=page.length?page.map(c=>{const f=fonteByCodigo(c.fonte); return '<tr><td><span class="status-badge '+(c.tipo==='EXE'?'badge-exe':'badge-rap')+'">'+c.tipo+'</span></td><td>'+c.classe+'</td><td class="td-doc">'+c.documento+'</td><td class="td-fonte"><span class="fonte-dot" style="background:'+f.cor+'"></span> <strong>'+c.fonte+'</strong></td><td class="td-fornecedor">'+c.fornecedor+'</td><td class="td-valor">'+capMoney(c.valor)+'</td><td>'+capStatusBadge(c.pago)+'</td><td>'+capFmtDate(c.dataSolicitacao)+'</td><td>'+capFmtDate(c.dataPagamento)+'</td><td>'+capSituacaoBadge(c.situacao)+'</td><td><div class="row-actions"><button class="row-act-btn edit" onclick="editCapConta(\''+c.id+'\')">✎</button><button class="row-act-btn detail" onclick="detailCapConta(\''+c.id+'\')">i</button><button class="row-act-btn del" onclick="deleteCapConta(\''+c.id+'\')">×</button></div></td></tr>';}).join(''):'<tr><td colspan="11"><div class="cap-empty">Nenhuma conta cadastrada.</div></td></tr>'; const info=document.getElementById('cap-pag-info'); if(info)info.textContent=rows.length+' registros | página '+State.capPage+' de '+pages; const btns=document.getElementById('cap-pag-btns'); if(btns)btns.innerHTML='<button class="cap-pag-btn" onclick="State.capPage--;renderCapTable()" '+(State.capPage<=1?'disabled':'')+'>‹</button><button class="cap-pag-btn active">'+State.capPage+'</button><button class="cap-pag-btn" onclick="State.capPage++;renderCapTable()" '+(State.capPage>=pages?'disabled':'')+'>›</button>'; }
+function capFormatDocDisplay(doc){
+  // Para RP no formato "2026RP000001 A 2026RP000002" exibe um número abaixo do outro
+  const m=String(doc||'').match(/^(.+?)\s+A\s+(.+)$/i);
+  if(m) return m[1].trim()+'<br>'+m[2].trim();
+  return doc;
+}
+function renderCapTable(){ const tb=document.getElementById('cap-table-body'); if(!tb)return; const rows=getFilteredCapContas(); const per=20,pages=Math.max(1,Math.ceil(rows.length/per)); State.capPage=Math.min(State.capPage||1,pages); const page=rows.slice((State.capPage-1)*per,State.capPage*per); tb.innerHTML=page.length?page.map(c=>{
+  const f=fonteByCodigo(c.fonte);
+  const isFonteEspecial=c.fonte!=='1000000000';
+  const fonteColorStyle=isFonteEspecial?'color:'+f.cor+';font-weight:800':'';
+  const fonteNumStyle=isFonteEspecial?fonteColorStyle:'color:#ffffff;font-weight:800';
+  const pagoRowStyle=c.pago==='sim'?'background:rgba(20,184,166,0.07)':'';
+  return '<tr style="'+pagoRowStyle+'"><td><span class="status-badge '+(c.tipo==='EXE'?'badge-exe':'badge-rap')+'">'+c.tipo+'</span></td><td>'+c.classe+'</td><td class="td-doc">'+capFormatDocDisplay(c.documento)+'</td><td class="td-fonte"><span class="fonte-dot" style="background:'+f.cor+'"></span> <strong style="'+fonteNumStyle+'">'+c.fonte+'</strong></td><td class="td-fornecedor" style="'+fonteColorStyle+'">'+c.fornecedor+'</td><td class="td-valor" style="'+fonteColorStyle+'">'+capMoney(c.valor)+'</td><td>'+capStatusBadge(c.pago)+'</td><td>'+capFmtDate(c.dataSolicitacao)+'</td><td>'+capFmtDate(c.dataPagamento)+'</td><td>'+capSituacaoBadge(c.situacao)+'</td><td><div class="row-actions"><button class="row-act-btn edit" onclick="editCapConta(\''+c.id+'\')">✎</button><button class="row-act-btn detail" onclick="detailCapConta(\''+c.id+'\')">i</button><button class="row-act-btn del" onclick="deleteCapConta(\''+c.id+'\')">×</button></div></td></tr>';
+}).join(''):'<tr><td colspan="11"><div class="cap-empty">Nenhuma conta cadastrada.</div></td></tr>'; const info=document.getElementById('cap-pag-info'); if(info)info.textContent=rows.length+' registros | página '+State.capPage+' de '+pages; const btns=document.getElementById('cap-pag-btns'); if(btns)btns.innerHTML='<button class="cap-pag-btn" onclick="State.capPage--;renderCapTable()" '+(State.capPage<=1?'disabled':'')+'>‹</button><button class="cap-pag-btn active">'+State.capPage+'</button><button class="cap-pag-btn" onclick="State.capPage++;renderCapTable()" '+(State.capPage>=pages?'disabled':'')+'>›</button>'; }
 function clearCapFilters(){ ['cap-filter-search','cap-filter-tipo','cap-filter-classe','cap-filter-fonte','cap-filter-pago','cap-filter-situacao','cap-filter-competencia','cap-filter-valor-min','cap-filter-valor-max','cap-filter-data-ini','cap-filter-data-fim'].forEach(id=>{const e=document.getElementById(id); if(e)e.value='';}); renderCapTable(); }
 function editCapConta(id){
   // FIX #3: Abre modal independente — não carrega no form principal, não afeta ciclo
   const c=State.capContas.find(x=>x.id===id);
   if(!c)return;
   document.getElementById('cap-edit-ind-id').value=c.id;
+  document.getElementById('cap-edit-ind-documento').value=c.documento||'';
+  document.getElementById('cap-edit-ind-valor').value=c.valor?Number(c.valor).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}):'';
+  refreshCapDatalists();
+  const fsi=document.getElementById('cap-edit-ind-fonte'); if(fsi) fsi.value=c.fonte||'';
+  const tsi=document.getElementById('cap-edit-ind-tipo'); if(tsi) tsi.value=c.tipo||'EXE';
+  const csi=document.getElementById('cap-edit-ind-classe'); if(csi) csi.value=c.classe||'NP';
   document.getElementById('cap-edit-ind-pago').value=c.pago;
   document.getElementById('cap-edit-ind-situacao').value=c.situacao;
   capSetDateDisplay('cap-edit-ind-data-sol', c.dataSolicitacao||'');
@@ -4156,15 +4244,24 @@ function saveCapContaIndependente(){
   const idx=State.capContas.findIndex(c=>c.id===id);
   if(idx<0){showToast('Conta não encontrada.','error');return;}
   const c=State.capContas[idx];
-  const oldPago=c.pago;
+  const before={documento:c.documento,valor:c.valor,fonte:c.fonte,tipo:c.tipo,classe:c.classe,pago:c.pago};
+  const novoDoc=document.getElementById('cap-edit-ind-documento').value.trim();
+  const novoValor=parseMoneyBR(document.getElementById('cap-edit-ind-valor').value);
+  const novaFonte=(document.getElementById('cap-edit-ind-fonte').value||'').trim();
+  if(!novoDoc||!novaFonte||novoValor<=0){showToast('Preencha documento, fonte e valor.','error');return;}
+  c.documento=novoDoc;
+  c.valor=novoValor;
+  c.fonte=novaFonte;
+  c.tipo=document.getElementById('cap-edit-ind-tipo').value;
+  c.classe=document.getElementById('cap-edit-ind-classe').value;
   c.pago=document.getElementById('cap-edit-ind-pago').value;
   c.situacao=document.getElementById('cap-edit-ind-situacao').value;
   c.dataSolicitacao=document.getElementById('cap-edit-ind-data-sol').value||c.dataSolicitacao;
   c.dataPagamento=document.getElementById('cap-edit-ind-data-pag').value||c.dataPagamento;
   c.obs=document.getElementById('cap-edit-ind-obs').value.trim();
   if(!c.historico)c.historico=[];
-  c.historico.push({at:new Date().toISOString(),msg:'Editado via modal independente (pago: '+oldPago+'→'+c.pago+')'});
-  capAudit('CONTA EDITADA (INDEPENDENTE)', c.documento, {pago:oldPago}, {pago:c.pago,situacao:c.situacao});
+  c.historico.push({at:new Date().toISOString(),msg:'Registro editado via modal (documento/valor/fonte/tipo/classe/pago)'});
+  capAudit('CONTA EDITADA (INDEPENDENTE)', c.documento, before, {documento:c.documento,valor:c.valor,fonte:c.fonte,tipo:c.tipo,classe:c.classe,pago:c.pago});
   capPersist();
   closeModal('modal-cap-edit-ind');
   renderFinanceiro();
@@ -4909,6 +5006,14 @@ function refreshCapDatalists(){
     fs.innerHTML='<option value="">— Selecione a fonte —</option>'+
       State.capFontes.map(f=>'<option value="'+f.codigo+'" data-codsol="'+f.codsol+'" data-cor="'+f.cor+'" data-desc="'+f.descricao+'">'+f.codigo+' — '+f.descricao+'</option>').join('');
     if(cur) fs.value=cur;
+  }
+
+  // SELECT de fonte no modal de edição independente
+  const fsi=document.getElementById('cap-edit-ind-fonte');
+  if(fsi){
+    const curI=fsi.value;
+    fsi.innerHTML=State.capFontes.map(f=>'<option value="'+f.codigo+'">'+f.codigo+' — '+f.descricao+'</option>').join('');
+    if(curI) fsi.value=curI;
   }
 
   const dl=document.getElementById('cap-forn-doc-list');
