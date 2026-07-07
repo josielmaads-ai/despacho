@@ -6100,10 +6100,11 @@ async function driveSaveData() {
   payload._checksum = (payload.capContas.length * 7 + payload.capSaldos.length * 13 + payload.capHistorico.length * 31).toString(36);
 
   try {
-    let { error } = await GDRIVE._client
+    let { data: updRows, error } = await GDRIVE._client
       .from('sigde_state')
       .update({ data: payload, checksum: payload._checksum, version: payload.version })
-      .eq('slug', GDRIVE.SLUG);
+      .eq('slug', GDRIVE.SLUG)
+      .select('id');
 
     // ← CORREÇÃO: se a tabela não tiver as colunas extras `checksum`/`version`
     // (schema mínimo: id, slug, data), o update acima falha com erro de coluna
@@ -6115,8 +6116,28 @@ async function driveSaveData() {
       const retry = await GDRIVE._client
         .from('sigde_state')
         .update({ data: payload })
-        .eq('slug', GDRIVE.SLUG);
+        .eq('slug', GDRIVE.SLUG)
+        .select('id');
       error = retry.error;
+      updRows = retry.data;
+    }
+
+    // ← CORREÇÃO: se não houve erro mas nenhuma linha foi afetada, significa
+    // que o registro com este slug ainda não existe na tabela (por exemplo,
+    // foi apagado manualmente ou o connectGoogleDrive() não chegou a criá-lo).
+    // Nesse caso o UPDATE não falha, apenas não atualiza nada — então
+    // inserimos o registro para não perder os dados locais.
+    if (!error && (!updRows || updRows.length === 0)) {
+      console.warn('Supabase: nenhuma linha com slug="'+GDRIVE.SLUG+'" foi encontrada para atualizar — inserindo novo registro.');
+      let ins = await GDRIVE._client
+        .from('sigde_state')
+        .insert({ slug: GDRIVE.SLUG, data: payload, checksum: payload._checksum, version: payload.version });
+      if (ins.error && /column|schema cache/i.test(ins.error.message || '')) {
+        ins = await GDRIVE._client
+          .from('sigde_state')
+          .insert({ slug: GDRIVE.SLUG, data: payload });
+      }
+      error = ins.error;
     }
 
     if (error) throw error;
