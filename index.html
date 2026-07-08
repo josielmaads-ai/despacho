@@ -2797,6 +2797,12 @@ input.cap-date.form-input {
               <input class="cap-filter-input" id="cap-filter-data-fim" type="date" onchange="renderCapTable()" title="Data final">
               <button class="btn btn-ghost" onclick="clearCapFilters()" style="font-size:11px;padding:6px 12px;white-space:nowrap">✕ Limpar</button>
             </div>
+            <div id="cap-filter-total-bar" style="display:flex;align-items:center;gap:10px;background:rgba(20,184,166,0.06);border:1px solid rgba(20,184,166,0.25);border-radius:var(--radius-sm);padding:10px 16px">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent-teal)" stroke-width="2" style="width:14px;height:14px;flex-shrink:0"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <span style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em">Total do filtro</span>
+              <span id="cap-filter-total-count" style="font-size:11px;color:var(--text-muted)"></span>
+              <span id="cap-filter-total-valor" style="margin-left:auto;font-size:16px;font-weight:800;color:var(--accent-teal)">R$ 0,00</span>
+            </div>
           </div>
           <div class="cap-table-wrap">
             <table class="cap-table cap-table-lanc">
@@ -4212,7 +4218,12 @@ function renderCapTable(){ const tb=document.getElementById('cap-table-body'); i
   const fonteNumStyle=isFonteEspecial?fonteColorStyle:'color:#ffffff;font-weight:800';
   const pagoRowStyle=c.pago==='sim'?'background:rgba(20,184,166,0.07)':'';
   return '<tr style="'+pagoRowStyle+'"><td><span class="status-badge '+(c.tipo==='EXE'?'badge-exe':'badge-rap')+'">'+c.tipo+'</span></td><td>'+c.classe+'</td><td class="td-doc">'+capFormatDocDisplay(c.documento)+'</td><td class="td-fonte"><span class="fonte-dot" style="background:'+f.cor+'"></span> <strong style="'+fonteNumStyle+'">'+c.fonte+'</strong></td><td class="td-fornecedor" style="'+fonteColorStyle+'">'+c.fornecedor+'</td><td class="td-valor" style="'+fonteColorStyle+'">'+capMoney(c.valor)+'</td><td>'+capStatusBadge(c.pago)+'</td><td>'+capFmtDate(c.dataSolicitacao)+'</td><td>'+capFmtDate(c.dataPagamento)+'</td><td>'+capSituacaoBadge(c.situacao)+'</td><td><div class="row-actions"><button class="row-act-btn edit" onclick="editCapConta(\''+c.id+'\')">✎</button><button class="row-act-btn detail" onclick="detailCapConta(\''+c.id+'\')">i</button><button class="row-act-btn del" onclick="deleteCapConta(\''+c.id+'\')">×</button></div></td></tr>';
-}).join(''):'<tr><td colspan="11"><div class="cap-empty">Nenhuma conta cadastrada.</div></td></tr>'; const info=document.getElementById('cap-pag-info'); if(info)info.textContent=rows.length+' registros | página '+State.capPage+' de '+pages; const btns=document.getElementById('cap-pag-btns'); if(btns)btns.innerHTML='<button class="cap-pag-btn" onclick="State.capPage--;renderCapTable()" '+(State.capPage<=1?'disabled':'')+'>‹</button><button class="cap-pag-btn active">'+State.capPage+'</button><button class="cap-pag-btn" onclick="State.capPage++;renderCapTable()" '+(State.capPage>=pages?'disabled':'')+'>›</button>'; }
+}).join(''):'<tr><td colspan="11"><div class="cap-empty">Nenhuma conta cadastrada.</div></td></tr>'; const info=document.getElementById('cap-pag-info'); if(info)info.textContent=rows.length+' registros | página '+State.capPage+' de '+pages; const btns=document.getElementById('cap-pag-btns'); if(btns)btns.innerHTML='<button class="cap-pag-btn" onclick="State.capPage--;renderCapTable()" '+(State.capPage<=1?'disabled':'')+'>‹</button><button class="cap-pag-btn active">'+State.capPage+'</button><button class="cap-pag-btn" onclick="State.capPage++;renderCapTable()" '+(State.capPage>=pages?'disabled':'')+'>›</button>';
+  // Soma total do valor de TODOS os registros que atendem ao(s) filtro(s) ativo(s) — não só da página atual
+  const totalValor=rows.reduce((a,c)=>a+(Number(c.valor)||0),0);
+  const elTotalValor=document.getElementById('cap-filter-total-valor'); if(elTotalValor) elTotalValor.textContent=capMoney(totalValor);
+  const elTotalCount=document.getElementById('cap-filter-total-count'); if(elTotalCount) elTotalCount.textContent='('+rows.length+(rows.length===1?' registro':' registros')+')';
+}
 function clearCapFilters(){ ['cap-filter-search','cap-filter-tipo','cap-filter-classe','cap-filter-fonte','cap-filter-pago','cap-filter-situacao','cap-filter-competencia','cap-filter-valor-min','cap-filter-valor-max','cap-filter-data-ini','cap-filter-data-fim'].forEach(id=>{const e=document.getElementById(id); if(e)e.value='';}); renderCapTable(); }
 function editCapConta(id){
   // FIX #3: Abre modal independente — não carrega no form principal, não afeta ciclo
