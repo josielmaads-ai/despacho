@@ -2775,7 +2775,12 @@ input.cap-date.form-input {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
                 Tabela de Lançamentos
               </div>
-              <div style="display:flex;gap:8px">
+              <div style="display:flex;gap:8px;align-items:center">
+                <span id="cap-baixa-lote-count" style="display:none;font-size:11px;color:var(--text-muted)"></span>
+                <button id="cap-baixa-lote-btn" class="btn" onclick="baixarContasSelecionadas()" style="font-size:12px;padding:7px 14px;background:rgba(34,197,94,0.15);color:var(--accent-green);border:1px solid rgba(34,197,94,0.35)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><polyline points="20 6 9 17 4 12"/></svg>
+                  Baixar Contas Selecionadas
+                </button>
                 <button class="btn btn-ghost" onclick="exportCapCSV()" style="font-size:12px;padding:7px 14px">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                   CSV
@@ -2807,19 +2812,20 @@ input.cap-date.form-input {
           <div class="cap-table-wrap">
             <table class="cap-table cap-table-lanc">
               <colgroup>
+                <col style="width:4%">
                 <col style="width:6%">
                 <col style="width:6%">
-                <col style="width:13%">
-                <col style="width:9%">
-                <col style="width:24%">
-                <col style="width:9%">
+                <col style="width:12%">
+                <col style="width:8%">
+                <col style="width:22%">
+                <col style="width:8%">
                 <col style="width:7%">
                 <col style="width:8%">
                 <col style="width:8%">
-                <col style="width:9%">
+                <col style="width:8%">
                 <col style="width:11%">
               </colgroup>
-              <thead><tr><th onclick="sortCap('tipo')">Tipo</th><th onclick="sortCap('classe')">Classe</th><th onclick="sortCap('documento')">Documento</th><th>Fonte</th><th>Fornecedor</th><th onclick="sortCap('valor')">Valor</th><th>Pago</th><th>Solicitação</th><th>Pagamento</th><th>Situação</th><th>Ações</th></tr></thead>
+              <thead><tr><th style="text-align:center"><input type="checkbox" id="cap-select-all" onchange="toggleSelectAllCap(this)" title="Selecionar todos"></th><th onclick="sortCap('tipo')">Tipo</th><th onclick="sortCap('classe')">Classe</th><th onclick="sortCap('documento')">Documento</th><th>Fonte</th><th>Fornecedor</th><th onclick="sortCap('valor')">Valor</th><th>Pago</th><th>Solicitação</th><th>Pagamento</th><th>Situação</th><th>Ações</th></tr></thead>
               <tbody id="cap-table-body"></tbody>
             </table>
           </div>
@@ -3449,6 +3455,7 @@ const Storage = {
    STATE
    ============================================================ */
 const State = {
+  capSelecionados: new Set(),
   fornecedores: Storage.get('fornecedores', []),
   stats: Storage.get('stats', { total: 0, fav: 0, suap: 0 }),
   dailyStats: Storage.get('dailyStats', { date: '', count: 0 }),
@@ -4217,14 +4224,75 @@ function renderCapTable(){ const tb=document.getElementById('cap-table-body'); i
   const fonteColorStyle=isFonteEspecial?'color:'+f.cor+';font-weight:800':'';
   const fonteNumStyle=isFonteEspecial?fonteColorStyle:'color:#ffffff;font-weight:800';
   const pagoRowStyle=c.pago==='sim'?'background:rgba(20,184,166,0.07)':'';
-  return '<tr style="'+pagoRowStyle+'"><td><span class="status-badge '+(c.tipo==='EXE'?'badge-exe':'badge-rap')+'">'+c.tipo+'</span></td><td>'+c.classe+'</td><td class="td-doc">'+capFormatDocDisplay(c.documento)+'</td><td class="td-fonte"><span class="fonte-dot" style="background:'+f.cor+'"></span> <strong style="'+fonteNumStyle+'">'+c.fonte+'</strong></td><td class="td-fornecedor" style="'+fonteColorStyle+'">'+c.fornecedor+'</td><td class="td-valor" style="'+fonteColorStyle+'">'+capMoney(c.valor)+'</td><td>'+capStatusBadge(c.pago)+'</td><td>'+capFmtDate(c.dataSolicitacao)+'</td><td>'+capFmtDate(c.dataPagamento)+'</td><td>'+capSituacaoBadge(c.situacao)+'</td><td><div class="row-actions"><button class="row-act-btn edit" onclick="editCapConta(\''+c.id+'\')">✎</button><button class="row-act-btn detail" onclick="detailCapConta(\''+c.id+'\')">i</button><button class="row-act-btn del" onclick="deleteCapConta(\''+c.id+'\')">×</button></div></td></tr>';
-}).join(''):'<tr><td colspan="11"><div class="cap-empty">Nenhuma conta cadastrada.</div></td></tr>'; const info=document.getElementById('cap-pag-info'); if(info)info.textContent=rows.length+' registros | página '+State.capPage+' de '+pages; const btns=document.getElementById('cap-pag-btns'); if(btns)btns.innerHTML='<button class="cap-pag-btn" onclick="State.capPage--;renderCapTable()" '+(State.capPage<=1?'disabled':'')+'>‹</button><button class="cap-pag-btn active">'+State.capPage+'</button><button class="cap-pag-btn" onclick="State.capPage++;renderCapTable()" '+(State.capPage>=pages?'disabled':'')+'>›</button>';
+  const isChecked=State.capSelecionados&&State.capSelecionados.has(c.id);
+  const chkCell='<td style="text-align:center"><input type="checkbox" class="cap-row-check" data-id="'+c.id+'" onchange="toggleSelectCap(\''+c.id+'\',this)" '+(isChecked?'checked':'')+'></td>';
+  return '<tr style="'+pagoRowStyle+'">'+chkCell+'<td><span class="status-badge '+(c.tipo==='EXE'?'badge-exe':'badge-rap')+'">'+c.tipo+'</span></td><td>'+c.classe+'</td><td class="td-doc">'+capFormatDocDisplay(c.documento)+'</td><td class="td-fonte"><span class="fonte-dot" style="background:'+f.cor+'"></span> <strong style="'+fonteNumStyle+'">'+c.fonte+'</strong></td><td class="td-fornecedor" style="'+fonteColorStyle+'">'+c.fornecedor+'</td><td class="td-valor" style="'+fonteColorStyle+'">'+capMoney(c.valor)+'</td><td>'+capStatusBadge(c.pago)+'</td><td>'+capFmtDate(c.dataSolicitacao)+'</td><td>'+capFmtDate(c.dataPagamento)+'</td><td>'+capSituacaoBadge(c.situacao)+'</td><td><div class="row-actions"><button class="row-act-btn edit" onclick="editCapConta(\''+c.id+'\')">✎</button><button class="row-act-btn detail" onclick="detailCapConta(\''+c.id+'\')">i</button><button class="row-act-btn del" onclick="deleteCapConta(\''+c.id+'\')">×</button></div></td></tr>';
+}).join(''):'<tr><td colspan="12"><div class="cap-empty">Nenhuma conta cadastrada.</div></td></tr>'; const info=document.getElementById('cap-pag-info'); if(info)info.textContent=rows.length+' registros | página '+State.capPage+' de '+pages; const btns=document.getElementById('cap-pag-btns'); if(btns)btns.innerHTML='<button class="cap-pag-btn" onclick="State.capPage--;renderCapTable()" '+(State.capPage<=1?'disabled':'')+'>‹</button><button class="cap-pag-btn active">'+State.capPage+'</button><button class="cap-pag-btn" onclick="State.capPage++;renderCapTable()" '+(State.capPage>=pages?'disabled':'')+'>›</button>';
   // Soma total do valor de TODOS os registros que atendem ao(s) filtro(s) ativo(s) — não só da página atual
   const totalValor=rows.reduce((a,c)=>a+(Number(c.valor)||0),0);
   const elTotalValor=document.getElementById('cap-filter-total-valor'); if(elTotalValor) elTotalValor.textContent=capMoney(totalValor);
   const elTotalCount=document.getElementById('cap-filter-total-count'); if(elTotalCount) elTotalCount.textContent='('+rows.length+(rows.length===1?' registro':' registros')+')';
+  updateCapSelectAllState();
+  updateCapBaixaLoteUI();
 }
 function clearCapFilters(){ ['cap-filter-search','cap-filter-tipo','cap-filter-classe','cap-filter-fonte','cap-filter-pago','cap-filter-situacao','cap-filter-competencia','cap-filter-valor-min','cap-filter-valor-max','cap-filter-data-ini','cap-filter-data-fim'].forEach(id=>{const e=document.getElementById(id); if(e)e.value='';}); renderCapTable(); }
+
+// ===== SELEÇÃO MÚLTIPLA / BAIXA EM LOTE =====
+function todayISO(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function toggleSelectCap(id, el){
+  if(!State.capSelecionados) State.capSelecionados=new Set();
+  if(el.checked) State.capSelecionados.add(id); else State.capSelecionados.delete(id);
+  updateCapSelectAllState();
+  updateCapBaixaLoteUI();
+}
+function toggleSelectAllCap(el){
+  if(!State.capSelecionados) State.capSelecionados=new Set();
+  // Seleciona/desmarca apenas os registros atualmente exibidos na página (respeitando filtros e paginação)
+  const rows=getFilteredCapContas();
+  const per=20; const page=rows.slice((State.capPage-1)*per, State.capPage*per);
+  page.forEach(c=>{ if(el.checked) State.capSelecionados.add(c.id); else State.capSelecionados.delete(c.id); });
+  renderCapTable();
+}
+function updateCapSelectAllState(){
+  const selAll=document.getElementById('cap-select-all');
+  if(!selAll) return;
+  const rows=getFilteredCapContas();
+  const per=20; const page=rows.slice((State.capPage-1)*per, State.capPage*per);
+  if(!page.length){ selAll.checked=false; selAll.indeterminate=false; return; }
+  const selecionadosNaPagina=page.filter(c=>State.capSelecionados&&State.capSelecionados.has(c.id)).length;
+  selAll.checked=selecionadosNaPagina===page.length;
+  selAll.indeterminate=selecionadosNaPagina>0 && selecionadosNaPagina<page.length;
+}
+function updateCapBaixaLoteUI(){
+  const countEl=document.getElementById('cap-baixa-lote-count');
+  if(!countEl) return;
+  const qtd=State.capSelecionados?State.capSelecionados.size:0;
+  if(qtd>0){ countEl.style.display='inline'; countEl.textContent=qtd+' selecionada(s)'; }
+  else { countEl.style.display='none'; countEl.textContent=''; }
+}
+function baixarContasSelecionadas(){
+  const ids=State.capSelecionados?Array.from(State.capSelecionados):[];
+  if(!ids.length){ showToast('Selecione pelo menos uma conta para realizar a baixa.','error'); return; }
+  const hoje=todayISO();
+  let alteradas=0;
+  ids.forEach(id=>{
+    const c=State.capContas.find(x=>x.id===id);
+    if(!c) return;
+    if(c.pago==='sim') return; // já pago, ignorar
+    const before={pago:c.pago,dataPagamento:c.dataPagamento};
+    c.pago='sim';
+    c.dataPagamento=hoje;
+    if(!c.historico) c.historico=[];
+    c.historico.push({at:new Date().toISOString(),msg:'Baixa em lote — status alterado para Pago'});
+    capAudit('BAIXA EM LOTE', c.documento, before, {pago:c.pago,dataPagamento:c.dataPagamento});
+    alteradas++;
+  });
+  State.capSelecionados.clear();
+  capPersist();
+  renderFinanceiro();
+  showToast(alteradas+(alteradas===1?' conta foi baixada com sucesso.':' contas foram baixadas com sucesso.'),'success');
+  scheduleAutoSave();
+}
 function editCapConta(id){
   // FIX #3: Abre modal independente — não carrega no form principal, não afeta ciclo
   const c=State.capContas.find(x=>x.id===id);
@@ -4265,10 +4333,15 @@ function saveCapContaIndependente(){
   c.fonte=novaFonte;
   c.tipo=document.getElementById('cap-edit-ind-tipo').value;
   c.classe=document.getElementById('cap-edit-ind-classe').value;
+  const pagoAnterior=before.pago;
   c.pago=document.getElementById('cap-edit-ind-pago').value;
   c.situacao=document.getElementById('cap-edit-ind-situacao').value;
   c.dataSolicitacao=document.getElementById('cap-edit-ind-data-sol').value||c.dataSolicitacao;
   c.dataPagamento=document.getElementById('cap-edit-ind-data-pag').value||c.dataPagamento;
+  // Regra: sempre que o status mudar de NÃO PAGO -> PAGO, registra automaticamente a data de pagamento como a data atual
+  if(pagoAnterior!=='sim' && c.pago==='sim'){
+    c.dataPagamento=todayISO();
+  }
   c.obs=document.getElementById('cap-edit-ind-obs').value.trim();
   if(!c.historico)c.historico=[];
   c.historico.push({at:new Date().toISOString(),msg:'Registro editado via modal (documento/valor/fonte/tipo/classe/pago)'});
@@ -4279,7 +4352,7 @@ function saveCapContaIndependente(){
   showToast('✅ Registro atualizado. O ciclo atual não foi afetado.','success');
   scheduleAutoSave();
 }
-function deleteCapConta(id){ const c=State.capContas.find(x=>x.id===id); if(confirm('Excluir esta conta?')){capAudit('CONTA EXCLUÍDA',c?.documento||id,c,null); State.capContas=State.capContas.filter(c=>c.id!==id); capPersist(); renderFinanceiro();} }
+function deleteCapConta(id){ const c=State.capContas.find(x=>x.id===id); if(confirm('Excluir esta conta?')){capAudit('CONTA EXCLUÍDA',c?.documento||id,c,null); State.capContas=State.capContas.filter(c=>c.id!==id); if(State.capSelecionados) State.capSelecionados.delete(id); capPersist(); renderFinanceiro();} }
 function detailCapConta(id){
   const c=State.capContas.find(x=>x.id===id);
   if(!c)return;
