@@ -387,6 +387,7 @@ body::before {
 .stat-card.stat-amber::after { background: var(--accent-amber); }
 .stat-card.stat-blue::after { background: var(--accent-blue); }
 .stat-card.stat-teal::after { background: var(--accent-teal); }
+.stat-card.stat-rose::after { background: var(--accent-rose); }
 .stat-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .stat-icon svg { width: 18px; height: 18px; }
 .stat-info { flex: 1; }
@@ -2471,6 +2472,18 @@ input.cap-date.form-input {
       <!-- FIN MINI CARDS — EXE/RAP por fonte -->
       <div class="fin-mini-cards" id="fin-mini-cards-row">
         <!-- Populated dynamically -->
+      </div>
+
+      <!-- PENDÊNCIAS FINANCEIRAS — NÃO PAGO (Contas a Pagar) -->
+      <div class="section-subtitle" style="margin:28px 0 12px;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--accent-rose)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent-rose)" stroke-width="2" style="width:14px;height:14px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Pendências Financeiras (Não Pago)
+      </div>
+      <div class="stats-row" id="dash-naopago-cards" style="margin-bottom:16px">
+        <!-- Populated dynamically by renderDashNaoPagoCards() -->
+      </div>
+      <div class="stats-row" id="dash-naopago-combo-cards">
+        <!-- Populated dynamically by renderDashNaoPagoCards() -->
       </div>
 
       <!-- MODULE CARDS -->
@@ -4779,6 +4792,46 @@ function renderCapDashboard(){
   const compFilter=document.getElementById('cap-filter-competencia');
   if(compFilter&&compFilter.children.length<=1){
     CAP_MONTHS.forEach(m=>compFilter.add(new Option(m,m)));
+  }
+  renderDashNaoPagoCards();
+}
+// ===== DASHBOARD: cards de pendências financeiras (status = NÃO PAGO) =====
+// Reaproveita State.capContas (mesma fonte de dados usada em toda a Tabela de Lançamentos)
+// e a função capMoney já existente para formatação em R$ 0.000,00
+function renderDashNaoPagoCards(){
+  const mainRow=document.getElementById('dash-naopago-cards');
+  const comboRow=document.getElementById('dash-naopago-combo-cards');
+  if(!mainRow&&!comboRow) return;
+  const naoPagos=(State.capContas||[]).filter(c=>c.pago==='nao');
+  const somaOnde=(pred)=>naoPagos.filter(pred).reduce((a,c)=>a+(Number(c.valor)||0),0);
+
+  const totalGeral=somaOnde(()=>true);
+  const totalFonte1133=somaOnde(c=>c.fonte==='1133000000');
+  const totalFonte1000=somaOnde(c=>c.fonte==='1000000000');
+  const totalExe=somaOnde(c=>c.tipo==='EXE');
+  const totalRap=somaOnde(c=>c.tipo==='RAP');
+  const exeFonte1133=somaOnde(c=>c.tipo==='EXE'&&c.fonte==='1133000000');
+  const exeFonte1000=somaOnde(c=>c.tipo==='EXE'&&c.fonte==='1000000000');
+  const rapFonte1133=somaOnde(c=>c.tipo==='RAP'&&c.fonte==='1133000000');
+  const rapFonte1000=somaOnde(c=>c.tipo==='RAP'&&c.fonte==='1000000000');
+
+  if(mainRow){
+    mainRow.innerHTML=[
+      {lbl:'Total Geral a Pagar (Não Pago)',val:totalGeral,cls:'stat-rose',col:'var(--accent-rose)',icon:'<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>'},
+      {lbl:'Não Pago — Fonte 1133000000',val:totalFonte1133,cls:'stat-amber',col:'var(--accent-amber)',icon:'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>'},
+      {lbl:'Não Pago — Fonte 1000000000',val:totalFonte1000,cls:'stat-blue',col:'var(--accent-blue)',icon:'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>'},
+      {lbl:'EXE — Total Não Pago',val:totalExe,cls:'stat-teal',col:'var(--accent-teal)',icon:'<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M7 14h3M14 14h3"/>'},
+      {lbl:'RAP — Total Não Pago',val:totalRap,cls:'stat-purple',col:'var(--accent-purple)',icon:'<path d="M12 2L2 7l10 5 10-5-10-5"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>'},
+    ].map(x=>`<div class="stat-card ${x.cls}"><div class="stat-icon" style="background:rgba(0,0,0,0.15)"><svg viewBox="0 0 24 24" fill="none" stroke="${x.col}" stroke-width="2">${x.icon}</svg></div><div class="stat-info"><div class="stat-label">${x.lbl}</div><div class="stat-value" style="font-size:18px;color:${x.col}">${capMoney(x.val)}</div></div></div>`).join('');
+  }
+
+  if(comboRow){
+    comboRow.innerHTML=[
+      {lbl:'EXE — Fonte 1133000000',val:exeFonte1133,cls:'stat-teal',col:'var(--accent-teal)'},
+      {lbl:'EXE — Fonte 1000000000',val:exeFonte1000,cls:'stat-teal',col:'var(--accent-teal)'},
+      {lbl:'RAP — Fonte 1133000000',val:rapFonte1133,cls:'stat-purple',col:'var(--accent-purple)'},
+      {lbl:'RAP — Fonte 1000000000',val:rapFonte1000,cls:'stat-purple',col:'var(--accent-purple)'},
+    ].map(x=>`<div class="stat-card ${x.cls}"><div class="stat-info"><div class="stat-label">${x.lbl}</div><div class="stat-value" style="font-size:16px;color:${x.col}">${capMoney(x.val)}</div></div></div>`).join('');
   }
 }
 function renderRelatorios(){
