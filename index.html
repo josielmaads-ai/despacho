@@ -290,6 +290,40 @@ body::before {
   box-shadow: var(--glow-purple), var(--shadow-card);
   border-color: rgba(168,85,247,0.4);
 }
+/* Painel de atividades vencidas no Dashboard Principal */
+.dovr-panel { background: linear-gradient(145deg, rgba(239,68,68,0.08) 0%, var(--bg-card) 60%); border: 1px solid rgba(239,68,68,0.35); border-radius: var(--radius-xl); overflow: hidden; }
+.dovr-hd { padding: 14px 20px; font-weight: 800; font-size: 13px; letter-spacing: .04em; color: #ef4444; display:flex; align-items:center; gap:8px; border-bottom: 1px solid rgba(239,68,68,0.2); }
+.dovr-list { max-height: 320px; overflow-y: auto; }
+.dovr-row { display:flex; align-items:center; gap:12px; padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,0.04); transition: background .15s; }
+.dovr-row:last-child { border-bottom: none; }
+.dovr-row:hover { background: rgba(239,68,68,0.06); }
+.dovr-flag { color:#ef4444; font-size:14px; }
+.dovr-info { flex:1; min-width:0; }
+.dovr-ttl { font-weight:700; font-size:13.5px; color: var(--text-primary); }
+.dovr-meta { font-size:11.5px; color: var(--text-secondary); margin-top:2px; display:flex; align-items:center; gap:6px; }
+.dovr-badge { font-size:10px; font-weight:800; letter-spacing:.06em; color:#ef4444; background: rgba(239,68,68,0.14); padding:4px 8px; border-radius:999px; flex-shrink:0; }
+/* Atividades — destaque prioritário (identidade visual exclusiva) */
+.module-card.atividades-prio {
+  background: linear-gradient(145deg, rgba(236,72,153,0.09) 0%, var(--bg-card) 55%);
+  border: 1px solid rgba(236,72,153,0.35);
+  order: -1;
+}
+.module-card.atividades-prio::before {
+  background: linear-gradient(135deg, rgba(236,72,153,0.18), transparent);
+}
+.module-card.atividades-prio:hover {
+  box-shadow: 0 0 0 1px rgba(236,72,153,0.4), 0 20px 40px rgba(236,72,153,0.15), var(--shadow-card);
+  border-color: rgba(236,72,153,0.6);
+}
+.module-card.atividades-prio .card-tag { color: #ec4899; }
+.module-card.atividades-prio .card-icon-wrap { color: #ec4899; background: rgba(236,72,153,0.12); }
+.module-card.atividades-prio::after {
+  content: 'PRIORIDADE';
+  position: absolute; top: 16px; right: 16px;
+  font-size: 10px; font-weight: 800; letter-spacing: .1em;
+  color: #ec4899; background: rgba(236,72,153,0.14);
+  padding: 4px 8px; border-radius: 999px;
+}
 /* Config — verde premium */
 .module-card.config {
   background: linear-gradient(145deg, rgba(34,197,94,0.05) 0%, var(--bg-card) 50%);
@@ -2574,6 +2608,10 @@ input.cap-date.form-input {
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
       <span class="sb-label">Dashboard</span>
     </button>
+    <button class="sidebar-btn" onclick="showPage('nexus')" title="Gestão de Atividades e Produtividade">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      <span class="sb-label">Atividades</span>
+    </button>
     <button class="sidebar-btn" onclick="openDespachos()" title="Despachos">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
       <span class="sb-label">Despachos</span>
@@ -2585,10 +2623,6 @@ input.cap-date.form-input {
     <button class="sidebar-btn" onclick="showPage('financeiro')" title="Contas a Pagar">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/><path d="M14 15h4"/></svg>
       <span class="sb-label">Contas a Pagar</span>
-    </button>
-    <button class="sidebar-btn" onclick="showPage('nexus')" title="Gestão de Atividades e Produtividade">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-      <span class="sb-label">Atividades</span>
     </button>
     <button class="sidebar-btn" onclick="showPage('financeiro');setTimeout(()=>setCapTab('relatorios'),100)" title="Relatórios">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="11" y2="17"/></svg>
@@ -2695,6 +2729,9 @@ input.cap-date.form-input {
         <!-- Populated dynamically by renderDashNaoPagoCards() -->
       </div>
 
+      <!-- ATIVIDADES VENCIDAS — exibido antes de todos os demais cards -->
+      <div id="dash-overdue-panel" style="display:none;margin-bottom:20px"></div>
+
       <!-- MODULE CARDS -->
       <div class="dash-grid">
         <div class="module-card despachos" onclick="openDespachos()">
@@ -2725,11 +2762,11 @@ input.cap-date.form-input {
           <div class="card-desc">Controle de EXE, RAP, fornecedores, saldos, pagamentos e ciclos manuais de solicitação de recursos.</div>
           <div class="card-arrow">↗</div>
         </div>
-        <div class="module-card financeiro" onclick="showPage('nexus')">
+        <div class="module-card atividades-prio" onclick="showPage('nexus')">
           <div class="card-icon-wrap">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
           </div>
-          <div class="card-tag">Produtividade</div>
+          <div class="card-tag">Produtividade · Prioridade</div>
           <div class="card-name">ATIVIDADES</div>
           <div class="card-desc">Gestão de tarefas, agenda, prestadores e indicadores de produtividade pessoal e profissional.</div>
           <div class="card-arrow">↗</div>
@@ -3400,7 +3437,7 @@ input.cap-date.form-input {
           <div>
             <div class="sec-hd">
               <div class="sec-ttl">Todas as Tarefas</div>
-              <div class="fltrs"><button class="fb on" data-nxaf="all">Todas</button><button class="fb" data-nxaf="trabalho">Trabalho</button><button class="fb" data-nxaf="casa">Casa</button><button class="fb" data-nxaf="servico">Serviços</button></div>
+              <div class="fltrs"><button class="fb on" data-nxaf="all">Todas</button><button class="fb" data-nxaf="trabalho">Trabalho</button><button class="fb" data-nxaf="casa">Casa</button><button class="fb" data-nxaf="servico">Serviços</button><button class="btn btn-ghost btn-sm" id="nx-toggle-conc" style="margin-left:auto" onclick="nxToggleShowConcluded()">Mostrar Atividades Concluídas</button></div>
             </div>
             <div class="tlist" id="nx-ag-all"></div>
           </div>
@@ -3458,7 +3495,7 @@ input.cap-date.form-input {
      com o sistema de modais nativo do SIGPAG (.modal-overlay).
      ============================================================ -->
 <div class="nx-mover" id="nx-m-task"><div class="nx-modal"><div class="mhd"><div class="mttl" id="nx-m-task-ttl">Nova Tarefa</div><button class="mcls" onclick="nxCloseModal('nx-m-task')">✕</button></div><div class="mbody"><div class="fg"><label class="fl">Tipo</label><select class="fs" id="nx-f-tipo" onchange="nxUpdateTipoFields()"><option value="trabalho">◈ Trabalho</option><option value="casa">⬟ Casa</option><option value="servico">◇ Serviço</option></select></div><div class="fg"><label class="fl">Título *</label><input class="fi" id="nx-f-titulo"></div><div class="fg"><label class="fl">Descrição</label><textarea class="fta" id="nx-f-desc"></textarea></div><div id="nx-ex-trab"><div class="dv"></div><div class="fg2"><div class="fg"><label class="fl">Nº Processo</label><input class="fi" id="nx-f-proc"></div><div class="fg"><label class="fl">Fornecedor</label><input class="fi" id="nx-f-forn"></div></div><div class="fg"><label class="fl">Pendências</label><textarea class="fta" id="nx-f-pend"></textarea></div></div><div id="nx-ex-svc" style="display:none"><div class="dv"></div><div class="fg2"><div class="fg"><label class="fl">Prestador</label><select class="fs" id="nx-f-prest"><option value="">Selecionar</option></select></div><div class="fg"><label class="fl">Valor (R$)</label><input class="fi" id="nx-f-val" type="number" step="0.01"></div></div><div class="fg"><label class="fl">Data Pagamento</label><input class="fi" id="nx-f-dpag" type="date"></div></div><div class="fg3"><div class="fg"><label class="fl">Data *</label><input class="fi" id="nx-f-data" type="date"></div><div class="fg"><label class="fl">Início</label><input class="fi" id="nx-f-ini" type="time"></div><div class="fg"><label class="fl">Fim</label><input class="fi" id="nx-f-fim" type="time"></div></div><div class="fg2"><div class="fg"><label class="fl">Prioridade</label><select class="fs" id="nx-f-prio"><option value="alta">Alta</option><option value="media" selected>Média</option><option value="baixa">Baixa</option></select></div><div class="fg"><label class="fl">Status</label><select class="fs" id="nx-f-stat"><option value="pendente">Pendente</option><option value="nao_iniciado">Não Iniciado</option><option value="em_andamento">Em Andamento</option><option value="concluido">Concluído</option><option value="pago">Pago</option></select></div></div><div class="fg"><label class="fl">Recorrência</label><select class="fs" id="nx-f-rec"><option value="">Sem recorrência</option><option value="diaria">Diária</option><option value="semanal">Semanal</option><option value="mensal">Mensal</option></select></div></div><div class="mft"><button class="btn btn-g" onclick="nxCloseModal('nx-m-task')">Cancelar</button><button class="btn btn-p" id="nx-btn-save-task" onclick="nxSaveTask()">Salvar</button></div></div></div>
-<div class="nx-mover" id="nx-m-det"><div class="nx-modal"><div class="mhd"><div class="mttl" id="nx-m-det-ttl">Detalhe</div><button class="mcls" onclick="nxCloseModal('nx-m-det')">✕</button></div><div class="mbody" id="nx-m-det-body"></div><div class="mft"><button class="btn btn-d btn-sm" id="nx-btn-del">Excluir</button><button class="btn btn-g btn-sm" id="nx-btn-dup">Duplicar</button><button class="btn btn-g btn-sm" onclick="nxCloseModal('nx-m-det')">Fechar</button><button class="btn btn-p btn-sm" id="nx-btn-edit">✎ Editar</button></div></div></div>
+<div class="nx-mover" id="nx-m-det"><div class="nx-modal"><div class="mhd"><div class="mttl" id="nx-m-det-ttl">Detalhe</div><button class="mcls" onclick="nxCloseModal('nx-m-det')">✕</button></div><div class="mbody" id="nx-m-det-body"></div><div class="mft"><button class="btn btn-d btn-sm" id="nx-btn-del">Excluir</button><button class="btn btn-g btn-sm" id="nx-btn-dup">Duplicar</button><button class="btn btn-g btn-sm" id="nx-btn-stat">Status</button><button class="btn btn-g btn-sm" onclick="nxCloseModal('nx-m-det')">Fechar</button><button class="btn btn-p btn-sm" id="nx-btn-edit">✎ Editar</button></div></div></div>
 <div class="nx-mover" id="nx-m-prest"><div class="nx-modal"><div class="mhd"><div class="mttl">Novo Prestador</div><button class="mcls" onclick="nxCloseModal('nx-m-prest')">✕</button></div><div class="mbody"><div class="fg"><label class="fl">Nome *</label><input class="fi" id="nx-p-nome"></div><div class="fg2"><div class="fg"><label class="fl">Especialidade</label><input class="fi" id="nx-p-esp"></div><div class="fg"><label class="fl">Telefone</label><input class="fi" id="nx-p-tel"></div></div><div class="fg"><label class="fl">Email</label><input class="fi" id="nx-p-email" type="email"></div><div class="fg"><label class="fl">Observações</label><textarea class="fta" id="nx-p-obs"></textarea></div></div><div class="mft"><button class="btn btn-g" onclick="nxCloseModal('nx-m-prest')">Cancelar</button><button class="btn btn-p" id="nx-btn-save-prest" onclick="nxSavePrest()">Salvar</button></div></div></div>
 
 
@@ -6381,6 +6418,7 @@ function updateStats() {
   document.getElementById('stat-hoje').textContent = hoje;
   document.getElementById('stat-mes').textContent = mes;
   document.getElementById('total-badge').textContent = total + ' Gerados';
+  if (typeof renderDashOverduePanel === 'function') renderDashOverduePanel();
 }
 
 /* ============================================================
@@ -6997,6 +7035,17 @@ let nxCurTab = 'dashboard';
 let nxEditId = null, nxDetId = null;
 let nxAgFilt='all', nxWFilt='all', nxCFilt='all', nxSFilt='all';
 let nxCalDt = new Date(), nxCalSel = null;
+// ETAPA 6: atividades concluídas ficam ocultas da listagem principal por
+// padrão (o registro permanece salvo no banco — apenas não é exibido).
+let nxShowConcluded = false;
+function nxIsDone(t){ return t.status==='concluido'||t.status==='pago'; }
+function nxVisible(list){ return nxShowConcluded ? list : list.filter(t=>!nxIsDone(t)); }
+function nxToggleShowConcluded(){
+  nxShowConcluded = !nxShowConcluded;
+  const btn=document.getElementById('nx-toggle-conc');
+  if(btn) btn.textContent = nxShowConcluded ? 'Voltar à Visualização Padrão' : 'Mostrar Atividades Concluídas';
+  nxRenderPage(nxCurTab);
+}
 
 /* ---------- helpers ---------- */
 function nxUid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
@@ -7004,7 +7053,49 @@ function nxPad(n){ return n<10?'0'+n:String(n); }
 function nxTodayStr(){ let d=new Date(); return d.getFullYear()+'-'+nxPad(d.getMonth()+1)+'-'+nxPad(d.getDate()); }
 function nxFmtDate(s){ if(!s) return '—'; let p=s.split('-'); return p[2]+'/'+p[1]+'/'+p[0]; }
 function nxEscH(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function nxIsOverdue(t){ if(t.status==='concluido'||t.status==='pago'||t.status==='cancelado') return false; return t.data && t.data < nxTodayStr(); }
+function nxIsOverdue(t){
+  if(t.status==='concluido'||t.status==='pago'||t.status==='cancelado') return false;
+  if(!t.data) return false;
+  // Compara data+hora da atividade com o relógio atual do sistema (Date()).
+  const now = new Date();
+  const dueStr = t.data + 'T' + (t.inicio || '23:59') + ':00';
+  const due = new Date(dueStr);
+  if(isNaN(due.getTime())) return t.data < nxTodayStr();
+  return due.getTime() < now.getTime();
+}
+
+/* ---------- PAINEL "ATIVIDADES VENCIDAS" (Dashboard Principal) ---------- */
+function renderDashOverduePanel(){
+  const panel = document.getElementById('dash-overdue-panel');
+  if(!panel) return;
+  const list = (State.nxTasks||[]).filter(nxIsOverdue)
+    .slice()
+    .sort((a,b)=>{
+      const da = a.data + 'T' + (a.inicio||'23:59');
+      const db = b.data + 'T' + (b.inicio||'23:59');
+      return da.localeCompare(db); // mais antiga primeiro
+    });
+  if(!list.length){ panel.style.display='none'; panel.innerHTML=''; return; }
+  panel.style.display='block';
+  const rows = list.map(t=>`
+    <div class="dovr-row">
+      <span class="dovr-flag">⚠</span>
+      <div class="dovr-info">
+        <div class="dovr-ttl">${nxEscH(t.titulo)}</div>
+        <div class="dovr-meta">${nxFmtDate(t.data)} · ${t.inicio||'—'}${t.fim?' → '+t.fim:''} · <span class="bx ${NX_STAT_BX[t.status]}">${NX_STAT_LBL[t.status]}</span></div>
+      </div>
+      <span class="dovr-badge">Atrasada</span>
+    </div>`).join('');
+  panel.innerHTML = `
+    <div class="dovr-panel">
+      <div class="dovr-hd"><span class="dovr-ic">⚠</span> Atividades Vencidas (${list.length})</div>
+      <div class="dovr-list">${rows}</div>
+    </div>`;
+  panel.querySelectorAll('.dovr-row').forEach((row,i)=>{
+    row.style.cursor='pointer';
+    row.addEventListener('click', ()=>{ showPage('nexus'); setTimeout(()=>{ if(typeof nxOpenDet==='function') nxOpenDet(list[i].id); }, 60); });
+  });
+}
 function nxAddHist(msg){ State.nxHist.unshift({ts:new Date().toISOString(),msg:msg}); if(State.nxHist.length>300) State.nxHist.length=300; nxPersist(); }
 
 /* ---------- persistência (mesmo mecanismo do restante do SIGPAG) ---------- */
@@ -7013,6 +7104,7 @@ function nxPersist(){
   Storage.set('nxPrest', State.nxPrest);
   Storage.set('nxHist', State.nxHist);
   if (typeof scheduleAutoSave === 'function') scheduleAutoSave();
+  if (typeof renderDashOverduePanel === 'function') renderDashOverduePanel();
 }
 function nxPersistLocalOnly(){
   Storage.set('nxTasks', State.nxTasks);
@@ -7052,9 +7144,11 @@ function nxTcHTML(t){
   let overBx=nxIsOverdue(t)?'<span class="bx bx-rd">⚠ Atrasado</span>':'';
   let checkTxt=done?'✓':'';
   let valBx=(t.tipo==='servico'&&t.valor)?'<span class="bx bx-gr">R$ '+Number(t.valor).toFixed(2).replace('.',',')+'</span>':'';
-  let dlBtn=done?`<button class="tact-btn dl" data-nxdl="${t.id}" title="Baixar atividade"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>`:'';
-  let editBtn=`<button class="tact-btn" data-nxdet="${t.id}" title="Ver detalhes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button>`;
-  return `<div class="tc ${tipoCls} ${doneCls}" data-nxid="${t.id}"><div class="tcheck ${done}" data-nxchk="${t.id}">${checkTxt}</div><div class="tinfo"><div class="ttl ${done?'done-ttl':''}">${nxEscH(t.titulo)}</div><div class="tmeta"><span class="ttime">${timeTxt}</span><span class="bx ${NX_TIPO_BX[t.tipo]}">${NX_TIPO_LBL[t.tipo]}</span><span class="bx bx-status-trigger ${NX_STAT_BX[t.status]}" data-nxstat="${t.id}" title="Alterar status">${NX_STAT_LBL[t.status]}</span>${procBx}${overBx}${valBx}</div></div><div class="tprio"><span class="bx ${NX_PRIO_BX[t.prioridade]}">${NX_PRIO_LBL[t.prioridade]}</span><div class="pdot ${NX_PRIO_DOT[t.prioridade]}"></div></div><div class="tactions">${dlBtn}${editBtn}</div></div>`;
+  let pendBx=(t.status==='pendente'&&t.motivoPendencia)?'<span class="bx bx-or" title="Motivo da pendência">'+nxEscH(t.motivoPendencia)+'</span>':'';
+  // ETAPA 7: interface simplificada — sem botões avulsos sobre o cartão.
+  // Clicar em qualquer parte do cartão abre a janela de detalhes; o círculo
+  // de conclusão rápida (data-nxchk) intercepta o clique antes disso.
+  return `<div class="tc ${tipoCls} ${doneCls}" data-nxid="${t.id}" data-nxdet="${t.id}"><div class="tcheck ${done}" data-nxchk="${t.id}">${checkTxt}</div><div class="tinfo"><div class="ttl ${done?'done-ttl':''}">${nxEscH(t.titulo)}</div><div class="tmeta"><span class="ttime">${timeTxt}</span><span class="bx ${NX_TIPO_BX[t.tipo]}">${NX_TIPO_LBL[t.tipo]}</span><span class="bx ${NX_STAT_BX[t.status]}">${NX_STAT_LBL[t.status]}</span>${procBx}${pendBx}${overBx}${valBx}</div></div><div class="tprio"><span class="bx ${NX_PRIO_BX[t.prioridade]}">${NX_PRIO_LBL[t.prioridade]}</span><div class="pdot ${NX_PRIO_DOT[t.prioridade]}"></div></div></div>`;
 }
 function nxEmptyHTML(msg){ return `<div class="empty"><span class="empty-ic">◌</span><div class="empty-tx">${msg}</div></div>`; }
 
@@ -7070,12 +7164,23 @@ function nxDownloadTask(id){
 function nxSetStatus(id,status){
   let t=State.nxTasks.find(x=>x.id===id); if(!t) return;
   if(t.status===status) return;
+  // ETAPA 5: ao mudar para "Pendente", abre automaticamente uma caixa para
+  // informar o motivo. O texto é salvo no banco (via nxPersist/Supabase).
+  if(status==='pendente'){
+    let motivo=prompt('Informe o motivo da pendência:', t.motivoPendencia||'');
+    if(motivo===null) return; // usuário cancelou — não altera o status
+    t.motivoPendencia=motivo.trim();
+  } else {
+    t.motivoPendencia=''; // sai do status Pendente: limpa o motivo anterior
+  }
   t.status=status;
   t.atualizado=new Date().toISOString();
   nxAddHist(`"${t.titulo}" → ${NX_STAT_LBL[status]}`);
   if((status==='concluido'||status==='pago') && t.recorrencia) nxGeraProximaRec(t);
+  nxPersist();
   nxRenderPage(nxCurTab);
   nxCloseStatusMenu();
+  if(document.getElementById('nx-m-det').classList.contains('on') && nxDetId===id) nxOpenDet(id);
 }
 function nxEnsureStatusPop(){
   let ov=document.getElementById('nx-status-overlay');
@@ -7210,6 +7315,7 @@ function nxBuildCal(){
 }
 function nxRenderAgAll(){
   let list=nxAgFilt==='all'?State.nxTasks:State.nxTasks.filter(t=>t.tipo===nxAgFilt);
+  list=nxVisible(list);
   list=list.slice().sort((a,b)=>(a.data||'').localeCompare(b.data||'')||(a.inicio||'').localeCompare(b.inicio||''));
   document.getElementById('nx-ag-all').innerHTML=list.length?list.map(nxTcHTML).join(''):nxEmptyHTML('Nenhuma tarefa');
 }
@@ -7224,7 +7330,7 @@ function nxOpenModalForDate(){
 
 /* ---------- TRABALHO / CASA / SERVIÇOS ---------- */
 function nxRenderTrab(){
-  let list=State.nxTasks.filter(t=>t.tipo==='trabalho');
+  let list=nxVisible(State.nxTasks.filter(t=>t.tipo==='trabalho'));
   if(nxWFilt!=='all') list=list.filter(t=>t.status===nxWFilt);
   list.sort((a,b)=>({alta:0,media:1,baixa:2}[a.prioridade]||1)-({alta:0,media:1,baixa:2}[b.prioridade]||1));
   document.getElementById('nx-wk-tot').innerText=State.nxTasks.filter(t=>t.tipo==='trabalho').length;
@@ -7234,7 +7340,7 @@ function nxRenderTrab(){
   document.getElementById('nx-trab-list').innerHTML=list.length?list.map(nxTcHTML).join(''):nxEmptyHTML('Nenhum processo');
 }
 function nxRenderCasa(){
-  let list=State.nxTasks.filter(t=>t.tipo==='casa');
+  let list=nxVisible(State.nxTasks.filter(t=>t.tipo==='casa'));
   if(nxCFilt!=='all') list=list.filter(t=>t.status===nxCFilt);
   list.sort((a,b)=>(a.data||'').localeCompare(b.data||''));
   document.getElementById('nx-casa-list').innerHTML=list.length?list.map(nxTcHTML).join(''):nxEmptyHTML('Nenhuma tarefa doméstica');
@@ -7246,6 +7352,7 @@ function nxRenderSvc(){
   let totalPago=list.filter(t=>t.status==='pago'&&t.data&&t.data.startsWith(thisM)&&t.valor).reduce((s,t)=>s+(Number(t.valor)||0),0);
   document.getElementById('nx-svc-total-val').innerText='R$ '+totalAberto.toFixed(2).replace('.',',');
   document.getElementById('nx-svc-pago-val').innerText='R$ '+totalPago.toFixed(2).replace('.',',');
+  list=nxVisible(list);
   if(nxSFilt!=='all') list=list.filter(t=>t.status===nxSFilt);
   list.sort((a,b)=>(a.data||'').localeCompare(b.data||''));
   document.getElementById('nx-svc-list').innerHTML=list.length?list.map(nxTcHTML).join(''):nxEmptyHTML('Nenhum serviço');
@@ -7304,7 +7411,7 @@ function nxOpenModal(type,preType){
     ['nx-f-titulo','nx-f-desc','nx-f-proc','nx-f-forn','nx-f-pend','nx-f-val','nx-f-dpag','nx-f-ini','nx-f-fim'].forEach(id=>document.getElementById(id).value='');
     document.getElementById('nx-f-data').value=nxTodayStr();
     document.getElementById('nx-f-prio').value='media';
-    document.getElementById('nx-f-stat').value='pendente';
+    document.getElementById('nx-f-stat').value='nao_iniciado'; // ETAPA 9: status padrão obrigatório
     document.getElementById('nx-f-rec').value='';
     nxFillPrestSelect();
     nxUpdateTipoFields();
@@ -7325,12 +7432,14 @@ function nxSaveTask(){
   let titulo=document.getElementById('nx-f-titulo').value.trim(), data=document.getElementById('nx-f-data').value;
   if(!titulo||!data){ showToast('Título e data são obrigatórios.','error'); return; }
   let tipo=document.getElementById('nx-f-tipo').value;
+  // ETAPA 9: nunca permitir criação de atividade sem status.
+  let statusVal=document.getElementById('nx-f-stat').value || 'nao_iniciado';
   let task={
     id: nxEditId || nxUid(), tipo, titulo,
     descricao: document.getElementById('nx-f-desc').value.trim(),
     data, inicio: document.getElementById('nx-f-ini').value, fim: document.getElementById('nx-f-fim').value,
     prioridade: document.getElementById('nx-f-prio').value,
-    status: document.getElementById('nx-f-stat').value,
+    status: statusVal,
     recorrencia: document.getElementById('nx-f-rec').value,
     atualizado: new Date().toISOString()
   };
@@ -7377,6 +7486,8 @@ function nxOpenDet(id){
   nxDetId=id;
   document.getElementById('nx-m-det-ttl').innerText=t.titulo;
   let extra='';
+  // ETAPA 5: pendência exibida logo abaixo do título, mesmo padrão visual do nº de processo.
+  if(t.status==='pendente'&&t.motivoPendencia) extra+=`<div class="fg"><span class="fl">Pendência</span><div><span class="bx bx-or">${nxEscH(t.motivoPendencia)}</span></div></div>`;
   if(t.tipo==='trabalho'){
     if(t.processo) extra+=`<div class="fg"><span class="fl">Processo</span><div><span class="bx bx-gy">${nxEscH(t.processo)}</span></div></div>`;
     if(t.fornecedor) extra+=`<div class="fg"><span class="fl">Fornecedor</span><div>${nxEscH(t.fornecedor)}</div></div>`;
@@ -7485,21 +7596,19 @@ function initNexusModule(){
   // Clique em tarefas (marcar concluída / abrir detalhe)
   const nxContent=document.getElementById('nx-content');
   if(nxContent) nxContent.addEventListener('click', e=>{
+    // ETAPA 4/7: clicar em qualquer área do cartão abre a janela de detalhes.
+    // A conclusão rápida (círculo de check) tem prioridade e não conflita
+    // com a abertura do modal, pois intercepta o clique primeiro.
     let chk=e.target.closest('[data-nxchk]');
     if(chk){ e.stopPropagation(); nxToggleDone(chk.getAttribute('data-nxchk')); return; }
-    let dl=e.target.closest('[data-nxdl]');
-    if(dl){ e.stopPropagation(); nxDownloadTask(dl.getAttribute('data-nxdl')); return; }
     let det=e.target.closest('[data-nxdet]');
-    if(det){ e.stopPropagation(); nxOpenDet(det.getAttribute('data-nxdet')); return; }
-    let statTrig=e.target.closest('[data-nxstat]');
-    if(statTrig){ e.stopPropagation(); nxOpenStatusMenu(statTrig.getAttribute('data-nxstat')); return; }
-    let tc=e.target.closest('.tc[data-nxid]');
-    if(tc) nxOpenStatusMenu(tc.getAttribute('data-nxid'));
+    if(det){ nxOpenDet(det.getAttribute('data-nxdet')); return; }
   });
   // Botões do modal de detalhe
   const btnEdit=document.getElementById('nx-btn-edit'); if(btnEdit) btnEdit.addEventListener('click', nxEditFromDet);
   const btnDel=document.getElementById('nx-btn-del'); if(btnDel) btnDel.addEventListener('click', nxDeleteFromDet);
   const btnDup=document.getElementById('nx-btn-dup'); if(btnDup) btnDup.addEventListener('click', nxDupFromDet);
+  const btnStat=document.getElementById('nx-btn-stat'); if(btnStat) btnStat.addEventListener('click', ()=>{ if(nxDetId) nxOpenStatusMenu(nxDetId); });
   // Fechar modal ao clicar fora / Esc
   document.querySelectorAll('.nx-mover').forEach(mo=>mo.addEventListener('click', function(e){ if(e.target===this) nxCloseModal(this.id); }));
   document.addEventListener('keydown', e=>{ if(e.key==='Escape') document.querySelectorAll('.nx-mover.on').forEach(m=>m.classList.remove('on')); });
@@ -7508,6 +7617,7 @@ function initNexusModule(){
 
   nxRenderDash();
   nxUpdateBadges();
+  renderDashOverduePanel();
 }
 
 // Chamado aqui (não no script principal) porque é neste bloco que todas as
