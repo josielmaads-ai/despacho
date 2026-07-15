@@ -2349,6 +2349,125 @@ input.cap-date.form-input {
 @keyframes spin { to { transform: rotate(360deg); } }
 /* ── Cap Forn Item keyboard focus ── */
 .cap-forn-item:focus { outline: none; background: rgba(20,184,166,0.10) !important; }
+
+/* ============ MÓDULO ATIVIDADES (NEXUS) — CSS escopado ============ */
+#page-nexus *, #page-nexus *::before, #page-nexus *::after {box-sizing:border-box;margin:0;padding:0}
+#page-nexus .nx-page {display:none;animation:nxFadeUp .25s}
+#page-nexus .nx-page.on {display:block}
+@keyframes nxFadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+#page-nexus .grid4 {display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+#page-nexus .stat {background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;position:relative;transition:border-color .2s}
+#page-nexus .stat:hover {border-color:var(--border-bright)}
+#page-nexus .stat-lbl {font-size:.65rem;color:var(--text-muted);letter-spacing:1.5px;margin-bottom:10px}
+#page-nexus .stat-n {font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800}
+#page-nexus .stat-sub {font-size:.7rem;color:var(--text-muted);margin-top:6px}
+#page-nexus .stat.r .stat-n {color:var(--accent-rose)}
+#page-nexus .stat.g .stat-n {color:var(--accent-green)}
+#page-nexus .stat.b .stat-n {color:var(--accent-blue)}
+#page-nexus .grid2 {display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+#page-nexus .card {background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px}
+#page-nexus .card.mb2 {margin-bottom:20px}
+#page-nexus .card.card-flush {padding:0;overflow:hidden}
+#page-nexus .sec-hd {display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+#page-nexus .sec-ttl {font-family:'Syne',sans-serif;font-weight:700}
+#page-nexus .tlist {display:flex;flex-direction:column;gap:8px}
+#page-nexus .tc {background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:13px 15px;display:flex;align-items:center;gap:12px;cursor:pointer;position:relative}
+#page-nexus .tc::before {content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent-orange);border-radius:var(--radius-lg) 0 0 var(--radius-lg)}
+#page-nexus .tc.casa::before {background:var(--accent-blue)}
+#page-nexus .tc.servico::before {background:var(--accent-green)}
+#page-nexus .tc.done {opacity:.45}
+#page-nexus .tcheck {width:20px;height:20px;border-radius:50%;border:2px solid var(--accent-orange);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.7rem}
+#page-nexus .tcheck.on {background:var(--accent-orange);color:#fff}
+#page-nexus .tinfo {flex:1;min-width:0}
+#page-nexus .ttl {font-size:.85rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#page-nexus .tmeta {display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+#page-nexus .ttime {font-size:.68rem;color:var(--text-muted)}
+#page-nexus .bx {font-size:.6rem;font-weight:600;padding:2px 8px;border-radius:20px;white-space:nowrap}
+#page-nexus .bx-or {background:rgba(249,115,22,.15);color:var(--accent-orange-light)}
+#page-nexus .bx-bl {background:rgba(74,158,255,.15);color:var(--accent-blue)}
+#page-nexus .bx-gr {background:rgba(34,197,94,.15);color:var(--accent-green)}
+#page-nexus .bx-rd {background:rgba(244,63,94,.15);color:var(--accent-rose)}
+#page-nexus .bx-gy {background:var(--bg-surface);color:var(--text-secondary)}
+#page-nexus .tprio {margin-left:auto;display:flex;align-items:center;gap:7px;flex-shrink:0}
+#page-nexus .pdot {width:7px;height:7px;border-radius:50%}
+#page-nexus .p-a {background:var(--accent-rose)}
+#page-nexus .p-m {background:var(--accent-amber)}
+#page-nexus .p-b {background:var(--accent-green)}
+#page-nexus .fltrs {display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+#page-nexus .fb {padding:5px 13px;border-radius:20px;font-size:.74rem;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text-muted)}
+#page-nexus .fb.on {background:rgba(249,115,22,.12);color:var(--accent-orange-light);border-color:rgba(249,115,22,.4)}
+#page-nexus .nx-badge {margin-left:4px;background:var(--accent-orange);color:#fff;font-size:.6rem;padding:1px 6px;border-radius:20px}
+#page-nexus .empty {text-align:center;padding:48px 20px;color:var(--text-muted)}
+#page-nexus .empty-ic {font-size:1.6rem;display:block;margin-bottom:8px}
+#page-nexus .prog-bar {height:5px;background:var(--bg-surface);border-radius:3px;overflow:hidden}
+#page-nexus .prog-fill {height:100%;background:linear-gradient(90deg,var(--accent-orange),var(--accent-orange-light));transition:width .6s}
+#page-nexus .bar-chart {display:flex;align-items:flex-end;gap:6px;height:120px}
+#page-nexus .bc-col {flex:1;display:flex;flex-direction:column;align-items:center;gap:5px}
+#page-nexus .bc-bar {width:100%;border-radius:4px 4px 0 0;transition:height .5s;min-height:2px}
+#page-nexus .bc-lbl {font-size:.62rem;color:var(--text-muted)}
+#page-nexus .donut-wrap {display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+#page-nexus .donut-legend {display:flex;flex-direction:column;gap:6px}
+#page-nexus .dl-it {display:flex;align-items:center;gap:8px;font-size:.75rem;color:var(--text-secondary)}
+#page-nexus .dl-dot {width:8px;height:8px;border-radius:50%}
+#page-nexus .dl-val {margin-left:auto;font-weight:700;color:var(--text-primary)}
+#page-nexus .cal-hd {display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px solid var(--border)}
+#page-nexus .cal-ttl {font-family:'Syne',sans-serif;font-weight:700}
+#page-nexus .cal-nav {display:flex;gap:6px}
+#page-nexus .cal-btn {width:28px;height:28px;border-radius:8px;background:var(--bg-elevated);border:1px solid var(--border);color:var(--text-secondary);cursor:pointer}
+#page-nexus .cal-grid {display:grid;grid-template-columns:repeat(7,1fr)}
+#page-nexus .cal-dow {padding:8px 0;text-align:center;font-size:.6rem;color:var(--text-muted);letter-spacing:1px}
+#page-nexus .cal-d {min-height:52px;padding:6px;cursor:pointer;border-top:1px solid var(--border)}
+#page-nexus .cal-d.other {opacity:.25}
+#page-nexus .cal-d.today {background:rgba(249,115,22,.1)}
+#page-nexus .cal-d.sel {outline:1px solid var(--accent-orange);outline-offset:-1px}
+#page-nexus .cal-dn {font-size:.76rem}
+#page-nexus .cal-dots {display:flex;gap:2px;margin-top:4px;flex-wrap:wrap}
+#page-nexus .cal-dot {width:5px;height:5px;border-radius:50%}
+#page-nexus .tl {display:flex;flex-direction:column;gap:0}
+#page-nexus .tl-it {display:flex;gap:14px;padding-bottom:16px}
+#page-nexus .tl-dc {display:flex;flex-direction:column;align-items:center}
+#page-nexus .tl-dot {width:10px;height:10px;border-radius:50%;background:var(--accent-orange);flex-shrink:0}
+#page-nexus .tl-dot.b {background:var(--accent-blue)}
+#page-nexus .tl-dot.g {background:var(--accent-green)}
+#page-nexus .tl-ln {flex:1;width:1px;background:var(--border);margin-top:4px}
+#page-nexus .tl-bd {padding-bottom:2px}
+#page-nexus .tl-tm {font-size:.68rem;color:var(--text-muted)}
+#page-nexus .tl-tx {font-size:.82rem;margin:2px 0}
+#page-nexus .tl-tg {font-size:.66rem;color:var(--text-muted)}
+#page-nexus .pcard {background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;display:flex;align-items:center;gap:14px;cursor:pointer}
+#page-nexus .pavatar {width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--bg-surface),var(--border-bright));display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0}
+#page-nexus .alert {background:rgba(244,63,94,.1);color:var(--accent-rose);border:1px solid rgba(244,63,94,.2);border-radius:var(--radius-sm);padding:10px 14px;font-size:.78rem;margin-bottom:14px}
+#page-nexus .alert.w {background:rgba(255,184,64,.1);color:var(--accent-amber);border-color:rgba(255,184,64,.2)}
+#page-nexus .row {display:flex;gap:12px;flex-wrap:wrap}
+@media(max-width:900px){#page-nexus .grid4 {grid-template-columns:1fr 1fr}
+#page-nexus .grid2 {grid-template-columns:1fr}}
+.nx-mover .mhd {padding:20px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.nx-mover .mttl {font-family:'Syne',sans-serif;font-weight:700}
+.nx-mover .mcls {background:none;border:none;color:var(--text-secondary);font-size:1rem;cursor:pointer;width:28px;height:28px;border-radius:8px}
+.nx-mover .mcls:hover {background:var(--bg-elevated)}
+.nx-mover .mbody {padding:24px;max-height:70vh;overflow-y:auto}
+.nx-mover .mft {padding:16px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
+.nx-mover .fg {display:flex;flex-direction:column;gap:5px;margin-bottom:15px}
+.nx-mover .fl {font-size:.65rem;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase}
+.nx-mover .fi, .nx-mover .fs, .nx-mover .fta {background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text-primary);padding:10px 13px;width:100%;font-family:inherit;font-size:.85rem}
+.nx-mover .fta {resize:vertical;min-height:70px}
+.nx-mover .fg2 {display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.nx-mover .fg3 {display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.nx-mover .dv {height:1px;background:var(--border);margin:16px 0}
+.nx-mover .t3c {font-size:.68rem;color:var(--text-muted);margin-top:14px}
+.nx-mover .txt-center {text-align:center}
+
+/* Overlay/modal do módulo Atividades (isolado do sistema de modais nativo) */
+.nx-mover{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.nx-mover.on{display:flex}
+.nx-modal{background:var(--bg-card);border:1px solid var(--border-bright);border-radius:18px;max-width:560px;width:100%;max-height:90vh;display:flex;flex-direction:column}
+
+/* Botões próprios do módulo (evita colidir com .btn do SIGPAG, que tem outro contrato visual) */
+#page-nexus .btn-p, .nx-mover .btn-p{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius-md);font-size:.8rem;font-weight:600;cursor:pointer;border:none;background:linear-gradient(135deg,var(--accent-orange),var(--accent-orange-light));color:#fff}
+#page-nexus .btn-g, .nx-mover .btn-g{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius-md);font-size:.8rem;font-weight:500;cursor:pointer;background:var(--bg-elevated);color:var(--text-secondary);border:1px solid var(--border)}
+#page-nexus .btn-d, .nx-mover .btn-d{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius-md);font-size:.8rem;font-weight:500;cursor:pointer;background:rgba(244,63,94,.1);color:var(--accent-rose);border:1px solid rgba(244,63,94,.2)}
+#page-nexus .btn-sm, .nx-mover .btn-sm{padding:5px 11px}
+
 </style>
 </head>
 <body>
@@ -2381,6 +2500,10 @@ input.cap-date.form-input {
     <button class="sidebar-btn" onclick="showPage('financeiro')" title="Contas a Pagar">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/><path d="M14 15h4"/></svg>
       <span class="sb-label">Contas a Pagar</span>
+    </button>
+    <button class="sidebar-btn" onclick="showPage('nexus')" title="Gestão de Atividades e Produtividade">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      <span class="sb-label">Atividades</span>
     </button>
     <button class="sidebar-btn" onclick="showPage('financeiro');setTimeout(()=>setCapTab('relatorios'),100)" title="Relatórios">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="11" y2="17"/></svg>
@@ -2429,7 +2552,8 @@ input.cap-date.form-input {
     <!-- ==================== DASHBOARD PAGE ==================== -->
     <div id="page-dashboard" class="page active">
       <!-- STATS -->
-      <div class="stats-row">
+      <!-- Cards suprimidos da visualização a pedido do usuário (mantidos ocultos no DOM para não quebrar updateStats()) -->
+      <div class="stats-row" style="display:none">
         <div class="stat-card stat-orange">
           <div class="stat-icon" style="background:rgba(249,115,22,0.15)">
             <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
@@ -2514,6 +2638,15 @@ input.cap-date.form-input {
           <div class="card-tag">Financeiro Semanal</div>
           <div class="card-name">CONTAS A PAGAR</div>
           <div class="card-desc">Controle de EXE, RAP, fornecedores, saldos, pagamentos e ciclos manuais de solicitação de recursos.</div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="module-card financeiro" onclick="showPage('nexus')">
+          <div class="card-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          </div>
+          <div class="card-tag">Produtividade</div>
+          <div class="card-name">ATIVIDADES</div>
+          <div class="card-desc">Gestão de tarefas, agenda, prestadores e indicadores de produtividade pessoal e profissional.</div>
           <div class="card-arrow">↗</div>
         </div>
         <div class="module-card config" onclick="showPage('config')">
@@ -3103,8 +3236,147 @@ input.cap-date.form-input {
       </div>
     </div>
 
+    <!-- ==================== NEXUS / ATIVIDADES PAGE ==================== -->
+    <div id="page-nexus" class="page">
+      <div class="section-header">
+        <div>
+          <div class="section-title">Gestão de Atividades e Produtividade</div>
+          <div class="section-subtitle">Tarefas, agenda, prestadores e indicadores de produtividade pessoal e profissional</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-ghost" onclick="nxExportData()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Exportar
+          </button>
+          <button class="btn btn-primary" onclick="nxOpenModal('task', nxCurTab==='casa'?'casa':(nxCurTab==='servicos'?'servico':'trabalho'))">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nova Tarefa
+          </button>
+        </div>
+      </div>
+
+      <!-- Sub-navegação interna do módulo -->
+      <div class="fltrs" id="nx-subnav" style="margin-bottom:18px">
+        <button class="fb on" data-nxtab="dashboard" onclick="nxGoTo('dashboard')">⬡ Dashboard</button>
+        <button class="fb" data-nxtab="agenda" onclick="nxGoTo('agenda')">◫ Agenda</button>
+        <button class="fb" data-nxtab="trabalho" onclick="nxGoTo('trabalho')">◈ Trabalho <span class="nx-badge" id="nx-nb-trab">0</span></button>
+        <button class="fb" data-nxtab="casa" onclick="nxGoTo('casa')">⬟ Casa</button>
+        <button class="fb" data-nxtab="servicos" onclick="nxGoTo('servicos')">◇ Serviços</button>
+        <button class="fb" data-nxtab="prestadores" onclick="nxGoTo('prestadores')">◎ Prestadores</button>
+        <button class="fb" data-nxtab="historico" onclick="nxGoTo('historico')">◌ Histórico</button>
+      </div>
+
+      <div id="nx-content">
+        <div class="nx-page on" id="nx-pg-dashboard">
+          <div id="nx-dash-alerts"></div>
+          <div class="grid4">
+            <div class="stat"><div class="stat-lbl">Hoje</div><div class="stat-n" id="nx-s-hoje">0</div><div class="stat-sub">tarefas</div></div>
+            <div class="stat r"><div class="stat-lbl">Atrasadas</div><div class="stat-n" id="nx-s-atras">0</div><div class="stat-sub">atenção</div></div>
+            <div class="stat"><div class="stat-lbl">Pendentes</div><div class="stat-n" id="nx-s-pend">0</div><div class="stat-sub">abertas</div></div>
+            <div class="stat g"><div class="stat-lbl">Concluídas</div><div class="stat-n" id="nx-s-conc">0</div><div class="stat-sub">este mês</div></div>
+          </div>
+          <div class="card mb2">
+            <div class="row">
+              <div style="flex:1">
+                <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span id="nx-prog-lbl">0 de 0 tarefas hoje</span><span id="nx-prog-pct">0%</span></div>
+                <div class="prog-bar"><div class="prog-fill" id="nx-prog-fill" style="width:0%"></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="grid2">
+            <div class="card">
+              <div class="sec-hd"><div class="sec-ttl">Produtividade Semanal</div></div>
+              <div class="bar-chart" id="nx-chart-semanal"></div>
+              <div>Total semana: <span id="nx-chart-total-week">0</span> | Média: <span id="nx-chart-avg">0</span></div>
+            </div>
+            <div class="card">
+              <div class="sec-hd"><div class="sec-ttl">Por Categoria</div></div>
+              <div class="donut-wrap" id="nx-donut-wrap"><div class="empty">Sem dados</div></div>
+            </div>
+          </div>
+          <div class="grid2">
+            <div><div class="sec-hd"><div class="sec-ttl">Tarefas de Hoje</div></div><div class="tlist" id="nx-d-hoje"></div></div>
+            <div><div class="sec-hd"><div class="sec-ttl">Próximas</div></div><div class="tlist" id="nx-d-prox"></div></div>
+          </div>
+          <div><div class="sec-hd"><div class="sec-ttl">Timeline de Hoje</div></div><div class="card"><div class="tl" id="nx-d-tl"></div></div></div>
+        </div>
+
+        <div class="nx-page" id="nx-pg-agenda">
+          <div class="grid2">
+            <div class="card card-flush">
+              <div class="cal-hd"><div class="cal-ttl" id="nx-cal-ttl">—</div><div class="cal-nav"><button class="cal-btn" id="nx-cal-prev">‹</button><button class="cal-btn" id="nx-cal-next">›</button></div></div>
+              <div class="cal-grid" id="nx-cal-grid"></div>
+            </div>
+            <div>
+              <div class="sec-hd"><div class="sec-ttl" id="nx-cal-day-ttl">Selecione um dia</div><button class="btn btn-p btn-sm" id="nx-cal-add-btn" style="display:none" onclick="nxOpenModalForDate()">+ Tarefa</button></div>
+              <div class="tlist" id="nx-cal-day-list"><div class="empty">Clique em um dia</div></div>
+            </div>
+          </div>
+          <div>
+            <div class="sec-hd">
+              <div class="sec-ttl">Todas as Tarefas</div>
+              <div class="fltrs"><button class="fb on" data-nxaf="all">Todas</button><button class="fb" data-nxaf="trabalho">Trabalho</button><button class="fb" data-nxaf="casa">Casa</button><button class="fb" data-nxaf="servico">Serviços</button></div>
+            </div>
+            <div class="tlist" id="nx-ag-all"></div>
+          </div>
+        </div>
+
+        <div class="nx-page" id="nx-pg-trabalho">
+          <div class="grid4">
+            <div class="stat"><div class="stat-lbl">Total</div><div class="stat-n" id="nx-wk-tot">0</div></div>
+            <div class="stat r"><div class="stat-lbl">Atrasados</div><div class="stat-n" id="nx-wk-atr">0</div></div>
+            <div class="stat b"><div class="stat-lbl">Em Andamento</div><div class="stat-n" id="nx-wk-and">0</div></div>
+            <div class="stat g"><div class="stat-lbl">Concluídos</div><div class="stat-n" id="nx-wk-con">0</div></div>
+          </div>
+          <div class="sec-hd">
+            <div class="sec-ttl">Processos</div>
+            <div class="fltrs"><button class="fb on" data-nxwf="all">Todos</button><button class="fb" data-nxwf="pendente">Pendentes</button><button class="fb" data-nxwf="em_andamento">Em Andamento</button><button class="fb" data-nxwf="concluido">Concluídos</button></div>
+            <button class="btn btn-p btn-sm" onclick="nxOpenModal('task','trabalho')">+ Processo</button>
+          </div>
+          <div class="tlist" id="nx-trab-list"></div>
+        </div>
+
+        <div class="nx-page" id="nx-pg-casa">
+          <div class="sec-hd"><div class="sec-ttl">Tarefas da Casa</div><button class="btn btn-p btn-sm" onclick="nxOpenModal('task','casa')">+ Tarefa</button></div>
+          <div class="fltrs"><button class="fb on" data-nxcf="all">Todas</button><button class="fb" data-nxcf="pendente">Pendentes</button><button class="fb" data-nxcf="em_andamento">Em Andamento</button><button class="fb" data-nxcf="concluido">Concluídas</button></div>
+          <div class="tlist" id="nx-casa-list"></div>
+        </div>
+
+        <div class="nx-page" id="nx-pg-servicos">
+          <div class="sec-hd"><div class="sec-ttl">Serviços Avulsos</div><button class="btn btn-p btn-sm" onclick="nxOpenModal('task','servico')">+ Serviço</button></div>
+          <div style="display:flex;gap:20px;background:var(--nxbg2);padding:14px;border-radius:var(--nxr);margin-bottom:12px">
+            <div><div class="stat-lbl">Total em Aberto</div><div id="nx-svc-total-val">R$ 0,00</div></div>
+            <div><div class="stat-lbl">Pagos (mês)</div><div id="nx-svc-pago-val">R$ 0,00</div></div>
+          </div>
+          <div class="fltrs"><button class="fb on" data-nxsf="all">Todos</button><button class="fb" data-nxsf="nao_iniciado">Não Iniciado</button><button class="fb" data-nxsf="em_andamento">Em Andamento</button><button class="fb" data-nxsf="concluido">Concluído</button><button class="fb" data-nxsf="pago">Pago</button></div>
+          <div class="tlist" id="nx-svc-list"></div>
+        </div>
+
+        <div class="nx-page" id="nx-pg-prestadores">
+          <div class="sec-hd"><div class="sec-ttl">Prestadores</div><button class="btn btn-p btn-sm" onclick="nxOpenModal('prestador')">+ Prestador</button></div>
+          <div id="nx-prest-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px"></div>
+        </div>
+
+        <div class="nx-page" id="nx-pg-historico">
+          <div class="sec-hd"><div class="sec-ttl">Histórico</div><button class="btn btn-g btn-sm" onclick="nxClearHist()">Limpar</button></div>
+          <div class="card"><div class="tl" id="nx-hist-list"></div></div>
+        </div>
+      </div>
+    </div>
+
   </main><!-- /main -->
 </div><!-- /app -->
+
+<!-- ============================================================
+     MÓDULO ATIVIDADES (NEXUS) — MODAIS
+     Usam classes próprias (.nx-mover/.nx-modal) para não colidir
+     com o sistema de modais nativo do SIGPAG (.modal-overlay).
+     ============================================================ -->
+<div class="nx-mover" id="nx-m-task"><div class="nx-modal"><div class="mhd"><div class="mttl" id="nx-m-task-ttl">Nova Tarefa</div><button class="mcls" onclick="nxCloseModal('nx-m-task')">✕</button></div><div class="mbody"><div class="fg"><label class="fl">Tipo</label><select class="fs" id="nx-f-tipo" onchange="nxUpdateTipoFields()"><option value="trabalho">◈ Trabalho</option><option value="casa">⬟ Casa</option><option value="servico">◇ Serviço</option></select></div><div class="fg"><label class="fl">Título *</label><input class="fi" id="nx-f-titulo"></div><div class="fg"><label class="fl">Descrição</label><textarea class="fta" id="nx-f-desc"></textarea></div><div id="nx-ex-trab"><div class="dv"></div><div class="fg2"><div class="fg"><label class="fl">Nº Processo</label><input class="fi" id="nx-f-proc"></div><div class="fg"><label class="fl">Fornecedor</label><input class="fi" id="nx-f-forn"></div></div><div class="fg"><label class="fl">Pendências</label><textarea class="fta" id="nx-f-pend"></textarea></div></div><div id="nx-ex-svc" style="display:none"><div class="dv"></div><div class="fg2"><div class="fg"><label class="fl">Prestador</label><select class="fs" id="nx-f-prest"><option value="">Selecionar</option></select></div><div class="fg"><label class="fl">Valor (R$)</label><input class="fi" id="nx-f-val" type="number" step="0.01"></div></div><div class="fg"><label class="fl">Data Pagamento</label><input class="fi" id="nx-f-dpag" type="date"></div></div><div class="fg3"><div class="fg"><label class="fl">Data *</label><input class="fi" id="nx-f-data" type="date"></div><div class="fg"><label class="fl">Início</label><input class="fi" id="nx-f-ini" type="time"></div><div class="fg"><label class="fl">Fim</label><input class="fi" id="nx-f-fim" type="time"></div></div><div class="fg2"><div class="fg"><label class="fl">Prioridade</label><select class="fs" id="nx-f-prio"><option value="alta">Alta</option><option value="media" selected>Média</option><option value="baixa">Baixa</option></select></div><div class="fg"><label class="fl">Status</label><select class="fs" id="nx-f-stat"><option value="pendente">Pendente</option><option value="nao_iniciado">Não Iniciado</option><option value="em_andamento">Em Andamento</option><option value="concluido">Concluído</option><option value="pago">Pago</option></select></div></div><div class="fg"><label class="fl">Recorrência</label><select class="fs" id="nx-f-rec"><option value="">Sem recorrência</option><option value="diaria">Diária</option><option value="semanal">Semanal</option><option value="mensal">Mensal</option></select></div></div><div class="mft"><button class="btn btn-g" onclick="nxCloseModal('nx-m-task')">Cancelar</button><button class="btn btn-p" id="nx-btn-save-task" onclick="nxSaveTask()">Salvar</button></div></div></div>
+<div class="nx-mover" id="nx-m-det"><div class="nx-modal"><div class="mhd"><div class="mttl" id="nx-m-det-ttl">Detalhe</div><button class="mcls" onclick="nxCloseModal('nx-m-det')">✕</button></div><div class="mbody" id="nx-m-det-body"></div><div class="mft"><button class="btn btn-d btn-sm" id="nx-btn-del">Excluir</button><button class="btn btn-g btn-sm" id="nx-btn-dup">Duplicar</button><button class="btn btn-g btn-sm" onclick="nxCloseModal('nx-m-det')">Fechar</button><button class="btn btn-p btn-sm" id="nx-btn-edit">✎ Editar</button></div></div></div>
+<div class="nx-mover" id="nx-m-prest"><div class="nx-modal"><div class="mhd"><div class="mttl">Novo Prestador</div><button class="mcls" onclick="nxCloseModal('nx-m-prest')">✕</button></div><div class="mbody"><div class="fg"><label class="fl">Nome *</label><input class="fi" id="nx-p-nome"></div><div class="fg2"><div class="fg"><label class="fl">Especialidade</label><input class="fi" id="nx-p-esp"></div><div class="fg"><label class="fl">Telefone</label><input class="fi" id="nx-p-tel"></div></div><div class="fg"><label class="fl">Email</label><input class="fi" id="nx-p-email" type="email"></div><div class="fg"><label class="fl">Observações</label><textarea class="fta" id="nx-p-obs"></textarea></div></div><div class="mft"><button class="btn btn-g" onclick="nxCloseModal('nx-m-prest')">Cancelar</button><button class="btn btn-p" id="nx-btn-save-prest" onclick="nxSavePrest()">Salvar</button></div></div></div>
+
+
 
 <!-- ============================================================
      MODAL: DESPACHOS SELECTOR
@@ -3469,6 +3741,9 @@ const Storage = {
    ============================================================ */
 const State = {
   capSelecionados: new Set(),
+  nxTasks: Storage.get('nxTasks', []),
+  nxPrest: Storage.get('nxPrest', []),
+  nxHist: Storage.get('nxHist', []),
   fornecedores: Storage.get('fornecedores', []),
   stats: Storage.get('stats', { total: 0, fav: 0, suap: 0 }),
   dailyStats: Storage.get('dailyStats', { date: '', count: 0 }),
@@ -4815,23 +5090,42 @@ function renderDashNaoPagoCards(){
   const rapFonte1133=somaOnde(c=>c.tipo==='RAP'&&c.fonte==='1133000000');
   const rapFonte1000=somaOnde(c=>c.tipo==='RAP'&&c.fonte==='1000000000');
 
+  // Helper: monta um card com valor sempre ancorado na base (evita desalinhamento
+  // quando o rótulo quebra em mais linhas em alguns cards da mesma linha) e dá
+  // destaque visual ao número da fonte e ao termo EXE/RAP.
+  const pendCard=(x)=>{
+    const tagHTML=x.tag?`<span style="display:inline-block;font-size:10px;font-weight:800;letter-spacing:.06em;padding:2px 8px;border-radius:5px;background:${x.col}26;color:${x.col};margin-bottom:5px">${x.tag}</span>`:'';
+    const fonteHTML=x.fonte?`<div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;font-weight:800;color:${x.col};letter-spacing:.01em;margin-top:2px">Fonte ${x.fonte}</div>`:'';
+    return `<div class="stat-card ${x.cls}" style="flex-direction:column;align-items:stretch;justify-content:space-between;min-height:120px">
+      <div style="display:flex;align-items:flex-start;gap:12px">
+        ${x.icon?`<div class="stat-icon" style="background:rgba(0,0,0,0.15);flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="${x.col}" stroke-width="2">${x.icon}</svg></div>`:''}
+        <div style="min-width:0">
+          ${tagHTML?`<div>${tagHTML}</div>`:''}
+          <div class="stat-label" style="margin-bottom:0">${x.lbl}</div>
+          ${fonteHTML}
+        </div>
+      </div>
+      <div class="stat-value" style="font-size:${x.big?'19px':'17px'};color:${x.col};margin-top:12px">${capMoney(x.val)}</div>
+    </div>`;
+  };
+
   if(mainRow){
     mainRow.innerHTML=[
-      {lbl:'Total Geral a Pagar (Não Pago)',val:totalGeral,cls:'stat-rose',col:'var(--accent-rose)',icon:'<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>'},
-      {lbl:'Não Pago — Fonte 1133000000',val:totalFonte1133,cls:'stat-amber',col:'var(--accent-amber)',icon:'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>'},
-      {lbl:'Não Pago — Fonte 1000000000',val:totalFonte1000,cls:'stat-blue',col:'var(--accent-blue)',icon:'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>'},
-      {lbl:'EXE — Total Não Pago',val:totalExe,cls:'stat-teal',col:'var(--accent-teal)',icon:'<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M7 14h3M14 14h3"/>'},
-      {lbl:'RAP — Total Não Pago',val:totalRap,cls:'stat-purple',col:'var(--accent-purple)',icon:'<path d="M12 2L2 7l10 5 10-5-10-5"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>'},
-    ].map(x=>`<div class="stat-card ${x.cls}"><div class="stat-icon" style="background:rgba(0,0,0,0.15)"><svg viewBox="0 0 24 24" fill="none" stroke="${x.col}" stroke-width="2">${x.icon}</svg></div><div class="stat-info"><div class="stat-label">${x.lbl}</div><div class="stat-value" style="font-size:18px;color:${x.col}">${capMoney(x.val)}</div></div></div>`).join('');
+      {lbl:'Total Geral a Pagar',val:totalGeral,cls:'stat-rose',col:'var(--accent-rose)',icon:'<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>',big:true},
+      {lbl:'Não Pago',val:totalFonte1133,cls:'stat-amber',col:'var(--accent-amber)',icon:'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',fonte:'1133000000'},
+      {lbl:'Não Pago',val:totalFonte1000,cls:'stat-blue',col:'var(--accent-blue)',icon:'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',fonte:'1000000000'},
+      {lbl:'Total Não Pago',val:totalExe,cls:'stat-teal',col:'var(--accent-teal)',icon:'<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M7 14h3M14 14h3"/>',tag:'EXE'},
+      {lbl:'Total Não Pago',val:totalRap,cls:'stat-purple',col:'var(--accent-purple)',icon:'<path d="M12 2L2 7l10 5 10-5-10-5"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>',tag:'RAP'},
+    ].map(pendCard).join('');
   }
 
   if(comboRow){
     comboRow.innerHTML=[
-      {lbl:'EXE — Fonte 1133000000',val:exeFonte1133,cls:'stat-teal',col:'var(--accent-teal)'},
-      {lbl:'EXE — Fonte 1000000000',val:exeFonte1000,cls:'stat-teal',col:'var(--accent-teal)'},
-      {lbl:'RAP — Fonte 1133000000',val:rapFonte1133,cls:'stat-purple',col:'var(--accent-purple)'},
-      {lbl:'RAP — Fonte 1000000000',val:rapFonte1000,cls:'stat-purple',col:'var(--accent-purple)'},
-    ].map(x=>`<div class="stat-card ${x.cls}"><div class="stat-info"><div class="stat-label">${x.lbl}</div><div class="stat-value" style="font-size:16px;color:${x.col}">${capMoney(x.val)}</div></div></div>`).join('');
+      {lbl:'Não Pago',val:exeFonte1133,cls:'stat-teal',col:'var(--accent-teal)',tag:'EXE',fonte:'1133000000'},
+      {lbl:'Não Pago',val:exeFonte1000,cls:'stat-teal',col:'var(--accent-teal)',tag:'EXE',fonte:'1000000000'},
+      {lbl:'Não Pago',val:rapFonte1133,cls:'stat-purple',col:'var(--accent-purple)',tag:'RAP',fonte:'1133000000'},
+      {lbl:'Não Pago',val:rapFonte1000,cls:'stat-purple',col:'var(--accent-purple)',tag:'RAP',fonte:'1000000000'},
+    ].map(pendCard).join('');
   }
 }
 function renderRelatorios(){
@@ -5360,6 +5654,7 @@ function showPage(id) {
     if (oc.includes("showPage('"+id+"')") && !oc.includes('setTimeout')) b.classList.add('active');
   });
   if (id === 'financeiro') renderFinanceiro();
+  if (id === 'nexus') { if (typeof nxRenderPage === 'function') nxRenderPage(nxCurTab || 'dashboard'); }
 }
 
 /* ============================================================
@@ -6023,11 +6318,16 @@ function clearAllData() {
   State.capFontes = CAP_DEFAULT_FONTES.slice();
   State.capFornecedores = [];
   State.capAuditLog = []; // ← CORREÇÃO 2: limpa também o audit log
+  State.nxTasks = [];
+  State.nxPrest = [];
+  State.nxHist = [];
 
   saveState();
   capPersist(); // ← CORREÇÃO 2: persiste módulos CAP no localStorage
+  nxPersist();
   renderFornecedoresTable();
   initCapModule();
+  if (typeof nxGoTo === 'function') { nxCurTab='dashboard'; nxGoTo('dashboard'); }
   updateStats();
   closeModal('modal-clear-data');
   showToast('Todos os dados foram apagados.', 'info');
@@ -6232,6 +6532,9 @@ async function driveSaveData() {
     capRelatoriosCiclos:  State.capRelatoriosCiclos  || [],
     capCicloLabel:        State.capCicloLabel        || '',
     capCicloInicioAt:     State.capCicloInicioAt     || null,
+    nxTasks:              State.nxTasks              || [],
+    nxPrest:              State.nxPrest              || [],
+    nxHist:               State.nxHist               || [],
   };
   // Checksum de integridade
   payload._checksum = (payload.capContas.length * 7 + payload.capSaldos.length * 13 + payload.capHistorico.length * 31).toString(36);
@@ -6349,10 +6652,14 @@ async function driveLoadData() {
     if (backup.capRelatoriosCiclos)    State.capRelatoriosCiclos= backup.capRelatoriosCiclos;
     if (backup.capCicloLabel !== undefined)  State.capCicloLabel = backup.capCicloLabel || '';
     if (backup.capCicloInicioAt !== undefined) State.capCicloInicioAt = backup.capCicloInicioAt || null;
+    if (backup.nxTasks)                State.nxTasks            = backup.nxTasks;
+    if (backup.nxPrest)                State.nxPrest            = backup.nxPrest;
+    if (backup.nxHist)                 State.nxHist             = backup.nxHist;
 
     // Persiste localmente (cache para a próxima abertura do navegador)
     saveStateLocalOnly();
     capPersistLocalOnly();
+    nxPersistLocalOnly();
     // Persiste campos de ciclo adicionais
     Storage.set('capRelatoriosCiclos', State.capRelatoriosCiclos||[]);
     Storage.set('capCicloLabel', State.capCicloLabel||'');
@@ -6361,6 +6668,7 @@ async function driveLoadData() {
     renderFornecedoresTable();
     renderFinanceiro();
     updateStats();
+    if (typeof nxGoTo === 'function') nxGoTo(nxCurTab || 'dashboard');
     // Re-popula datalists para autocomplete
     if (typeof refreshCapDatalists === 'function') refreshCapDatalists();
     setDriveStatus('connected', 'Supabase sincronizado');
@@ -6559,6 +6867,7 @@ function importBackup(event) {
 
   renderFornecedoresTable();
   initCapModule();
+  if (typeof initNexusModule === 'function') initNexusModule();
   updateStats();
 
   // Carrega o client Supabase e conecta automaticamente em background
@@ -6576,5 +6885,478 @@ function importBackup(event) {
 })();
 
 </script>
+<script>
+/* ============================================================
+   MÓDULO: GESTÃO DE ATIVIDADES E PRODUTIVIDADE (ex-"Nexus Gestão")
+   Namespace próprio (prefixo nx*) — não sobrescreve nenhuma
+   variável, função, id ou classe global já usada pelo SIGPAG.
+   Persistência via o mesmo Storage (localStorage 'sigde_' + chave)
+   e o mesmo pipeline de sincronização Supabase (scheduleAutoSave /
+   driveSaveData / driveLoadData) já utilizados pelo restante do
+   sistema — sem arquitetura paralela.
+   ============================================================ */
+
+const NX_TIPO_LBL = { trabalho:'Trabalho', casa:'Casa', servico:'Serviço' };
+const NX_TIPO_BX  = { trabalho:'bx-or', casa:'bx-bl', servico:'bx-gr' };
+const NX_TIPO_CLS = { trabalho:'', casa:'casa', servico:'servico' };
+const NX_STAT_LBL = { pendente:'Pendente', nao_iniciado:'Não Iniciado', em_andamento:'Em Andamento', concluido:'Concluído', cancelado:'Cancelado', pago:'Pago' };
+const NX_STAT_BX  = { pendente:'bx-gy', nao_iniciado:'bx-gy', em_andamento:'bx-bl', concluido:'bx-gr', cancelado:'bx-rd', pago:'bx-gr' };
+const NX_PRIO_LBL = { alta:'Alta', media:'Média', baixa:'Baixa' };
+const NX_PRIO_BX  = { alta:'bx-rd', media:'bx-or', baixa:'bx-gy' };
+const NX_PRIO_DOT = { alta:'p-a', media:'p-m', baixa:'p-b' };
+const NX_PAGE_TITLES = { dashboard:'Dashboard', agenda:'Agenda', trabalho:'Trabalho', casa:'Casa', servicos:'Serviços', prestadores:'Prestadores', historico:'Histórico' };
+
+let nxCurTab = 'dashboard';
+let nxEditId = null, nxDetId = null;
+let nxAgFilt='all', nxWFilt='all', nxCFilt='all', nxSFilt='all';
+let nxCalDt = new Date(), nxCalSel = null;
+
+/* ---------- helpers ---------- */
+function nxUid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+function nxPad(n){ return n<10?'0'+n:String(n); }
+function nxTodayStr(){ let d=new Date(); return d.getFullYear()+'-'+nxPad(d.getMonth()+1)+'-'+nxPad(d.getDate()); }
+function nxFmtDate(s){ if(!s) return '—'; let p=s.split('-'); return p[2]+'/'+p[1]+'/'+p[0]; }
+function nxEscH(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function nxIsOverdue(t){ if(t.status==='concluido'||t.status==='pago'||t.status==='cancelado') return false; return t.data && t.data < nxTodayStr(); }
+function nxAddHist(msg){ State.nxHist.unshift({ts:new Date().toISOString(),msg:msg}); if(State.nxHist.length>300) State.nxHist.length=300; nxPersist(); }
+
+/* ---------- persistência (mesmo mecanismo do restante do SIGPAG) ---------- */
+function nxPersist(){
+  Storage.set('nxTasks', State.nxTasks);
+  Storage.set('nxPrest', State.nxPrest);
+  Storage.set('nxHist', State.nxHist);
+  if (typeof scheduleAutoSave === 'function') scheduleAutoSave();
+}
+function nxPersistLocalOnly(){
+  Storage.set('nxTasks', State.nxTasks);
+  Storage.set('nxPrest', State.nxPrest);
+  Storage.set('nxHist', State.nxHist);
+}
+
+/* ---------- navegação interna do módulo ---------- */
+function nxGoTo(pg){
+  document.querySelectorAll('#nx-content .nx-page').forEach(el=>el.classList.remove('on'));
+  const target=document.getElementById('nx-pg-'+pg);
+  if(target) target.classList.add('on');
+  document.querySelectorAll('#nx-subnav [data-nxtab]').forEach(b=>b.classList.remove('on'));
+  const btn=document.querySelector('#nx-subnav [data-nxtab="'+pg+'"]');
+  if(btn) btn.classList.add('on');
+  nxCurTab = pg;
+  nxRenderPage(pg);
+}
+function nxRenderPage(pg){
+  if(pg==='dashboard') nxRenderDash();
+  if(pg==='agenda') nxRenderAgenda();
+  if(pg==='trabalho') nxRenderTrab();
+  if(pg==='casa') nxRenderCasa();
+  if(pg==='servicos') nxRenderSvc();
+  if(pg==='prestadores') nxRenderPrest();
+  if(pg==='historico') nxRenderHist();
+  nxUpdateBadges();
+}
+
+/* ---------- render de card de tarefa (compartilhado entre telas) ---------- */
+function nxTcHTML(t){
+  let done=(t.status==='concluido'||t.status==='pago')?'on':'';
+  let doneCls=done?'done':'';
+  let tipoCls=NX_TIPO_CLS[t.tipo]||'';
+  let timeTxt=t.inicio?(t.inicio+(t.fim?' – '+t.fim:'')):(t.data?nxFmtDate(t.data):'—');
+  let procBx=t.processo?'<span class="bx bx-gy">'+nxEscH(t.processo)+'</span>':'';
+  let overBx=nxIsOverdue(t)?'<span class="bx bx-rd">⚠ Atrasado</span>':'';
+  let checkTxt=done?'✓':'';
+  let valBx=(t.tipo==='servico'&&t.valor)?'<span class="bx bx-gr">R$ '+Number(t.valor).toFixed(2).replace('.',',')+'</span>':'';
+  return `<div class="tc ${tipoCls} ${doneCls}" data-nxid="${t.id}"><div class="tcheck ${done}" data-nxchk="${t.id}">${checkTxt}</div><div class="tinfo"><div class="ttl">${nxEscH(t.titulo)}</div><div class="tmeta"><span class="ttime">${timeTxt}</span><span class="bx ${NX_TIPO_BX[t.tipo]}">${NX_TIPO_LBL[t.tipo]}</span><span class="bx ${NX_STAT_BX[t.status]}">${NX_STAT_LBL[t.status]}</span>${procBx}${overBx}${valBx}</div></div><div class="tprio"><span class="bx ${NX_PRIO_BX[t.prioridade]}">${NX_PRIO_LBL[t.prioridade]}</span><div class="pdot ${NX_PRIO_DOT[t.prioridade]}"></div></div></div>`;
+}
+function nxEmptyHTML(msg){ return `<div class="empty"><span class="empty-ic">◌</span><div class="empty-tx">${msg}</div></div>`; }
+
+function nxToggleDone(id){
+  let t=State.nxTasks.find(x=>x.id===id); if(!t) return;
+  let wasDone=(t.status==='concluido'||t.status==='pago');
+  t.status=wasDone?'pendente':'concluido';
+  t.atualizado=new Date().toISOString();
+  nxAddHist(`"${t.titulo}" → ${NX_STAT_LBL[t.status]}`);
+  if(!wasDone && t.recorrencia) nxGeraProximaRec(t);
+  nxRenderPage(nxCurTab);
+}
+function nxGeraProximaRec(t){
+  let d=new Date(t.data+'T12:00:00');
+  if(t.recorrencia==='diaria') d.setDate(d.getDate()+1);
+  if(t.recorrencia==='semanal') d.setDate(d.getDate()+7);
+  if(t.recorrencia==='mensal') d.setMonth(d.getMonth()+1);
+  let next=JSON.parse(JSON.stringify(t));
+  next.id=nxUid(); next.status='pendente';
+  next.data=d.getFullYear()+'-'+nxPad(d.getMonth()+1)+'-'+nxPad(d.getDate());
+  next.criado=new Date().toISOString(); next.atualizado=new Date().toISOString();
+  State.nxTasks.push(next);
+  nxAddHist(`Próxima recorrência de "${t.titulo}" → ${nxFmtDate(next.data)}`);
+  nxPersist();
+}
+
+/* ---------- DASHBOARD ---------- */
+function nxRenderDash(){
+  let td=nxTodayStr(); let thisM=new Date().toISOString().slice(0,7);
+  let todayTasks=State.nxTasks.filter(t=>t.data===td);
+  let atras=State.nxTasks.filter(nxIsOverdue);
+  let pend=State.nxTasks.filter(t=>t.status==='pendente'||t.status==='nao_iniciado');
+  let conc=State.nxTasks.filter(t=>t.status==='concluido'&&t.data&&t.data.startsWith(thisM));
+  document.getElementById('nx-s-hoje').innerText=todayTasks.length;
+  document.getElementById('nx-s-atras').innerText=atras.length;
+  document.getElementById('nx-s-pend').innerText=pend.length;
+  document.getElementById('nx-s-conc').innerText=conc.length;
+  let alerts=atras.length?`<div class="alert">⚠ ${atras.length} atrasada(s)</div>`:'';
+  document.getElementById('nx-dash-alerts').innerHTML=alerts;
+  let sorted=todayTasks.slice().sort((a,b)=>(a.inicio||'').localeCompare(b.inicio||''));
+  document.getElementById('nx-d-hoje').innerHTML=sorted.length?sorted.slice(0,6).map(nxTcHTML).join(''):nxEmptyHTML('Sem tarefas hoje');
+  let up=State.nxTasks.filter(t=>t.data>td&&t.status!=='concluido'&&t.status!=='pago').sort((a,b)=>a.data.localeCompare(b.data)).slice(0,5);
+  document.getElementById('nx-d-prox').innerHTML=up.length?up.map(nxTcHTML).join(''):nxEmptyHTML('Sem próximas');
+  let done=todayTasks.filter(t=>t.status==='concluido'||t.status==='pago').length;
+  let pct=todayTasks.length?Math.round(done/todayTasks.length*100):0;
+  document.getElementById('nx-prog-lbl').innerText=done+'/'+todayTasks.length;
+  document.getElementById('nx-prog-fill').style.width=pct+'%';
+  document.getElementById('nx-prog-pct').innerText=pct+'%';
+  let tlHtml=sorted.length?sorted.map(t=>`<div class="tl-it"><div class="tl-dc"><div class="tl-dot ${t.tipo==='casa'?'b':t.tipo==='servico'?'g':''}"></div><div class="tl-ln"></div></div><div class="tl-bd"><div class="tl-tm">${t.inicio||'—'}${t.fim?' → '+t.fim:''}</div><div class="tl-tx">${nxEscH(t.titulo)}</div><div class="tl-tg">${NX_TIPO_LBL[t.tipo]} · ${NX_STAT_LBL[t.status]}</div></div></div>`).join(''):nxEmptyHTML('Sem atividades');
+  document.getElementById('nx-d-tl').innerHTML=tlHtml;
+  nxRenderChartSemanal();
+  nxRenderDonut();
+}
+function nxRenderChartSemanal(){
+  let days=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'], today=new Date(), cols=[], total=0;
+  for(let i=6;i>=0;i--){
+    let d=new Date(today); d.setDate(today.getDate()-i);
+    let iso=d.getFullYear()+'-'+nxPad(d.getMonth()+1)+'-'+nxPad(d.getDate());
+    let cnt=State.nxTasks.filter(t=>(t.status==='concluido'||t.status==='pago')&&t.atualizado&&t.atualizado.slice(0,10)===iso).length;
+    cols.push({day:days[d.getDay()],cnt,iso}); total+=cnt;
+  }
+  let max=Math.max(...cols.map(c=>c.cnt))||1;
+  let html=cols.map(c=>{
+    let h=Math.round((c.cnt/max)*100);
+    let bg=c.iso===nxTodayStr()?'linear-gradient(180deg,var(--nxor),var(--nxor2))':c.cnt>0?'linear-gradient(180deg,var(--nxblue),rgba(74,158,255,.4))':'var(--nxbg4)';
+    return `<div class="bc-col"><div class="bc-bar" style="height:${h}%;background:${bg}" data-val="${c.cnt}"></div><div class="bc-lbl">${c.day}</div></div>`;
+  }).join('');
+  document.getElementById('nx-chart-semanal').innerHTML=html||nxEmptyHTML('Sem dados');
+  document.getElementById('nx-chart-total-week').innerText=total;
+  document.getElementById('nx-chart-avg').innerText=(total/7).toFixed(1);
+}
+function nxRenderDonut(){
+  let trab=State.nxTasks.filter(t=>t.tipo==='trabalho').length, casa=State.nxTasks.filter(t=>t.tipo==='casa').length, svc=State.nxTasks.filter(t=>t.tipo==='servico').length, total=trab+casa+svc, wrap=document.getElementById('nx-donut-wrap');
+  if(!total){wrap.innerHTML='<div class="empty">Sem tarefas</div>'; return;}
+  let cats=[{lbl:'Trabalho',val:trab,color:'var(--accent-orange)'},{lbl:'Casa',val:casa,color:'var(--accent-blue)'},{lbl:'Serviços',val:svc,color:'var(--accent-green)'}].filter(c=>c.val>0);
+  let r=42,cx=54,cy=54,circ=2*Math.PI*r,offset=0;
+  let segs=cats.map(c=>{let pct=c.val/total, dash=circ*pct, s=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${c.color}" stroke-width="16" stroke-dasharray="${dash} ${circ-dash}" stroke-dashoffset="-${offset}" transform="rotate(-90 ${cx} ${cy})"/>`; offset+=dash; return s;}).join('');
+  let legend=cats.map(c=>`<div class="dl-it"><div class="dl-dot" style="background:${c.color}"></div>${c.lbl}<div class="dl-val">${c.val}</div></div>`).join('');
+  wrap.innerHTML=`<svg width="108" height="108" viewBox="0 0 108 108"><circle cx="54" cy="54" r="42" fill="none" stroke="var(--nxbg4)" stroke-width="16"/>${segs}<text x="54" y="54" text-anchor="middle" font-family="Syne" font-weight="800" font-size="18" fill="var(--text-primary)">${total}</text></svg><div class="donut-legend">${legend}</div>`;
+}
+
+/* ---------- AGENDA ---------- */
+function nxBuildCal(){
+  let y=nxCalDt.getFullYear(), m=nxCalDt.getMonth();
+  document.getElementById('nx-cal-ttl').innerText=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'][m]+' '+y;
+  let firstDow=new Date(y,m,1).getDay(), daysInM=new Date(y,m+1,0).getDate(), prevDays=new Date(y,m,0).getDate(), td=nxTodayStr();
+  let html=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].map(d=>`<div class="cal-dow">${d}</div>`).join('');
+  for(let i=0;i<firstDow;i++) html+=`<div class="cal-d other"><div class="cal-dn">${prevDays-firstDow+1+i}</div></div>`;
+  for(let d=1;d<=daysInM;d++){
+    let iso=y+'-'+nxPad(m+1)+'-'+nxPad(d), isTod=(iso===td), isSel=(iso===nxCalSel);
+    let dots=State.nxTasks.filter(t=>t.data===iso).slice(0,4).map(t=>`<div class="cal-dot" style="background:${t.tipo==='casa'?'var(--nxblue)':t.tipo==='servico'?'var(--nxgreen)':'var(--nxor)'}"></div>`).join('');
+    html+=`<div class="cal-d${isTod?' today':''}${isSel?' sel':''}" data-nxcal="${iso}"><div class="cal-dn">${d}</div><div class="cal-dots">${dots}</div></div>`;
+  }
+  document.getElementById('nx-cal-grid').innerHTML=html;
+}
+function nxRenderAgAll(){
+  let list=nxAgFilt==='all'?State.nxTasks:State.nxTasks.filter(t=>t.tipo===nxAgFilt);
+  list=list.slice().sort((a,b)=>(a.data||'').localeCompare(b.data||'')||(a.inicio||'').localeCompare(b.inicio||''));
+  document.getElementById('nx-ag-all').innerHTML=list.length?list.map(nxTcHTML).join(''):nxEmptyHTML('Nenhuma tarefa');
+}
+function nxRenderAgenda(){
+  nxBuildCal();
+  nxRenderAgAll();
+}
+function nxOpenModalForDate(){
+  nxOpenModal('task','trabalho');
+  if(nxCalSel) setTimeout(()=>{ const el=document.getElementById('nx-f-data'); if(el) el.value=nxCalSel; },50);
+}
+
+/* ---------- TRABALHO / CASA / SERVIÇOS ---------- */
+function nxRenderTrab(){
+  let list=State.nxTasks.filter(t=>t.tipo==='trabalho');
+  if(nxWFilt!=='all') list=list.filter(t=>t.status===nxWFilt);
+  list.sort((a,b)=>({alta:0,media:1,baixa:2}[a.prioridade]||1)-({alta:0,media:1,baixa:2}[b.prioridade]||1));
+  document.getElementById('nx-wk-tot').innerText=State.nxTasks.filter(t=>t.tipo==='trabalho').length;
+  document.getElementById('nx-wk-atr').innerText=State.nxTasks.filter(t=>t.tipo==='trabalho'&&nxIsOverdue(t)).length;
+  document.getElementById('nx-wk-and').innerText=State.nxTasks.filter(t=>t.tipo==='trabalho'&&t.status==='em_andamento').length;
+  document.getElementById('nx-wk-con').innerText=State.nxTasks.filter(t=>t.tipo==='trabalho'&&(t.status==='concluido'||t.status==='pago')).length;
+  document.getElementById('nx-trab-list').innerHTML=list.length?list.map(nxTcHTML).join(''):nxEmptyHTML('Nenhum processo');
+}
+function nxRenderCasa(){
+  let list=State.nxTasks.filter(t=>t.tipo==='casa');
+  if(nxCFilt!=='all') list=list.filter(t=>t.status===nxCFilt);
+  list.sort((a,b)=>(a.data||'').localeCompare(b.data||''));
+  document.getElementById('nx-casa-list').innerHTML=list.length?list.map(nxTcHTML).join(''):nxEmptyHTML('Nenhuma tarefa doméstica');
+}
+function nxRenderSvc(){
+  let list=State.nxTasks.filter(t=>t.tipo==='servico');
+  let thisM=new Date().toISOString().slice(0,7);
+  let totalAberto=list.filter(t=>t.status!=='pago'&&t.valor).reduce((s,t)=>s+(Number(t.valor)||0),0);
+  let totalPago=list.filter(t=>t.status==='pago'&&t.data&&t.data.startsWith(thisM)&&t.valor).reduce((s,t)=>s+(Number(t.valor)||0),0);
+  document.getElementById('nx-svc-total-val').innerText='R$ '+totalAberto.toFixed(2).replace('.',',');
+  document.getElementById('nx-svc-pago-val').innerText='R$ '+totalPago.toFixed(2).replace('.',',');
+  if(nxSFilt!=='all') list=list.filter(t=>t.status===nxSFilt);
+  list.sort((a,b)=>(a.data||'').localeCompare(b.data||''));
+  document.getElementById('nx-svc-list').innerHTML=list.length?list.map(nxTcHTML).join(''):nxEmptyHTML('Nenhum serviço');
+}
+
+/* ---------- PRESTADORES ---------- */
+function nxRenderPrest(){
+  let el=document.getElementById('nx-prest-list');
+  if(!State.nxPrest.length){ el.innerHTML='<div style="grid-column:1/-1">'+nxEmptyHTML('Nenhum prestador')+'</div>'; return; }
+  el.innerHTML=State.nxPrest.map(p=>{
+    let initials=(p.nome||'?').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+    let svcs=State.nxTasks.filter(t=>t.prestadorId===p.id).length;
+    return `<div class="pcard" data-nxpid="${p.id}"><div class="pavatar">${nxEscH(initials)}</div><div class="tinfo"><div class="ttl">${nxEscH(p.nome)}</div><div class="tmeta">${p.esp?`<span class="bx bx-gr">${nxEscH(p.esp)}</span>`:''}${p.tel?`<span class="ttime">${nxEscH(p.tel)}</span>`:''}<span class="bx bx-gy">${svcs} serv.</span></div></div></div>`;
+  }).join('');
+}
+function nxFillPrestSelect(){
+  let sel=document.getElementById('nx-f-prest');
+  sel.innerHTML='<option value="">Selecionar...</option>'+State.nxPrest.map(p=>`<option value="${p.id}">${nxEscH(p.nome)}${p.esp?' — '+p.esp:''}</option>`).join('');
+}
+
+/* ---------- HISTÓRICO ---------- */
+function nxRenderHist(){
+  let el=document.getElementById('nx-hist-list');
+  if(!State.nxHist.length){ el.innerHTML=nxEmptyHTML('Sem registros'); return; }
+  el.innerHTML=State.nxHist.slice(0,80).map(h=>{
+    let d=new Date(h.ts), ds=nxPad(d.getDate())+'/'+nxPad(d.getMonth()+1)+' '+nxPad(d.getHours())+':'+nxPad(d.getMinutes());
+    return `<div class="tl-it"><div class="tl-dc"><div class="tl-dot"></div><div class="tl-ln"></div></div><div class="tl-bd"><div class="tl-tm">${ds}</div><div class="tl-tx">${nxEscH(h.msg)}</div></div></div>`;
+  }).join('');
+}
+function nxClearHist(){
+  if(!confirm('Limpar histórico do módulo de Atividades?')) return;
+  State.nxHist=[]; nxPersist(); nxRenderHist(); showToast('Histórico limpo.','success');
+}
+function nxExportData(){
+  let d=JSON.stringify({tasks:State.nxTasks,prestadores:State.nxPrest,historico:State.nxHist,exportedAt:new Date().toISOString()},null,2);
+  let a=document.createElement('a');
+  a.href='data:application/json;charset=utf-8,'+encodeURIComponent(d);
+  a.download='atividades-backup-'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();
+  showToast('Backup de Atividades exportado!','success');
+}
+function nxUpdateBadges(){
+  let td=nxTodayStr();
+  let atras=State.nxTasks.filter(nxIsOverdue).length;
+  let todayPend=State.nxTasks.filter(t=>t.data===td&&t.status!=='concluido'&&t.status!=='pago').length;
+  const nbTrab=document.getElementById('nx-nb-trab');
+  if(nbTrab) nbTrab.innerText=State.nxTasks.filter(t=>t.tipo==='trabalho'&&(t.status==='pendente'||t.status==='em_andamento'||t.status==='nao_iniciado')).length;
+}
+
+/* ---------- MODAIS: tarefa / detalhe / prestador ---------- */
+function nxOpenModal(type,preType){
+  if(type==='task'){
+    nxEditId=null;
+    document.getElementById('nx-m-task-ttl').innerText='Nova Tarefa';
+    document.getElementById('nx-f-tipo').value=preType||'trabalho';
+    ['nx-f-titulo','nx-f-desc','nx-f-proc','nx-f-forn','nx-f-pend','nx-f-val','nx-f-dpag','nx-f-ini','nx-f-fim'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('nx-f-data').value=nxTodayStr();
+    document.getElementById('nx-f-prio').value='media';
+    document.getElementById('nx-f-stat').value='pendente';
+    document.getElementById('nx-f-rec').value='';
+    nxFillPrestSelect();
+    nxUpdateTipoFields();
+    document.getElementById('nx-m-task').classList.add('on');
+  }
+  if(type==='prestador'){
+    ['nx-p-nome','nx-p-esp','nx-p-tel','nx-p-email','nx-p-obs'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('nx-m-prest').classList.add('on');
+  }
+}
+function nxCloseModal(id){ document.getElementById(id).classList.remove('on'); }
+function nxUpdateTipoFields(){
+  let v=document.getElementById('nx-f-tipo').value;
+  document.getElementById('nx-ex-trab').style.display=v==='trabalho'?'block':'none';
+  document.getElementById('nx-ex-svc').style.display=v==='servico'?'block':'none';
+}
+function nxSaveTask(){
+  let titulo=document.getElementById('nx-f-titulo').value.trim(), data=document.getElementById('nx-f-data').value;
+  if(!titulo||!data){ showToast('Título e data são obrigatórios.','error'); return; }
+  let tipo=document.getElementById('nx-f-tipo').value;
+  let task={
+    id: nxEditId || nxUid(), tipo, titulo,
+    descricao: document.getElementById('nx-f-desc').value.trim(),
+    data, inicio: document.getElementById('nx-f-ini').value, fim: document.getElementById('nx-f-fim').value,
+    prioridade: document.getElementById('nx-f-prio').value,
+    status: document.getElementById('nx-f-stat').value,
+    recorrencia: document.getElementById('nx-f-rec').value,
+    atualizado: new Date().toISOString()
+  };
+  if(tipo==='trabalho'){
+    task.processo=document.getElementById('nx-f-proc').value.trim();
+    task.fornecedor=document.getElementById('nx-f-forn').value.trim();
+    task.pendencias=document.getElementById('nx-f-pend').value.trim();
+  }
+  if(tipo==='servico'){
+    task.prestadorId=document.getElementById('nx-f-prest').value;
+    task.valor=parseFloat(document.getElementById('nx-f-val').value)||null;
+    task.dataPagamento=document.getElementById('nx-f-dpag').value;
+  }
+  if(nxEditId){
+    let idx=State.nxTasks.findIndex(t=>t.id===nxEditId);
+    if(idx>=0){ task.criado=State.nxTasks[idx].criado; State.nxTasks[idx]=task; }
+    nxAddHist(`Tarefa "${titulo}" editada`);
+  } else {
+    task.criado=new Date().toISOString();
+    State.nxTasks.push(task);
+    nxAddHist(`Tarefa "${titulo}" criada (${NX_TIPO_LBL[tipo]})`);
+    if(task.recorrencia) nxGeraProximaRec(task);
+  }
+  nxPersist();
+  nxCloseModal('nx-m-task');
+  showToast(nxEditId?'Tarefa atualizada!':'Tarefa criada!','success');
+  nxEditId=null;
+  nxRenderPage(nxCurTab);
+}
+function nxSavePrest(){
+  let nome=document.getElementById('nx-p-nome').value.trim();
+  if(!nome){ showToast('Nome é obrigatório.','error'); return; }
+  let p={ id:nxUid(), nome, esp:document.getElementById('nx-p-esp').value.trim(), tel:document.getElementById('nx-p-tel').value.trim(), email:document.getElementById('nx-p-email').value.trim(), obs:document.getElementById('nx-p-obs').value.trim() };
+  State.nxPrest.push(p);
+  nxAddHist(`Prestador "${nome}" cadastrado`);
+  nxPersist();
+  nxCloseModal('nx-m-prest');
+  nxRenderPrest();
+  nxFillPrestSelect();
+  showToast('Prestador salvo!','success');
+}
+function nxOpenDet(id){
+  let t=State.nxTasks.find(x=>x.id===id); if(!t) return;
+  nxDetId=id;
+  document.getElementById('nx-m-det-ttl').innerText=t.titulo;
+  let extra='';
+  if(t.tipo==='trabalho'){
+    if(t.processo) extra+=`<div class="fg"><span class="fl">Processo</span><div><span class="bx bx-gy">${nxEscH(t.processo)}</span></div></div>`;
+    if(t.fornecedor) extra+=`<div class="fg"><span class="fl">Fornecedor</span><div>${nxEscH(t.fornecedor)}</div></div>`;
+    if(t.pendencias) extra+=`<div class="fg"><span class="fl">Pendências</span><div>${nxEscH(t.pendencias)}</div></div>`;
+  }
+  if(t.tipo==='servico'){
+    let pr=State.nxPrest.find(p=>p.id===t.prestadorId);
+    if(pr) extra+=`<div class="fg"><span class="fl">Prestador</span><div>${nxEscH(pr.nome)}</div></div>`;
+    if(t.valor) extra+=`<div class="fg"><span class="fl">Valor</span><div>R$ ${Number(t.valor).toFixed(2).replace('.',',')}</div></div>`;
+    if(t.dataPagamento) extra+=`<div class="fg"><span class="fl">Pagamento</span><div>${nxFmtDate(t.dataPagamento)}</div></div>`;
+  }
+  let body=`<div class="row">${t.descricao?`<div class="fg"><span class="fl">Descrição</span><div>${nxEscH(t.descricao)}</div></div>`:''}<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div><span class="fl">Data</span><div>${nxFmtDate(t.data)}</div></div><div><span class="fl">Horário</span><div>${t.inicio||'—'}${t.fim?' → '+t.fim:''}</div></div></div>${extra}${t.recorrencia?'<div class="alert w">🔄 Recorrência: '+t.recorrencia+'</div>':''}<div class="t3c">Criado: ${t.criado?new Date(t.criado).toLocaleString('pt-BR'):'—'}</div>`;
+  document.getElementById('nx-m-det-body').innerHTML=body;
+  document.getElementById('nx-m-det').classList.add('on');
+}
+function nxEditFromDet(){
+  let t=State.nxTasks.find(x=>x.id===nxDetId); if(!t) return;
+  nxCloseModal('nx-m-det');
+  nxEditId=t.id;
+  document.getElementById('nx-m-task-ttl').innerText='Editar Tarefa';
+  document.getElementById('nx-f-tipo').value=t.tipo;
+  document.getElementById('nx-f-titulo').value=t.titulo;
+  document.getElementById('nx-f-desc').value=t.descricao||'';
+  document.getElementById('nx-f-data').value=t.data||'';
+  document.getElementById('nx-f-ini').value=t.inicio||'';
+  document.getElementById('nx-f-fim').value=t.fim||'';
+  document.getElementById('nx-f-prio').value=t.prioridade||'media';
+  document.getElementById('nx-f-stat').value=t.status||'pendente';
+  document.getElementById('nx-f-rec').value=t.recorrencia||'';
+  if(t.tipo==='trabalho'){
+    document.getElementById('nx-f-proc').value=t.processo||'';
+    document.getElementById('nx-f-forn').value=t.fornecedor||'';
+    document.getElementById('nx-f-pend').value=t.pendencias||'';
+  }
+  if(t.tipo==='servico'){
+    nxFillPrestSelect();
+    document.getElementById('nx-f-prest').value=t.prestadorId||'';
+    document.getElementById('nx-f-val').value=t.valor||'';
+    document.getElementById('nx-f-dpag').value=t.dataPagamento||'';
+  }
+  nxUpdateTipoFields();
+  document.getElementById('nx-m-task').classList.add('on');
+}
+function nxDeleteFromDet(){
+  if(!confirm('Excluir esta tarefa?')) return;
+  let t=State.nxTasks.find(x=>x.id===nxDetId);
+  State.nxTasks=State.nxTasks.filter(x=>x.id!==nxDetId);
+  nxAddHist(`Tarefa "${t?t.titulo:''}" excluída`);
+  nxPersist();
+  nxCloseModal('nx-m-det');
+  showToast('Tarefa excluída.','success');
+  nxRenderPage(nxCurTab);
+}
+function nxDupFromDet(){
+  let t=State.nxTasks.find(x=>x.id===nxDetId); if(!t) return;
+  let copy=JSON.parse(JSON.stringify(t));
+  copy.id=nxUid(); copy.titulo+=' (cópia)'; copy.status='pendente';
+  copy.criado=new Date().toISOString(); copy.atualizado=new Date().toISOString();
+  State.nxTasks.push(copy);
+  nxAddHist(`Tarefa "${t.titulo}" duplicada`);
+  nxPersist();
+  nxCloseModal('nx-m-det');
+  showToast('Tarefa duplicada!','success');
+  nxRenderPage(nxCurTab);
+}
+
+/* ---------- inicialização / listeners do módulo ---------- */
+function initNexusModule(){
+  // Filtros de agenda
+  document.querySelectorAll('#nx-pg-agenda [data-nxaf]').forEach(b=>b.addEventListener('click',function(){
+    nxAgFilt=this.getAttribute('data-nxaf');
+    document.querySelectorAll('#nx-pg-agenda [data-nxaf]').forEach(x=>x.classList.remove('on'));
+    this.classList.add('on'); nxRenderAgAll();
+  }));
+  // Filtros de trabalho
+  document.querySelectorAll('#nx-pg-trabalho [data-nxwf]').forEach(b=>b.addEventListener('click',function(){
+    nxWFilt=this.getAttribute('data-nxwf');
+    document.querySelectorAll('#nx-pg-trabalho [data-nxwf]').forEach(x=>x.classList.remove('on'));
+    this.classList.add('on'); nxRenderTrab();
+  }));
+  // Filtros de casa
+  document.querySelectorAll('#nx-pg-casa [data-nxcf]').forEach(b=>b.addEventListener('click',function(){
+    nxCFilt=this.getAttribute('data-nxcf');
+    document.querySelectorAll('#nx-pg-casa [data-nxcf]').forEach(x=>x.classList.remove('on'));
+    this.classList.add('on'); nxRenderCasa();
+  }));
+  // Filtros de serviços
+  document.querySelectorAll('#nx-pg-servicos [data-nxsf]').forEach(b=>b.addEventListener('click',function(){
+    nxSFilt=this.getAttribute('data-nxsf');
+    document.querySelectorAll('#nx-pg-servicos [data-nxsf]').forEach(x=>x.classList.remove('on'));
+    this.classList.add('on'); nxRenderSvc();
+  }));
+  // Navegação do calendário
+  const calGrid=document.getElementById('nx-cal-grid');
+  if(calGrid) calGrid.addEventListener('click', e=>{
+    let el=e.target.closest('[data-nxcal]'); if(!el) return;
+    let iso=el.getAttribute('data-nxcal'); nxCalSel=iso;
+    document.getElementById('nx-cal-day-ttl').innerText=iso.split('-').reverse().join('/');
+    document.getElementById('nx-cal-add-btn').style.display='inline-flex';
+    let dt=State.nxTasks.filter(t=>t.data===iso);
+    document.getElementById('nx-cal-day-list').innerHTML=dt.length?dt.map(nxTcHTML).join(''):nxEmptyHTML('Sem tarefas');
+    nxBuildCal();
+  });
+  const calPrev=document.getElementById('nx-cal-prev'); if(calPrev) calPrev.onclick=()=>{ nxCalDt.setMonth(nxCalDt.getMonth()-1); nxBuildCal(); };
+  const calNext=document.getElementById('nx-cal-next'); if(calNext) calNext.onclick=()=>{ nxCalDt.setMonth(nxCalDt.getMonth()+1); nxBuildCal(); };
+  // Clique em tarefas (marcar concluída / abrir detalhe)
+  const nxContent=document.getElementById('nx-content');
+  if(nxContent) nxContent.addEventListener('click', e=>{
+    let chk=e.target.closest('[data-nxchk]');
+    if(chk){ e.stopPropagation(); nxToggleDone(chk.getAttribute('data-nxchk')); return; }
+    let tc=e.target.closest('.tc[data-nxid]');
+    if(tc) nxOpenDet(tc.getAttribute('data-nxid'));
+  });
+  // Botões do modal de detalhe
+  const btnEdit=document.getElementById('nx-btn-edit'); if(btnEdit) btnEdit.addEventListener('click', nxEditFromDet);
+  const btnDel=document.getElementById('nx-btn-del'); if(btnDel) btnDel.addEventListener('click', nxDeleteFromDet);
+  const btnDup=document.getElementById('nx-btn-dup'); if(btnDup) btnDup.addEventListener('click', nxDupFromDet);
+  // Fechar modal ao clicar fora / Esc
+  document.querySelectorAll('.nx-mover').forEach(mo=>mo.addEventListener('click', function(e){ if(e.target===this) nxCloseModal(this.id); }));
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape') document.querySelectorAll('.nx-mover.on').forEach(m=>m.classList.remove('on')); });
+  // Troca de tipo no formulário de tarefa
+  const fTipo=document.getElementById('nx-f-tipo'); if(fTipo) fTipo.addEventListener('change', nxUpdateTipoFields);
+
+  nxRenderDash();
+  nxUpdateBadges();
+}
+</script>
+
 </body>
 </html>
