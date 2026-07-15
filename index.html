@@ -2407,6 +2407,91 @@ input.cap-date.form-input {
 #page-nexus .bc-lbl {font-size:.62rem;color:var(--text-muted)}
 #page-nexus .donut-wrap {display:flex;align-items:center;gap:20px;flex-wrap:wrap}
 #page-nexus .donut-legend {display:flex;flex-direction:column;gap:6px}
+/* ---- Header do módulo: alinhamento e responsividade ---- */
+#page-nexus .section-header { flex-wrap:wrap; gap:14px; }
+#page-nexus .section-header > div:last-child { display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+#page-nexus .section-header .btn { padding:10px 20px; border-radius:var(--radius-md); white-space:nowrap; }
+#page-nexus .section-header .btn-primary { box-shadow:0 4px 14px rgba(249,115,22,.32); }
+#page-nexus .section-header .btn-primary:hover { box-shadow:0 8px 22px rgba(249,115,22,.45); }
+@media (max-width:640px){
+  #page-nexus .section-header { flex-direction:column; align-items:flex-start; }
+  #page-nexus .section-header > div:last-child { width:100%; justify-content:stretch; }
+  #page-nexus .section-header > div:last-child .btn { flex:1; justify-content:center; }
+}
+#page-nexus .section-header .btn,
+#page-nexus .btn-p, .nx-mover .btn-p,
+#page-nexus .btn-g, .nx-mover .btn-g,
+#page-nexus .btn-d, .nx-mover .btn-d {
+  transition:transform .15s ease, box-shadow .15s ease, background .15s ease, border-color .15s ease, opacity .15s ease;
+}
+#page-nexus .section-header .btn:hover { transform:translateY(-1px); }
+#page-nexus .section-header .btn:active,
+#page-nexus .btn-p:active, .nx-mover .btn-p:active,
+#page-nexus .btn-g:active, .nx-mover .btn-g:active { transform:translateY(0) scale(.98); }
+#page-nexus .section-header .btn:focus-visible,
+#page-nexus .btn-p:focus-visible, .nx-mover .btn-p:focus-visible,
+#page-nexus .btn-g:focus-visible, .nx-mover .btn-g:focus-visible,
+#page-nexus .btn-d:focus-visible, .nx-mover .btn-d:focus-visible,
+#page-nexus .fb:focus-visible {
+  outline:2px solid var(--accent-orange-light); outline-offset:2px;
+}
+#page-nexus .btn-p:hover, .nx-mover .btn-p:hover { box-shadow:0 6px 16px rgba(249,115,22,0.35); transform:translateY(-1px); }
+#page-nexus .btn-g:hover, .nx-mover .btn-g:hover { background:var(--bg-card); border-color:var(--border-bright); color:var(--text-primary); }
+#page-nexus .btn-d:hover, .nx-mover .btn-d:hover { background:rgba(244,63,94,.18); }
+#page-nexus .fb { transition:background .15s ease, border-color .15s ease, color .15s ease; }
+#page-nexus .fb:hover { border-color:var(--border-bright); color:var(--text-primary); }
+
+/* ---- Cards de tarefa: hover / estado concluído ---- */
+#page-nexus .tc { transition:border-color .15s ease, background .15s ease, opacity .15s ease; }
+#page-nexus .tc:hover { border-color:var(--border-bright); background:var(--bg-elevated); }
+#page-nexus .tc.done { opacity:.7; }
+#page-nexus .tc.done::before { background:var(--accent-green) !important; }
+#page-nexus .tc.done .tcheck { background:var(--accent-green); border-color:var(--accent-green); color:#fff; }
+#page-nexus .ttl.done-ttl { text-decoration:line-through; color:var(--text-muted); }
+#page-nexus .tactions { display:flex; align-items:center; gap:6px; flex-shrink:0; margin-left:8px; }
+#page-nexus .tact-btn { width:26px; height:26px; border-radius:7px; border:1px solid var(--border); background:var(--bg-elevated); color:var(--text-secondary); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .15s ease; }
+#page-nexus .tact-btn:hover { color:var(--text-primary); border-color:var(--border-bright); }
+#page-nexus .tact-btn.dl { color:var(--accent-green); border-color:rgba(34,197,94,.3); background:rgba(34,197,94,.08); }
+#page-nexus .tact-btn.dl:hover { background:rgba(34,197,94,.18); }
+#page-nexus .tact-btn svg { width:13px; height:13px; }
+#page-nexus .bx.bx-status-trigger { cursor:pointer; }
+#page-nexus .bx.bx-status-trigger:hover { filter:brightness(1.25); }
+
+/* ---- Modal de alteração rápida de status ---- */
+.nx-status-overlay { position:fixed; inset:0; z-index:9998; background:rgba(8,10,16,.6); backdrop-filter:blur(2px); display:none; align-items:center; justify-content:center; padding:16px; opacity:0; transition:opacity .18s ease; }
+.nx-status-overlay.on { display:flex; opacity:1; }
+.nx-status-pop { position:relative; width:100%; max-width:360px; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:0 20px 50px rgba(0,0,0,.5); padding:0; transform:translateY(10px) scale(.97); opacity:0; transition:transform .18s ease, opacity .18s ease; }
+.nx-status-overlay.on .nx-status-pop { transform:translateY(0) scale(1); opacity:1; }
+.nx-status-pop .nsp-hd { display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:1px solid var(--border); }
+.nx-status-pop .nsp-ttl { font-family:'Syne',sans-serif; font-weight:700; font-size:.95rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding-right:10px; }
+.nx-status-pop .nsp-cls { width:28px; height:28px; border-radius:8px; border:none; background:transparent; color:var(--text-muted); cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:background .15s ease, color .15s ease; }
+.nx-status-pop .nsp-cls:hover { background:var(--bg-elevated); color:var(--text-primary); }
+.nx-status-pop .nsp-body { padding:14px 14px 16px; }
+.nx-status-pop .nsp-lbl { font-size:.62rem; letter-spacing:1.5px; color:var(--text-muted); padding:2px 6px 10px; }
+.nx-status-pop .nsp-opt { display:flex; align-items:center; gap:11px; padding:12px 12px; border-radius:12px; cursor:pointer; font-size:.85rem; font-weight:600; color:var(--text-secondary); background:var(--bg-elevated); border:1.5px solid transparent; transition:background .15s ease, border-color .15s ease, transform .1s ease; margin-bottom:8px; }
+.nx-status-pop .nsp-opt:last-child { margin-bottom:0; }
+.nx-status-pop .nsp-opt:hover { transform:translateX(2px); border-color:var(--border-bright); }
+.nx-status-pop .nsp-opt:active { transform:translateX(2px) scale(.99); }
+.nx-status-pop .nsp-ic { width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:.7rem; }
+.nx-status-pop .nsp-opt.cur { color:var(--text-primary); }
+.nx-status-pop .nsp-opt.cur .nsp-check { display:flex; }
+.nx-status-pop .nsp-check { display:none; margin-left:auto; width:18px; height:18px; border-radius:50%; align-items:center; justify-content:center; background:currentColor; flex-shrink:0; }
+.nx-status-pop .nsp-check svg { width:11px; height:11px; stroke:var(--bg-card); }
+.nx-status-pop .nsp-opt[data-nxsetstat="nao_iniciado"] .nsp-ic { background:rgba(148,163,184,.18); color:var(--text-secondary); }
+.nx-status-pop .nsp-opt[data-nxsetstat="pendente"] { }
+.nx-status-pop .nsp-opt[data-nxsetstat="pendente"] .nsp-ic { background:rgba(249,115,22,.18); color:var(--accent-orange-light); }
+.nx-status-pop .nsp-opt[data-nxsetstat="em_andamento"] .nsp-ic { background:rgba(74,158,255,.18); color:var(--accent-blue); }
+.nx-status-pop .nsp-opt[data-nxsetstat="concluido"] .nsp-ic { background:rgba(34,197,94,.18); color:var(--accent-green); }
+.nx-status-pop .nsp-opt[data-nxsetstat="nao_iniciado"].cur { background:rgba(148,163,184,.12); border-color:rgba(148,163,184,.4); }
+.nx-status-pop .nsp-opt[data-nxsetstat="pendente"].cur { background:rgba(249,115,22,.12); border-color:rgba(249,115,22,.4); }
+.nx-status-pop .nsp-opt[data-nxsetstat="em_andamento"].cur { background:rgba(74,158,255,.12); border-color:rgba(74,158,255,.4); }
+.nx-status-pop .nsp-opt[data-nxsetstat="concluido"].cur { background:rgba(34,197,94,.12); border-color:rgba(34,197,94,.4); }
+.nx-status-pop .nsp-opt[data-nxsetstat="nao_iniciado"].cur .nsp-check { color:var(--text-secondary); }
+.nx-status-pop .nsp-opt[data-nxsetstat="pendente"].cur .nsp-check { color:var(--accent-orange-light); }
+.nx-status-pop .nsp-opt[data-nxsetstat="em_andamento"].cur .nsp-check { color:var(--accent-blue); }
+.nx-status-pop .nsp-opt[data-nxsetstat="concluido"].cur .nsp-check { color:var(--accent-green); }
+@media (max-width:480px){ .nx-status-pop { max-width:100%; } .nx-status-pop .nsp-opt { padding:13px 12px; } }
+
 #page-nexus .dl-it {display:flex;align-items:center;gap:8px;font-size:.75rem;color:var(--text-secondary)}
 #page-nexus .dl-dot {width:8px;height:8px;border-radius:50%}
 #page-nexus .dl-val {margin-left:auto;font-weight:700;color:var(--text-primary)}
@@ -6867,7 +6952,6 @@ function importBackup(event) {
 
   renderFornecedoresTable();
   initCapModule();
-  if (typeof initNexusModule === 'function') initNexusModule();
   updateStats();
 
   // Carrega o client Supabase e conecta automaticamente em background
@@ -6900,7 +6984,10 @@ const NX_TIPO_LBL = { trabalho:'Trabalho', casa:'Casa', servico:'Serviço' };
 const NX_TIPO_BX  = { trabalho:'bx-or', casa:'bx-bl', servico:'bx-gr' };
 const NX_TIPO_CLS = { trabalho:'', casa:'casa', servico:'servico' };
 const NX_STAT_LBL = { pendente:'Pendente', nao_iniciado:'Não Iniciado', em_andamento:'Em Andamento', concluido:'Concluído', cancelado:'Cancelado', pago:'Pago' };
-const NX_STAT_BX  = { pendente:'bx-gy', nao_iniciado:'bx-gy', em_andamento:'bx-bl', concluido:'bx-gr', cancelado:'bx-rd', pago:'bx-gr' };
+const NX_STAT_BX  = { pendente:'bx-or', nao_iniciado:'bx-gy', em_andamento:'bx-bl', concluido:'bx-gr', cancelado:'bx-rd', pago:'bx-gr' };
+/* Ordem e metadados usados no menu rápido de alteração de status */
+const NX_STAT_ORDER = ['nao_iniciado','pendente','em_andamento','concluido'];
+const NX_STAT_DOT   = { nao_iniciado:'gy', pendente:'or', em_andamento:'bl', concluido:'gr' };
 const NX_PRIO_LBL = { alta:'Alta', media:'Média', baixa:'Baixa' };
 const NX_PRIO_BX  = { alta:'bx-rd', media:'bx-or', baixa:'bx-gy' };
 const NX_PRIO_DOT = { alta:'p-a', media:'p-m', baixa:'p-b' };
@@ -6965,9 +7052,69 @@ function nxTcHTML(t){
   let overBx=nxIsOverdue(t)?'<span class="bx bx-rd">⚠ Atrasado</span>':'';
   let checkTxt=done?'✓':'';
   let valBx=(t.tipo==='servico'&&t.valor)?'<span class="bx bx-gr">R$ '+Number(t.valor).toFixed(2).replace('.',',')+'</span>':'';
-  return `<div class="tc ${tipoCls} ${doneCls}" data-nxid="${t.id}"><div class="tcheck ${done}" data-nxchk="${t.id}">${checkTxt}</div><div class="tinfo"><div class="ttl">${nxEscH(t.titulo)}</div><div class="tmeta"><span class="ttime">${timeTxt}</span><span class="bx ${NX_TIPO_BX[t.tipo]}">${NX_TIPO_LBL[t.tipo]}</span><span class="bx ${NX_STAT_BX[t.status]}">${NX_STAT_LBL[t.status]}</span>${procBx}${overBx}${valBx}</div></div><div class="tprio"><span class="bx ${NX_PRIO_BX[t.prioridade]}">${NX_PRIO_LBL[t.prioridade]}</span><div class="pdot ${NX_PRIO_DOT[t.prioridade]}"></div></div></div>`;
+  let dlBtn=done?`<button class="tact-btn dl" data-nxdl="${t.id}" title="Baixar atividade"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>`:'';
+  let editBtn=`<button class="tact-btn" data-nxdet="${t.id}" title="Ver detalhes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button>`;
+  return `<div class="tc ${tipoCls} ${doneCls}" data-nxid="${t.id}"><div class="tcheck ${done}" data-nxchk="${t.id}">${checkTxt}</div><div class="tinfo"><div class="ttl ${done?'done-ttl':''}">${nxEscH(t.titulo)}</div><div class="tmeta"><span class="ttime">${timeTxt}</span><span class="bx ${NX_TIPO_BX[t.tipo]}">${NX_TIPO_LBL[t.tipo]}</span><span class="bx bx-status-trigger ${NX_STAT_BX[t.status]}" data-nxstat="${t.id}" title="Alterar status">${NX_STAT_LBL[t.status]}</span>${procBx}${overBx}${valBx}</div></div><div class="tprio"><span class="bx ${NX_PRIO_BX[t.prioridade]}">${NX_PRIO_LBL[t.prioridade]}</span><div class="pdot ${NX_PRIO_DOT[t.prioridade]}"></div></div><div class="tactions">${dlBtn}${editBtn}</div></div>`;
 }
 function nxEmptyHTML(msg){ return `<div class="empty"><span class="empty-ic">◌</span><div class="empty-tx">${msg}</div></div>`; }
+
+function nxDownloadTask(id){
+  let t=State.nxTasks.find(x=>x.id===id); if(!t) return;
+  let d=JSON.stringify(t,null,2);
+  let a=document.createElement('a');
+  a.href='data:application/json;charset=utf-8,'+encodeURIComponent(d);
+  a.download='atividade-'+(t.titulo||'tarefa').toLowerCase().replace(/[^a-z0-9]+/g,'-').slice(0,40)+'.json';
+  a.click();
+  showToast('Atividade baixada!','success');
+}
+function nxSetStatus(id,status){
+  let t=State.nxTasks.find(x=>x.id===id); if(!t) return;
+  if(t.status===status) return;
+  t.status=status;
+  t.atualizado=new Date().toISOString();
+  nxAddHist(`"${t.titulo}" → ${NX_STAT_LBL[status]}`);
+  if((status==='concluido'||status==='pago') && t.recorrencia) nxGeraProximaRec(t);
+  nxRenderPage(nxCurTab);
+  nxCloseStatusMenu();
+}
+function nxEnsureStatusPop(){
+  let ov=document.getElementById('nx-status-overlay');
+  if(!ov){
+    ov=document.createElement('div');
+    ov.className='nx-status-overlay';
+    ov.id='nx-status-overlay';
+    ov.innerHTML='<div class="nx-status-pop" id="nx-status-pop"></div>';
+    document.body.appendChild(ov);
+    ov.addEventListener('click', e=>{ if(e.target===ov) nxCloseStatusMenu(); });
+  }
+  return document.getElementById('nx-status-pop');
+}
+function nxCloseStatusMenu(){
+  let ov=document.getElementById('nx-status-overlay');
+  if(ov) ov.classList.remove('on');
+}
+const NX_STAT_ICON = {
+  nao_iniciado:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg>',
+  pendente:'<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8"/></svg>',
+  em_andamento:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>',
+  concluido:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>'
+};
+function nxOpenStatusMenu(id){
+  let t=State.nxTasks.find(x=>x.id===id); if(!t) return;
+  let pop=nxEnsureStatusPop();
+  let curStatus=(t.status==='pago')?'concluido':t.status;
+  pop.innerHTML=`<div class="nsp-hd"><div class="nsp-ttl">${nxEscH(t.titulo)}</div><button class="nsp-cls" data-nxstatclose title="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="nsp-body"><div class="nsp-lbl">ALTERAR STATUS</div>`+
+    NX_STAT_ORDER.map(s=>{
+      let cur=(curStatus===s)?'cur':'';
+      return `<div class="nsp-opt ${cur}" data-nxsetstat="${s}"><span class="nsp-ic">${NX_STAT_ICON[s]}</span>${NX_STAT_LBL[s]}<span class="nsp-check"><svg viewBox="0 0 24 24" fill="none" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></span></div>`;
+    }).join('')+`</div>`;
+  pop.querySelector('[data-nxstatclose]').addEventListener('click', nxCloseStatusMenu);
+  pop.querySelectorAll('[data-nxsetstat]').forEach(opt=>{
+    opt.addEventListener('click', ()=>nxSetStatus(id, opt.getAttribute('data-nxsetstat')));
+  });
+  document.getElementById('nx-status-overlay').classList.add('on');
+}
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') nxCloseStatusMenu(); });
 
 function nxToggleDone(id){
   let t=State.nxTasks.find(x=>x.id===id); if(!t) return;
@@ -7340,8 +7487,14 @@ function initNexusModule(){
   if(nxContent) nxContent.addEventListener('click', e=>{
     let chk=e.target.closest('[data-nxchk]');
     if(chk){ e.stopPropagation(); nxToggleDone(chk.getAttribute('data-nxchk')); return; }
+    let dl=e.target.closest('[data-nxdl]');
+    if(dl){ e.stopPropagation(); nxDownloadTask(dl.getAttribute('data-nxdl')); return; }
+    let det=e.target.closest('[data-nxdet]');
+    if(det){ e.stopPropagation(); nxOpenDet(det.getAttribute('data-nxdet')); return; }
+    let statTrig=e.target.closest('[data-nxstat]');
+    if(statTrig){ e.stopPropagation(); nxOpenStatusMenu(statTrig.getAttribute('data-nxstat')); return; }
     let tc=e.target.closest('.tc[data-nxid]');
-    if(tc) nxOpenDet(tc.getAttribute('data-nxid'));
+    if(tc) nxOpenStatusMenu(tc.getAttribute('data-nxid'));
   });
   // Botões do modal de detalhe
   const btnEdit=document.getElementById('nx-btn-edit'); if(btnEdit) btnEdit.addEventListener('click', nxEditFromDet);
@@ -7356,6 +7509,12 @@ function initNexusModule(){
   nxRenderDash();
   nxUpdateBadges();
 }
+
+// Chamado aqui (não no script principal) porque é neste bloco que todas as
+// funções nx* acima realmente existem no momento da execução — evita o bug
+// de "typeof === 'function'" falhar por causa da ordem de carregamento dos
+// <script> tags.
+initNexusModule();
 </script>
 
 </body>
