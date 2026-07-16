@@ -6659,7 +6659,9 @@ async function driveSaveData() {
     nxPrest:              State.nxPrest              || [],
     nxHist:               State.nxHist               || [],
   };
-  // Checksum de integridade
+  // Checksum de integridade (mantido no formato original para compatibilidade
+  // com dados já salvos no Supabase — mudar a fórmula quebraria a validação
+  // de registros existentes e causaria falsos "Checksum inválido").
   payload._checksum = (payload.capContas.length * 7 + payload.capSaldos.length * 13 + payload.capHistorico.length * 31).toString(36);
 
   try {
@@ -6710,11 +6712,23 @@ async function driveSaveData() {
   } catch(e) {
     setDriveStatus('error', 'Erro ao salvar');
     showAutosave('error');
-    console.error('Supabase save error:', e);
+    console.error('[Supabase] save error:', e);
     // ← Exibe a mensagem real do erro (RLS, schema, rede, etc.) para
     // facilitar o diagnóstico — em vez de apenas "Erro ao salvar".
-    const msg = (e && (e.message || e.error_description || e.hint || JSON.stringify(e))) || 'desconhecido';
-    showToast('❌ Falha ao salvar no Supabase: ' + msg, 'error');
+    const rawMsg = (e && (e.message || e.error_description || e.hint || JSON.stringify(e))) || 'desconhecido';
+    // ← DIAGNÓSTICO: a causa mais comum de "editar/lançar dá erro de
+    // salvamento" é a tabela sigde_state não ter uma policy de RLS
+    // liberando UPDATE (ou INSERT) para o papel "anon". Detecta esse
+    // padrão de erro e orienta o usuário na própria mensagem.
+    const isRls = /permission denied|row-level security|rls|401|403|42501/i.test(rawMsg) || (e && e.code === '42501');
+    const hint = isRls ? ' — verifique se a tabela "sigde_state" tem policies de RLS liberando INSERT/UPDATE para o role anon no Supabase.' : '';
+    showToast('❌ Falha ao salvar no Supabase: ' + rawMsg + hint, 'error');
+    // ← Nova tentativa automática única após 5s (cobre falhas de rede
+    // transitórias). Evita loop infinito marcando _retried.
+    if (!GDRIVE._retried) {
+      GDRIVE._retried = true;
+      setTimeout(() => { GDRIVE._retried = false; driveSaveData(); }, 5000);
+    }
   }
 }
 
@@ -6902,7 +6916,7 @@ function exportBackup() {
   a.href = URL.createObjectURL(blob);
   a.download = 'sigde_backup_' + new Date().toISOString().slice(0,10) + '.json';
   a.click();
-  capAudit('BACKUP EXPORTADO', new Date().toISOString(), null, {versao: payload.version, contas: payload.capContas.length});
+  capAudit('BACKUP EXPORTADO', new Date().toLocaleString('pt-BR'), null, {versao: payload.version, contas: payload.capContas.length});
   showToast('Backup JSON exportado com sucesso!', 'success');
 }
 
@@ -7100,9 +7114,17 @@ function nxAddHist(msg){ State.nxHist.unshift({ts:new Date().toISOString(),msg:m
 
 /* ---------- persistência (mesmo mecanismo do restante do SIGPAG) ---------- */
 function nxPersist(){
-  Storage.set('nxTasks', State.nxTasks);
-  Storage.set('nxPrest', State.nxPrest);
-  Storage.set('nxHist', State.nxHist);
+  try {
+    Storage.set('nxTasks', State.nxTasks);
+    Storage.set('nxPrest', State.nxPrest);
+    Storage.set('nxHist', State.nxHist);
+  } catch(err) {
+    console.error('[Atividades] Falha ao salvar localmente (localStorage):', err);
+    showToast('⚠️ Falha ao salvar localmente — armazenamento pode estar cheio.', 'error');
+  }
+  if (typeof GDRIVE !== 'undefined' && GDRIVE._connected && !GDRIVE._loadCompleted) {
+    console.warn('[Atividades] Alteração enfileirada: aguardando driveLoadData() concluir antes de sincronizar com o Supabase.');
+  }
   if (typeof scheduleAutoSave === 'function') scheduleAutoSave();
   if (typeof renderDashOverduePanel === 'function') renderDashOverduePanel();
 }
@@ -7162,6 +7184,7 @@ function nxDownloadTask(id){
   showToast('Atividade baixada!','success');
 }
 function nxSetStatus(id,status){
+ try {
   let t=State.nxTasks.find(x=>x.id===id); if(!t) return;
   if(t.status===status) return;
   // ETAPA 5: ao mudar para "Pendente", abre automaticamente uma caixa para
@@ -7181,6 +7204,10 @@ function nxSetStatus(id,status){
   nxRenderPage(nxCurTab);
   nxCloseStatusMenu();
   if(document.getElementById('nx-m-det').classList.contains('on') && nxDetId===id) nxOpenDet(id);
+ } catch(err) {
+  console.error('[Atividades] Erro ao alterar status:', err);
+  showToast('❌ Erro ao alterar status: '+(err && err.message ? err.message : err),'error');
+ }
 }
 function nxEnsureStatusPop(){
   let ov=document.getElementById('nx-status-overlay');
@@ -7429,6 +7456,7 @@ function nxUpdateTipoFields(){
   document.getElementById('nx-ex-svc').style.display=v==='servico'?'block':'none';
 }
 function nxSaveTask(){
+ try {
   let titulo=document.getElementById('nx-f-titulo').value.trim(), data=document.getElementById('nx-f-data').value;
   if(!titulo||!data){ showToast('Título e data são obrigatórios.','error'); return; }
   let tipo=document.getElementById('nx-f-tipo').value;
@@ -7455,7 +7483,22 @@ function nxSaveTask(){
   }
   if(nxEditId){
     let idx=State.nxTasks.findIndex(t=>t.id===nxEditId);
-    if(idx>=0){ task.criado=State.nxTasks[idx].criado; State.nxTasks[idx]=task; }
+    if(idx>=0){
+      // ← CORREÇÃO (causa de perda de dados na edição): o formulário não
+      // cobre todos os campos da tarefa (ex: motivoPendencia). Antes, a
+      // edição substituía o registro inteiro e descartava esses campos.
+      // Agora mesclamos sobre o registro existente, preservando tudo que
+      // não veio do formulário.
+      const prev = State.nxTasks[idx];
+      task = Object.assign({}, prev, task);
+      task.criado = prev.criado;
+      if(task.status !== 'pendente') task.motivoPendencia = '';
+      State.nxTasks[idx] = task;
+    } else {
+      showToast('❌ Não foi possível localizar a tarefa original para editar (id não encontrado).','error');
+      console.error('[Atividades] nxSaveTask: nxEditId não encontrado em State.nxTasks:', nxEditId);
+      return;
+    }
     nxAddHist(`Tarefa "${titulo}" editada`);
   } else {
     task.criado=new Date().toISOString();
@@ -7468,6 +7511,10 @@ function nxSaveTask(){
   showToast(nxEditId?'Tarefa atualizada!':'Tarefa criada!','success');
   nxEditId=null;
   nxRenderPage(nxCurTab);
+ } catch(err) {
+  console.error('[Atividades] Erro ao salvar tarefa:', err);
+  showToast('❌ Erro ao salvar a tarefa: '+(err && err.message ? err.message : err),'error');
+ }
 }
 function nxSavePrest(){
   let nome=document.getElementById('nx-p-nome').value.trim();
