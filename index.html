@@ -12960,7 +12960,12 @@ const ITENS_6190 = [
 const ITENS_6147 = [
   { key: 'consumoForaPonta', label: 'consumo fora ponta',              nome: 'Consumo Fora Ponta (kWh)' },
   { key: 'consumoPonta',     label: 'consumo ponta',                   nome: 'Consumo Ponta (kWh)' },
-  { key: 'reativoExced',     label: 'consumo reativo excedente',       nome: 'Consumo Reativo Excedente FP (kVAr)' },
+  // A fatura traz DUAS linhas de "Consumo Reativo Excedente" (NP e FP). O
+  // rótulo genérico antigo casava só com a primeira que aparecesse (NP),
+  // então a linha FP nunca era somada à base do DARF 6147. Agora buscamos
+  // as duas separadamente, usando "np"/"fp" no rótulo para diferenciá-las.
+  { key: 'reativoExcedNP',   label: 'consumo reativo excedente np',    nome: 'Consumo Reativo Excedente NP (kVAr)' },
+  { key: 'reativoExcedFP',   label: 'consumo reativo excedente fp',    nome: 'Consumo Reativo Excedente FP (kVAr)' },
   { key: 'adicionalBandeira',label: 'adicional bandeira',              nome: 'Adicional Bandeira' },
 ];
 // DARF 6190 — retenções individuais que compõem os 9,45%: IRRF 4,80% + CSLL 1,00% + PIS 0,65% + COFINS 3,00%
@@ -13006,7 +13011,13 @@ function truncarTabelaLateral(linha) {
   // (fica em linha própria) — e a palavra "ICMS" também aparece dentro do
   // próprio rótulo "Demanda Ativa Isenta de ICMS", então NÃO pode ser usada
   // como marcador de corte. Cortamos apenas em "PIS" ou "COFINS".
-  const m = linha.match(/\b(PIS|COFINS)\b/);
+  // Também ocorre fusão com a tabela lateral "Grandezas Contratadas", cujas
+  // linhas têm o formato "Rótulo (kW):" ou "Rótulo (kVAr):" — sempre com
+  // dois-pontos após a unidade. As linhas de itens da fatura nunca têm esse
+  // dois-pontos após a unidade, então esse padrão serve como marcador seguro
+  // de corte (ex.: linha "Adicional Bandeira" fundindo com "Demanda
+  // Contratada Única (kW): 165,00").
+  const m = linha.match(/\b(PIS|COFINS)\b|\([^)]*\)\s*:/);
   return m ? linha.slice(0, m.index) : linha;
 }
 
@@ -13079,7 +13090,7 @@ async function extrairFatura(file) {
   const { mes, total: totalFatura } = acharTotalAPagarEMes(linhas);
 
   const base6190 = (itens.demandaIsenta || 0) + (itens.demandaAtiva || 0);
-  const base6147 = (itens.consumoForaPonta || 0) + (itens.consumoPonta || 0) + (itens.reativoExced || 0) + (itens.adicionalBandeira || 0);
+  const base6147 = (itens.consumoForaPonta || 0) + (itens.consumoPonta || 0) + (itens.reativoExcedNP || 0) + (itens.reativoExcedFP || 0) + (itens.adicionalBandeira || 0);
   const calc6190 = calcularDarfPorTributos(base6190, TRIBUTOS_6190);
   const calc6147 = calcularDarfPorTributos(base6147, TRIBUTOS_6147);
   const darf6190 = calc6190.total;
