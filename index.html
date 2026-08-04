@@ -417,6 +417,25 @@ body::before {
 }
 .module-card.agua .card-tag { color: #0ea5e9; }
 
+/* Energia — âmbar/relâmpago premium */
+.module-card.energia {
+  background: linear-gradient(145deg, rgba(245,158,11,0.06) 0%, var(--bg-card) 50%);
+  border-color: rgba(245,158,11,0.18);
+}
+.module-card.energia::before {
+  background: linear-gradient(135deg, rgba(245,158,11,0.14), transparent);
+}
+.module-card.energia:hover {
+  box-shadow: 0 0 28px rgba(245,158,11,0.35), var(--shadow-card);
+  border-color: rgba(245,158,11,0.4);
+}
+.energia .card-icon-wrap {
+  background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(217,119,6,0.15));
+  border: 1px solid rgba(245,158,11,0.35);
+  color: #f59e0b;
+}
+.module-card.energia .card-tag { color: #f59e0b; }
+
 .card-icon-wrap {
   position: absolute;
   top: 28px; right: 28px;
@@ -1577,6 +1596,7 @@ body::before {
 .module-card.financeiro {
   background: linear-gradient(145deg, rgba(20,184,166,0.06) 0%, var(--bg-card) 50%);
   border-color: rgba(20,184,166,0.18);
+  order: -2;
 }
 .module-card.financeiro::before {
   background: linear-gradient(135deg, rgba(20,184,166,0.14), transparent);
@@ -2667,6 +2687,108 @@ input.cap-date.form-input {
 #page-nexus .btn-d, .nx-mover .btn-d{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius-md);font-size:.8rem;font-weight:500;cursor:pointer;background:rgba(244,63,94,.1);color:var(--accent-rose);border:1px solid rgba(244,63,94,.2)}
 #page-nexus .btn-sm, .nx-mover .btn-sm{padding:5px 11px}
 
+</style>
+<style id="energia-module-styles">
+/* ============================================================
+   ENERGIA — MODULE STYLES (módulo nativo, reaproveita tokens do sistema)
+   ============================================================ */
+#page-energia .energia-drop-zone {
+  border: 2px dashed var(--border-bright);
+  border-radius: var(--radius-lg);
+  padding: 36px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition);
+  color: var(--text-secondary);
+}
+#page-energia .energia-drop-zone:hover,
+#page-energia .energia-drop-zone.drag-over {
+  border-color: var(--accent-orange);
+  background: rgba(249,115,22,0.05);
+  color: var(--text-primary);
+}
+#page-energia .energia-status {
+  margin-top: 14px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+#page-energia .energia-status.ok { background: rgba(34,197,94,0.1); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
+#page-energia .energia-status.err { background: rgba(239,68,68,0.1); color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); }
+#page-energia .energia-status.info { background: rgba(59,130,246,0.1); color: #93c5fd; border: 1px solid rgba(59,130,246,0.3); }
+#page-energia .cap-table td input.form-input { padding: 6px 10px; font-size: 12.5px; }
+
+/* ---------- Cards de métrica (Bases/DARFs e Resumo) ---------- */
+#page-energia .energia-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+  align-items: stretch;
+}
+#page-energia .energia-metric-card {
+  container-type: inline-size;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 108px;
+  box-sizing: border-box;
+  overflow: hidden;
+  transition: var(--transition);
+}
+#page-energia .energia-metric-card:hover {
+  border-color: var(--border-bright);
+}
+#page-energia .energia-metric-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 8px;
+  line-height: 1.35;
+  overflow-wrap: break-word;
+}
+#page-energia .energia-metric-label-ref {
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  opacity: 0.75;
+  font-size: 10px;
+  display: block;
+  margin-top: 2px;
+}
+#page-energia .energia-metric-value {
+  font-size: clamp(15px, 7cqi, 23px);
+  font-weight: 700;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+#page-energia .energia-metric-sub {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  line-height: 1.3;
+  overflow-wrap: break-word;
+}
+
+/* Paleta de destaque — tons desaturados, elegantes, alto contraste sobre fundo escuro */
+#page-energia .em-6190    .energia-metric-label { color: #D8B26A; } /* dourado suave */
+#page-energia .em-6147    .energia-metric-label { color: #7FA8D9; } /* azul-aço suave */
+#page-energia .em-np      .energia-metric-label { color: #6BBFA8; } /* verde-água suave */
+#page-energia .em-liquido .energia-metric-label { color: #7FC488; } /* verde suave */
+#page-energia .em-dsp1    .energia-metric-label { color: #D98E73; } /* terracota suave */
+#page-energia .em-dsp2    .energia-metric-label { color: #B29CDB; } /* lavanda suave */
+
+@media (max-width: 640px) {
+  #page-energia .energia-metrics-grid { grid-template-columns: 1fr 1fr; }
+}
 </style>
 <style id="reinf-module-styles">
 
@@ -3944,6 +4066,10 @@ input.cap-date.form-input {
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2s7 8.5 7 13a7 7 0 0 1-14 0c0-4.5 7-13 7-13z"/></svg>
       <span class="sb-label">Fatura Água</span>
     </button>
+    <button class="sidebar-btn" onclick="showPage('energia')" title="Energia">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      <span class="sb-label">Energia</span>
+    </button>
     <button class="sidebar-btn" onclick="showPage('config')" title="Configurações">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
       <span class="sb-label">Configurações</span>
@@ -4050,6 +4176,15 @@ input.cap-date.form-input {
 
       <!-- MODULE CARDS -->
       <div class="dash-grid">
+        <div class="module-card financeiro" onclick="showPage('financeiro')">
+          <div class="card-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M16 14h4v3h-4a2 2 0 0 1 0-4h4"/><path d="M2 10h20"/></svg>
+          </div>
+          <div class="card-tag">Financeiro Semanal</div>
+          <div class="card-name">CONTAS A PAGAR</div>
+          <div class="card-desc">Controle de EXE, RAP, fornecedores, saldos, pagamentos e ciclos manuais de solicitação de recursos.</div>
+          <div class="card-arrow">↗</div>
+        </div>
         <div class="module-card despachos" onclick="openDespachos()">
           <div class="card-icon-wrap">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
@@ -4069,15 +4204,6 @@ input.cap-date.form-input {
           <div class="card-arrow">↗</div>
         </div>
         
-        <div class="module-card financeiro" onclick="showPage('financeiro')">
-          <div class="card-icon-wrap">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M16 14h4v3h-4a2 2 0 0 1 0-4h4"/><path d="M2 10h20"/></svg>
-          </div>
-          <div class="card-tag">Financeiro Semanal</div>
-          <div class="card-name">CONTAS A PAGAR</div>
-          <div class="card-desc">Controle de EXE, RAP, fornecedores, saldos, pagamentos e ciclos manuais de solicitação de recursos.</div>
-          <div class="card-arrow">↗</div>
-        </div>
         <div class="module-card atividades-prio" onclick="showPage('nexus')">
           <div class="card-icon-wrap">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
@@ -4130,6 +4256,15 @@ input.cap-date.form-input {
           <div class="card-tag">Módulo Incorporado</div>
           <div class="card-name">FATURA ÁGUA</div>
           <div class="card-desc">Análise automática de fatura de água (PDF) com extração e cálculo de valores e encargos.</div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="module-card energia" onclick="showPage('energia')">
+          <div class="card-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </div>
+          <div class="card-tag">Módulo Incorporado</div>
+          <div class="card-name">ENERGIA</div>
+          <div class="card-desc">Leitura automática de fatura de energia (PDF) com cálculo das retenções DARF 6190/6147 e valor líquido.</div>
           <div class="card-arrow">↗</div>
         </div>
       </div>
@@ -5365,6 +5500,171 @@ input.cap-date.form-input {
 
   </div>
 </div>
+    </div>
+
+    <!-- ==================== MÓDULO: ENERGIA ==================== -->
+    <div id="page-energia" class="page">
+      <div class="section-header">
+        <div>
+          <div class="section-title">Energia</div>
+          <div class="section-subtitle">Leitura automática de fatura de energia elétrica (PDF) — cálculo de retenções DARF 6190/6147 e valor líquido</div>
+        </div>
+      </div>
+
+      <!-- Referência de Empenho / Nat. Despesa -->
+      <div class="cap-table-card">
+        <div class="cap-table-header">
+          <div class="cap-table-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6m-6 4h6M9 8h6M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/></svg>
+            Referência de Empenho
+          </div>
+        </div>
+        <div class="cap-table-wrap">
+          <table class="cap-table" id="energia-empenho-table">
+            <thead>
+              <tr><th>Empenho</th><th>Nat. Despesa</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="text" class="form-input" id="energia-empenho1" value="2026NE000012" style="max-width:220px"></td>
+                <td><input type="text" class="form-input" id="energia-nd1" value="339039" style="max-width:160px"></td>
+              </tr>
+              <tr>
+                <td><input type="text" class="form-input" id="energia-empenho2" value="2026NE000013" style="max-width:220px"></td>
+                <td><input type="text" class="form-input" id="energia-nd2" value="339047" style="max-width:160px"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Upload -->
+      <div class="cap-table-card">
+        <div class="cap-table-header">
+          <div class="cap-table-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Upload da Fatura
+          </div>
+        </div>
+        <div style="padding:24px">
+          <div id="energia-drop-zone" class="energia-drop-zone" onclick="document.getElementById('energia-file-input').click()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="width:40px;height:40px;opacity:.6;margin-bottom:8px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <div style="font-weight:700;font-size:14px" id="energia-upload-label">Clique ou arraste a fatura em PDF aqui</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:4px">Somente arquivos .pdf</div>
+          </div>
+          <input type="file" id="energia-file-input" accept="application/pdf" style="display:none">
+          <div id="energia-status" class="energia-status" style="display:none"></div>
+        </div>
+      </div>
+
+      <!-- Resultado -->
+      <div id="energia-results" style="display:none">
+
+        <!-- Itens extraídos da fatura -->
+        <div class="cap-table-card">
+          <div class="cap-table-header">
+            <div class="cap-table-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              Itens Identificados na Fatura — Mês <span id="energia-mes-label">—</span>
+            </div>
+          </div>
+          <div class="cap-table-wrap">
+            <table class="cap-table">
+              <thead><tr><th>Item</th><th>Base (DARF)</th><th style="text-align:right">Valor (R$)</th></tr></thead>
+              <tbody id="energia-itens-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Bases de cálculo -->
+        <div class="energia-metrics-grid">
+          <div class="energia-metric-card em-6190">
+            <div class="energia-metric-label">Base DARF 6190</div>
+            <div class="energia-metric-value" id="energia-base-6190">R$ 0,00</div>
+            <div class="energia-metric-sub">Demanda Isenta ICMS + Demanda Ativa</div>
+          </div>
+          <div class="energia-metric-card em-6190">
+            <div class="energia-metric-label">DARF 6190 (9,45%)</div>
+            <div class="energia-metric-value" id="energia-valor-6190">R$ 0,00</div>
+          </div>
+          <div class="energia-metric-card em-6147">
+            <div class="energia-metric-label">Base DARF 6147</div>
+            <div class="energia-metric-value" id="energia-base-6147">R$ 0,00</div>
+            <div class="energia-metric-sub">Consumo Ponta/Fora Ponta + Reativo + Bandeira</div>
+          </div>
+          <div class="energia-metric-card em-6147">
+            <div class="energia-metric-label">DARF 6147 (5,85%)</div>
+            <div class="energia-metric-value" id="energia-valor-6147">R$ 0,00</div>
+          </div>
+        </div>
+
+        <!-- Resumo final -->
+        <div class="energia-metrics-grid">
+          <div class="energia-metric-card em-np">
+            <div class="energia-metric-label">Valor NP</div>
+            <div class="energia-metric-value" id="energia-valor-np">R$ 0,00</div>
+          </div>
+          <div class="energia-metric-card em-liquido">
+            <div class="energia-metric-label">Total Líquido</div>
+            <div class="energia-metric-value" id="energia-total-liquido">R$ 0,00</div>
+          </div>
+          <div class="energia-metric-card em-dsp1">
+            <div class="energia-metric-label">DSP001 <span id="energia-dsp001-ref" class="energia-metric-label-ref"></span></div>
+            <div class="energia-metric-value" id="energia-dsp001">R$ 0,00</div>
+          </div>
+          <div class="energia-metric-card em-dsp2">
+            <div class="energia-metric-label">DSP002 <span id="energia-dsp002-ref" class="energia-metric-label-ref"></span></div>
+            <div class="energia-metric-value" id="energia-dsp002">R$ 30,00</div>
+          </div>
+        </div>
+
+        <div id="energia-divergencia" style="display:none;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.35);border-radius:var(--radius-lg);padding:14px 18px;margin-bottom:20px;color:#fca5a5;font-size:13px;font-weight:600;display:flex;align-items:center;gap:10px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px;flex-shrink:0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span id="energia-divergencia-msg"></span>
+        </div>
+
+        <div style="display:flex;gap:12px;margin-bottom:32px">
+          <button class="btn btn-primary" onclick="SIS_ENERGIA.salvarRegistro()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Salvar Registro
+          </button>
+          <button class="btn" onclick="SIS_ENERGIA.resetar()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1,4 1,10 7,10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+            Nova Fatura
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabela de registros salvos -->
+      <div class="cap-table-card">
+        <div class="cap-table-header">
+          <div class="cap-table-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+            Registros Salvos
+          </div>
+          <span class="badge" id="energia-registros-count">0 registros</span>
+        </div>
+        <div class="cap-table-wrap">
+          <table class="cap-table">
+            <thead>
+              <tr>
+                <th>Mês</th>
+                <th style="text-align:right">Valor NP</th>
+                <th style="text-align:right">DARF 6190</th>
+                <th style="text-align:right">DARF 6147</th>
+                <th style="text-align:right">Total Líquido</th>
+                <th style="text-align:right">DSP001</th>
+                <th style="text-align:right">DSP002</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="energia-registros-tbody">
+              <tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text-muted)">Nenhum registro salvo ainda.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
 
   </main><!-- /main -->
@@ -8539,6 +8839,7 @@ async function driveSaveData() {
     nxTasks:              State.nxTasks              || [],
     nxPrest:              State.nxPrest              || [],
     nxHist:               State.nxHist               || [],
+    energiaRegistros:     State.energiaRegistros     || [],
   };
   // Checksum de integridade (mantido no formato original para compatibilidade
   // com dados já salvos no Supabase — mudar a fórmula quebraria a validação
@@ -8673,11 +8974,13 @@ async function driveLoadData() {
     if (backup.nxTasks)                State.nxTasks            = backup.nxTasks;
     if (backup.nxPrest)                State.nxPrest            = backup.nxPrest;
     if (backup.nxHist)                 State.nxHist             = backup.nxHist;
+    if (backup.energiaRegistros)       State.energiaRegistros   = backup.energiaRegistros;
 
     // Persiste localmente (cache para a próxima abertura do navegador)
     saveStateLocalOnly();
     capPersistLocalOnly();
     nxPersistLocalOnly();
+    Storage.set('energiaRegistros', State.energiaRegistros || []);
     // Persiste campos de ciclo adicionais
     Storage.set('capRelatoriosCiclos', State.capRelatoriosCiclos||[]);
     Storage.set('capCicloLabel', State.capCicloLabel||'');
@@ -8687,6 +8990,7 @@ async function driveLoadData() {
     renderFinanceiro();
     updateStats();
     if (typeof nxGoTo === 'function') nxGoTo(nxCurTab || 'dashboard');
+    if (typeof SIS_ENERGIA !== 'undefined' && SIS_ENERGIA.renderRegistros) SIS_ENERGIA.renderRegistros();
     // Re-popula datalists para autocomplete
     if (typeof refreshCapDatalists === 'function') refreshCapDatalists();
     setDriveStatus('connected', 'Supabase sincronizado');
@@ -8788,6 +9092,7 @@ function exportBackup() {
     capRelatoriosCiclos: State.capRelatoriosCiclos||[],
     capCicloLabel: State.capCicloLabel||'',
     capCicloInicioAt: State.capCicloInicioAt||null,
+    energiaRegistros: State.energiaRegistros||[],
   };
   // Checksum simples de integridade
   payload._checksum = (payload.capContas.length * 7 + payload.capSaldos.length * 13 + payload.capHistorico.length * 31).toString(36);
@@ -8843,12 +9148,15 @@ function importBackup(event) {
       if (data.capRelatoriosCiclos)      State.capRelatoriosCiclos = data.capRelatoriosCiclos;
       if (data.capCicloLabel !== undefined)    State.capCicloLabel = data.capCicloLabel || '';
       if (data.capCicloInicioAt !== undefined) State.capCicloInicioAt = data.capCicloInicioAt || null;
+      if (data.energiaRegistros) State.energiaRegistros = data.energiaRegistros;
 
       // Auditoria da importação
       capAudit('BACKUP IMPORTADO', file.name, null, {versao: data.version, contas: (data.capContas||[]).length, historico: (data.capHistorico||[]).length});
 
       saveState();
       capPersist();
+      Storage.set('energiaRegistros', State.energiaRegistros || []);
+      if (typeof SIS_ENERGIA !== 'undefined' && SIS_ENERGIA.renderRegistros) SIS_ENERGIA.renderRegistros();
       // Persiste campos adicionais de ciclo
       Storage.set('capRelatoriosCiclos', State.capRelatoriosCiclos||[]);
       Storage.set('capCicloLabel', State.capCicloLabel||'');
@@ -12573,6 +12881,448 @@ function download(content, filename, mime) {
   a.href = url; a.download = filename; a.click();
   URL.revokeObjectURL(url);
 }
+
+})();
+</script>
+
+<script id="energia-module-script">
+window.SIS_ENERGIA = (function() {
+'use strict';
+
+/* ============================================================
+   PERSISTÊNCIA — reaproveita o mesmo Storage (localStorage 'sigde_')
+   e o mesmo State/pipeline de sincronização Supabase do restante
+   do SISMINT. Registra-se em State.energiaRegistros (array).
+   ============================================================ */
+if (State.energiaRegistros === undefined) State.energiaRegistros = Storage.get('energiaRegistros', []);
+
+let currentExtracted = null; // resultado da última extração pendente de salvar
+
+/* ---------- utilidades numéricas / texto ---------- */
+function parseBRL(str) {
+  if (str === null || str === undefined) return null;
+  let s = String(str).trim();
+  s = s.replace(/[R$\s]/g, '');
+  if (!s) return null;
+  // formato BR: milhar com ponto, decimal com vírgula
+  s = s.replace(/\./g, '').replace(',', '.');
+  const v = parseFloat(s);
+  return isNaN(v) ? null : v;
+}
+function formatBRLEnergia(n) {
+  if (n === null || n === undefined || isNaN(n)) return 'R$ 0,00';
+  return 'R$ ' + n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function normalizeTxt(s) {
+  return (s || '')
+    .toString()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[-_]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+function extractNumbersFromLine(line) {
+  const nums = [];
+  const re = /-?\d{1,3}(?:\.\d{3})*,\d{2}|-?\d+,\d{2}/g;
+  let m;
+  while ((m = re.exec(line)) !== null) {
+    const v = parseBRL(m[0]);
+    if (v !== null) nums.push(v);
+  }
+  return nums;
+}
+
+function groupItemsIntoLines(items) {
+  const buckets = [];
+  const TOLERANCE = 3;
+  for (const it of items) {
+    if (!it.str || !it.str.trim()) continue;
+    const y = it.transform[5];
+    let bucket = buckets.find(b => Math.abs(b.y - y) <= TOLERANCE);
+    if (!bucket) { bucket = { y, items: [] }; buckets.push(bucket); }
+    bucket.items.push(it);
+  }
+  buckets.sort((a, b) => b.y - a.y);
+  return buckets.map(b => {
+    b.items.sort((a, c) => a.transform[4] - c.transform[4]);
+    return b.items.map(i => i.str).join(' ').replace(/\s+/g, ' ').trim();
+  }).filter(Boolean);
+}
+
+/* ---------- itens da fatura a localizar ---------- */
+// Base DARF 6190 — alíquota total 9,45% (IRRF 4,80% + CSLL 1,00% + PIS 0,65% + COFINS 3,00%)
+const ITENS_6190 = [
+  { key: 'demandaIsenta', label: 'demanda ativa isenta de icms', nome: 'Demanda Ativa Isenta de ICMS (kW)' },
+  { key: 'demandaAtiva',  label: 'demanda ativa',                 nome: 'Demanda Ativa (kW)' },
+];
+// Base DARF 6147 — alíquota total 5,85% (IRRF 1,20% + CSLL 1,00% + PIS 0,65% + COFINS 3,00%)
+const ITENS_6147 = [
+  { key: 'consumoForaPonta', label: 'consumo fora ponta',              nome: 'Consumo Fora Ponta (kWh)' },
+  { key: 'consumoPonta',     label: 'consumo ponta',                   nome: 'Consumo Ponta (kWh)' },
+  { key: 'reativoExced',     label: 'consumo reativo excedente',       nome: 'Consumo Reativo Excedente FP (kVAr)' },
+  { key: 'adicionalBandeira',label: 'adicional bandeira',              nome: 'Adicional Bandeira' },
+];
+// DARF 6190 — retenções individuais que compõem os 9,45%: IRRF 4,80% + CSLL 1,00% + PIS 0,65% + COFINS 3,00%
+const TRIBUTOS_6190 = [
+  { nome: 'IRRF',   aliq: 0.0480 },
+  { nome: 'CSLL',   aliq: 0.0100 },
+  { nome: 'PIS',    aliq: 0.0065 },
+  { nome: 'COFINS', aliq: 0.0300 },
+];
+// DARF 6147 — retenções individuais que compõem os 5,85%: IRRF 1,20% + CSLL 1,00% + PIS 0,65% + COFINS 3,00%
+const TRIBUTOS_6147 = [
+  { nome: 'IRRF',   aliq: 0.0120 },
+  { nome: 'CSLL',   aliq: 0.0100 },
+  { nome: 'PIS',    aliq: 0.0065 },
+  { nome: 'COFINS', aliq: 0.0300 },
+];
+const ALIQ_6190 = TRIBUTOS_6190.reduce((s, t) => s + t.aliq, 0); // 9,45% (referência/exibição)
+const ALIQ_6147 = TRIBUTOS_6147.reduce((s, t) => s + t.aliq, 0); // 5,85% (referência/exibição)
+
+// Cada tributo é calculado e arredondado individualmente (padrão de apuração de
+// DARF no Brasil) e só depois somado — evita diferença de centavos que ocorre
+// ao arredondar apenas o total final calculado com a alíquota combinada.
+function calcularDarfPorTributos(base, tributos) {
+  let total = 0;
+  const partes = [];
+  for (const t of tributos) {
+    const valor = parseFloat((base * t.aliq).toFixed(2));
+    partes.push({ nome: t.nome, aliq: t.aliq, valor });
+    total = parseFloat((total + valor).toFixed(2));
+  }
+  return { total, partes };
+}
+const COSIP_LABEL = 'cip ilum pub pref munic';
+const COSIP_FIXO = 30.00;
+
+function truncarTabelaLateral(linha) {
+  // A fatura tem uma segunda tabela ("Tributo / Base / Alíquota / Valor")
+  // posicionada visualmente à direita da tabela "Itens da Fatura". Em PDFs,
+  // quando duas tabelas ficam lado a lado na mesma altura, a extração de
+  // texto por linha (agrupada por coordenada Y) funde as duas em uma só
+  // string. Aqui isso ocorre nas linhas de "Consumo Ponta" (funde com PIS)
+  // e "Consumo Fora Ponta" (funde com COFINS). ICMS nunca funde dessa forma
+  // (fica em linha própria) — e a palavra "ICMS" também aparece dentro do
+  // próprio rótulo "Demanda Ativa Isenta de ICMS", então NÃO pode ser usada
+  // como marcador de corte. Cortamos apenas em "PIS" ou "COFINS".
+  const m = linha.match(/\b(PIS|COFINS)\b/);
+  return m ? linha.slice(0, m.index) : linha;
+}
+
+function acharValor(linhas, usadas, label) {
+  for (let i = 0; i < linhas.length; i++) {
+    if (usadas.has(i)) continue;
+    const norm = normalizeTxt(linhas[i]);
+    if (norm.startsWith(label) || norm.includes(label)) {
+      const linhaUtil = truncarTabelaLateral(linhas[i]);
+      const nums = extractNumbersFromLine(linhaUtil);
+      if (nums.length === 0) continue;
+      usadas.add(i);
+      return { valor: nums[nums.length - 1], linha: linhas[i] };
+    }
+  }
+  return null;
+}
+
+function acharTotalAPagarEMes(linhas) {
+  // Padrão: "MM/AAAA  DD/MM/AAAA  R$ X.XXX,XX" (cartões Conta Mês | Vencimento | Total a Pagar)
+  for (const linha of linhas) {
+    const m = linha.match(/(\d{2}\/\d{4})\s+\d{2}\/\d{2}\/\d{4}\s+R?\$?\s*(\d{1,3}(?:\.\d{3})*,\d{2})/);
+    if (m) {
+      return { mes: m[1], total: parseBRL(m[2]) };
+    }
+  }
+  // Fallback: linha contendo "total a pagar" ou "valor documento"
+  for (const linha of linhas) {
+    const norm = normalizeTxt(linha);
+    if (norm.includes('total a pagar') || norm.includes('valor documento')) {
+      const nums = extractNumbersFromLine(linha);
+      if (nums.length) return { mes: null, total: nums[nums.length - 1] };
+    }
+  }
+  return { mes: null, total: null };
+}
+
+/* ---------- extração do PDF ---------- */
+async function extrairFatura(file) {
+  const arrayBuffer = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+  let linhas = [];
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    linhas = linhas.concat(groupItemsIntoLines(content.items));
+  }
+  if (linhas.length === 0) {
+    throw new Error('Nenhum texto extraível encontrado — o PDF pode ser uma imagem escaneada.');
+  }
+
+  const usadas = new Set();
+  const itens = {};
+  const detalhes = [];
+
+  for (const it of ITENS_6190) {
+    const r = acharValor(linhas, usadas, it.label);
+    itens[it.key] = r ? r.valor : 0;
+    detalhes.push({ nome: it.nome, base: 'DARF 6190', valor: r ? r.valor : null, encontrado: !!r });
+  }
+  for (const it of ITENS_6147) {
+    const r = acharValor(linhas, usadas, it.label);
+    itens[it.key] = r ? r.valor : 0;
+    detalhes.push({ nome: it.nome, base: 'DARF 6147', valor: r ? r.valor : null, encontrado: !!r });
+  }
+  const cosipR = acharValor(linhas, usadas, COSIP_LABEL);
+  const cosip = cosipR ? cosipR.valor : COSIP_FIXO;
+  detalhes.push({ nome: 'Cip-Ilum Pub Pref Munic', base: 'COSIP', valor: cosipR ? cosipR.valor : null, encontrado: !!cosipR });
+
+  const { mes, total: totalFatura } = acharTotalAPagarEMes(linhas);
+
+  const base6190 = (itens.demandaIsenta || 0) + (itens.demandaAtiva || 0);
+  const base6147 = (itens.consumoForaPonta || 0) + (itens.consumoPonta || 0) + (itens.reativoExced || 0) + (itens.adicionalBandeira || 0);
+  const calc6190 = calcularDarfPorTributos(base6190, TRIBUTOS_6190);
+  const calc6147 = calcularDarfPorTributos(base6147, TRIBUTOS_6147);
+  const darf6190 = calc6190.total;
+  const darf6147 = calc6147.total;
+
+  const valorNp = parseFloat((base6190 + base6147 + cosip).toFixed(2));
+  const totalLiquido = parseFloat((valorNp - darf6190 - darf6147).toFixed(2));
+  const dsp001 = parseFloat((valorNp - COSIP_FIXO).toFixed(2));
+  const dsp002 = COSIP_FIXO;
+
+  // Com o cálculo por tributo individual (fix aplicado acima), o resultado já
+  // fica matematicamente exato — qualquer divergência remanescente indica um
+  // problema real de extração/dados, por isso a tolerância é mínima (< 1 centavo).
+  const divergente = totalFatura !== null && Math.abs(totalLiquido - totalFatura) >= 0.005;
+
+  return {
+    mes, totalFatura, detalhes,
+    base6190, darf6190, base6147, darf6147,
+    tributos6190: calc6190.partes, tributos6147: calc6147.partes,
+    cosip, valorNp, totalLiquido, dsp001, dsp002,
+    divergente,
+  };
+}
+
+/* ---------- renderização ---------- */
+function setStatus(msg, type) {
+  const el = document.getElementById('energia-status');
+  el.style.display = 'block';
+  el.className = 'energia-status ' + (type || 'info');
+  el.textContent = msg;
+}
+
+function renderResultado(r) {
+  document.getElementById('energia-mes-label').textContent = r.mes || '—';
+
+  const tbody = document.getElementById('energia-itens-tbody');
+  tbody.innerHTML = r.detalhes.map(d => `
+    <tr>
+      <td>${d.nome}${d.encontrado ? '' : ' <span style="color:#fca5a5;font-size:11px">(não encontrado — considerado R$ 0,00)</span>'}</td>
+      <td>${d.base}</td>
+      <td style="text-align:right;font-variant-numeric:tabular-nums">${formatBRLEnergia(d.valor || 0)}</td>
+    </tr>
+  `).join('');
+
+  document.getElementById('energia-base-6190').textContent = formatBRLEnergia(r.base6190);
+  document.getElementById('energia-valor-6190').textContent = formatBRLEnergia(r.darf6190);
+  document.getElementById('energia-base-6147').textContent = formatBRLEnergia(r.base6147);
+  document.getElementById('energia-valor-6147').textContent = formatBRLEnergia(r.darf6147);
+  document.getElementById('energia-valor-np').textContent = formatBRLEnergia(r.valorNp);
+  document.getElementById('energia-total-liquido').textContent = formatBRLEnergia(r.totalLiquido);
+  document.getElementById('energia-dsp001').textContent = formatBRLEnergia(r.dsp001);
+  document.getElementById('energia-dsp002').textContent = formatBRLEnergia(r.dsp002);
+
+  const emp1 = document.getElementById('energia-empenho1').value;
+  const nd1 = document.getElementById('energia-nd1').value;
+  const emp2 = document.getElementById('energia-empenho2').value;
+  const nd2 = document.getElementById('energia-nd2').value;
+  document.getElementById('energia-dsp001-ref').textContent = `(${emp1} / ${nd1})`;
+  document.getElementById('energia-dsp002-ref').textContent = `(${emp2} / ${nd2})`;
+
+  const divEl = document.getElementById('energia-divergencia');
+  if (r.divergente) {
+    divEl.style.display = 'flex';
+    document.getElementById('energia-divergencia-msg').textContent =
+      `Divergência: Total Líquido calculado (${formatBRLEnergia(r.totalLiquido)}) difere do Total a Pagar da fatura (${formatBRLEnergia(r.totalFatura)}).`;
+  } else {
+    divEl.style.display = 'none';
+  }
+
+  document.getElementById('energia-results').style.display = 'block';
+}
+
+function renderRegistros() {
+  const tbody = document.getElementById('energia-registros-tbody');
+  const regs = State.energiaRegistros || [];
+  document.getElementById('energia-registros-count').textContent = regs.length + (regs.length === 1 ? ' registro' : ' registros');
+  if (regs.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text-muted)">Nenhum registro salvo ainda.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = regs.slice().reverse().map((r) => {
+    const idx = regs.indexOf(r);
+    return `
+    <tr>
+      <td>${r.mes || '—'} ${r.divergente ? '<span title="Divergência com o total da fatura" style="color:#fca5a5">⚠️</span>' : ''}</td>
+      <td style="text-align:right;font-variant-numeric:tabular-nums">${formatBRLEnergia(r.valorNp)}</td>
+      <td style="text-align:right;font-variant-numeric:tabular-nums">${formatBRLEnergia(r.darf6190)}</td>
+      <td style="text-align:right;font-variant-numeric:tabular-nums">${formatBRLEnergia(r.darf6147)}</td>
+      <td style="text-align:right;font-variant-numeric:tabular-nums">${formatBRLEnergia(r.totalLiquido)}</td>
+      <td style="text-align:right;font-variant-numeric:tabular-nums">${formatBRLEnergia(r.dsp001)}</td>
+      <td style="text-align:right;font-variant-numeric:tabular-nums">${formatBRLEnergia(r.dsp002)}</td>
+      <td><button class="btn" style="padding:4px 8px;font-size:11px" onclick="SIS_ENERGIA.excluirRegistro(${idx})">Excluir</button></td>
+    </tr>`;
+  }).join('');
+}
+
+/* ---------- persistência (mesmo mecanismo do restante do SISMINT) ---------- */
+function persistirRegistros() {
+  Storage.set('energiaRegistros', State.energiaRegistros);
+  if (typeof scheduleAutoSave === 'function') scheduleAutoSave();
+}
+
+/* ---------- ações ---------- */
+async function handleFile(file) {
+  if (!file) return;
+  if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+    setStatus('Selecione um arquivo PDF válido.', 'err');
+    return;
+  }
+  document.getElementById('energia-upload-label').textContent = file.name;
+  setStatus('Lendo e processando a fatura…', 'info');
+  try {
+    const resultado = await extrairFatura(file);
+    currentExtracted = resultado;
+    renderResultado(resultado);
+    setStatus('Fatura processada com sucesso.', 'ok');
+    if (typeof showToast === 'function') showToast('Fatura de energia processada!', 'success');
+  } catch (e) {
+    console.error('[Energia] erro ao processar PDF:', e);
+    setStatus('Erro ao processar: ' + (e.message || e), 'err');
+    if (typeof showToast === 'function') showToast('Erro ao processar fatura de energia.', 'error');
+  }
+}
+
+function salvarRegistro() {
+  if (!currentExtracted) {
+    if (typeof showToast === 'function') showToast('Nenhuma fatura processada para salvar.', 'error');
+    return;
+  }
+  const r = currentExtracted;
+  State.energiaRegistros = State.energiaRegistros || [];
+
+  const mesNormalizado = (r.mes || '').trim();
+  const idxExistente = mesNormalizado
+    ? State.energiaRegistros.findIndex(reg => (reg.mes || '').trim() === mesNormalizado)
+    : -1;
+
+  if (idxExistente !== -1) {
+    const confirmar = confirm(
+      `Já existe um registro salvo para o mês ${mesNormalizado}.\n\n` +
+      `O sistema não permite dois registros para o mesmo mês.\n` +
+      `Deseja SUBSTITUIR o registro existente pelos novos valores desta fatura?`
+    );
+    if (!confirmar) {
+      if (typeof showToast === 'function') showToast('Registro não salvo — mês já existente.', 'error');
+      return;
+    }
+  }
+
+  const registro = {
+    mes: r.mes || '',
+    valorNp: r.valorNp,
+    darf6190: r.darf6190,
+    darf6147: r.darf6147,
+    totalLiquido: r.totalLiquido,
+    dsp001: r.dsp001,
+    dsp002: r.dsp002,
+    totalFatura: r.totalFatura,
+    divergente: r.divergente,
+    empenho1: document.getElementById('energia-empenho1').value,
+    nd1: document.getElementById('energia-nd1').value,
+    empenho2: document.getElementById('energia-empenho2').value,
+    nd2: document.getElementById('energia-nd2').value,
+    salvoEm: new Date().toISOString(),
+  };
+
+  if (idxExistente !== -1) {
+    State.energiaRegistros[idxExistente] = registro;
+    if (typeof showToast === 'function') showToast('Registro do mês ' + mesNormalizado + ' atualizado!', 'success');
+  } else {
+    State.energiaRegistros.push(registro);
+    if (typeof showToast === 'function') showToast('Registro salvo com sucesso!', 'success');
+  }
+  persistirRegistros();
+  renderRegistros();
+}
+
+function excluirRegistro(idx) {
+  if (!confirm('Excluir este registro?')) return;
+  State.energiaRegistros.splice(idx, 1);
+  persistirRegistros();
+  renderRegistros();
+}
+
+function resetar() {
+  currentExtracted = null;
+  document.getElementById('energia-results').style.display = 'none';
+  document.getElementById('energia-file-input').value = '';
+  document.getElementById('energia-upload-label').textContent = 'Clique ou arraste a fatura em PDF aqui';
+  document.getElementById('energia-status').style.display = 'none';
+}
+
+/* ---------- salvar valores de empenho (persistência local simples) ---------- */
+function salvarEmpenhos() {
+  Storage.set('energiaEmpenhos', {
+    empenho1: document.getElementById('energia-empenho1').value,
+    nd1: document.getElementById('energia-nd1').value,
+    empenho2: document.getElementById('energia-empenho2').value,
+    nd2: document.getElementById('energia-nd2').value,
+  });
+}
+function carregarEmpenhos() {
+  const salvo = Storage.get('energiaEmpenhos', null);
+  if (!salvo) return;
+  if (salvo.empenho1 !== undefined) document.getElementById('energia-empenho1').value = salvo.empenho1;
+  if (salvo.nd1 !== undefined) document.getElementById('energia-nd1').value = salvo.nd1;
+  if (salvo.empenho2 !== undefined) document.getElementById('energia-empenho2').value = salvo.empenho2;
+  if (salvo.nd2 !== undefined) document.getElementById('energia-nd2').value = salvo.nd2;
+}
+
+/* ---------- inicialização ---------- */
+function init() {
+  carregarEmpenhos();
+  ['energia-empenho1', 'energia-nd1', 'energia-empenho2', 'energia-nd2'].forEach(id => {
+    document.getElementById(id).addEventListener('change', salvarEmpenhos);
+  });
+
+  const dropZone = document.getElementById('energia-drop-zone');
+  const fileInput = document.getElementById('energia-file-input');
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+  });
+  fileInput.addEventListener('change', e => { if (e.target.files[0]) handleFile(e.target.files[0]); });
+
+  renderRegistros();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+
+return {
+  salvarRegistro: salvarRegistro,
+  excluirRegistro: excluirRegistro,
+  resetar: resetar,
+  renderRegistros: renderRegistros,
+};
 
 })();
 
