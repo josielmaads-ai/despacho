@@ -4372,6 +4372,7 @@ input.cap-date.form-input {
               <button type="button" class="class-btn" onclick="selectCapClass('NP')">NP</button>
               <button type="button" class="class-btn" onclick="selectCapClass('RP')">RP</button>
               <button type="button" class="class-btn" onclick="selectCapClass('AV')">AV</button>
+              <button type="button" class="class-btn" onclick="selectCapClass('RB')">RB</button>
               <button type="button" class="class-btn" onclick="selectCapClass('SF')">SF</button>
             </div>
 
@@ -4546,7 +4547,7 @@ input.cap-date.form-input {
             <div style="display:grid;grid-template-columns:2fr repeat(4,1fr) repeat(2,1fr) auto;gap:8px;flex-wrap:wrap">
               <input class="cap-filter-input" id="cap-filter-search" placeholder="🔍 Busca (doc, fornecedor, CNPJ...)" oninput="renderCapTable()" style="grid-column:1/3">
               <select class="cap-filter-input" id="cap-filter-tipo" onchange="renderCapTable()"><option value="">EXE/RAP</option><option>EXE</option><option>RAP</option></select>
-              <select class="cap-filter-input" id="cap-filter-classe" onchange="renderCapTable()"><option value="">NP/RP/AV/SF</option><option>NP</option><option>RP</option><option>AV</option><option>SF</option></select>
+              <select class="cap-filter-input" id="cap-filter-classe" onchange="renderCapTable()"><option value="">NP/RP/AV/RB/SF</option><option>NP</option><option>RP</option><option>AV</option><option>RB</option><option>SF</option></select>
               <input class="cap-filter-input" id="cap-filter-fonte" placeholder="Fonte..." oninput="renderCapTable()">
               <select class="cap-filter-input" id="cap-filter-pago" onchange="renderCapTable()"><option value="">Pago?</option><option value="sim">✓ Pago</option><option value="nao">✗ Não Pago</option></select>
               <select class="cap-filter-input" id="cap-filter-situacao" onchange="renderCapTable()"><option value="">Situação</option><option>Processo enviado</option><option>Aguardando comprovante</option><option>Anexado</option><option>Não enviado</option></select>
@@ -5920,6 +5921,7 @@ input.cap-date.form-input {
             <option value="NP">NP</option>
             <option value="RP">RP</option>
             <option value="AV">AV</option>
+            <option value="RB">RB</option>
             <option value="SF">SF</option>
           </select>
         </div>
@@ -6650,7 +6652,7 @@ document.addEventListener('keydown', function(e){
 
 function saveCapConta(){
   if(!State.capTipo){showToast('Selecione EXE ou RAP antes de salvar.','error');return;}
-  if(!State.capClasse){showToast('Selecione a modalidade (NP, RP, AV ou SF) antes de salvar.','error');return;}
+  if(!State.capClasse){showToast('Selecione a modalidade (NP, RP, AV, RB ou SF) antes de salvar.','error');return;}
   const id=document.getElementById('cap-edit-id').value||capId('cap');
   const val=parseMoneyBR(document.getElementById('cap-valor').value);
   const doc=document.getElementById('cap-documento').value.trim();
