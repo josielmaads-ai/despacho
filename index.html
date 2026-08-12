@@ -10017,19 +10017,60 @@ function handleFile(file) {
   const reader = new FileReader();
   reader.onload = e => {
     try {
-      const wb   = XLSX.read(e.target.result, { type: 'array', cellDates: true });
-      const ws   = wb.Sheets[wb.SheetNames[0]];
-      const rows = XLSX.utils.sheet_to_json(ws, { defval: '' });
+      const wb = XLSX.read(e.target.result, { type: 'array', cellDates: true });
+
+      // Localiza automaticamente a aba que contém os dados do DDF025.
+      // O arquivo pode ter uma única aba (ex.: junho) ou múltiplas abas
+      // auxiliares (ex.: julho: "DOCS HÁBEIS PAGOS", "Reinf 4.000",
+      // "Fechamento", "Verificação" etc.). Em vez de assumir que a primeira
+      // aba é sempre a correta, percorremos todas as abas e reconhecemos
+      // pelo cabeçalho (CNPJ/Recolhedor + Base de Cálculo).
+      //
+      // Algumas abas auxiliares (ex.: bases consolidadas com vários meses/UGs)
+      // podem ter o mesmo cabeçalho, mas não são a extração DDF025 desta UG.
+      // A extração DDF025 sempre traz, logo abaixo de cada lançamento, uma
+      // linha de "Subtotal" por CNPJ — é essa característica estrutural (e
+      // não o nome da aba ou o mês) que usamos para desempatar entre abas
+      // candidatas.
+      let rows = [];
+      let colMap = {};
+      let fallbackRows = null;
+      let fallbackMap = null;
+
+      for (const sheetName of wb.SheetNames) {
+        const candidateRows = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { defval: '' });
+        if (!candidateRows.length) continue;
+
+        const candidateMap = mapColumns(candidateRows[0]);
+        if (!candidateMap.cnpj || !candidateMap.base) continue;
+
+        if (!fallbackRows) { fallbackRows = candidateRows; fallbackMap = candidateMap; }
+
+        const hasSubtotalRows = candidateRows.some(r =>
+          String(r[candidateMap.cnpj] || '').toLowerCase().includes('subtotal')
+        );
+        if (hasSubtotalRows) {
+          rows = candidateRows;
+          colMap = candidateMap;
+          break;
+        }
+      }
+
+      // Nenhuma aba com o padrão de "Subtotal" foi encontrada; usa a primeira
+      // aba compatível com o cabeçalho esperado como alternativa.
+      if (!rows.length && fallbackRows) {
+        rows = fallbackRows;
+        colMap = fallbackMap;
+      }
+
       originalData = rows;
-
-      if (!rows.length) { setStatus('Planilha vazia ou sem dados reconhecidos.', 'err'); return; }
-
-      const colMap = mapColumns(rows[0]);
 
       if (!colMap.cnpj || !colMap.base) {
         setStatus('Colunas não reconhecidas. Verifique se é a planilha DDF025 do SIAFI-Web.', 'err');
         return;
       }
+
+      if (!rows.length) { setStatus('Planilha vazia ou sem dados reconhecidos.', 'err'); return; }
 
       // Filtra apenas linhas com número de DH preenchido (exclui linhas de subtotal)
       const dataRows = rows.filter(r => {
