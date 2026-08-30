@@ -4544,7 +4544,7 @@ input.cap-date.form-input {
               </div>
             </div>
             <!-- FILTROS AVANÇADOS -->
-            <div style="display:grid;grid-template-columns:2fr repeat(4,1fr) repeat(2,1fr) auto;gap:8px;flex-wrap:wrap">
+            <div style="display:grid;grid-template-columns:2fr repeat(4,1fr) repeat(2,1fr) auto auto;gap:8px;flex-wrap:wrap">
               <input class="cap-filter-input" id="cap-filter-search" placeholder="🔍 Busca (doc, fornecedor, CNPJ...)" oninput="renderCapTable()" style="grid-column:1/3">
               <select class="cap-filter-input" id="cap-filter-tipo" onchange="renderCapTable()"><option value="">EXE/RAP</option><option>EXE</option><option>RAP</option></select>
               <select class="cap-filter-input" id="cap-filter-classe" onchange="renderCapTable()"><option value="">NP/RP/AV/RB/SF</option><option>NP</option><option>RP</option><option>AV</option><option>RB</option><option>SF</option></select>
@@ -4557,6 +4557,10 @@ input.cap-date.form-input {
               <input class="cap-filter-input" id="cap-filter-data-ini" type="date" onchange="renderCapTable()" title="Data inicial">
               <input class="cap-filter-input" id="cap-filter-data-fim" type="date" onchange="renderCapTable()" title="Data final">
               <button class="btn btn-ghost" onclick="clearCapFilters()" style="font-size:11px;padding:6px 12px;white-space:nowrap">✕ Limpar</button>
+              <button class="btn btn-ghost" onclick="exportCapLancamentosPDF()" style="font-size:11px;padding:6px 12px;white-space:nowrap;border-color:rgba(244,63,94,0.3);color:var(--accent-rose)" title="Exportar PDF dos lançamentos filtrados">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;vertical-align:middle;margin-right:2px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                PDF
+              </button>
             </div>
             <div id="cap-filter-total-bar" style="display:flex;align-items:center;gap:10px;background:rgba(20,184,166,0.06);border:1px solid rgba(20,184,166,0.25);border-radius:var(--radius-sm);padding:10px 16px">
               <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent-teal)" stroke-width="2" style="width:14px;height:14px;flex-shrink:0"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
@@ -5870,6 +5874,33 @@ input.cap-date.form-input {
     <div class="modal-body" id="cap-solicitacao-body"></div>
   </div>
 </div>
+<!-- ============================================================
+     MODAL: CONFIRMAÇÃO DE DATAS DO PRÓXIMO CICLO FINANCEIRO
+     ============================================================ -->
+<div class="modal-overlay" id="modal-cap-prox-datas">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" style="display:flex;align-items:center;gap:8px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent-teal)" stroke-width="2" style="width:18px;height:18px"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Próximo Ciclo Financeiro
+        </div>
+        <div class="modal-subtitle">Confirme antes de gerar a solicitação</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('modal-cap-prox-datas')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="font-size:14px;color:var(--text-primary);line-height:1.7;margin-bottom:8px" id="cap-prox-datas-pergunta">
+        Deseja alterar a <strong>Data de Solicitação</strong> e a <strong>Data de Pagamento</strong> para o próximo ciclo financeiro?
+      </div>
+      <div style="font-size:11px;color:var(--text-muted);margin-bottom:24px">Esta escolha afeta apenas os novos registros gerados pelo fechamento do ciclo — os lançamentos originais não são alterados.</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <button class="btn btn-ghost" onclick="responderProximoCicloDatas(false)" style="flex:1;min-width:120px;justify-content:center;font-weight:800">NÃO</button>
+        <button class="btn-solicitar" onclick="responderProximoCicloDatas(true)" style="flex:1;min-width:120px;justify-content:center">SIM</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ============================================================
      MODAL: EDIÇÃO INDEPENDENTE DE CONTA (não afeta ciclo atual)
@@ -6832,6 +6863,18 @@ function clearCapFilters(){ ['cap-filter-search','cap-filter-tipo','cap-filter-c
 
 // ===== SELEÇÃO MÚLTIPLA / BAIXA EM LOTE =====
 function todayISO(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+// ── ALTERAÇÃO 02: calcula a próxima ocorrência de um dia da semana a partir de uma data (YYYY-MM-DD) ──
+// diaAlvo: 0=domingo,1=segunda,2=terça...6=sábado. Sempre avança para a próxima ocorrência (nunca retorna a própria data),
+// funcionando corretamente em viradas de mês e de ano.
+function proximoDiaSemana(dataISO, diaAlvo){
+  if(!dataISO)return '';
+  const d=new Date(dataISO+'T00:00:00');
+  if(isNaN(d.getTime()))return dataISO;
+  let diff=(diaAlvo - d.getDay() + 7) % 7;
+  if(diff===0) diff=7;
+  d.setDate(d.getDate()+diff);
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
 function toggleSelectCap(id, el){
   if(!State.capSelecionados) State.capSelecionados=new Set();
   if(el.checked) State.capSelecionados.add(id); else State.capSelecionados.delete(id);
@@ -7045,14 +7088,32 @@ function editSaldo(id){ const s=State.capSaldos.find(x=>x.id===id); if(!s)return
 function zerarTodosSaldos(){ if(!State.capSaldos.length)return showToast('Nenhum saldo para zerar.','info'); if(confirm('Zerar todos os saldos?')){ State.capSaldos=[]; capPersist(); renderFinanceiro(); showToast('Saldos zerados.','success'); } }
 function deleteSaldo(id){ State.capSaldos=State.capSaldos.filter(s=>s.id!==id); capPersist(); renderFinanceiro(); }
 function solicitarFinanceiro(){
-  const contasTodas=capCurrentWeekContas();
-  if(!contasTodas.length){showToast('Não há contas abertas no ciclo atual.','info');return;}
+  // ── ALTERAÇÃO 01/03: considera apenas os registros marcados na tabela (fechamento parcial) ──
+  const selecionados=State.capSelecionados?Array.from(State.capSelecionados):[];
+  if(!selecionados.length){showToast('Selecione pelo menos um lançamento.','error');return;}
+
+  const abertos=capCurrentWeekContas();
+  const contasTodas=abertos.filter(c=>selecionados.includes(c.id));
+  if(!contasTodas.length){showToast('Os lançamentos selecionados não pertencem ao ciclo aberto atual.','error');return;}
 
   // FIX #5: exclui lançamentos que já estão com status 'pago'
   const contas=contasTodas.filter(c=>c.pago!=='sim');
   const totalPagos=contasTodas.filter(c=>c.pago==='sim').length;
-  if(!contas.length){showToast('Todas as contas do ciclo já estão marcadas como PAGAS. Nenhum valor a solicitar.','info');return;}
+  if(!contas.length){showToast('Todos os lançamentos selecionados já estão marcados como PAGOS. Nenhum valor a solicitar.','info');return;}
 
+  // ── ALTERAÇÃO 02: pergunta obrigatória sobre atualização das datas antes de prosseguir ──
+  State._capSolicitacaoPendente=contas;
+  State._capSolicitacaoTotalPagosExcluidos=totalPagos;
+  openModal('modal-cap-prox-datas');
+}
+function responderProximoCicloDatas(resposta){
+  closeModal('modal-cap-prox-datas');
+  const contas=State._capSolicitacaoPendente||[];
+  if(!contas.length)return;
+  State._capAtualizarDatasProximoCiclo=!!resposta;
+  prosseguirSolicitacaoFinanceiro(contas, State._capSolicitacaoTotalPagosExcluidos||0);
+}
+function prosseguirSolicitacaoFinanceiro(contas, totalPagos){
   const g={};
   contas.forEach(c=>{
     const k=c.tipo+'_'+c.fonte;
@@ -7070,6 +7131,8 @@ function solicitarFinanceiro(){
   State._capPreviewSolicitacao=rows;
   State._solicitacaoExecutada=true;
   State._pfNumeroPendente='';
+  // Guarda exatamente quais lançamentos fazem parte deste fechamento parcial (usado por finalizarCicloSemanal)
+  State._capSolicitacaoContaIds=contas.map(c=>c.id);
 
   const cicloLabel=State.capCicloLabel||('Iniciado em '+new Date(State.capCicloInicioAt||Date.now()).toLocaleDateString('pt-BR'));
   const totalSolic=rows.reduce((a,r)=>a+r.solicitar,0);
@@ -7077,13 +7140,18 @@ function solicitarFinanceiro(){
   rows.forEach(r=>{if(r.codigo)codsMap[r.fonte]=r.codigo;});
 
   // ── AUDITORIA ──
-  capAudit('SOLICITAÇÃO GERADA', cicloLabel, null, {rows: rows.map(r=>({tipo:r.tipo,fonte:r.fonte,bruto:r.bruto,solicitar:r.solicitar})), totalSolic});
+  capAudit('SOLICITAÇÃO GERADA', cicloLabel, null, {rows: rows.map(r=>({tipo:r.tipo,fonte:r.fonte,bruto:r.bruto,solicitar:r.solicitar})), totalSolic, contasSelecionadas:contas.length, atualizarDatasProximoCiclo:State._capAtualizarDatasProximoCiclo});
+
+  const infoDatasProximoCiclo=State._capAtualizarDatasProximoCiclo
+    ?'<div style="font-size:11px;color:var(--accent-teal);margin-top:6px;font-weight:700">🗓️ Ao encerrar: os novos registros do próximo ciclo usarão a próxima segunda-feira (solicitação) e terça-feira (pagamento)</div>'
+    :'<div style="font-size:11px;color:var(--text-muted);margin-top:6px;font-weight:700">🗓️ Ao encerrar: os novos registros do próximo ciclo manterão as datas originais dos lançamentos</div>';
 
   document.getElementById('cap-solicitacao-body').innerHTML=`
     <div style="background:rgba(20,184,166,0.06);border:1px solid rgba(20,184,166,0.2);border-radius:10px;padding:16px 20px;margin-bottom:20px">
-      <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.18em;color:var(--accent-teal);margin-bottom:6px">SOLICITAÇÃO DE RECURSOS DO CICLO</div>
-      <div style="font-size:13px;color:var(--text-secondary)">${cicloLabel} · ${contas.length} conta(s) lançada(s) ${totalPagos>0?'<span style="color:var(--accent-green);font-weight:700">('+totalPagos+' paga(s) excluída(s) da solicitação)</span>':''}</div>
+      <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.18em;color:var(--accent-teal);margin-bottom:6px">SOLICITAÇÃO DE RECURSOS DO CICLO (SELEÇÃO PARCIAL)</div>
+      <div style="font-size:13px;color:var(--text-secondary)">${cicloLabel} · ${contas.length} lançamento(s) selecionado(s) ${totalPagos>0?'<span style="color:var(--accent-green);font-weight:700">('+totalPagos+' paga(s) excluída(s) da solicitação)</span>':''}</div>
       <div style="font-size:11px;color:var(--accent-green);margin-top:6px;font-weight:700">✓ Solicitação gerada — clique em "Encerrar Ciclo" para arquivar</div>
+      ${infoDatasProximoCiclo}
     </div>
     <table class="sol-table">
       <thead><tr><th>Tipo</th><th>Fonte</th><th>Lançamentos</th><th>Bruto</th><th>Saldo Abatido</th><th>A SOLICITAR</th><th>Código</th></tr></thead>
@@ -7175,9 +7243,12 @@ function finalizarCicloSemanal(){
   if(!confirm('Confirmar ENCERRAMENTO do ciclo?\n\nIsso irá:\n• Arquivar as contas do ciclo no Histórico\n• Atualizar os saldos remanescentes\n• Gerar relatório do ciclo na aba Relatórios\n\n⚠️ Esta ação é IRREVERSÍVEL.'))return;
 
   const rows=State._capPreviewSolicitacao||[];
-  const contas=capCurrentWeekContas();
+  // ── ALTERAÇÃO 01/03: encerramento parcial — apenas os lançamentos que fizeram parte desta solicitação ──
+  const idsFechamento=State._capSolicitacaoContaIds||[];
+  const contas=capCurrentWeekContas().filter(c=>idsFechamento.includes(c.id));
   const id=capId('ciclo');
   const cicloLabel=State.capCicloLabel||('Iniciado em '+new Date(State.capCicloInicioAt||Date.now()).toLocaleDateString('pt-BR'));
+  const atualizarDatasProximoCiclo=!!State._capAtualizarDatasProximoCiclo;
 
   const backupAntes={
     capContas:[...State.capContas],
@@ -7218,10 +7289,16 @@ function finalizarCicloSemanal(){
     contas:contas.length,
     finalizadoEm:new Date().toISOString(),
     numeroPF: (State._pfNumeroPendente||'').trim(),
+    // ── ALTERAÇÃO 02: flag + datas do próximo ciclo. Os lançamentos ORIGINAIS (State.capContas) nunca são alterados;
+    // apenas este registro histórico (novo, gerado pelo fechamento) recebe as datas projetadas do próximo ciclo. ──
+    atualizarDatasProximoCiclo:atualizarDatasProximoCiclo,
     lancamentosDetalhes: contas.map(c=>({
       id:c.id, tipo:c.tipo, fonte:c.fonte, documento:c.documento,
       fornecedor:c.fornecedor, docFornecedor:c.docFornecedor,
-      valor:c.valor, pago:c.pago, situacao:c.situacao
+      valor:c.valor, pago:c.pago, situacao:c.situacao,
+      dataSolicitacaoOriginal:c.dataSolicitacao, dataPagamentoOriginal:c.dataPagamento,
+      dataSolicitacaoProximoCiclo: atualizarDatasProximoCiclo?proximoDiaSemana(c.dataSolicitacao,1):(c.dataSolicitacao||''),
+      dataPagamentoProximoCiclo: atualizarDatasProximoCiclo?proximoDiaSemana(c.dataPagamento,2):(c.dataPagamento||'')
     }))
   };
   State.capHistorico.unshift(historicoEntry);
@@ -7241,26 +7318,39 @@ function finalizarCicloSemanal(){
   });
   Storage.set('capRelatoriosCiclos', State.capRelatoriosCiclos);
 
-  // Reset para novo ciclo
+  // Reset do estado da solicitação
   State._solicitacaoExecutada=false;
   State._capPreviewSolicitacao=[];
   State._pfNumeroPendente='';
-  State.capCicloLabel='';
-  State.capCicloInicioAt=null;
+  State._capSolicitacaoContaIds=[];
+  State._capSolicitacaoPendente=[];
+  State._capAtualizarDatasProximoCiclo=null;
+  // Remove da seleção apenas os lançamentos que foram efetivamente fechados nesta solicitação
+  if(State.capSelecionados){ idsFechamento.forEach(cid=>State.capSelecionados.delete(cid)); }
 
-  capAudit('CICLO ENCERRADO', cicloLabel, backupAntes, {
+  // ── ALTERAÇÃO 03: fechamento parcial — só encerra o rótulo do ciclo se não restar nenhum lançamento em aberto ──
+  const aindaHaContasAbertas=capCurrentWeekContas().length>0;
+  if(!aindaHaContasAbertas){
+    State.capCicloLabel='';
+    State.capCicloInicioAt=null;
+  }
+
+  capAudit('CICLO ENCERRADO (PARCIAL)', cicloLabel, backupAntes, {
     cicloId:id, totalContas:contas.length,
     totalSolicitado:rows.reduce((a,r)=>a+r.solicitar,0),
-    numeroPF: historicoEntry.numeroPF||''
+    numeroPF: historicoEntry.numeroPF||'',
+    restamLancamentosAbertos: aindaHaContasAbertas
   });
 
   capPersist();
-  // Mostra botão "Abrir Novo Ciclo"
+  // Mostra botão "Abrir Novo Ciclo" apenas quando não restar nenhum lançamento em aberto
   const btnNovoCiclo=document.getElementById('btn-novo-ciclo');
-  if(btnNovoCiclo)btnNovoCiclo.style.display='inline-flex';
+  if(btnNovoCiclo)btnNovoCiclo.style.display=(!aindaHaContasAbertas&&State.capHistorico.length>0)?'inline-flex':'none';
   closeModal('modal-cap-solicitacao');
   renderFinanceiro();
-  showToast('✅ Ciclo encerrado! Histórico arquivado. Clique em "Abrir Novo Ciclo" para continuar.','success');
+  showToast(aindaHaContasAbertas
+    ?'✅ Solicitação encerrada! '+contas.length+' lançamento(s) arquivado(s). Os demais seguem disponíveis no ciclo aberto.'
+    :'✅ Ciclo encerrado! Histórico arquivado. Clique em "Abrir Novo Ciclo" para continuar.', 'success');
 }
 function abrirNovoCiclo(){
   const nome=prompt('Nome do novo ciclo (ex: Ciclo 02/2026):\n\nDeixe em branco para usar a data atual.');
@@ -7866,6 +7956,84 @@ function exportCapPDF(){
   w.document.close();
   setTimeout(()=>w.print(),400);
   showToast('📄 PDF aberto para impressão!','success');
+}
+/* ============================================================
+   ALTERAÇÃO 04/05 — PDF DA TABELA DE LANÇAMENTOS (respeita filtros ativos)
+   Reutiliza getFilteredCapContas() (mesma fonte de dados do CSV/tabela),
+   capMoney() e capFmtDate() já existentes. Não afeta exportCapPDF() (PDF do ciclo).
+   ============================================================ */
+function exportCapLancamentosPDF(){
+  const contas=getFilteredCapContas();
+  if(!contas.length){showToast('Nenhum lançamento encontrado para os filtros aplicados.','info');return;}
+
+  const totalValor=contas.reduce((a,c)=>a+(Number(c.valor)||0),0);
+
+  // Resumo dos filtros ativos (apenas informativo no cabeçalho do relatório)
+  const filtroDefs=[
+    ['cap-filter-search','Busca'],['cap-filter-tipo','EXE/RAP'],['cap-filter-classe','Classe'],
+    ['cap-filter-fonte','Fonte'],['cap-filter-pago','Pago'],['cap-filter-situacao','Situação'],
+    ['cap-filter-competencia','Competência'],['cap-filter-valor-min','Valor mín'],['cap-filter-valor-max','Valor máx'],
+    ['cap-filter-data-ini','Data inicial'],['cap-filter-data-fim','Data final']
+  ];
+  const filtrosAtivos=filtroDefs.map(([id,label])=>{
+    const v=document.getElementById(id)?.value||'';
+    return v?(label+': '+v):null;
+  }).filter(Boolean);
+
+  const rows=contas.map(c=>`<tr>
+    <td>${c.tipo}</td><td>${c.classe}</td>
+    <td style="font-family:monospace">${c.documento}</td>
+    <td>${c.fonte}</td>
+    <td>${c.fornecedor}</td>
+    <td style="text-align:right;font-weight:700">${capMoney(c.valor)}</td>
+    <td style="text-align:center">${c.pago==='sim'?'✓ Pago':'— Não Pago'}</td>
+    <td>${capFmtDate(c.dataSolicitacao)}</td>
+    <td>${capFmtDate(c.dataPagamento)}</td>
+    <td>${c.situacao||'—'}</td>
+  </tr>`).join('');
+
+  const agora=new Date();
+  const w=window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><title>Lançamentos Filtrados — SISMINT</title>
+  <style>
+    body{font-family:'Segoe UI',sans-serif;font-size:12px;color:#1a1a1a;padding:32px;max-width:1200px;margin:auto}
+    h1{font-size:18px;font-weight:800;margin-bottom:2px;color:#1a1a1a}
+    .subtitle{font-size:11px;color:#666;margin-bottom:4px;text-transform:uppercase;letter-spacing:.08em}
+    .header-logo{display:flex;align-items:center;gap:12px;margin-bottom:18px;padding-bottom:14px;border-bottom:2px solid #f97316}
+    .logo-box{width:36px;height:36px;background:#f97316;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+    .filtros{font-size:10px;color:#888;margin-bottom:16px}
+    .summary{display:flex;gap:12px;margin-bottom:18px}
+    .sum-card{background:#f8f9fa;border:1px solid #e0e0e0;border-radius:8px;padding:10px 16px}
+    .sum-label{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#666;margin-bottom:4px}
+    .sum-val{font-size:15px;font-weight:800;color:#1a1a1a}
+    table{width:100%;border-collapse:collapse;font-size:10.5px}
+    thead{display:table-header-group}
+    th{background:#f97316;color:#fff;padding:7px 8px;text-align:left;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+    td{padding:6px 8px;border-bottom:1px solid #e9ecef}
+    tr:nth-child(even) td{background:#f8f9fa}
+    tr{page-break-inside:avoid}
+    .footer{margin-top:16px;padding-top:10px;border-top:1px solid #e0e0e0;font-size:10px;color:#888;display:flex;justify-content:space-between}
+    @media print{body{padding:16px}@page{margin:14mm}}
+  </style></head><body>
+  <div class="header-logo">
+    <div class="logo-box"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg></div>
+    <div>
+      <h1>SISMINT — Sistema Integrados de Módulos Independentes</h1>
+      <div class="subtitle">Módulo: Contas a Pagar · Relatório: Lançamentos Filtrados</div>
+      <div class="subtitle" style="margin-bottom:0">Emitido em ${agora.toLocaleDateString('pt-BR')} às ${agora.toLocaleTimeString('pt-BR')}</div>
+    </div>
+  </div>
+  ${filtrosAtivos.length?`<div class="filtros"><strong>Filtros aplicados:</strong> ${filtrosAtivos.join(' · ')}</div>`:''}
+  <div class="summary">
+    <div class="sum-card"><div class="sum-label">Registros</div><div class="sum-val" style="color:#f97316">${contas.length}</div></div>
+    <div class="sum-card"><div class="sum-label">Valor Total</div><div class="sum-val" style="color:#14b8a6">${capMoney(totalValor)}</div></div>
+  </div>
+  <table><thead><tr><th>Tipo</th><th>Classe</th><th>Documento</th><th>Fonte</th><th>Fornecedor</th><th>Valor</th><th>Pago</th><th>Solicitação</th><th>Pagamento</th><th>Situação</th></tr></thead><tbody>${rows}</tbody></table>
+  <div class="footer"><span>${contas.length} registro(s) · Total: ${capMoney(totalValor)}</span><span>Gerado em ${agora.toLocaleString('pt-BR')}</span></div>
+  </body></html>`);
+  w.document.close();
+  setTimeout(()=>w.print(),400);
+  showToast('📄 PDF dos lançamentos filtrados aberto para impressão!','success');
 }
 function renderFinanceiro(){
   refreshCapDatalists(); renderCapDashboard(); renderCapTable(); renderSaldos(); renderRelatorios(); renderHistorico(); renderFontesTable(); renderCapFornecedoresTable();
