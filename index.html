@@ -4010,6 +4010,262 @@ input.cap-date.form-input {
   }
 
 </style>
+<style id="numera-module-styles">
+
+#page-numera{
+  --ink:#0B1F1C;
+  --panel:#0F2925;
+  --panel-2:#123530;
+  --line:#1E4B43;
+  --paper:#F4F7F5;
+  --paper-dim:#E4EAE7;
+  --mint:#00D9A3;
+  --mint-dim:#0A8F6B;
+  --amber:#F2B84B;
+  --coral:#F2685B;
+  --text:#0B1F1C;
+  --text-soft:#5B6E68;
+  --mono:'JetBrains Mono','SFMono-Regular',Consolas,monospace;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --r:10px;
+}
+#page-numera *, #page-numera *::before, #page-numera *::after{box-sizing:border-box;margin:0;padding:0;}
+#page-numera {
+  background:var(--paper);
+  color:var(--text);
+  font-family:var(--sans);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+#page-numera ::selection{background:var(--mint);color:var(--ink);}
+
+/* ---------- HEADER ---------- */
+#page-numera header.top{
+  background:var(--ink);
+  color:var(--paper);
+  border-bottom:3px solid var(--mint);
+  position:sticky; top:0; z-index:50;
+}
+#page-numera .top-inner{
+  max-width:1240px;margin:0 auto;padding:18px 28px;
+  display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;
+}
+#page-numera .brand{display:flex;align-items:center;gap:14px;}
+#page-numera .logo{
+  width:46px;height:46px;border-radius:12px;
+  background:linear-gradient(155deg,var(--mint) 0%,var(--mint-dim) 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-weight:800;font-size:20px;color:var(--ink);
+  box-shadow:0 4px 14px rgba(0,217,163,.25);
+  flex-shrink:0;
+}
+#page-numera .brand-text h1{
+  font-size:20px;letter-spacing:.5px;font-weight:800;line-height:1.1;
+}
+#page-numera .brand-text p{
+  font-size:12px;color:#9FC7BE;margin-top:2px;font-family:var(--mono);letter-spacing:.3px;
+}
+#page-numera .header-demo{
+  font-family:var(--mono);font-size:11px;color:#7FA79E;text-align:right;line-height:1.6;
+  border-left:1px solid #204840;padding-left:18px;
+}
+#page-numera .header-demo b{color:#B9E8DB;font-weight:600;}
+#page-numera .header-demo .arrow{color:var(--mint);}
+
+/* ---------- LAYOUT ---------- */
+#page-numera main{max-width:1240px;margin:0 auto;padding:32px 28px 80px;}
+#page-numera section{margin-bottom:36px;}
+#page-numera .section-title{
+  display:flex;align-items:baseline;gap:10px;margin-bottom:16px;
+}
+#page-numera .section-title .num{
+  font-family:var(--mono);font-size:12px;color:var(--mint-dim);font-weight:700;
+}
+#page-numera .section-title h2{font-size:15px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;color:var(--ink);}
+#page-numera .section-title .rule{flex:1;height:1px;background:var(--line);opacity:.25;}
+
+#page-numera .card{
+  background:#fff;border:1px solid var(--paper-dim);border-radius:var(--r);
+  box-shadow:0 1px 3px rgba(11,31,28,.04);
+}
+
+/* ---------- DASHBOARD ---------- */
+#page-numera .dash-grid{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:14px;
+}
+#page-numera .dash-card{
+  padding:18px 18px 16px;position:relative;overflow:hidden;
+}
+#page-numera .dash-card .label{
+  font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;
+  color:var(--text-soft);margin-bottom:8px;
+}
+#page-numera .dash-card .value{
+  font-family:var(--mono);font-size:30px;font-weight:800;color:var(--ink);
+  font-variant-numeric:tabular-nums;
+}
+#page-numera .dash-card.mint{border-top:3px solid var(--mint);}
+#page-numera .dash-card.amber{border-top:3px solid var(--amber);}
+#page-numera .dash-card.coral{border-top:3px solid var(--coral);}
+
+/* ---------- MANUAL INPUT ---------- */
+#page-numera .manual-box{padding:22px;display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;}
+#page-numera .manual-input-wrap{flex:1;min-width:280px;}
+#page-numera textarea#manualInput{
+  width:100%;min-height:88px;resize:vertical;
+  border:1.5px solid var(--paper-dim);border-radius:8px;padding:14px 16px;
+  font-family:var(--mono);font-size:15px;color:var(--ink);
+  transition:border-color .15s;
+}
+#page-numera textarea#manualInput:focus{outline:none;border-color:var(--mint);}
+#page-numera .manual-input-wrap .hint{font-size:12px;color:var(--text-soft);margin-top:8px;}
+#page-numera .manual-side{display:flex;flex-direction:column;gap:10px;min-width:200px;}
+#page-numera .type-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:var(--mono);font-size:12px;font-weight:700;
+  padding:8px 12px;border-radius:6px;background:var(--paper);color:var(--text-soft);
+  border:1px solid var(--paper-dim);
+}
+#page-numera .type-pill.cpf{background:#E6FBF4;color:var(--mint-dim);border-color:#B9EDDA;}
+#page-numera .type-pill.cnpj{background:#FFF3E2;color:#B67B12;border-color:#F5DDAE;}
+#page-numera .type-pill.invalid{background:#FDECEA;color:#B23A2F;border-color:#F6C5BE;}
+
+#page-numera .result-line{
+  display:flex;align-items:center;gap:10px;background:var(--paper);
+  border:1px solid var(--paper-dim);border-radius:8px;padding:12px 14px;
+}
+#page-numera .result-line .digits{font-family:var(--mono);font-size:16px;font-weight:700;color:var(--ink);letter-spacing:.4px;flex:1;word-break:break-all;}
+#page-numera .btn-copy-small{
+  font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.3px;
+  padding:7px 12px;border-radius:6px;border:1px solid var(--line);
+  background:var(--ink);color:var(--mint);cursor:pointer;white-space:nowrap;
+  transition:transform .1s, background .15s;
+}
+#page-numera .btn-copy-small:hover{background:#173F38;}
+#page-numera .btn-copy-small:active{transform:scale(.96);}
+#page-numera .btn-copy-small.copied{background:var(--mint);color:var(--ink);}
+
+/* ---------- UPLOAD ---------- */
+#page-numera .upload-zone{
+  padding:36px 24px;text-align:center;border:2px dashed var(--paper-dim);border-radius:var(--r);
+  background:#fff;cursor:pointer;transition:border-color .15s, background .15s;
+}
+#page-numera .upload-zone.drag{border-color:var(--mint);background:#F0FBF7;}
+#page-numera .upload-zone .icon{
+  width:48px;height:48px;margin:0 auto 14px;border-radius:12px;
+  background:var(--paper);display:flex;align-items:center;justify-content:center;
+  font-size:22px;color:var(--mint-dim);
+}
+#page-numera .upload-zone h3{font-size:15px;font-weight:700;margin-bottom:4px;}
+#page-numera .upload-zone p{font-size:12.5px;color:var(--text-soft);}
+#page-numera .upload-zone input{display:none;}
+#page-numera .file-chip{
+  display:inline-flex;align-items:center;gap:8px;margin-top:14px;
+  font-family:var(--mono);font-size:12px;background:var(--paper);border:1px solid var(--paper-dim);
+  padding:6px 12px;border-radius:6px;color:var(--text-soft);
+}
+
+#page-numera .options-row{display:flex;align-items:center;gap:24px;flex-wrap:wrap;margin-top:16px;padding:0 2px;}
+#page-numera .checkbox-opt{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text);cursor:pointer;user-select:none;}
+#page-numera .checkbox-opt input{width:16px;height:16px;accent-color:var(--mint-dim);cursor:pointer;}
+
+#page-numera .progress-wrap{margin-top:16px;display:none;}
+#page-numera .progress-wrap.active{display:block;}
+#page-numera .progress-bar-track{height:6px;background:var(--paper-dim);border-radius:3px;overflow:hidden;}
+#page-numera .progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--mint-dim),var(--mint));width:0%;transition:width .2s;}
+#page-numera .progress-stats{
+  display:flex;justify-content:space-between;margin-top:8px;
+  font-family:var(--mono);font-size:11.5px;color:var(--text-soft);
+}
+
+/* ---------- TOOLBAR / TABLE ---------- */
+#page-numera .toolbar{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px;
+}
+#page-numera .filter-tabs{display:flex;gap:4px;background:var(--paper);padding:4px;border-radius:8px;border:1px solid var(--paper-dim);}
+#page-numera .filter-tab{
+  font-family:var(--mono);font-size:11.5px;font-weight:700;padding:7px 13px;border-radius:6px;
+  cursor:pointer;color:var(--text-soft);transition:all .15s;background:none;border:none;
+}
+#page-numera .filter-tab.active{background:var(--ink);color:var(--mint);}
+#page-numera .search-input{
+  flex:1;min-width:200px;padding:9px 14px;border:1px solid var(--paper-dim);border-radius:8px;
+  font-size:13px;font-family:var(--sans);
+}
+#page-numera .search-input:focus{outline:none;border-color:var(--mint);}
+#page-numera .btn{
+  font-family:var(--sans);font-size:13px;font-weight:600;padding:9px 16px;border-radius:8px;
+  border:1px solid var(--paper-dim);background:#fff;color:var(--ink);cursor:pointer;
+  transition:background .15s, border-color .15s;white-space:nowrap;
+}
+#page-numera .btn:hover{background:var(--paper);}
+#page-numera .btn.primary{background:var(--ink);color:var(--mint);border-color:var(--ink);}
+#page-numera .btn.primary:hover{background:#173F38;}
+#page-numera .btn.ghost{color:var(--coral);border-color:#F6C5BE;}
+#page-numera .btn.ghost:hover{background:#FDECEA;}
+#page-numera .btn:disabled{opacity:.4;cursor:not-allowed;}
+
+#page-numera table.results{width:100%;border-collapse:collapse;font-size:13.5px;}
+#page-numera table.results thead th{
+  text-align:left;font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;
+  color:var(--text-soft);padding:12px 16px;border-bottom:2px solid var(--paper-dim);background:var(--paper);
+}
+#page-numera table.results tbody td{padding:11px 16px;border-bottom:1px solid var(--paper-dim);vertical-align:middle;}
+#page-numera table.results tbody tr:hover{background:#FAFCFB;}
+#page-numera .badge{
+  font-family:var(--mono);font-size:10.5px;font-weight:700;padding:3px 8px;border-radius:5px;
+  display:inline-block;
+}
+#page-numera .badge.cpf{background:#E6FBF4;color:var(--mint-dim);}
+#page-numera .badge.cnpj{background:#FFF3E2;color:#B67B12;}
+#page-numera .badge.dup{background:#EEEAFB;color:#6446C4;}
+#page-numera .badge.err{background:#FDECEA;color:#B23A2F;}
+#page-numera .orig{color:var(--text-soft);font-family:var(--mono);font-size:12.5px;}
+#page-numera .digits-cell{font-family:var(--mono);font-weight:700;letter-spacing:.3px;}
+
+#page-numera .empty-state{
+  text-align:center;padding:60px 20px;color:var(--text-soft);
+}
+#page-numera .empty-state .glyph{font-family:var(--mono);font-size:34px;color:var(--paper-dim);margin-bottom:10px;}
+#page-numera .empty-state p{font-size:13.5px;}
+
+#page-numera .pagination{
+  display:flex;align-items:center;justify-content:center;gap:6px;padding:18px;
+  font-family:var(--mono);font-size:12px;color:var(--text-soft);
+}
+#page-numera .pagination button{
+  border:1px solid var(--paper-dim);background:#fff;border-radius:6px;padding:6px 12px;
+  cursor:pointer;font-family:var(--mono);font-size:12px;
+}
+#page-numera .pagination button:disabled{opacity:.35;cursor:not-allowed;}
+#page-numera .pagination button:not(:disabled):hover{background:var(--paper);}
+
+#page-numera .toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--ink);color:var(--mint);padding:12px 22px;border-radius:8px;
+  font-family:var(--mono);font-size:13px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.25);
+  opacity:0;pointer-events:none;transition:all .25s;z-index:200;border:1px solid var(--line);
+}
+#page-numera .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+#page-numera .toast.error{color:var(--coral);}
+
+#page-numera footer{
+  text-align:center;padding:24px;font-size:11.5px;color:var(--text-soft);
+  font-family:var(--mono);
+}
+
+@media (max-width:900px){
+  #page-numera .dash-grid{grid-template-columns:repeat(2,1fr);}
+  #page-numera .header-demo{display:none;}
+}
+@media (max-width:600px){
+  #page-numera main{padding:20px 16px 60px;}
+  #page-numera .dash-grid{grid-template-columns:1fr 1fr;}
+  #page-numera table.results{font-size:12px;}
+  #page-numera .orig{display:none;}
+}
+
+</style>
 </head>
 <body>
 <div id="app">
@@ -4069,6 +4325,10 @@ input.cap-date.form-input {
     <button class="sidebar-btn" onclick="showPage('energia')" title="Energia">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
       <span class="sb-label">Energia</span>
+    </button>
+    <button class="sidebar-btn" onclick="showPage('numera')" title="NUMERA — Normalizador Universal de CPF e CNPJ">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h5M8 17h3"/></svg>
+      <span class="sb-label">NUMERA</span>
     </button>
     <button class="sidebar-btn" onclick="showPage('config')" title="Configurações">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -4265,6 +4525,15 @@ input.cap-date.form-input {
           <div class="card-tag">Módulo Incorporado</div>
           <div class="card-name">ENERGIA</div>
           <div class="card-desc">Leitura automática de fatura de energia (PDF) com cálculo das retenções DARF 6190/6147 e valor líquido.</div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="module-card numera" onclick="showPage('numera')">
+          <div class="card-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h5M8 17h3"/></svg>
+          </div>
+          <div class="card-tag">Módulo Incorporado</div>
+          <div class="card-name">NUMERA</div>
+          <div class="card-desc">Normalizador universal de CPF e CNPJ: extração e padronização de documentos a partir de texto ou planilhas.</div>
           <div class="card-arrow">↗</div>
         </div>
       </div>
@@ -5670,6 +5939,115 @@ input.cap-date.form-input {
         </div>
       </div>
 
+    </div>
+
+    <!-- ==================== MÓDULO: NUMERA — NORMALIZADOR UNIVERSAL DE CPF E CNPJ ====================
+         Módulo independente: nenhum dado é persistido (sem localStorage, sem Storage.set, sem State.*).
+         Todo processamento ocorre em memória, dentro da IIFE do próprio módulo. ==================== -->
+    <div id="page-numera" class="page">
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">
+      <div class="logo">#N</div>
+      <div class="brand-text">
+        <h1>NUMERA</h1>
+        <p>NORMALIZADOR UNIVERSAL DE CPF E CNPJ</p>
+      </div>
+    </div>
+    <div class="header-demo">
+      CNPJ: <b>10.806.496/0013-82</b> <span class="arrow">→</span> <b>10806496001382</b>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- DASHBOARD -->
+  <section>
+    <div class="section-title"><span class="num">01</span><h2>Painel</h2><div class="rule"></div></div>
+    <div class="dash-grid">
+      <div class="card dash-card mint"><div class="label">Processados</div><div class="value" id="numera-statTotal">0</div></div>
+      <div class="card dash-card mint"><div class="label">CPF encontrados</div><div class="value" id="numera-statCpf">0</div></div>
+      <div class="card dash-card amber"><div class="label">CNPJ encontrados</div><div class="value" id="numera-statCnpj">0</div></div>
+      <div class="card dash-card" style="border-top:3px solid #6446C4;"><div class="label">Duplicados</div><div class="value" id="numera-statDup">0</div></div>
+      <div class="card dash-card coral"><div class="label">Inconsistentes</div><div class="value" id="numera-statErr">0</div></div>
+    </div>
+  </section>
+
+  <!-- MANUAL -->
+  <section>
+    <div class="section-title"><span class="num">02</span><h2>Digite ou cole CPF/CNPJ</h2><div class="rule"></div></div>
+    <div class="card manual-box">
+      <div class="manual-input-wrap">
+        <textarea id="numera-manualInput" placeholder="Ex: 10.806.496/0013-82  ou  123.456.789-09&#10;Aceita múltiplos documentos, um por linha." autocomplete="off"></textarea>
+        <div class="hint">Cole com CTRL+V — máscaras são removidas automaticamente, os dígitos originais são preservados.</div>
+      </div>
+      <div class="manual-side">
+        <span class="type-pill" id="numera-typePill">Aguardando entrada</span>
+        <div id="numera-manualResults"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- UPLOAD -->
+  <section>
+    <div class="section-title"><span class="num">03</span><h2>Importar planilha Excel</h2><div class="rule"></div></div>
+    <div class="upload-zone" id="numera-dropZone">
+      <div class="icon">⇪</div>
+      <h3>Arraste seu arquivo Excel aqui</h3>
+      <p>ou clique para selecionar — apenas arquivos .xlsx</p>
+      <input type="file" id="numera-fileInput" accept=".xlsx">
+      <div id="numera-fileChipWrap"></div>
+    </div>
+    <div class="options-row">
+      <label class="checkbox-opt">
+        <input type="checkbox" id="numera-removeDupOpt">
+        Remover documentos duplicados
+      </label>
+    </div>
+    <div class="progress-wrap" id="numera-progressWrap">
+      <div class="progress-bar-track"><div class="progress-bar-fill" id="numera-progressFill"></div></div>
+      <div class="progress-stats">
+        <span id="numera-progressText">Processando...</span>
+        <span id="numera-progressCounts">Processados: 0 · Encontrados: 0</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section>
+    <div class="section-title"><span class="num">04</span><h2>Resultados</h2><div class="rule"></div></div>
+
+    <div class="toolbar">
+      <div class="filter-tabs">
+        <button class="filter-tab active" data-filter="todos">Todos</button>
+        <button class="filter-tab" data-filter="cpf">CPF</button>
+        <button class="filter-tab" data-filter="cnpj">CNPJ</button>
+        <button class="filter-tab" data-filter="dup">Duplicados</button>
+        <button class="filter-tab" data-filter="err">Inconsistentes</button>
+      </div>
+      <input type="text" class="search-input" id="numera-searchInput" placeholder="Pesquisar documento...">
+      <button class="btn" id="numera-btnCopyAll">Copiar todos</button>
+      <button class="btn primary" id="numera-btnExport">Exportar Excel</button>
+      <button class="btn ghost" id="numera-btnClear">Limpar resultados</button>
+    </div>
+
+    <div class="card" style="overflow:hidden;">
+      <div id="numera-tableWrap">
+        <div class="empty-state">
+          <div class="glyph">#</div>
+          <p>Nenhum registro processado ainda. Digite um documento acima ou importe uma planilha.</p>
+        </div>
+      </div>
+      <div class="pagination" id="numera-pagination" style="display:none;"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>NUMERA — processamento 100% local no navegador. Nenhum dado é enviado a servidores externos.</footer>
+
+<div class="toast" id="numera-toast"></div>
     </div>
 
   </main><!-- /main -->
@@ -13545,6 +13923,532 @@ return {
   resetar: resetar,
   renderRegistros: renderRegistros,
 };
+
+})();
+
+</script>
+
+<!-- ============================================================
+     MÓDULO NUMERA — SCRIPT INDEPENDENTE
+     Todo o estado (records/idCounter/filtros/paginação) vive somente em
+     memória dentro desta IIFE. Nenhuma chamada a Storage.set/State/
+     localStorage é feita — nada deste módulo é salvo ou recuperado.
+     ============================================================ -->
+<script id="numera-module-script">
+(function(){
+"use strict";
+
+/* Raiz do módulo — todas as buscas por classe (não-ID) ficam restritas a este
+   container, garantindo que o NUMERA não interfira em nenhum outro módulo do SISMINT. */
+const numeraRoot = document.getElementById("page-numera");
+
+/* ===================== NORMALIZAÇÃO (núcleo) ===================== */
+// Regra absoluta: remover apenas caracteres não numéricos. Nunca calcular,
+// corrigir, completar ou alterar dígitos.
+function onlyDigits(str){
+  return (str || "").replace(/\D/g, "");
+}
+function classify(digits){
+  if(digits.length === 11) return "CPF";
+  if(digits.length === 14) return "CNPJ";
+  return null;
+}
+
+// Extrai candidatos a CPF/CNPJ de um texto livre (com ou sem máscara),
+// mesmo quando misturados a outras palavras.
+const DOC_REGEX = /(\d{2}\.?\d{3}\.?\d{3}\/?\d{4}\-?\d{2})|(\d{3}\.?\d{3}\.?\d{3}\-?\d{2})|(\d{14})|(\d{11})/g;
+
+function extractDocsFromText(text){
+  if(!text) return [];
+  const found = [];
+  const str = String(text);
+  const matches = str.match(DOC_REGEX);
+  if(!matches) return [];
+  // dedupe overlapping raw substrings by scanning greedily
+  const seenSpans = new Set();
+  matches.forEach(m => {
+    const digits = onlyDigits(m);
+    if(digits.length === 11 || digits.length === 14){
+      const key = digits + "|" + m;
+      if(!seenSpans.has(key)){
+        seenSpans.add(key);
+        found.push({ original: m.trim(), digits });
+      }
+    }
+  });
+  return found;
+}
+
+/* ===================== ESTADO ===================== */
+let records = []; // {id, tipo, original, digits, duplicate, invalid}
+let idCounter = 0;
+let currentFilter = "todos";
+let searchTerm = "";
+let currentPage = 1;
+const PAGE_SIZE = 100;
+
+function addRecord(original, digits, source){
+  const tipo = classify(digits);
+  const rec = {
+    id: ++idCounter,
+    tipo: tipo || "—",
+    original: original,
+    digits: digits,
+    invalid: !tipo,
+    duplicate: false,
+    source: source || "manual"
+  };
+  records.push(rec);
+  return rec;
+}
+
+function recomputeDuplicates(){
+  const seen = new Map();
+  records.forEach(r => {
+    if(r.invalid) return;
+    const key = r.tipo + ":" + r.digits;
+    if(seen.has(key)){
+      r.duplicate = true;
+    } else {
+      seen.set(key, true);
+      r.duplicate = false;
+    }
+  });
+}
+
+function applyDedupeIfNeeded(){
+  if(!document.getElementById("numera-removeDupOpt").checked) return;
+  const seen = new Set();
+  records = records.filter(r => {
+    if(r.invalid) return true;
+    const key = r.tipo + ":" + r.digits;
+    if(seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+/* ===================== DASHBOARD ===================== */
+function updateDashboard(){
+  const total = records.length;
+  const cpf = records.filter(r => r.tipo === "CPF").length;
+  const cnpj = records.filter(r => r.tipo === "CNPJ").length;
+  const dup = records.filter(r => r.duplicate).length;
+  const err = records.filter(r => r.invalid).length;
+  document.getElementById("numera-statTotal").textContent = total.toLocaleString("pt-BR");
+  document.getElementById("numera-statCpf").textContent = cpf.toLocaleString("pt-BR");
+  document.getElementById("numera-statCnpj").textContent = cnpj.toLocaleString("pt-BR");
+  document.getElementById("numera-statDup").textContent = dup.toLocaleString("pt-BR");
+  document.getElementById("numera-statErr").textContent = err.toLocaleString("pt-BR");
+}
+
+/* ===================== TOAST ===================== */
+let toastTimer = null;
+function showToast(msg, isError){
+  const t = document.getElementById("numera-toast");
+  t.textContent = msg;
+  t.className = "toast show" + (isError ? " error" : "");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+function copyText(text){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    return navigator.clipboard.writeText(text);
+  }
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  ta.style.position = "fixed";
+  ta.style.opacity = "0";
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand("copy"); } catch(e){}
+  document.body.removeChild(ta);
+  return Promise.resolve();
+}
+
+/* ===================== ENTRADA MANUAL ===================== */
+const manualInput = document.getElementById("numera-manualInput");
+const typePill = document.getElementById("numera-typePill");
+const manualResults = document.getElementById("numera-manualResults");
+
+let manualDebounce = null;
+manualInput.addEventListener("input", () => {
+  clearTimeout(manualDebounce);
+  manualDebounce = setTimeout(processManualInput, 150);
+});
+
+function processManualInput(){
+  const raw = manualInput.value;
+  manualResults.innerHTML = "";
+
+  if(!raw.trim()){
+    typePill.className = "type-pill";
+    typePill.textContent = "Aguardando entrada";
+    return;
+  }
+
+  const lines = raw.split("\n").map(l => l.trim()).filter(Boolean);
+  const found = [];
+  lines.forEach(line => {
+    const docs = extractDocsFromText(line);
+    if(docs.length){
+      docs.forEach(d => found.push(d));
+    } else {
+      const digits = onlyDigits(line);
+      if(digits.length){
+        found.push({ original: line, digits: digits });
+      }
+    }
+  });
+
+  if(!found.length){
+    typePill.className = "type-pill invalid";
+    typePill.textContent = "Nenhum documento identificado";
+    return;
+  }
+
+  const validCount = found.filter(f => classify(f.digits)).length;
+  const invalidCount = found.length - validCount;
+
+  if(found.length === 1){
+    const tipo = classify(found[0].digits);
+    if(tipo){
+      typePill.className = "type-pill " + tipo.toLowerCase();
+      typePill.textContent = tipo + " identificado";
+    } else {
+      typePill.className = "type-pill invalid";
+      typePill.textContent = "Quantidade de dígitos incompatível com CPF/CNPJ.";
+    }
+  } else {
+    typePill.className = "type-pill";
+    typePill.textContent = validCount + " documento(s) identificado(s)" + (invalidCount ? " · " + invalidCount + " inconsistente(s)" : "");
+  }
+
+  found.forEach((f, i) => {
+    const line = document.createElement("div");
+    line.className = "result-line";
+    line.style.marginTop = i === 0 ? "0" : "8px";
+    const tipo = classify(f.digits);
+    line.innerHTML = `<span class="digits">${escapeHtml(f.digits)}</span>
+      <button class="btn-copy-small" data-copy="${escapeHtml(f.digits)}">Copiar</button>`;
+    manualResults.appendChild(line);
+
+    // register into global records too (for export), tagged as manual source
+    addRecord(f.original, f.digits, "manual");
+  });
+  recomputeDuplicates();
+  applyDedupeIfNeeded();
+  updateDashboard();
+  renderTable();
+}
+
+manualResults.addEventListener("click", (e) => {
+  const btn = e.target.closest(".btn-copy-small");
+  if(!btn) return;
+  const val = btn.getAttribute("data-copy");
+  copyText(val).then(() => {
+    const original = btn.textContent;
+    btn.textContent = "Copiado!";
+    btn.classList.add("copied");
+    setTimeout(() => { btn.textContent = original; btn.classList.remove("copied"); }, 1200);
+  });
+});
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[c]));
+}
+
+/* ===================== UPLOAD XLSX ===================== */
+const dropZone = document.getElementById("numera-dropZone");
+const fileInput = document.getElementById("numera-fileInput");
+const fileChipWrap = document.getElementById("numera-fileChipWrap");
+const progressWrap = document.getElementById("numera-progressWrap");
+const progressFill = document.getElementById("numera-progressFill");
+const progressText = document.getElementById("numera-progressText");
+const progressCounts = document.getElementById("numera-progressCounts");
+
+dropZone.addEventListener("click", () => fileInput.click());
+dropZone.addEventListener("dragover", (e) => { e.preventDefault(); dropZone.classList.add("drag"); });
+dropZone.addEventListener("dragleave", () => dropZone.classList.remove("drag"));
+dropZone.addEventListener("drop", (e) => {
+  e.preventDefault();
+  dropZone.classList.remove("drag");
+  const file = e.dataTransfer.files[0];
+  if(file) handleFile(file);
+});
+fileInput.addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if(file) handleFile(file);
+});
+
+function handleFile(file){
+  if(!file.name.toLowerCase().endsWith(".xlsx")){
+    showToast("Formato incompatível. Envie um arquivo .xlsx", true);
+    return;
+  }
+  fileChipWrap.innerHTML = `<div class="file-chip">📄 ${escapeHtml(file.name)}</div>`;
+
+  const reader = new FileReader();
+  reader.onerror = () => showToast("Erro durante leitura do arquivo.", true);
+  reader.onload = (e) => {
+    try{
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: "array" });
+      processWorkbook(workbook);
+    } catch(err){
+      console.error(err);
+      showToast("Arquivo corrompido ou ilegível.", true);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function processWorkbook(workbook){
+  // Gather all cell values from all sheets into a flat array first.
+  const cellValues = [];
+  workbook.SheetNames.forEach(sheetName => {
+    const sheet = workbook.Sheets[sheetName];
+    if(!sheet) return;
+    Object.keys(sheet).forEach(cellRef => {
+      if(cellRef[0] === "!") return; // skip metadata keys
+      const cell = sheet[cellRef];
+      if(cell && cell.v !== undefined && cell.v !== null){
+        cellValues.push(String(cell.v));
+      }
+    });
+  });
+
+  if(!cellValues.length){
+    showToast("Nenhuma célula com conteúdo foi encontrada na planilha.", true);
+    return;
+  }
+
+  progressWrap.classList.add("active");
+  progressText.textContent = "Processando...";
+  let processed = 0;
+  let foundCount = 0;
+  const total = cellValues.length;
+  const CHUNK = 500;
+  let idx = 0;
+
+  function step(){
+    const end = Math.min(idx + CHUNK, total);
+    for(; idx < end; idx++){
+      const val = cellValues[idx];
+      processed++;
+      const docs = extractDocsFromText(val);
+      docs.forEach(d => {
+        addRecord(d.original, d.digits, "xlsx");
+        foundCount++;
+      });
+    }
+    const pct = Math.round((processed/total)*100);
+    progressFill.style.width = pct + "%";
+    progressCounts.textContent = "Processados: " + processed.toLocaleString("pt-BR") + " · Encontrados: " + foundCount.toLocaleString("pt-BR");
+
+    if(idx < total){
+      requestAnimationFrame(step);
+    } else {
+      progressText.textContent = "Concluído";
+      setTimeout(() => progressWrap.classList.remove("active"), 1200);
+      recomputeDuplicates();
+      applyDedupeIfNeeded();
+      updateDashboard();
+      currentPage = 1;
+      renderTable();
+      if(foundCount === 0){
+        showToast("Nenhuma ocorrência de CPF/CNPJ encontrada.", true);
+      } else {
+        showToast(foundCount.toLocaleString("pt-BR") + " documento(s) encontrado(s).");
+      }
+    }
+  }
+  requestAnimationFrame(step);
+}
+
+document.getElementById("numera-removeDupOpt").addEventListener("change", () => {
+  recomputeDuplicates();
+  applyDedupeIfNeeded();
+  updateDashboard();
+  currentPage = 1;
+  renderTable();
+});
+
+/* ===================== TABELA / FILTROS / PAGINAÇÃO ===================== */
+const tableWrap = document.getElementById("numera-tableWrap");
+const paginationEl = document.getElementById("numera-pagination");
+const searchInput = document.getElementById("numera-searchInput");
+
+numeraRoot.querySelectorAll(".filter-tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    numeraRoot.querySelectorAll(".filter-tab").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    currentFilter = tab.getAttribute("data-filter");
+    currentPage = 1;
+    renderTable();
+  });
+});
+
+let searchDebounce = null;
+searchInput.addEventListener("input", () => {
+  clearTimeout(searchDebounce);
+  searchDebounce = setTimeout(() => {
+    searchTerm = searchInput.value.trim();
+    currentPage = 1;
+    renderTable();
+  }, 150);
+});
+
+function getFilteredRecords(){
+  return records.filter(r => {
+    if(currentFilter === "cpf" && r.tipo !== "CPF") return false;
+    if(currentFilter === "cnpj" && r.tipo !== "CNPJ") return false;
+    if(currentFilter === "dup" && !r.duplicate) return false;
+    if(currentFilter === "err" && !r.invalid) return false;
+    if(searchTerm && !r.digits.includes(onlyDigits(searchTerm)) && !r.original.includes(searchTerm)) return false;
+    return true;
+  });
+}
+
+function renderTable(){
+  const filtered = getFilteredRecords();
+
+  if(!filtered.length){
+    tableWrap.innerHTML = `<div class="empty-state">
+      <div class="glyph">#</div>
+      <p>${records.length ? "Nenhum registro corresponde ao filtro atual." : "Nenhum registro processado ainda. Digite um documento acima ou importe uma planilha."}</p>
+    </div>`;
+    paginationEl.style.display = "none";
+    return;
+  }
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  if(currentPage > totalPages) currentPage = totalPages;
+  const startIdx = (currentPage - 1) * PAGE_SIZE;
+  const pageItems = filtered.slice(startIdx, startIdx + PAGE_SIZE);
+
+  let html = `<table class="results"><thead><tr>
+    <th style="width:56px;">Nº</th>
+    <th style="width:90px;">Tipo</th>
+    <th>Original</th>
+    <th>Somente números</th>
+    <th style="width:100px;">Ação</th>
+  </tr></thead><tbody>`;
+
+  pageItems.forEach((r, i) => {
+    let badge = "";
+    if(r.tipo === "CPF") badge = `<span class="badge cpf">CPF</span>`;
+    else if(r.tipo === "CNPJ") badge = `<span class="badge cnpj">CNPJ</span>`;
+    else badge = `<span class="badge err">Inválido</span>`;
+
+    let extraBadges = "";
+    if(r.duplicate) extraBadges += ` <span class="badge dup">Duplicado</span>`;
+    if(r.invalid) extraBadges += ` <span class="badge err">Qtd. incompatível</span>`;
+
+    html += `<tr>
+      <td>${startIdx + i + 1}</td>
+      <td>${badge}</td>
+      <td class="orig">${escapeHtml(r.original)}</td>
+      <td class="digits-cell">${escapeHtml(r.digits)}${extraBadges}</td>
+      <td><button class="btn-copy-small" data-copy="${escapeHtml(r.digits)}">Copiar</button></td>
+    </tr>`;
+  });
+
+  html += "</tbody></table>";
+  tableWrap.innerHTML = html;
+
+  // pagination controls
+  if(totalPages > 1){
+    paginationEl.style.display = "flex";
+    paginationEl.innerHTML = `
+      <button id="numera-pgFirst" ${currentPage===1?"disabled":""}>« Primeira</button>
+      <button id="numera-pgPrev" ${currentPage===1?"disabled":""}>‹ Anterior</button>
+      <span>Página ${currentPage} de ${totalPages}</span>
+      <button id="numera-pgNext" ${currentPage===totalPages?"disabled":""}>Próxima ›</button>
+      <button id="numera-pgLast" ${currentPage===totalPages?"disabled":""}>Última »</button>
+    `;
+    document.getElementById("numera-pgFirst").onclick = () => { currentPage = 1; renderTable(); };
+    document.getElementById("numera-pgPrev").onclick = () => { currentPage--; renderTable(); };
+    document.getElementById("numera-pgNext").onclick = () => { currentPage++; renderTable(); };
+    document.getElementById("numera-pgLast").onclick = () => { currentPage = totalPages; renderTable(); };
+  } else {
+    paginationEl.style.display = "none";
+  }
+}
+
+tableWrap.addEventListener("click", (e) => {
+  const btn = e.target.closest(".btn-copy-small");
+  if(!btn) return;
+  const val = btn.getAttribute("data-copy");
+  copyText(val).then(() => {
+    const original = btn.textContent;
+    btn.textContent = "Copiado!";
+    btn.classList.add("copied");
+    setTimeout(() => { btn.textContent = original; btn.classList.remove("copied"); }, 1200);
+  });
+});
+
+/* ===================== AÇÕES GLOBAIS ===================== */
+document.getElementById("numera-btnClear").addEventListener("click", () => {
+  if(!records.length) { showToast("Não há resultados para limpar.", true); return; }
+  records = [];
+  idCounter = 0;
+  currentPage = 1;
+  manualInput.value = "";
+  manualResults.innerHTML = "";
+  typePill.className = "type-pill";
+  typePill.textContent = "Aguardando entrada";
+  fileChipWrap.innerHTML = "";
+  fileInput.value = "";
+  updateDashboard();
+  renderTable();
+  showToast("Resultados limpos.");
+});
+
+document.getElementById("numera-btnCopyAll").addEventListener("click", () => {
+  const filtered = getFilteredRecords();
+  if(!filtered.length){ showToast("Nenhum registro para copiar.", true); return; }
+  const text = filtered.map(r => r.digits).join("\n");
+  copyText(text).then(() => showToast(filtered.length.toLocaleString("pt-BR") + " documento(s) copiado(s)."));
+});
+
+document.getElementById("numera-btnExport").addEventListener("click", () => {
+  const filtered = getFilteredRecords();
+  if(!filtered.length){ showToast("Nenhum registro para exportar.", true); return; }
+
+  // Build sheet data as plain values only, documents forced to text (string)
+  // type so Excel never converts them to numbers and strips leading zeros.
+  const aoa = [["Nº", "Tipo", "Documento"]];
+  filtered.forEach((r, i) => {
+    aoa.push([i + 1, r.tipo === "—" ? "Inválido" : r.tipo, r.digits]);
+  });
+
+  const ws = XLSX.utils.aoa_to_sheet(aoa);
+
+  // Force column C (Documento) to be stored as text type ("s") for every row,
+  // preventing Excel from reinterpreting leading-zero documents as numbers.
+  for(let r = 1; r <= filtered.length; r++){
+    const cellRef = XLSX.utils.encode_cell({ r: r, c: 2 });
+    if(ws[cellRef]){
+      ws[cellRef].t = "s";
+      ws[cellRef].z = "@";
+      ws[cellRef].v = String(ws[cellRef].v);
+    }
+  }
+  ws["!cols"] = [{ wch: 6 }, { wch: 10 }, { wch: 20 }];
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "CPF_CNPJ");
+  XLSX.writeFile(wb, "CPF_CNPJ_NORMALIZADOS.xlsx", { bookType: "xlsx", type: "file" });
+  showToast("Excel exportado: " + filtered.length.toLocaleString("pt-BR") + " registro(s).");
+});
+
+/* init */
+updateDashboard();
+renderTable();
 
 })();
 
