@@ -4294,6 +4294,10 @@ input.cap-date.form-input {
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="11" y2="17"/></svg>
       <span class="sb-label">Relatórios</span>
     </button>
+    <button class="sidebar-btn" onclick="showPage('empenho')" title="Empenho — Distribuição de Crédito Orçamentário">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="9"/></svg>
+      <span class="sb-label">Empenho</span>
+    </button>
     <button class="sidebar-btn" onclick="showPage('monitorias')" title="Monitorias">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       <span class="sb-label">Monitorias</span>
@@ -4443,6 +4447,15 @@ input.cap-date.form-input {
           <div class="card-tag">Financeiro Semanal</div>
           <div class="card-name">CONTAS A PAGAR</div>
           <div class="card-desc">Controle de EXE, RAP, fornecedores, saldos, pagamentos e ciclos manuais de solicitação de recursos.</div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="module-card empenho" onclick="showPage('empenho')">
+          <div class="card-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="9"/></svg>
+          </div>
+          <div class="card-tag">Financeiro · Orçamentário</div>
+          <div class="card-name">EMPENHO</div>
+          <div class="card-desc">Detalhamento da distribuição de um crédito orçamentário entre um ou vários favorecidos, com origem e destinos.</div>
           <div class="card-arrow">↗</div>
         </div>
         <div class="module-card despachos" onclick="openDespachos()">
@@ -4982,6 +4995,105 @@ input.cap-date.form-input {
       </div>
     </div>
 
+    <!-- ==================== MÓDULO EMPENHO ====================
+         100% local/em memória — sem Supabase, sem persistência.
+         Todo o estado (origem/destinos) é reiniciado ao recarregar a página. ==================== -->
+    <div id="page-empenho" class="page">
+      <div class="cap-header-bar">
+        <div class="cap-title-group">
+          <div class="cap-page-tag">MÓDULO ORÇAMENTÁRIO</div>
+          <div class="cap-page-title">Empenho</div>
+          <div class="section-subtitle">Detalhamento da distribuição de um crédito orçamentário entre origem e destinos — processamento local, sem persistência</div>
+        </div>
+        <div class="cap-actions">
+          <button class="btn btn-ghost" onclick="empenhoLimparTudo()" style="font-size:12px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14z"/></svg>
+            Limpar Tudo
+          </button>
+          <button class="btn btn-ghost" id="empenho-btn-excel" onclick="empenhoGerarExcel()" disabled title="Disponível apenas quando Origem = Destinos" style="font-size:12px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Gerar Excel
+          </button>
+          <button class="btn btn-ghost" id="empenho-btn-pdf" onclick="empenhoGerarPDF()" disabled title="Disponível apenas quando Origem = Destinos" style="font-size:12px;border-color:rgba(244,63,94,0.3);color:var(--accent-rose)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            Gerar PDF
+          </button>
+        </div>
+      </div>
+
+      <!-- RESUMO VISUAL -->
+      <div class="stats-row" id="empenho-cards-row">
+        <div class="stat-card stat-blue" id="empenho-card-origem">
+          <div class="stat-icon" style="background:rgba(0,0,0,0.15)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+          <div class="stat-info"><div class="stat-label">Valor da Origem</div><div class="stat-value" id="empenho-card-origem-val">R$ 0,00</div></div>
+        </div>
+        <div class="stat-card stat-teal" id="empenho-card-distribuido">
+          <div class="stat-icon" style="background:rgba(0,0,0,0.15)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent-teal)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <div class="stat-info"><div class="stat-label">Total Distribuído</div><div class="stat-value" id="empenho-card-distribuido-val">R$ 0,00</div></div>
+        </div>
+        <div class="stat-card stat-green" id="empenho-card-diferenca">
+          <div class="stat-icon" style="background:rgba(0,0,0,0.15)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent-green)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg></div>
+          <div class="stat-info"><div class="stat-label">Diferença</div><div class="stat-value" id="empenho-card-diferenca-val">R$ 0,00</div></div>
+        </div>
+      </div>
+
+      <!-- AVISO -->
+      <div id="empenho-alert-banner" style="display:none;margin-bottom:18px;padding:12px 16px;border-radius:10px;font-size:12.5px;font-weight:700;display:none;align-items:center;gap:8px"></div>
+
+      <!-- ORIGEM DO CRÉDITO -->
+      <div class="cap-table-card">
+        <div class="cap-table-header">
+          <div class="cap-table-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="9"/></svg>
+            Origem do Crédito
+          </div>
+        </div>
+        <div class="cap-form-body">
+          <div class="cap-grid-3">
+            <div class="form-group"><label class="form-label">Esfera</label><input class="form-input" id="empenho-esfera" placeholder="1" maxlength="5" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,5);empenhoRecalcular()"></div>
+            <div class="form-group"><label class="form-label">PTRES</label><input class="form-input" id="empenho-ptres" placeholder="231704" maxlength="6" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,6);empenhoRecalcular()"></div>
+            <div class="form-group"><label class="form-label">Fonte de Recursos</label><input class="form-input" id="empenho-fonte" placeholder="1000000000" maxlength="10" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10);empenhoRecalcular()"></div>
+          </div>
+          <div class="cap-grid-3">
+            <div class="form-group"><label class="form-label">Natureza da Despesa</label><input class="form-input" id="empenho-natureza" placeholder="339018" maxlength="6" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,6);empenhoRecalcular()"></div>
+            <div class="form-group"><label class="form-label">UGR</label><input class="form-input" id="empenho-ugr" placeholder="15858" oninput="this.value=this.value.replace(/[^A-Za-z0-9]/g,'');empenhoRecalcular()"></div>
+            <div class="form-group"><label class="form-label">Plano Interno</label><input class="form-input" id="empenho-planointerno" placeholder="L29AFP2300N" maxlength="11" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,11);empenhoRecalcular()"></div>
+          </div>
+          <div class="cap-grid-3">
+            <div class="form-group"><label class="form-label">Valor da Origem (R$)</label><input class="form-input highlight" id="empenho-valor-origem" placeholder="0,00" oninput="maskMoneyInput(this);empenhoRecalcular()"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DESTINO DO CRÉDITO -->
+      <div class="cap-table-card">
+        <div class="cap-table-header">
+          <div class="cap-table-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Destino do Crédito
+          </div>
+          <span class="badge" id="empenho-destinos-count">0 destino(s)</span>
+        </div>
+        <div class="cap-form-body">
+          <div class="form-group" style="position:relative;margin-bottom:18px">
+            <label class="form-label">Pesquisar favorecido (CPF, CNPJ, Nome, Benefício, Diárias, Passagens, Suprimento, Outro)</label>
+            <div style="position:relative">
+              <svg style="position:absolute;left:10px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--text-muted);pointer-events:none;z-index:1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input class="form-input" id="empenho-busca" placeholder="Digite para buscar e pressione Enter ou clique no resultado..."
+                oninput="empenhoBuscaInput(this)" onfocus="empenhoBuscaInput(this)" onkeydown="empenhoBuscaKeydown(event)"
+                autocomplete="off" style="padding-left:34px">
+            </div>
+          </div>
+          <div class="cap-table-wrap">
+            <table class="data-table">
+              <thead><tr><th>Nome</th><th>Tipo</th><th>Esfera</th><th>PTRES</th><th>Fonte</th><th>Natureza</th><th>UGR</th><th>Plano Interno</th><th>Nº Empenho</th><th style="text-align:right">Valor</th><th>Ações</th></tr></thead>
+              <tbody id="empenho-destinos-tbody"><tr><td colspan="11"><div class="cap-empty">Nenhum destino adicionado. Pesquise um favorecido acima.</div></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- ==================== CONFIG PAGE ==================== -->
     <div id="page-config" class="page">
       <div class="section-header">
@@ -5044,27 +5156,64 @@ input.cap-date.form-input {
       <div class="section-header">
         <div>
           <div class="section-title">Fornecedores Financeiros</div>
-          <div class="section-subtitle">Base com CPF/CNPJ para autocomplete e preenchimento automático no Contas a Pagar</div>
+          <div class="section-subtitle">Base com CPF/CNPJ para autocomplete e preenchimento automático no Contas a Pagar e no Empenho</div>
         </div>
       </div>
       <div class="cap-form-card">
         <div class="cap-form-body">
           <input type="hidden" id="cap-forn-edit-id">
           <div class="cap-grid-3">
-            <div class="form-group"><label class="form-label">CPF/CNPJ <span id="cfg-forn-doc-opcional" style="color:var(--text-muted);font-weight:400;font-size:10px">(opcional para Benefício)</span></label><input class="form-input" id="cfg-forn-doc" placeholder="00.000.000/0001-00 ou deixe em branco"></div>
+            <div class="form-group"><label class="form-label">CPF/CNPJ <span id="cfg-forn-doc-opcional" style="color:var(--text-muted);font-weight:400;font-size:10px">(opcional para Benefício, Diárias, Passagens, Suprimento de Fundos e Outro)</span></label><input class="form-input" id="cfg-forn-doc" placeholder="00.000.000/0001-00 ou deixe em branco"></div>
             <div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="cfg-forn-nome" placeholder="Fornecedor ou Benefício"></div>
-            <div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="cfg-forn-tipo" onchange="capFornTipoChange(this)"><option>Pessoa Jurídica</option><option>Pessoa Física</option><option value="beneficio">Benefício</option></select></div>
+            <div class="form-group"><label class="form-label">Tipo</label>
+              <select class="form-select" id="cfg-forn-tipo" onchange="capFornTipoChange(this)">
+                <option>Pessoa Jurídica</option>
+                <option>Pessoa Física</option>
+                <option value="beneficio">Benefício</option>
+                <option value="diarias">Diárias</option>
+                <option value="passagens">Passagens</option>
+                <option value="suprimento">Suprimento de Fundos</option>
+                <option value="outro">Outro</option>
+              </select>
+            </div>
           </div>
           <div class="cap-grid-3">
             <div class="form-group"><label class="form-label">Telefone</label><input class="form-input" id="cfg-forn-tel" placeholder="(00) 00000-0000"></div>
             <div class="form-group"><label class="form-label">E-mail</label><input class="form-input" id="cfg-forn-email" placeholder="contato@empresa.com.br" type="email"></div>
             <div class="form-group"><label class="form-label">Status</label><select class="form-select" id="cfg-forn-status"><option value="ativo">✅ Ativo</option><option value="inativo">🔴 Inativo</option><option value="pendente">⚠️ Pendente</option></select></div>
           </div>
+
+          <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.14em;color:var(--accent-teal);margin:22px 0 12px;padding-top:14px;border-top:1px dashed var(--border)">Célula Orçamentária</div>
+          <div class="cap-grid-3">
+            <div class="form-group"><label class="form-label">Esfera</label><input class="form-input" id="cfg-forn-esfera" placeholder="1" maxlength="5" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,5)"></div>
+            <div class="form-group"><label class="form-label">PTRES</label><input class="form-input" id="cfg-forn-ptres" placeholder="231704" maxlength="6" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,6)"></div>
+            <div class="form-group"><label class="form-label">Fonte de Recursos</label><input class="form-input" id="cfg-forn-fonte" placeholder="1000000000" maxlength="10" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)"></div>
+          </div>
+          <div class="cap-grid-3">
+            <div class="form-group"><label class="form-label">Natureza da Despesa</label><input class="form-input" id="cfg-forn-natureza" placeholder="339018" maxlength="6" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,6)"></div>
+            <div class="form-group"><label class="form-label">UGR</label><input class="form-input" id="cfg-forn-ugr" placeholder="15858" oninput="this.value=this.value.replace(/[^A-Za-z0-9]/g,'')"></div>
+            <div class="form-group"><label class="form-label">Plano Interno</label><input class="form-input" id="cfg-forn-planointerno" placeholder="L29AFP2300N" maxlength="11" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,11)"></div>
+          </div>
+          <div class="cap-grid-3">
+            <div class="form-group"><label class="form-label">Número do Empenho</label><input class="form-input" id="cfg-forn-numeroempenho" placeholder="2026NE000001" maxlength="12" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,12)"></div>
+          </div>
+
           <div class="cap-grid-3">
             <div class="form-group"><label class="form-label">Observações</label><input class="form-input" id="cfg-forn-obs" placeholder="Dados bancários, contatos..."></div>
             <div class="form-group" style="align-self:end"><button class="btn btn-teal" onclick="saveCapFornecedor()">Salvar Fornecedor</button></div>
           </div>
-          <div class="cap-table-wrap"><table class="data-table"><thead><tr><th>CPF/CNPJ</th><th>Nome</th><th>Tipo</th><th>Telefone</th><th>E-mail</th><th>Status</th><th>Observações</th><th>Ações</th></tr></thead><tbody id="cap-forn-tbody"></tbody></table></div>
+
+          <div class="form-group" style="position:relative;margin-top:8px;margin-bottom:12px">
+            <label class="form-label">Filtro Inteligente</label>
+            <div style="position:relative">
+              <svg style="position:absolute;left:10px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--text-muted);pointer-events:none;z-index:1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input class="form-input" id="cfg-forn-filtro" placeholder="Buscar por CNPJ, CPF, Nome, PTRES ou Natureza da Despesa..."
+                oninput="renderCapFornecedoresTable()" autocomplete="off" style="padding-left:34px;padding-right:36px">
+              <button type="button" id="cfg-forn-filtro-clear" onclick="document.getElementById('cfg-forn-filtro').value='';renderCapFornecedoresTable();"
+                title="Limpar filtro" style="display:none;position:absolute;right:8px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.08);border:none;cursor:pointer;color:var(--text-muted);font-size:13px;width:22px;height:22px;border-radius:4px;line-height:1;transition:all .15s">✕</button>
+            </div>
+          </div>
+          <div class="cap-table-wrap"><table class="data-table"><thead><tr><th>CPF/CNPJ</th><th>Nome</th><th>Tipo</th><th>Célula Orçamentária</th><th>Telefone</th><th>E-mail</th><th>Status</th><th>Ações</th></tr></thead><tbody id="cap-forn-tbody"></tbody></table></div>
         </div>
       </div>
 
@@ -6391,6 +6540,17 @@ input.cap-date.form-input {
 
 <!-- DROPDOWN FORNECEDOR — posicionado via JS (fora de qualquer overflow:hidden) -->
 <div id="cap-forn-busca-dropdown"
+  style="display:none;position:fixed;z-index:9000;
+         background:var(--bg-elevated);
+         border:1px solid var(--border-bright);
+         border-radius:var(--radius-sm);
+         max-height:320px;overflow-y:auto;
+         box-shadow:0 12px 40px rgba(0,0,0,0.55),0 2px 10px rgba(0,0,0,0.35);
+         min-width:340px;">
+</div>
+
+<!-- DROPDOWN EMPENHO — busca de favorecidos para destino do crédito -->
+<div id="empenho-busca-dropdown"
   style="display:none;position:fixed;z-index:9000;
          background:var(--bg-elevated);
          border:1px solid var(--border-bright);
@@ -8229,10 +8389,20 @@ function saveFonte(){ const id=document.getElementById('fonte-edit-id').value||c
 function editFonte(id){ const f=State.capFontes.find(x=>x.id===id); if(!f)return; document.getElementById('fonte-edit-id').value=f.id; document.getElementById('fonte-codigo').value=f.codigo; document.getElementById('fonte-desc').value=f.descricao; document.getElementById('fonte-cor').value=f.cor; document.getElementById('fonte-codsol').value=f.codsol||''; document.getElementById('fonte-status').value=f.status; }
 function deleteFonte(id){ State.capFontes=State.capFontes.filter(f=>f.id!==id); capPersist(); renderFinanceiro(); }
 function renderFontesTable(){ const tb=document.getElementById('fontes-tbody'); if(tb)tb.innerHTML=State.capFontes.map(f=>'<tr><td>'+f.codigo+'</td><td>'+f.descricao+'</td><td>'+(f.codsol||'-')+'</td><td><span class="fonte-dot" style="background:'+f.cor+'"></span></td><td>'+f.status+'</td><td><button class="row-act-btn edit" onclick="editFonte(\''+f.id+'\')">✎</button><button class="row-act-btn del" onclick="deleteFonte(\''+f.id+'\')">×</button></td></tr>').join(''); }
+/* Tipos de fornecedor/favorecido que NÃO exigem CPF/CNPJ obrigatório */
+const CAP_FORN_TIPOS_SEM_DOC = ['beneficio','diarias','passagens','suprimento','outro'];
+const CAP_FORN_TIPO_LABELS = {
+  beneficio: 'Benefício',
+  diarias: 'Diárias',
+  passagens: 'Passagens',
+  suprimento: 'Suprimento de Fundos',
+  outro: 'Outro'
+};
+function capFornTipoLabel(tipo){ return CAP_FORN_TIPO_LABELS[tipo] || tipo || '—'; }
 function capFornTipoChange(sel){
-  const isBeneficio=sel.value==='beneficio';
+  const semDoc = CAP_FORN_TIPOS_SEM_DOC.includes(sel.value);
   const docEl=document.getElementById('cfg-forn-doc');
-  if(docEl) docEl.placeholder=isBeneficio?'(Não obrigatório para Benefício)':'00.000.000/0001-00';
+  if(docEl) docEl.placeholder = semDoc ? '(Não obrigatório para '+capFornTipoLabel(sel.value)+')' : '00.000.000/0001-00';
 }
 function saveCapFornecedor(){
   const id   = document.getElementById('cap-forn-edit-id').value || capId('forn');
@@ -8240,43 +8410,495 @@ function saveCapFornecedor(){
   const nome = document.getElementById('cfg-forn-nome').value.trim();
   const tipo = document.getElementById('cfg-forn-tipo').value;
   if(!nome) return showToast('Informe o nome do fornecedor/benefício.','error');
-  const isBeneficio = tipo === 'beneficio';
-  if(!isBeneficio && !doc) return showToast('Informe o CPF/CNPJ (obrigatório para Fornecedor/Pessoa Física).','error');
+  const semDoc = CAP_FORN_TIPOS_SEM_DOC.includes(tipo);
+  if(!semDoc && !doc) return showToast('Informe o CPF/CNPJ (obrigatório para Pessoa Física/Jurídica).','error');
   const item = {
-    id, doc: isBeneficio ? (doc||'BENEFÍCIO') : doc,
+    id, doc: semDoc ? (doc||capFornTipoLabel(tipo).toUpperCase()) : doc,
     nome, tipo,
     telefone: document.getElementById('cfg-forn-tel').value,
     email:    document.getElementById('cfg-forn-email').value.trim(),
     status:   document.getElementById('cfg-forn-status').value || 'ativo',
-    obs:      document.getElementById('cfg-forn-obs').value
+    obs:      document.getElementById('cfg-forn-obs').value,
+    // ── Célula Orçamentária (usada pelo módulo Empenho) ──
+    esfera:         document.getElementById('cfg-forn-esfera').value.trim(),
+    ptres:          document.getElementById('cfg-forn-ptres').value.trim(),
+    fonteRecursos:  document.getElementById('cfg-forn-fonte').value.trim(),
+    natureza:       document.getElementById('cfg-forn-natureza').value.trim(),
+    ugr:            document.getElementById('cfg-forn-ugr').value.trim(),
+    planoInterno:   document.getElementById('cfg-forn-planointerno').value.trim().toUpperCase(),
+    numeroEmpenho:  document.getElementById('cfg-forn-numeroempenho').value.trim().toUpperCase()
   };
   const i = State.capFornecedores.findIndex(f => f.id === id || (doc && capDigits(f.doc) === capDigits(doc)));
   if(i >= 0) State.capFornecedores[i] = item;
   else       State.capFornecedores.push(item);
   // Limpa form de cadastro
-  ['cap-forn-edit-id','cfg-forn-doc','cfg-forn-nome','cfg-forn-tel','cfg-forn-email','cfg-forn-obs'].forEach(eid=>{
+  ['cap-forn-edit-id','cfg-forn-doc','cfg-forn-nome','cfg-forn-tel','cfg-forn-email','cfg-forn-obs',
+   'cfg-forn-esfera','cfg-forn-ptres','cfg-forn-fonte','cfg-forn-natureza','cfg-forn-ugr','cfg-forn-planointerno','cfg-forn-numeroempenho'].forEach(eid=>{
     const el=document.getElementById(eid); if(el) el.value='';
   });
   const tipoEl = document.getElementById('cfg-forn-tipo');
   if(tipoEl) tipoEl.value = 'Pessoa Jurídica';
+  const docOpcEl=document.getElementById('cfg-forn-doc'); if(docOpcEl) docOpcEl.placeholder='00.000.000/0001-00';
   capPersist();
   refreshCapDatalists();
   renderFinanceiro();
-  showToast('✅ ' + (isBeneficio?'Benefício':'Fornecedor') + ' "' + nome + '" salvo! (' + State.capFornecedores.length + ' cadastros disponíveis para busca)', 'success');
+  showToast('✅ ' + (semDoc?capFornTipoLabel(tipo):'Fornecedor') + ' "' + nome + '" salvo! (' + State.capFornecedores.length + ' cadastros disponíveis para busca)', 'success');
 }
-function editCapFornecedor(id){ const f=State.capFornecedores.find(x=>x.id===id); if(!f)return; document.getElementById('cap-forn-edit-id').value=f.id; document.getElementById('cfg-forn-doc').value=f.doc; document.getElementById('cfg-forn-nome').value=f.nome; document.getElementById('cfg-forn-tipo').value=f.tipo; document.getElementById('cfg-forn-tel').value=f.telefone||''; document.getElementById('cfg-forn-email').value=f.email||''; const statusEl=document.getElementById('cfg-forn-status'); if(statusEl) statusEl.value=f.status||'ativo'; document.getElementById('cfg-forn-obs').value=f.obs||''; }
+function editCapFornecedor(id){
+  const f=State.capFornecedores.find(x=>x.id===id); if(!f)return;
+  document.getElementById('cap-forn-edit-id').value=f.id;
+  document.getElementById('cfg-forn-doc').value=f.doc;
+  document.getElementById('cfg-forn-nome').value=f.nome;
+  document.getElementById('cfg-forn-tipo').value=f.tipo;
+  document.getElementById('cfg-forn-tel').value=f.telefone||'';
+  document.getElementById('cfg-forn-email').value=f.email||'';
+  const statusEl=document.getElementById('cfg-forn-status'); if(statusEl) statusEl.value=f.status||'ativo';
+  document.getElementById('cfg-forn-obs').value=f.obs||'';
+  document.getElementById('cfg-forn-esfera').value=f.esfera||'';
+  document.getElementById('cfg-forn-ptres').value=f.ptres||'';
+  document.getElementById('cfg-forn-fonte').value=f.fonteRecursos||'';
+  document.getElementById('cfg-forn-natureza').value=f.natureza||'';
+  document.getElementById('cfg-forn-ugr').value=f.ugr||'';
+  document.getElementById('cfg-forn-planointerno').value=f.planoInterno||'';
+  document.getElementById('cfg-forn-numeroempenho').value=f.numeroEmpenho||'';
+}
 function deleteCapFornecedor(id){ State.capFornecedores=State.capFornecedores.filter(f=>f.id!==id); capPersist(); renderFinanceiro(); }
 function renderCapFornecedoresTable(){ 
   const tb=document.getElementById('cap-forn-tbody'); 
   if(!tb) return;
+
+  // ── Filtro inteligente: CNPJ, CPF, Nome, PTRES, Natureza da Despesa ──
+  const filtroEl = document.getElementById('cfg-forn-filtro');
+  const clearBtn = document.getElementById('cfg-forn-filtro-clear');
+  const q = (filtroEl?.value || '').trim().toLowerCase();
+  if(clearBtn) clearBtn.style.display = q ? 'block' : 'none';
+  const qDigits = capDigits(q);
+
+  const lista = !q ? State.capFornecedores : State.capFornecedores.filter(f=>{
+    const nomeLow = (f.nome||'').toLowerCase();
+    const docLow  = (f.doc||'').toLowerCase();
+    const ptresLow = (f.ptres||'').toLowerCase();
+    const naturezaLow = (f.natureza||'').toLowerCase();
+    return nomeLow.includes(q)
+        || docLow.includes(q)
+        || ptresLow.includes(q)
+        || naturezaLow.includes(q)
+        || (qDigits.length >= 2 && capDigits(f.doc||'').includes(qDigits))
+        || (qDigits.length >= 2 && (f.ptres||'').includes(qDigits))
+        || (qDigits.length >= 2 && (f.natureza||'').includes(qDigits));
+  });
+
   const statusBadge = s => {
     if(s==='inativo') return '<span style="font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(239,68,68,0.15);color:#ef4444;font-weight:700">🔴 Inativo</span>';
     if(s==='pendente') return '<span style="font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(245,158,11,0.15);color:#f59e0b;font-weight:700">⚠️ Pendente</span>';
     return '<span style="font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(20,184,166,0.15);color:var(--accent-teal);font-weight:700">✅ Ativo</span>';
   };
-  tb.innerHTML=State.capFornecedores.map(f=>'<tr><td>'+f.doc+'</td><td>'+f.nome+'</td><td>'+f.tipo+'</td><td>'+(f.telefone||'-')+'</td><td>'+(f.email?'<a href="mailto:'+f.email+'" style="color:var(--accent-teal)">'+f.email+'</a>':'-')+'</td><td>'+statusBadge(f.status||'ativo')+'</td><td>'+(f.obs||'-')+'</td><td><button class="row-act-btn edit" onclick="editCapFornecedor(\''+f.id+'\')">✎</button><button class="row-act-btn del" onclick="deleteCapFornecedor(\''+f.id+'\')">×</button></td></tr>').join('')||'<tr><td colspan="8"><div class="cap-empty">Nenhum fornecedor financeiro.</div></td></tr>'; 
+  const celulaCell = f => {
+    const partes = [];
+    if(f.esfera) partes.push('ESF '+f.esfera);
+    if(f.ptres) partes.push('PTRES '+f.ptres);
+    if(f.fonteRecursos) partes.push('FR '+f.fonteRecursos);
+    if(f.natureza) partes.push('ND '+f.natureza);
+    if(f.ugr) partes.push('UGR '+f.ugr);
+    if(f.planoInterno) partes.push('PI '+f.planoInterno);
+    if(f.numeroEmpenho) partes.push('NE '+f.numeroEmpenho);
+    if(!partes.length) return '<span style="color:var(--text-muted)">—</span>';
+    return '<div style="font-family:var(--font-mono);font-size:10px;line-height:1.6;color:var(--text-secondary);white-space:nowrap">'+partes.join(' · ')+'</div>';
+  };
+  const tipoCell = f => (f.tipo==='Pessoa Jurídica'||f.tipo==='Pessoa Física') ? f.tipo : capFornTipoLabel(f.tipo);
+  const vazio = q
+    ? '<tr><td colspan="8"><div class="cap-empty">Nenhum fornecedor encontrado para "'+ (filtroEl.value||'').replace(/</g,'&lt;') +'".</div></td></tr>'
+    : '<tr><td colspan="8"><div class="cap-empty">Nenhum fornecedor financeiro.</div></td></tr>';
+  tb.innerHTML=lista.map(f=>'<tr><td>'+f.doc+'</td><td>'+f.nome+'</td><td>'+tipoCell(f)+'</td><td>'+celulaCell(f)+'</td><td>'+(f.telefone||'-')+'</td><td>'+(f.email?'<a href="mailto:'+f.email+'" style="color:var(--accent-teal)">'+f.email+'</a>':'-')+'</td><td>'+statusBadge(f.status||'ativo')+'</td><td><button class="row-act-btn edit" onclick="editCapFornecedor(\''+f.id+'\')">✎</button><button class="row-act-btn del" onclick="deleteCapFornecedor(\''+f.id+'\')">×</button></td></tr>').join('')||vazio; 
 }
 function exportCapCSV(){ const rows=getFilteredCapContas(); const csv=[['Tipo','Classe','Documento','Fonte','Fornecedor','Valor'],...rows.map(c=>[c.tipo,c.classe,c.documento,c.fonte,c.fornecedor,c.valor])].map(r=>r.join(';')).join('\n'); const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='contas_a_pagar.csv'; a.click(); }
+
+/* ============================================================
+   MÓDULO EMPENHO — Detalhamento de distribuição de crédito orçamentário
+   100% local/em memória. Sem Supabase, sem Storage.set, sem persistência —
+   o estado (origem/destinos) é reiniciado a cada carregamento da página.
+   Reutiliza State.capFornecedores (cadastro de Configurações) como base
+   de busca, e as funções globais capMoney/parseMoneyBR/maskMoneyInput/capId.
+   ============================================================ */
+let empenhoDestinos = []; // {id, fornId, nome, tipo, esfera, ptres, fonte, natureza, ugr, planoInterno, numeroEmpenho, valor}
+
+function empenhoGetOrigem(){
+  return {
+    esfera:        document.getElementById('empenho-esfera')?.value.trim()        || '',
+    ptres:         document.getElementById('empenho-ptres')?.value.trim()         || '',
+    fonte:         document.getElementById('empenho-fonte')?.value.trim()         || '',
+    natureza:      document.getElementById('empenho-natureza')?.value.trim()      || '',
+    ugr:           document.getElementById('empenho-ugr')?.value.trim()           || '',
+    planoInterno:  document.getElementById('empenho-planointerno')?.value.trim()  || '',
+    valor:         parseMoneyBR(document.getElementById('empenho-valor-origem')?.value || '0')
+  };
+}
+function empenhoTotalDestinos(){ return empenhoDestinos.reduce((a,d)=>a+(Number(d.valor)||0),0); }
+
+/* Recalcula somente os cartões/aviso/botões — usado durante digitação para não perder o foco do campo */
+function empenhoAtualizarResumo(){
+  const origem = empenhoGetOrigem();
+  const totalDestinos = empenhoTotalDestinos();
+  const diferenca = origem.valor - totalDestinos;
+  const EPS = 0.005; // tolerância de arredondamento de centavos
+
+  const cOrigemVal = document.getElementById('empenho-card-origem-val');
+  const cDistVal   = document.getElementById('empenho-card-distribuido-val');
+  const cDifVal    = document.getElementById('empenho-card-diferenca-val');
+  if(cOrigemVal) cOrigemVal.textContent = capMoney(origem.valor);
+  if(cDistVal)   cDistVal.textContent   = capMoney(totalDestinos);
+  if(cDifVal)    cDifVal.textContent    = capMoney(diferenca);
+
+  const cardDif   = document.getElementById('empenho-card-diferenca');
+  const banner    = document.getElementById('empenho-alert-banner');
+  const btnPdf    = document.getElementById('empenho-btn-pdf');
+  const btnExcel  = document.getElementById('empenho-btn-excel');
+  const valorOrigemEl = document.getElementById('empenho-valor-origem');
+
+  if(cardDif) cardDif.className = 'stat-card';
+  const excedeu = diferenca < -EPS;
+
+  if (excedeu) {
+    // Regra 1 — soma dos destinos ultrapassou a origem: impede o lançamento e alerta
+    if(cardDif) cardDif.classList.add('stat-rose');
+    if(banner){
+      banner.style.display='flex';
+      banner.style.background='rgba(244,63,94,0.12)';
+      banner.style.border='1px solid rgba(244,63,94,0.35)';
+      banner.style.color='var(--accent-rose)';
+      banner.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> O total dos destinos não pode ser superior ao valor da origem.';
+    }
+    if(btnPdf) btnPdf.disabled = true;
+    if(btnExcel) btnExcel.disabled = true;
+  } else if (diferenca > EPS) {
+    // Regra 2 — ainda não totalmente distribuído: aviso amarelo, bloqueia relatórios
+    if(cardDif) cardDif.classList.add('stat-amber');
+    if(banner){
+      banner.style.display='flex';
+      banner.style.background='rgba(245,158,11,0.12)';
+      banner.style.border='1px solid rgba(245,158,11,0.35)';
+      banner.style.color='var(--accent-amber)';
+      banner.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> O valor da origem ainda não foi totalmente distribuído.';
+    }
+    if(btnPdf) btnPdf.disabled = true;
+    if(btnExcel) btnExcel.disabled = true;
+  } else {
+    // Regra 3 — origem = destinos: libera os relatórios
+    if(cardDif) cardDif.classList.add('stat-green');
+    if(banner) banner.style.display='none';
+    const podeGerar = origem.valor > 0 && empenhoDestinos.length > 0;
+    if(btnPdf) btnPdf.disabled = !podeGerar;
+    if(btnExcel) btnExcel.disabled = !podeGerar;
+  }
+
+  if(valorOrigemEl) valorOrigemEl.style.borderColor = excedeu ? 'var(--accent-rose)' : '';
+  document.querySelectorAll('.empenho-valor-input').forEach(inp=>{
+    inp.style.borderColor = excedeu ? 'var(--accent-rose)' : '';
+    inp.style.color       = excedeu ? 'var(--accent-rose)' : '';
+  });
+}
+
+/* Recalcula tudo, incluindo a reconstrução da tabela — usado ao adicionar/remover destino ou alterar a origem */
+function empenhoRecalcular(){
+  empenhoAtualizarResumo();
+  empenhoRenderTabelaDestinos();
+}
+
+function empenhoRenderTabelaDestinos(){
+  const tb = document.getElementById('empenho-destinos-tbody');
+  if(!tb) return;
+  const countEl = document.getElementById('empenho-destinos-count');
+  if(countEl) countEl.textContent = empenhoDestinos.length + ' destino(s)';
+
+  if(!empenhoDestinos.length){
+    tb.innerHTML = '<tr><td colspan="11"><div class="cap-empty">Nenhum destino adicionado. Pesquise um favorecido acima.</div></td></tr>';
+    return;
+  }
+
+  const origem = empenhoGetOrigem();
+  const excedeu = empenhoTotalDestinos() > origem.valor + 0.005;
+  const corStyle = excedeu ? 'border-color:var(--accent-rose);color:var(--accent-rose)' : '';
+
+  tb.innerHTML = empenhoDestinos.map(d => `<tr>
+    <td>${d.nome}</td>
+    <td>${d.tipo}</td>
+    <td>${d.esfera||'-'}</td>
+    <td>${d.ptres||'-'}</td>
+    <td>${d.fonte||'-'}</td>
+    <td>${d.natureza||'-'}</td>
+    <td>${d.ugr||'-'}</td>
+    <td>${d.planoInterno||'-'}</td>
+    <td style="font-family:var(--font-mono);font-size:11px">${d.numeroEmpenho||'-'}</td>
+    <td style="text-align:right">
+      <input class="form-input empenho-valor-input" style="width:120px;text-align:right;padding:6px 8px;font-size:12px;${corStyle}"
+        value="${(Number(d.valor)||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}"
+        oninput="empenhoValorDestinoInput('${d.id}', this)">
+    </td>
+    <td><button class="row-act-btn del" onclick="empenhoRemoverDestino('${d.id}')" title="Remover">×</button></td>
+  </tr>`).join('');
+}
+
+function empenhoValorDestinoInput(id, inp){
+  maskMoneyInput(inp);
+  const d = empenhoDestinos.find(x=>x.id===id);
+  if(d) d.valor = parseMoneyBR(inp.value);
+  empenhoAtualizarResumo(); // não reconstrói a tabela para não perder o foco durante a digitação
+}
+
+function empenhoRemoverDestino(id){
+  empenhoDestinos = empenhoDestinos.filter(d=>d.id!==id);
+  empenhoRecalcular();
+}
+
+function empenhoLimparTudo(){
+  if((empenhoDestinos.length || parseMoneyBR(document.getElementById('empenho-valor-origem')?.value||'0')>0) &&
+     !confirm('Isso vai limpar a origem e todos os destinos adicionados. Deseja continuar?')) return;
+  ['empenho-esfera','empenho-ptres','empenho-fonte','empenho-natureza','empenho-ugr','empenho-planointerno','empenho-valor-origem','empenho-busca'].forEach(eid=>{
+    const el = document.getElementById(eid); if(el) el.value='';
+  });
+  empenhoDestinos = [];
+  empenhoRecalcular();
+  showToast('Formulário de Empenho limpo.','info');
+}
+
+/* ── Pesquisa inteligente de favorecidos (CPF/CNPJ/Nome/Tipo) ── */
+let _empenhoBuscaDebounce = null;
+function _empenhoDropdownPosition(){
+  const inp = document.getElementById('empenho-busca');
+  const dd  = document.getElementById('empenho-busca-dropdown');
+  if(!inp || !dd) return;
+  const r = inp.getBoundingClientRect();
+  dd.style.top   = (r.bottom + 4) + 'px';
+  dd.style.left  = r.left + 'px';
+  dd.style.width = r.width + 'px';
+}
+function empenhoBuscaInput(inp){
+  clearTimeout(_empenhoBuscaDebounce);
+  _empenhoBuscaDebounce = setTimeout(() => _empenhoRenderDropdown(inp), 120);
+}
+function _empenhoRenderDropdown(inp){
+  const q  = (inp.value || '').toLowerCase().trim();
+  const dd = document.getElementById('empenho-busca-dropdown');
+  if(!dd) return;
+  const lista = State.capFornecedores || [];
+
+  if(!lista.length){
+    dd.innerHTML = '<div style="padding:14px 16px;font-size:12px;color:var(--accent-amber)">Nenhum fornecedor cadastrado. Acesse <strong>Configurações → Fornecedores Financeiros</strong>.</div>';
+    _empenhoDropdownPosition(); dd.style.display = 'block'; return;
+  }
+
+  const qDigits = capDigits(q);
+  const matches = q
+    ? lista.filter(f => {
+        const nomeLow = (f.nome||'').toLowerCase();
+        const docLow  = (f.doc||'').toLowerCase();
+        const tipoLow = capFornTipoLabel(f.tipo).toLowerCase();
+        const tipoRaw = (f.tipo||'').toLowerCase();
+        return nomeLow.includes(q) || docLow.includes(q) || tipoLow.includes(q) || tipoRaw.includes(q)
+            || (qDigits.length >= 3 && capDigits(f.doc||'').includes(qDigits));
+      }).slice(0, 15)
+    : lista.slice(0, 12);
+
+  if(!matches.length){
+    dd.innerHTML = '<div style="padding:14px 16px;font-size:12px;color:var(--text-muted)">Nenhum resultado para <strong style="color:var(--text-primary)">"'+(inp.value||'').replace(/</g,'&lt;')+'"</strong>.</div>';
+    _empenhoDropdownPosition(); dd.style.display = 'block'; return;
+  }
+
+  const tipoMeta = (tipo) => {
+    if(tipo === 'beneficio') return { icon:'★', color:'var(--accent-teal)',  bg:'rgba(20,184,166,0.12)' };
+    if(['diarias','passagens','suprimento','outro'].includes(tipo)) return { icon:'◆', color:'var(--accent-amber)', bg:'rgba(245,158,11,0.12)' };
+    if(tipo === 'Pessoa Física') return { icon:'👤', color:'var(--accent-green)', bg:'rgba(34,197,94,0.10)' };
+    return { icon:'🏢', color:'var(--accent-purple)', bg:'rgba(139,92,246,0.10)' };
+  };
+  const NO_DOC_LABELS = ['BENEFÍCIO','DIÁRIAS','PASSAGENS','SUPRIMENTO DE FUNDOS','OUTRO'];
+
+  dd.innerHTML = matches.map((f) => {
+    const m = tipoMeta(f.tipo);
+    const docEx = (f.doc && !NO_DOC_LABELS.includes(f.doc)) ? f.doc : '—';
+    return `<div class="empenho-item" tabindex="0" data-forn-id="${f.id}"
+      style="padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .12s">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:30px;height:30px;border-radius:8px;background:${m.bg};border:1px solid ${m.color}33;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">${m.icon}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:700;color:var(--text-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${f.nome || '—'}</div>
+          <div style="display:flex;gap:8px;margin-top:2px;align-items:center">
+            <span style="font-size:11px;font-family:var(--font-mono);color:${m.color}">${docEx}</span>
+            <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:${m.color}">${capFornTipoLabel(f.tipo)}</span>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  dd.querySelectorAll('.empenho-item').forEach(el => {
+    el.addEventListener('mouseenter', () => el.style.background = 'rgba(20,184,166,0.07)');
+    el.addEventListener('mouseleave', () => el.style.background = '');
+    el.addEventListener('mousedown', (e) => { e.preventDefault(); empenhoSelecionarFavorecido(el.getAttribute('data-forn-id')); });
+  });
+
+  _empenhoDropdownPosition();
+  dd.style.display = 'block';
+}
+function empenhoBuscaKeydown(e){
+  if(e.key === 'Escape'){ e.preventDefault(); _empenhoFecharDropdown(); return; }
+  if(e.key === 'Enter'){
+    e.preventDefault();
+    const dd = document.getElementById('empenho-busca-dropdown');
+    const first = dd && dd.style.display !== 'none' ? dd.querySelector('.empenho-item') : null;
+    if(first) empenhoSelecionarFavorecido(first.getAttribute('data-forn-id'));
+  }
+}
+function empenhoSelecionarFavorecido(fornId){
+  const f = State.capFornecedores.find(x => x.id === fornId);
+  if(!f) return;
+  empenhoDestinos.push({
+    id: capId('empdest'),
+    fornId: f.id,
+    nome: f.nome,
+    tipo: (f.tipo === 'Pessoa Jurídica' || f.tipo === 'Pessoa Física') ? f.tipo : capFornTipoLabel(f.tipo),
+    esfera: f.esfera||'', ptres: f.ptres||'', fonte: f.fonteRecursos||'', natureza: f.natureza||'',
+    ugr: f.ugr||'', planoInterno: f.planoInterno||'', numeroEmpenho: f.numeroEmpenho||'',
+    valor: 0
+  });
+  const buscaEl = document.getElementById('empenho-busca');
+  if(buscaEl){ buscaEl.value=''; buscaEl.focus(); }
+  _empenhoFecharDropdown();
+  empenhoRecalcular();
+  showToast('✅ "'+f.nome+'" adicionado ao destino do crédito.', 'success');
+}
+function _empenhoFecharDropdown(){ const dd = document.getElementById('empenho-busca-dropdown'); if(dd) dd.style.display = 'none'; }
+document.addEventListener('click', function(e){
+  if(!e.target.closest('#empenho-busca') && !e.target.closest('#empenho-busca-dropdown')){ _empenhoFecharDropdown(); }
+});
+window.addEventListener('scroll', _empenhoDropdownPosition, true);
+window.addEventListener('resize', _empenhoDropdownPosition);
+
+/* ── Exportação PDF (janela de impressão) — só habilitada quando Origem = Destinos ── */
+/* Agrupa os destinos por Natureza da Despesa — reutilizado pelo PDF e pelo Excel */
+function empenhoAgruparPorNatureza(){
+  const grupos = {}; const ordem = [];
+  empenhoDestinos.forEach(d=>{
+    const key = d.natureza || '(sem Natureza da Despesa)';
+    if(!grupos[key]){ grupos[key] = []; ordem.push(key); }
+    grupos[key].push(d);
+  });
+  return ordem.map(key => ({
+    natureza: key,
+    itens: grupos[key],
+    subtotal: grupos[key].reduce((a,d)=>a+(Number(d.valor)||0),0)
+  }));
+}
+
+function empenhoGerarPDF(){
+  const origem = empenhoGetOrigem();
+  const totalDestinos = empenhoTotalDestinos();
+  const diferenca = origem.valor - totalDestinos;
+  if(!empenhoDestinos.length || Math.abs(diferenca) > 0.005){
+    showToast('O PDF só pode ser gerado quando o valor da origem for igual à soma dos destinos.','error');
+    return;
+  }
+  const agora = new Date();
+  const grupos = empenhoAgruparPorNatureza();
+  const destinosSecao = grupos.map(g => `
+    <div style="margin-top:16px;font-size:11px;font-weight:800;color:#f97316;text-transform:uppercase;letter-spacing:.05em">Natureza da Despesa ${g.natureza} — ${g.itens.length} registro(s)</div>
+    <table><thead><tr><th>Nome</th><th>Tipo</th><th>Esfera</th><th>PTRES</th><th>Fonte</th><th>UGR</th><th>Plano Interno</th><th>Nº Empenho</th><th style="text-align:right">Valor</th></tr></thead>
+    <tbody>
+      ${g.itens.map(d => `<tr>
+        <td>${d.nome}</td><td>${d.tipo}</td><td>${d.esfera||'-'}</td>
+        <td>${d.ptres||'-'}</td><td>${d.fonte||'-'}</td><td>${d.ugr||'-'}</td><td>${d.planoInterno||'-'}</td><td>${d.numeroEmpenho||'-'}</td>
+        <td style="text-align:right;font-weight:700">${capMoney(d.valor)}</td>
+      </tr>`).join('')}
+      <tr><td colspan="8" style="text-align:right;font-weight:800;background:#fff3e8">Total Natureza da Despesa ${g.natureza}</td><td style="text-align:right;font-weight:800;background:#fff3e8">${capMoney(g.subtotal)}</td></tr>
+    </tbody></table>
+  `).join('');
+
+  const w = window.open('', '_blank');
+  w.document.write(`<!DOCTYPE html><html><head><title>Empenho — SISMINT</title>
+  <style>
+    body{font-family:'Segoe UI',sans-serif;font-size:12px;color:#1a1a1a;padding:32px;max-width:1200px;margin:auto}
+    h1{font-size:18px;font-weight:800;margin-bottom:2px;color:#1a1a1a}
+    .subtitle{font-size:11px;color:#666;margin-bottom:4px;text-transform:uppercase;letter-spacing:.08em}
+    .header-logo{display:flex;align-items:center;gap:12px;margin-bottom:18px;padding-bottom:14px;border-bottom:2px solid #f97316}
+    .logo-box{width:36px;height:36px;background:#f97316;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+    h2{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#f97316;margin:22px 0 10px;padding-bottom:6px;border-bottom:1px solid #eee}
+    table{width:100%;border-collapse:collapse;font-size:10.5px;margin-bottom:8px}
+    thead{display:table-header-group}
+    th{background:#f97316;color:#fff;padding:7px 8px;text-align:left;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+    td{padding:6px 8px;border-bottom:1px solid #e9ecef}
+    tr:nth-child(even) td{background:#f8f9fa}
+    tr{page-break-inside:avoid}
+    .footer-summary{margin-top:18px;padding-top:12px;border-top:2px solid #f97316;display:flex;justify-content:flex-end;gap:28px}
+    .footer-item{text-align:right}
+    .footer-label{font-size:10px;text-transform:uppercase;color:#666;letter-spacing:.06em}
+    .footer-val{font-size:15px;font-weight:800;color:#1a1a1a}
+    @media print{body{padding:16px}@page{margin:14mm}}
+  </style></head><body>
+  <div class="header-logo">
+    <div class="logo-box"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg></div>
+    <div>
+      <h1>SISMINT — Sistema Integrados de Módulos Independentes</h1>
+      <div class="subtitle">Relatório de Detalhamento de Empenho</div>
+      <div class="subtitle" style="margin-bottom:0">Emitido em ${agora.toLocaleDateString('pt-BR')} às ${agora.toLocaleTimeString('pt-BR')}</div>
+    </div>
+  </div>
+
+  <h2>1. Origem do Crédito</h2>
+  <table><thead><tr><th>Esfera</th><th>PTRES</th><th>Fonte de Recursos</th><th>Natureza da Despesa</th><th>UGR</th><th>Plano Interno</th><th style="text-align:right">Valor</th></tr></thead>
+  <tbody><tr>
+    <td>${origem.esfera||'-'}</td><td>${origem.ptres||'-'}</td><td>${origem.fonte||'-'}</td>
+    <td>${origem.natureza||'-'}</td><td>${origem.ugr||'-'}</td><td>${origem.planoInterno||'-'}</td>
+    <td style="text-align:right;font-weight:700">${capMoney(origem.valor)}</td>
+  </tr></tbody></table>
+
+  <h2>2. Destinos do Crédito — agrupados por Natureza da Despesa</h2>
+  ${destinosSecao}
+
+  <div class="footer-summary">
+    <div class="footer-item"><div class="footer-label">Valor da Origem</div><div class="footer-val">${capMoney(origem.valor)}</div></div>
+    <div class="footer-item"><div class="footer-label">Total Geral Distribuído</div><div class="footer-val">${capMoney(totalDestinos)}</div></div>
+    <div class="footer-item"><div class="footer-label">Diferença</div><div class="footer-val" style="color:#22c55e">${capMoney(diferenca)}</div></div>
+  </div>
+  </body></html>`);
+  w.document.close();
+  setTimeout(() => w.print(), 400);
+  showToast('📄 PDF do Empenho aberto para impressão!', 'success');
+}
+
+/* ── Exportação Excel (.xlsx, 2 abas) — só habilitada quando Origem = Destinos ── */
+function empenhoGerarExcel(){
+  const origem = empenhoGetOrigem();
+  const totalDestinos = empenhoTotalDestinos();
+  const diferenca = origem.valor - totalDestinos;
+  if(!empenhoDestinos.length || Math.abs(diferenca) > 0.005){
+    showToast('O Excel só pode ser gerado quando o valor da origem for igual à soma dos destinos.','error');
+    return;
+  }
+  if(typeof XLSX === 'undefined'){ showToast('Biblioteca de exportação (XLSX) não carregada.','error'); return; }
+
+  const origemAoa = [
+    ['Esfera','PTRES','Fonte de Recursos','Natureza da Despesa','UGR','Plano Interno','Valor'],
+    [origem.esfera, origem.ptres, origem.fonte, origem.natureza, origem.ugr, origem.planoInterno, origem.valor]
+  ];
+
+  // ── Aba Destinos: agrupada por Natureza da Despesa, com subtotal por grupo e total geral ao final ──
+  const grupos = empenhoAgruparPorNatureza();
+  const destinosAoa = [
+    ['Nome','Tipo','Esfera','PTRES','Fonte de Recursos','UGR','Plano Interno','Nº Empenho','Valor']
+  ];
+  grupos.forEach(g => {
+    destinosAoa.push(['Natureza da Despesa '+g.natureza, '', '', '', '', '', '', '', '']);
+    g.itens.forEach(d => destinosAoa.push([d.nome, d.tipo, d.esfera, d.ptres, d.fonte, d.ugr, d.planoInterno, d.numeroEmpenho, d.valor]));
+    destinosAoa.push(['', '', '', '', '', '', '', 'Total Natureza da Despesa '+g.natureza, g.subtotal]);
+    destinosAoa.push(['', '', '', '', '', '', '', '', '']);
+  });
+  destinosAoa.push(['', '', '', '', '', '', '', 'TOTAL GERAL', totalDestinos]);
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(origemAoa), 'Origem');
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(destinosAoa), 'Destinos');
+  XLSX.writeFile(wb, 'EMPENHO_' + new Date().toISOString().slice(0,10) + '.xlsx');
+  showToast('📊 Excel do Empenho exportado com sucesso!', 'success');
+}
 
 // FIX #8: Exportação em PDF do ciclo atual usando window.print()
 function exportCapPDF(){
@@ -8506,6 +9128,7 @@ function showPage(id) {
   });
   if (id === 'financeiro') renderFinanceiro();
   if (id === 'nexus') { if (typeof nxRenderPage === 'function') nxRenderPage(nxCurTab || 'dashboard'); }
+  if (id === 'empenho') { if (typeof empenhoRecalcular === 'function') empenhoRecalcular(); }
 }
 
 /* ============================================================
