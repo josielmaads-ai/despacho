@@ -2038,6 +2038,32 @@ input.cap-date.form-input {
   display: flex; align-items: center; gap: 8px;
 }
 .cap-table-title svg { width: 16px; height: 16px; color: var(--accent-teal); }
+
+/* ── GERADOR DE EMPENHO — grade de tipos (11 cartões fixos) ── */
+.grid-empgen-tipos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+.empgen-tipo-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .15s;
+  user-select: none;
+}
+.empgen-tipo-card:hover { border-color: var(--accent-teal); transform: translateY(-2px); }
+.empgen-tipo-card.selected {
+  border-color: var(--accent-teal);
+  background: rgba(20,184,166,0.1);
+  box-shadow: 0 0 0 1px var(--accent-teal);
+}
+.empgen-tipo-card .empgen-tipo-icone { font-size: 26px; margin-bottom: 6px; display: block; }
+.empgen-tipo-card .empgen-tipo-codigo { font-size: 15px; font-weight: 800; color: var(--text-primary); }
+.empgen-tipo-card .empgen-tipo-nome { font-size: 10.5px; color: var(--text-secondary); margin-top: 2px; line-height: 1.3; }
 .cap-filters {
   display: flex; gap: 8px; flex-wrap: wrap;
 }
@@ -4294,9 +4320,13 @@ input.cap-date.form-input {
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="11" y2="17"/></svg>
       <span class="sb-label">Relatórios</span>
     </button>
-    <button class="sidebar-btn" onclick="showPage('empenho')" title="Empenho — Distribuição de Crédito Orçamentário">
+    <button class="sidebar-btn" onclick="showPage('empenho')" title="Detalha Cred — Distribuição de Crédito Orçamentário">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="9"/></svg>
-      <span class="sb-label">Empenho</span>
+      <span class="sb-label">Detalha Cred</span>
+    </button>
+    <button class="sidebar-btn" onclick="showPage('empgerador')" title="Gerador de Empenho — Descrição SIAFI">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="12" y2="17"/></svg>
+      <span class="sb-label">Gerador Empenho</span>
     </button>
     <button class="sidebar-btn" onclick="showPage('monitorias')" title="Monitorias">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -4454,8 +4484,17 @@ input.cap-date.form-input {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="9"/></svg>
           </div>
           <div class="card-tag">Financeiro · Orçamentário</div>
-          <div class="card-name">EMPENHO</div>
+          <div class="card-name">DETALHA CRED</div>
           <div class="card-desc">Detalhamento da distribuição de um crédito orçamentário entre um ou vários favorecidos, com origem e destinos.</div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="module-card empgerador" onclick="showPage('empgerador')">
+          <div class="card-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="12" y2="17"/></svg>
+          </div>
+          <div class="card-tag">Financeiro · Orçamentário</div>
+          <div class="card-name">GERADOR DE EMPENHO</div>
+          <div class="card-desc">Monta automaticamente a célula orçamentária e a descrição SIAFI do empenho a partir da Base Orçamentária.</div>
           <div class="card-arrow">↗</div>
         </div>
         <div class="module-card despachos" onclick="openDespachos()">
@@ -5002,7 +5041,7 @@ input.cap-date.form-input {
       <div class="cap-header-bar">
         <div class="cap-title-group">
           <div class="cap-page-tag">MÓDULO ORÇAMENTÁRIO</div>
-          <div class="cap-page-title">Empenho</div>
+          <div class="cap-page-title">Detalha Cred</div>
           <div class="section-subtitle">Detalhamento da distribuição de um crédito orçamentário entre origem e destinos — processamento local, sem persistência</div>
         </div>
         <div class="cap-actions">
@@ -5050,18 +5089,19 @@ input.cap-date.form-input {
         </div>
         <div class="cap-form-body">
           <div class="cap-grid-3">
-            <div class="form-group"><label class="form-label">Esfera</label><input class="form-input" id="empenho-esfera" placeholder="1" maxlength="5" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,5);empenhoRecalcular()"></div>
-            <div class="form-group"><label class="form-label">PTRES</label><input class="form-input" id="empenho-ptres" placeholder="231704" maxlength="6" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,6);empenhoRecalcular()"></div>
-            <div class="form-group"><label class="form-label">Fonte de Recursos</label><input class="form-input" id="empenho-fonte" placeholder="1000000000" maxlength="10" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10);empenhoRecalcular()"></div>
+            <div class="form-group"><label class="form-label">Esfera</label><input class="form-input" id="empenho-esfera" placeholder="1" maxlength="5" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,5);empenhoAtualizarResumo()"></div>
+            <div class="form-group"><label class="form-label">PTRES</label><select class="form-select" id="empenho-ptres" onchange="empenhoFiltrarPlanoInterno()"><option value="">— Selecione —</option></select></div>
+            <div class="form-group"><label class="form-label">Fonte de Recurso</label><select class="form-select" id="empenho-fonte" onchange="empenhoAtualizarResumo()"><option value="">— Selecione —</option></select></div>
           </div>
           <div class="cap-grid-3">
-            <div class="form-group"><label class="form-label">Natureza da Despesa</label><input class="form-input" id="empenho-natureza" placeholder="339018" maxlength="6" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,6);empenhoRecalcular()"></div>
-            <div class="form-group"><label class="form-label">UGR</label><input class="form-input" id="empenho-ugr" placeholder="15858" oninput="this.value=this.value.replace(/[^A-Za-z0-9]/g,'');empenhoRecalcular()"></div>
-            <div class="form-group"><label class="form-label">Plano Interno</label><input class="form-input" id="empenho-planointerno" placeholder="L29AFP2300N" maxlength="11" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,11);empenhoRecalcular()"></div>
+            <div class="form-group"><label class="form-label">Natureza da Despesa</label><select class="form-select" id="empenho-natureza" onchange="empenhoFiltrarElemento()"><option value="">— Selecione —</option></select></div>
+            <div class="form-group"><label class="form-label">Elemento de Despesa</label><select class="form-select" id="empenho-elemento" onchange="empenhoAtualizarResumo()" disabled><option value="">Selecione uma Natureza primeiro</option></select></div>
+            <div class="form-group"><label class="form-label">Plano Interno</label><select class="form-select" id="empenho-planointerno" onchange="empenhoAtualizarResumo()" disabled><option value="">Selecione um PTRES primeiro</option></select></div>
           </div>
           <div class="cap-grid-3">
             <div class="form-group"><label class="form-label">Valor da Origem (R$)</label><input class="form-input highlight" id="empenho-valor-origem" placeholder="0,00" oninput="maskMoneyInput(this);empenhoRecalcular()"></div>
           </div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px">PTRES, Fonte, Natureza, Elemento e Plano Interno vêm de <strong>Configurações → Base Orçamentária</strong>.</div>
         </div>
       </div>
 
@@ -5090,6 +5130,139 @@ input.cap-date.form-input {
               <tbody id="empenho-destinos-tbody"><tr><td colspan="11"><div class="cap-empty">Nenhum destino adicionado. Pesquise um favorecido acima.</div></td></tr></tbody>
             </table>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== MÓDULO GERADOR DE EMPENHO ====================
+         100% local — Base Orçamentária persiste via localStorage (Storage.set),
+         formulário fica somente em memória (reinicia ao recarregar), sem histórico,
+         sem Supabase. Não interfere no módulo "Empenho" (distribuição de crédito). ==================== -->
+    <div id="page-empgerador" class="page">
+      <div class="cap-header-bar">
+        <div class="cap-title-group">
+          <div class="cap-page-tag">MÓDULO ORÇAMENTÁRIO</div>
+          <div class="cap-page-title">Gerador de Empenho</div>
+          <div class="section-subtitle">Monta a célula orçamentária e a descrição SIAFI do empenho — processamento local, sem persistência de formulário</div>
+        </div>
+        <div class="cap-actions">
+          <button class="btn btn-ghost" onclick="empgenLimparTudo()" style="font-size:12px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14z"/></svg>
+            Limpar Tudo
+          </button>
+          <button class="btn btn-ghost" id="empgen-btn-excel" onclick="empgenGerarExcel()" disabled title="Selecione um tipo de empenho e preencha os campos" style="font-size:12px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Gerar Excel
+          </button>
+          <button class="btn btn-ghost" id="empgen-btn-pdf" onclick="empgenGerarPDF()" disabled title="Selecione um tipo de empenho e preencha os campos" style="font-size:12px;border-color:rgba(244,63,94,0.3);color:var(--accent-rose)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            Gerar PDF
+          </button>
+        </div>
+      </div>
+
+      <!-- 5. Tipo de Empenho (11 cartões fixos) -->
+      <div class="cap-table-card">
+        <div class="cap-table-header"><div class="cap-table-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Tipo de Empenho</div></div>
+        <div class="cap-form-body">
+          <div class="grid-empgen-tipos" id="empgen-tipos-grid"></div>
+        </div>
+      </div>
+
+      <!-- Campos Específicos do tipo selecionado -->
+      <div class="cap-table-card">
+        <div class="cap-table-header"><div class="cap-table-title" id="empgen-especificos-titulo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+          Campos Específicos</div></div>
+        <div class="cap-form-body">
+          <div class="cap-grid-3" id="empgen-campos-especificos-wrap">
+            <div class="cap-empty" style="grid-column:1/-1">Selecione um tipo de empenho acima para exibir os campos específicos.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dados Orçamentários (campos universais) -->
+      <div class="cap-table-card">
+        <div class="cap-table-header"><div class="cap-table-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="9"/></svg>
+          Dados Orçamentários</div></div>
+        <div class="cap-form-body">
+          <div class="cap-grid-3">
+            <div class="form-group"><label class="form-label">Esfera</label><input class="form-input" id="empgen-esfera" placeholder="1" maxlength="5" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,5);empgenAtualizarResultado()"></div>
+            <div class="form-group"><label class="form-label">PTRES</label><select class="form-select" id="empgen-ptres" onchange="empgenFiltrarPlanoInterno()"><option value="">— Selecione —</option></select></div>
+            <div class="form-group"><label class="form-label">Fonte de Recurso</label><select class="form-select" id="empgen-fonte" onchange="empgenAtualizarResultado()"><option value="">— Selecione —</option></select></div>
+          </div>
+          <div class="cap-grid-3">
+            <div class="form-group"><label class="form-label">Natureza da Despesa</label><select class="form-select" id="empgen-natureza" onchange="empgenFiltrarElemento()"><option value="">— Selecione —</option></select></div>
+            <div class="form-group"><label class="form-label">Elemento</label><select class="form-select" id="empgen-elemento" onchange="empgenAtualizarResultado()" disabled><option value="">Selecione uma Natureza primeiro</option></select></div>
+            <div class="form-group"><label class="form-label">Plano Interno</label><select class="form-select" id="empgen-planointerno" onchange="empgenAtualizarResultado()" disabled><option value="">Selecione um PTRES primeiro</option></select></div>
+          </div>
+          <div class="cap-grid-3">
+            <div class="form-group"><label class="form-label">Tipo de Empenho</label>
+              <select class="form-select" id="empgen-tipoempenho" onchange="empgenAtualizarResultado()">
+                <option>Ordinário</option><option>Global</option><option>Estimativo</option>
+              </select>
+            </div>
+            <div class="form-group"><label class="form-label">Valor (R$)</label><input class="form-input highlight" id="empgen-valor" placeholder="0,00" oninput="maskMoneyInput(this);empgenAtualizarResultado()"></div>
+          </div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px">PTRES, Fonte, Natureza, Elemento e Plano Interno vêm de <strong>Configurações → Base Orçamentária</strong>.</div>
+        </div>
+      </div>
+
+      <!-- 9. Resultado Gerado -->
+      <div class="stats-row" id="empgen-resumo-cards">
+        <div class="stat-card stat-blue">
+          <div class="stat-icon" style="background:rgba(0,0,0,0.15)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)" stroke-width="2"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="9"/></svg></div>
+          <div class="stat-info"><div class="stat-label">Célula Orçamentária</div><div class="stat-value" id="empgen-resumo-celula" style="font-size:14px;line-height:1.5">—</div></div>
+        </div>
+        <div class="stat-card stat-teal">
+          <div class="stat-icon" style="background:rgba(0,0,0,0.15)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent-teal)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+          <div class="stat-info"><div class="stat-label">Tipo de Empenho</div><div class="stat-value" id="empgen-resumo-tipo">—</div></div>
+        </div>
+        <div class="stat-card stat-green">
+          <div class="stat-icon" style="background:rgba(0,0,0,0.15)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent-green)" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+          <div class="stat-info"><div class="stat-label">Valor</div><div class="stat-value" id="empgen-resumo-valor">R$ 0,00</div></div>
+        </div>
+      </div>
+
+      <div class="cap-table-card">
+        <div class="cap-table-header"><div class="cap-table-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Resumo Orçamentário</div></div>
+        <div class="cap-form-body">
+          <div class="cap-table-wrap">
+            <table class="data-table">
+              <thead><tr><th>Esfera</th><th>PTRES</th><th>Fonte</th><th>Natureza</th><th>Elemento</th><th>Plano Interno</th><th>Tipo</th><th style="text-align:right">Valor</th></tr></thead>
+              <tbody><tr>
+                <td id="empgen-resumo-esfera">—</td>
+                <td id="empgen-resumo-ptres">—</td>
+                <td id="empgen-resumo-fonte">—</td>
+                <td id="empgen-resumo-natureza">—</td>
+                <td id="empgen-resumo-elemento">—</td>
+                <td id="empgen-resumo-planointerno">—</td>
+                <td id="empgen-resumo-tipo2">—</td>
+                <td style="text-align:right;font-weight:700" id="empgen-resumo-valor2">R$ 0,00</td>
+              </tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="cap-table-card">
+        <div class="cap-table-header">
+          <div class="cap-table-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="12" y2="17"/></svg>
+            Descrição Final
+          </div>
+          <button class="btn btn-teal" onclick="empgenCopiarDescricao()" style="font-size:12px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copiar Descrição
+          </button>
+        </div>
+        <div class="cap-form-body">
+          <textarea class="form-input" id="empgen-descricao-final" readonly rows="4" style="width:100%;resize:vertical;font-family:var(--font-mono);font-size:12.5px;line-height:1.6;cursor:text" placeholder="Selecione um tipo de empenho e preencha os campos para gerar a descrição automaticamente..."></textarea>
         </div>
       </div>
     </div>
@@ -5217,6 +5390,94 @@ input.cap-date.form-input {
         </div>
       </div>
 
+      <div class="section-sep"></div>
+
+      <!-- ==================== BASE ORÇAMENTÁRIA (usada pelo módulo Gerador de Empenho) ====================
+           100% local — persistência via localStorage (Storage.set), sem sincronização com Supabase. ==================== -->
+      <div class="section-header">
+        <div>
+          <div class="section-title">Base Orçamentária</div>
+          <div class="section-subtitle">Cadastros usados pelo módulo Gerador de Empenho — PTRES, Plano Interno, Natureza da Despesa, Elemento e Fonte de Recurso · armazenado apenas neste navegador</div>
+        </div>
+      </div>
+
+      <div class="cap-grid-2" style="align-items:start">
+        <!-- 4.1 PTRES -->
+        <div class="cap-table-card">
+          <div class="cap-table-header"><div class="cap-table-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            PTRES</div></div>
+          <div class="cap-form-body">
+            <div class="cap-grid-2">
+              <div class="form-group"><label class="form-label">PTRES (6 dígitos)</label><input class="form-input" id="baseorc-ptres-input" placeholder="231704" maxlength="6" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,6)" onkeydown="if(event.key==='Enter')baseOrcAddPtres()"></div>
+              <div class="form-group" style="align-self:end"><button class="btn btn-teal" onclick="baseOrcAddPtres()" style="width:100%;justify-content:center">+ Adicionar</button></div>
+            </div>
+            <div class="cap-table-wrap"><table class="data-table"><thead><tr><th>PTRES</th><th>Ações</th></tr></thead><tbody id="baseorc-ptres-tbody"></tbody></table></div>
+          </div>
+        </div>
+
+        <!-- 4.3 Natureza da Despesa -->
+        <div class="cap-table-card">
+          <div class="cap-table-header"><div class="cap-table-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            Natureza da Despesa</div></div>
+          <div class="cap-form-body">
+            <div class="cap-grid-2">
+              <div class="form-group"><label class="form-label">Natureza (6 dígitos)</label><input class="form-input" id="baseorc-natureza-input" placeholder="339018" maxlength="6" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,6)" onkeydown="if(event.key==='Enter')baseOrcAddNatureza()"></div>
+              <div class="form-group" style="align-self:end"><button class="btn btn-teal" onclick="baseOrcAddNatureza()" style="width:100%;justify-content:center">+ Adicionar</button></div>
+            </div>
+            <div class="cap-table-wrap"><table class="data-table"><thead><tr><th>Natureza</th><th>Ações</th></tr></thead><tbody id="baseorc-natureza-tbody"></tbody></table></div>
+          </div>
+        </div>
+
+        <!-- 4.2 Plano Interno (depende do PTRES) -->
+        <div class="cap-table-card">
+          <div class="cap-table-header"><div class="cap-table-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+            Plano Interno</div></div>
+          <div class="cap-form-body">
+            <div class="cap-grid-2">
+              <div class="form-group"><label class="form-label">PTRES</label>
+                <select class="form-select" id="baseorc-pi-ptres"><option value="">— Selecione —</option></select>
+              </div>
+              <div class="form-group"><label class="form-label">Plano Interno</label><input class="form-input" id="baseorc-pi-texto" placeholder="L29AFP2300N" maxlength="11" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,11)" onkeydown="if(event.key==='Enter')baseOrcAddPlanoInterno()"></div>
+            </div>
+            <button class="btn btn-teal" onclick="baseOrcAddPlanoInterno()" style="margin-bottom:14px">+ Adicionar Plano Interno</button>
+            <div class="cap-table-wrap"><table class="data-table"><thead><tr><th>PTRES</th><th>Plano Interno</th><th>Ações</th></tr></thead><tbody id="baseorc-pi-tbody"></tbody></table></div>
+          </div>
+        </div>
+
+        <!-- 4.4 Elemento de Despesa (depende da Natureza) -->
+        <div class="cap-table-card">
+          <div class="cap-table-header"><div class="cap-table-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            Elemento de Despesa</div></div>
+          <div class="cap-form-body">
+            <div class="cap-grid-2">
+              <div class="form-group"><label class="form-label">Natureza</label>
+                <select class="form-select" id="baseorc-elem-natureza"><option value="">— Selecione —</option></select>
+              </div>
+              <div class="form-group"><label class="form-label">Elemento</label><input class="form-input" id="baseorc-elem-texto" placeholder="Ex: Material de Consumo" onkeydown="if(event.key==='Enter')baseOrcAddElemento()"></div>
+            </div>
+            <button class="btn btn-teal" onclick="baseOrcAddElemento()" style="margin-bottom:14px">+ Adicionar Elemento</button>
+            <div class="cap-table-wrap"><table class="data-table"><thead><tr><th>Natureza</th><th>Elemento</th><th>Ações</th></tr></thead><tbody id="baseorc-elem-tbody"></tbody></table></div>
+          </div>
+        </div>
+
+        <!-- 4.5 Fonte de Recurso -->
+        <div class="cap-table-card">
+          <div class="cap-table-header"><div class="cap-table-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            Fonte de Recurso</div></div>
+          <div class="cap-form-body">
+            <div class="cap-grid-2">
+              <div class="form-group"><label class="form-label">Fonte (até 10 dígitos)</label><input class="form-input" id="baseorc-fonte-input" placeholder="1000000000" maxlength="10" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)" onkeydown="if(event.key==='Enter')baseOrcAddFonte()"></div>
+              <div class="form-group" style="align-self:end"><button class="btn btn-teal" onclick="baseOrcAddFonte()" style="width:100%;justify-content:center">+ Adicionar</button></div>
+            </div>
+            <div class="cap-table-wrap"><table class="data-table"><thead><tr><th>Fonte</th><th>Ações</th></tr></thead><tbody id="baseorc-fonte-tbody"></tbody></table></div>
+          </div>
+        </div>
+      </div>
 
       <div class="section-sep"></div>
 
@@ -8523,17 +8784,65 @@ function exportCapCSV(){ const rows=getFilteredCapContas(); const csv=[['Tipo','
 let empenhoDestinos = []; // {id, fornId, nome, tipo, esfera, ptres, fonte, natureza, ugr, planoInterno, numeroEmpenho, valor}
 
 function empenhoGetOrigem(){
+  const ptresSel = document.getElementById('empenho-ptres');
+  const planoSel = document.getElementById('empenho-planointerno');
+  const elementoSel = document.getElementById('empenho-elemento');
+  const planoTxt = planoSel && planoSel.value ? (State.baseOrcPlanosInternos.find(pi => pi.id === planoSel.value)?.planoInterno || '') : '';
+  const elementoTxt = elementoSel && elementoSel.value ? (State.baseOrcElementos.find(e => e.id === elementoSel.value)?.elemento || '') : '';
   return {
     esfera:        document.getElementById('empenho-esfera')?.value.trim()        || '',
-    ptres:         document.getElementById('empenho-ptres')?.value.trim()         || '',
-    fonte:         document.getElementById('empenho-fonte')?.value.trim()         || '',
-    natureza:      document.getElementById('empenho-natureza')?.value.trim()      || '',
-    ugr:           document.getElementById('empenho-ugr')?.value.trim()           || '',
-    planoInterno:  document.getElementById('empenho-planointerno')?.value.trim()  || '',
+    ptres:         ptresSel?.value || '',
+    fonte:         document.getElementById('empenho-fonte')?.value || '',
+    natureza:      document.getElementById('empenho-natureza')?.value || '',
+    elemento:      elementoTxt,
+    planoInterno:  planoTxt,
     valor:         parseMoneyBR(document.getElementById('empenho-valor-origem')?.value || '0')
   };
 }
 function empenhoTotalDestinos(){ return empenhoDestinos.reduce((a,d)=>a+(Number(d.valor)||0),0); }
+
+/* ── PTRES → Plano Interno / Natureza → Elemento (mesmos relacionamentos do Gerador de Empenho) ── */
+function empenhoFiltrarPlanoInterno(){
+  const ptres = document.getElementById('empenho-ptres')?.value || '';
+  const sel = document.getElementById('empenho-planointerno');
+  if(!sel) return;
+  const opts = State.baseOrcPlanosInternos.filter(pi => pi.ptres === ptres);
+  sel.innerHTML = '<option value="">'+(ptres ? '— Selecione —' : 'Selecione um PTRES primeiro')+'</option>' + opts.map(pi => '<option value="'+pi.id+'">'+pi.planoInterno+'</option>').join('');
+  sel.disabled = !ptres;
+  empenhoAtualizarResumo();
+}
+function empenhoFiltrarElemento(){
+  const natureza = document.getElementById('empenho-natureza')?.value || '';
+  const sel = document.getElementById('empenho-elemento');
+  if(!sel) return;
+  const opts = State.baseOrcElementos.filter(e => e.natureza === natureza);
+  sel.innerHTML = '<option value="">'+(natureza ? '— Selecione —' : 'Selecione uma Natureza primeiro')+'</option>' + opts.map(e => '<option value="'+e.id+'">'+e.elemento+'</option>').join('');
+  sel.disabled = !natureza;
+  empenhoAtualizarResumo();
+}
+/* Popula PTRES/Fonte/Natureza a partir da Base Orçamentária (Configurações) — nenhum cadastro próprio é criado aqui */
+function empenhoPopularSelectsOrigem(){
+  const selPtres = document.getElementById('empenho-ptres');
+  if(selPtres){
+    const cur = selPtres.value;
+    selPtres.innerHTML = '<option value="">— Selecione —</option>' + State.baseOrcPtres.map(p => '<option value="'+p.ptres+'">'+p.ptres+'</option>').join('');
+    if(State.baseOrcPtres.some(p => p.ptres === cur)) selPtres.value = cur;
+  }
+  const selNatureza = document.getElementById('empenho-natureza');
+  if(selNatureza){
+    const cur = selNatureza.value;
+    selNatureza.innerHTML = '<option value="">— Selecione —</option>' + State.baseOrcNaturezas.map(n => '<option value="'+n.natureza+'">'+n.natureza+'</option>').join('');
+    if(State.baseOrcNaturezas.some(n => n.natureza === cur)) selNatureza.value = cur;
+  }
+  const selFonte = document.getElementById('empenho-fonte');
+  if(selFonte){
+    const cur = selFonte.value;
+    selFonte.innerHTML = '<option value="">— Selecione —</option>' + State.baseOrcFontes.map(f => '<option value="'+f.fonte+'">'+f.fonte+'</option>').join('');
+    if(State.baseOrcFontes.some(f => f.fonte === cur)) selFonte.value = cur;
+  }
+  empenhoFiltrarPlanoInterno();
+  empenhoFiltrarElemento();
+}
 
 /* Recalcula somente os cartões/aviso/botões — usado durante digitação para não perder o foco do campo */
 function empenhoAtualizarResumo(){
@@ -8653,10 +8962,12 @@ function empenhoRemoverDestino(id){
 function empenhoLimparTudo(){
   if((empenhoDestinos.length || parseMoneyBR(document.getElementById('empenho-valor-origem')?.value||'0')>0) &&
      !confirm('Isso vai limpar a origem e todos os destinos adicionados. Deseja continuar?')) return;
-  ['empenho-esfera','empenho-ptres','empenho-fonte','empenho-natureza','empenho-ugr','empenho-planointerno','empenho-valor-origem','empenho-busca'].forEach(eid=>{
+  ['empenho-esfera','empenho-ptres','empenho-fonte','empenho-natureza','empenho-valor-origem','empenho-busca'].forEach(eid=>{
     const el = document.getElementById(eid); if(el) el.value='';
   });
   empenhoDestinos = [];
+  empenhoFiltrarPlanoInterno();
+  empenhoFiltrarElemento();
   empenhoRecalcular();
   showToast('Formulário de Empenho limpo.','info');
 }
@@ -8813,9 +9124,10 @@ function empenhoGerarPDF(){
   `).join('');
 
   const w = window.open('', '_blank');
-  w.document.write(`<!DOCTYPE html><html><head><title>Empenho — SISMINT</title>
+  const nomeArquivoPdf = 'RELATORIO_EMPENHOS_' + agora.toISOString().slice(0,10);
+  w.document.write(`<!DOCTYPE html><html><head><title>${nomeArquivoPdf}</title>
   <style>
-    body{font-family:'Segoe UI',sans-serif;font-size:12px;color:#1a1a1a;padding:32px;max-width:1200px;margin:auto}
+    body{font-family:'Segoe UI',sans-serif;font-size:12px;color:#1a1a1a;padding:32px;max-width:1600px;margin:auto}
     h1{font-size:18px;font-weight:800;margin-bottom:2px;color:#1a1a1a}
     .subtitle{font-size:11px;color:#666;margin-bottom:4px;text-transform:uppercase;letter-spacing:.08em}
     .header-logo{display:flex;align-items:center;gap:12px;margin-bottom:18px;padding-bottom:14px;border-bottom:2px solid #f97316}
@@ -8831,22 +9143,27 @@ function empenhoGerarPDF(){
     .footer-item{text-align:right}
     .footer-label{font-size:10px;text-transform:uppercase;color:#666;letter-spacing:.06em}
     .footer-val{font-size:15px;font-weight:800;color:#1a1a1a}
-    @media print{body{padding:16px}@page{margin:14mm}}
+    /* Orientação paisagem + numeração automática de páginas (suportado na impressão/Salvar como PDF do Chrome) */
+    @page { size: landscape; margin: 14mm; }
+    @media print {
+      body{padding:16px}
+      @page { size: landscape; margin: 14mm; @bottom-right { content: "Página " counter(page) " de " counter(pages); font-size: 9px; color: #999; } }
+    }
   </style></head><body>
   <div class="header-logo">
     <div class="logo-box"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg></div>
     <div>
       <h1>SISMINT — Sistema Integrados de Módulos Independentes</h1>
-      <div class="subtitle">Relatório de Detalhamento de Empenho</div>
+      <div class="subtitle">Relatório de Empenhos</div>
       <div class="subtitle" style="margin-bottom:0">Emitido em ${agora.toLocaleDateString('pt-BR')} às ${agora.toLocaleTimeString('pt-BR')}</div>
     </div>
   </div>
 
   <h2>1. Origem do Crédito</h2>
-  <table><thead><tr><th>Esfera</th><th>PTRES</th><th>Fonte de Recursos</th><th>Natureza da Despesa</th><th>UGR</th><th>Plano Interno</th><th style="text-align:right">Valor</th></tr></thead>
+  <table><thead><tr><th>Esfera</th><th>PTRES</th><th>Fonte de Recursos</th><th>Natureza da Despesa</th><th>Elemento de Despesa</th><th>Plano Interno</th><th style="text-align:right">Valor</th></tr></thead>
   <tbody><tr>
     <td>${origem.esfera||'-'}</td><td>${origem.ptres||'-'}</td><td>${origem.fonte||'-'}</td>
-    <td>${origem.natureza||'-'}</td><td>${origem.ugr||'-'}</td><td>${origem.planoInterno||'-'}</td>
+    <td>${origem.natureza||'-'}</td><td>${origem.elemento||'-'}</td><td>${origem.planoInterno||'-'}</td>
     <td style="text-align:right;font-weight:700">${capMoney(origem.valor)}</td>
   </tr></tbody></table>
 
@@ -8876,8 +9193,8 @@ function empenhoGerarExcel(){
   if(typeof XLSX === 'undefined'){ showToast('Biblioteca de exportação (XLSX) não carregada.','error'); return; }
 
   const origemAoa = [
-    ['Esfera','PTRES','Fonte de Recursos','Natureza da Despesa','UGR','Plano Interno','Valor'],
-    [origem.esfera, origem.ptres, origem.fonte, origem.natureza, origem.ugr, origem.planoInterno, origem.valor]
+    ['Esfera','PTRES','Fonte de Recursos','Natureza da Despesa','Elemento de Despesa','Plano Interno','Valor'],
+    [origem.esfera, origem.ptres, origem.fonte, origem.natureza, origem.elemento, origem.planoInterno, origem.valor]
   ];
 
   // ── Aba Destinos: agrupada por Natureza da Despesa, com subtotal por grupo e total geral ao final ──
@@ -8896,9 +9213,551 @@ function empenhoGerarExcel(){
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(origemAoa), 'Origem');
   XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(destinosAoa), 'Destinos');
-  XLSX.writeFile(wb, 'EMPENHO_' + new Date().toISOString().slice(0,10) + '.xlsx');
+  XLSX.writeFile(wb, 'EMPENHOS_' + new Date().toISOString().slice(0,10) + '.xlsx');
   showToast('📊 Excel do Empenho exportado com sucesso!', 'success');
 }
+
+/* ============================================================
+   BASE ORÇAMENTÁRIA (Configurações) + GERADOR DE EMPENHO (módulo novo)
+   100% local. Persistência EXCLUSIVA via localStorage (Storage.set),
+   SEM chamar scheduleAutoSave() em nenhum momento — proibido usar Supabase
+   neste escopo. O formulário do Gerador de Empenho fica só em memória
+   (não é persistido) e nenhum histórico é criado, conforme especificado.
+   Não modifica nada do módulo "Empenho" (distribuição de crédito) nem
+   de Contas a Pagar/Financeiro/Relatórios/Dashboard.
+   ============================================================ */
+State.baseOrcPtres        = Storage.get('baseOrcPtres', []);        // [{id, ptres}]
+State.baseOrcPlanosInternos = Storage.get('baseOrcPlanosInternos', []); // [{id, ptres, planoInterno}]
+State.baseOrcNaturezas    = Storage.get('baseOrcNaturezas', []);    // [{id, natureza}]
+State.baseOrcElementos    = Storage.get('baseOrcElementos', []);    // [{id, natureza, elemento}]
+State.baseOrcFontes       = Storage.get('baseOrcFontes', []);       // [{id, fonte}]
+
+function baseOrcPersist(){
+  // Local apenas — NUNCA chama scheduleAutoSave()/Supabase, conforme exigido para este módulo.
+  Storage.set('baseOrcPtres', State.baseOrcPtres);
+  Storage.set('baseOrcPlanosInternos', State.baseOrcPlanosInternos);
+  Storage.set('baseOrcNaturezas', State.baseOrcNaturezas);
+  Storage.set('baseOrcElementos', State.baseOrcElementos);
+  Storage.set('baseOrcFontes', State.baseOrcFontes);
+}
+
+/* ── 4.1 PTRES ── */
+function baseOrcAddPtres(){
+  const el = document.getElementById('baseorc-ptres-input');
+  const v = (el?.value || '').trim();
+  if(v.length !== 6) return showToast('O PTRES deve ter exatamente 6 dígitos.','error');
+  if(State.baseOrcPtres.some(p => p.ptres === v)) return showToast('Este PTRES já está cadastrado.','error');
+  State.baseOrcPtres.push({ id: capId('ptres'), ptres: v });
+  el.value = '';
+  baseOrcPersist();
+  baseOrcRenderPtres();
+  showToast('✅ PTRES '+v+' cadastrado.','success');
+}
+function baseOrcDeletePtres(id){
+  const p = State.baseOrcPtres.find(x => x.id === id);
+  if(!p) return;
+  const vinculados = State.baseOrcPlanosInternos.filter(pi => pi.ptres === p.ptres);
+  if(vinculados.length && !confirm('Existem '+vinculados.length+' Plano(s) Interno(s) vinculado(s) a este PTRES. Removê-los também?')) return;
+  if(vinculados.length) State.baseOrcPlanosInternos = State.baseOrcPlanosInternos.filter(pi => pi.ptres !== p.ptres);
+  State.baseOrcPtres = State.baseOrcPtres.filter(x => x.id !== id);
+  baseOrcPersist();
+  baseOrcRenderPtres();
+  baseOrcRenderPlanosInternos();
+}
+function baseOrcRenderPtres(){
+  const tb = document.getElementById('baseorc-ptres-tbody');
+  if(tb) tb.innerHTML = State.baseOrcPtres.map(p =>
+    '<tr><td style="font-family:var(--font-mono)">'+p.ptres+'</td><td><button class="row-act-btn del" onclick="baseOrcDeletePtres(\''+p.id+'\')">×</button></td></tr>'
+  ).join('') || '<tr><td colspan="2"><div class="cap-empty">Nenhum PTRES cadastrado.</div></td></tr>';
+  baseOrcAtualizarSelectPtres();
+}
+
+/* ── 4.3 Natureza da Despesa ── */
+function baseOrcAddNatureza(){
+  const el = document.getElementById('baseorc-natureza-input');
+  const v = (el?.value || '').trim();
+  if(v.length !== 6) return showToast('A Natureza da Despesa deve ter exatamente 6 dígitos.','error');
+  if(State.baseOrcNaturezas.some(n => n.natureza === v)) return showToast('Esta Natureza já está cadastrada.','error');
+  State.baseOrcNaturezas.push({ id: capId('nat'), natureza: v });
+  el.value = '';
+  baseOrcPersist();
+  baseOrcRenderNaturezas();
+  showToast('✅ Natureza '+v+' cadastrada.','success');
+}
+function baseOrcDeleteNatureza(id){
+  const n = State.baseOrcNaturezas.find(x => x.id === id);
+  if(!n) return;
+  const vinculados = State.baseOrcElementos.filter(e => e.natureza === n.natureza);
+  if(vinculados.length && !confirm('Existem '+vinculados.length+' Elemento(s) vinculado(s) a esta Natureza. Removê-los também?')) return;
+  if(vinculados.length) State.baseOrcElementos = State.baseOrcElementos.filter(e => e.natureza !== n.natureza);
+  State.baseOrcNaturezas = State.baseOrcNaturezas.filter(x => x.id !== id);
+  baseOrcPersist();
+  baseOrcRenderNaturezas();
+  baseOrcRenderElementos();
+}
+function baseOrcRenderNaturezas(){
+  const tb = document.getElementById('baseorc-natureza-tbody');
+  if(tb) tb.innerHTML = State.baseOrcNaturezas.map(n =>
+    '<tr><td style="font-family:var(--font-mono)">'+n.natureza+'</td><td><button class="row-act-btn del" onclick="baseOrcDeleteNatureza(\''+n.id+'\')">×</button></td></tr>'
+  ).join('') || '<tr><td colspan="2"><div class="cap-empty">Nenhuma Natureza cadastrada.</div></td></tr>';
+  baseOrcAtualizarSelectNatureza();
+}
+
+/* ── 4.2 Plano Interno (depende do PTRES) ── */
+function baseOrcAddPlanoInterno(){
+  const ptresEl = document.getElementById('baseorc-pi-ptres');
+  const textoEl = document.getElementById('baseorc-pi-texto');
+  const ptres = ptresEl?.value || '';
+  const texto = (textoEl?.value || '').trim().toUpperCase();
+  if(!ptres) return showToast('Selecione o PTRES.','error');
+  if(!texto) return showToast('Informe o Plano Interno.','error');
+  if(State.baseOrcPlanosInternos.some(pi => pi.ptres === ptres && pi.planoInterno === texto)) return showToast('Este Plano Interno já está cadastrado para este PTRES.','error');
+  State.baseOrcPlanosInternos.push({ id: capId('pi'), ptres, planoInterno: texto });
+  textoEl.value = '';
+  baseOrcPersist();
+  baseOrcRenderPlanosInternos();
+  showToast('✅ Plano Interno '+texto+' vinculado ao PTRES '+ptres+'.','success');
+}
+function baseOrcDeletePlanoInterno(id){
+  State.baseOrcPlanosInternos = State.baseOrcPlanosInternos.filter(x => x.id !== id);
+  baseOrcPersist();
+  baseOrcRenderPlanosInternos();
+}
+function baseOrcRenderPlanosInternos(){
+  const tb = document.getElementById('baseorc-pi-tbody');
+  if(tb) tb.innerHTML = State.baseOrcPlanosInternos.map(pi =>
+    '<tr><td style="font-family:var(--font-mono)">'+pi.ptres+'</td><td>'+pi.planoInterno+'</td><td><button class="row-act-btn del" onclick="baseOrcDeletePlanoInterno(\''+pi.id+'\')">×</button></td></tr>'
+  ).join('') || '<tr><td colspan="3"><div class="cap-empty">Nenhum Plano Interno cadastrado.</div></td></tr>';
+  if(typeof empgenFiltrarPlanoInterno === 'function') empgenFiltrarPlanoInterno();
+}
+
+/* ── 4.4 Elemento de Despesa (depende da Natureza) ── */
+function baseOrcAddElemento(){
+  const natEl = document.getElementById('baseorc-elem-natureza');
+  const textoEl = document.getElementById('baseorc-elem-texto');
+  const natureza = natEl?.value || '';
+  const texto = (textoEl?.value || '').trim();
+  if(!natureza) return showToast('Selecione a Natureza da Despesa.','error');
+  if(!texto) return showToast('Informe o Elemento.','error');
+  if(State.baseOrcElementos.some(e => e.natureza === natureza && e.elemento.toLowerCase() === texto.toLowerCase())) return showToast('Este Elemento já está cadastrado para esta Natureza.','error');
+  State.baseOrcElementos.push({ id: capId('elem'), natureza, elemento: texto });
+  textoEl.value = '';
+  baseOrcPersist();
+  baseOrcRenderElementos();
+  showToast('✅ Elemento "'+texto+'" vinculado à Natureza '+natureza+'.','success');
+}
+function baseOrcDeleteElemento(id){
+  State.baseOrcElementos = State.baseOrcElementos.filter(x => x.id !== id);
+  baseOrcPersist();
+  baseOrcRenderElementos();
+}
+function baseOrcRenderElementos(){
+  const tb = document.getElementById('baseorc-elem-tbody');
+  if(tb) tb.innerHTML = State.baseOrcElementos.map(e =>
+    '<tr><td style="font-family:var(--font-mono)">'+e.natureza+'</td><td>'+e.elemento+'</td><td><button class="row-act-btn del" onclick="baseOrcDeleteElemento(\''+e.id+'\')">×</button></td></tr>'
+  ).join('') || '<tr><td colspan="3"><div class="cap-empty">Nenhum Elemento cadastrado.</div></td></tr>';
+  if(typeof empgenFiltrarElemento === 'function') empgenFiltrarElemento();
+}
+
+/* ── 4.5 Fonte de Recurso ── */
+function baseOrcAddFonte(){
+  const el = document.getElementById('baseorc-fonte-input');
+  const v = (el?.value || '').trim();
+  if(!v) return showToast('Informe a Fonte de Recurso.','error');
+  if(v.length > 10) return showToast('A Fonte de Recurso deve ter no máximo 10 dígitos.','error');
+  if(State.baseOrcFontes.some(f => f.fonte === v)) return showToast('Esta Fonte já está cadastrada.','error');
+  State.baseOrcFontes.push({ id: capId('fonte'), fonte: v });
+  el.value = '';
+  baseOrcPersist();
+  baseOrcRenderFontes();
+  showToast('✅ Fonte '+v+' cadastrada.','success');
+}
+function baseOrcDeleteFonte(id){
+  State.baseOrcFontes = State.baseOrcFontes.filter(x => x.id !== id);
+  baseOrcPersist();
+  baseOrcRenderFontes();
+}
+function baseOrcRenderFontes(){
+  const tb = document.getElementById('baseorc-fonte-tbody');
+  if(tb) tb.innerHTML = State.baseOrcFontes.map(f =>
+    '<tr><td style="font-family:var(--font-mono)">'+f.fonte+'</td><td><button class="row-act-btn del" onclick="baseOrcDeleteFonte(\''+f.id+'\')">×</button></td></tr>'
+  ).join('') || '<tr><td colspan="2"><div class="cap-empty">Nenhuma Fonte cadastrada.</div></td></tr>';
+  baseOrcAtualizarSelectFonte();
+}
+
+/* ── Selects dependentes (Configurações: PTRES→Plano Interno / Natureza→Elemento) ── */
+function baseOrcAtualizarSelectPtres(){
+  const sel = document.getElementById('baseorc-pi-ptres');
+  if(sel){
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">— Selecione —</option>' + State.baseOrcPtres.map(p => '<option value="'+p.ptres+'">'+p.ptres+'</option>').join('');
+    if(State.baseOrcPtres.some(p => p.ptres === cur)) sel.value = cur;
+  }
+  if(typeof empgenPopularSelects === 'function') empgenPopularSelects();
+  if(typeof empenhoPopularSelectsOrigem === 'function') empenhoPopularSelectsOrigem();
+}
+function baseOrcAtualizarSelectNatureza(){
+  const sel = document.getElementById('baseorc-elem-natureza');
+  if(sel){
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">— Selecione —</option>' + State.baseOrcNaturezas.map(n => '<option value="'+n.natureza+'">'+n.natureza+'</option>').join('');
+    if(State.baseOrcNaturezas.some(n => n.natureza === cur)) sel.value = cur;
+  }
+  if(typeof empgenPopularSelects === 'function') empgenPopularSelects();
+  if(typeof empenhoPopularSelectsOrigem === 'function') empenhoPopularSelectsOrigem();
+}
+function baseOrcAtualizarSelectFonte(){
+  if(typeof empgenPopularSelects === 'function') empgenPopularSelects();
+  if(typeof empenhoPopularSelectsOrigem === 'function') empenhoPopularSelectsOrigem();
+}
+function baseOrcRenderAll(){
+  baseOrcRenderPtres();
+  baseOrcRenderNaturezas();
+  baseOrcRenderPlanosInternos();
+  baseOrcRenderElementos();
+  baseOrcRenderFontes();
+}
+
+/* ============================================================
+   GERADOR DE EMPENHO
+   ============================================================ */
+const EMPGEN_TIPOS = {
+  '14': { nome:'Diárias',            icone:'💰', campos:['Ano','Ofício','Processo'] },
+  '18': { nome:'Estudante',          icone:'🎓', campos:['Introdução','Ofício','Nota de Crédito','Ano','Curso','SUAP'] },
+  '20': { nome:'Pesquisador',        icone:'📘', campos:['Introdução','Ofício','Curso','SUAP','Ano','Nota de Crédito'] },
+  '30': { nome:'Material',           icone:'📦', campos:['Introdução','Pregão','Ofício','Gerenciado','Ano','SUAP','Nota de Crédito','Dispensa'] },
+  '32': { nome:'PNAE',               icone:'🍽️', campos:['Dispensa','Edital','Ofício','Chamada Pública','SUAP','Agricultor','Nota de Crédito'] },
+  '37': { nome:'Mão de Obra',        icone:'🏗️', campos:['Introdução','Pregão','Dispensa','Contrato','Ofício','Ano','Nota de Crédito'] },
+  '39': { nome:'Serviços PJ',        icone:'🏢', campos:['Introdução','Ofício','Pregão','Contrato','Ano','Nota de Crédito'] },
+  '40': { nome:'Tecnologia',         icone:'💻', campos:['Introdução','Ofício','Contrato','Nota de Crédito','SUAP'] },
+  '47': { nome:'Contribuições',      icone:'🏛️', campos:['Introdução','Ofício','Contrato','Ano','Nota de Crédito'] },
+  '92': { nome:'Exercício Anterior', icone:'📚', campos:['Introdução','Serviços','Contrato','Ofício','Nota de Crédito'] },
+  '93': { nome:'Ressarcimentos',     icone:'🧾', campos:['Ano','Ofício','SUAP','Nota de Crédito'] }
+};
+
+/* Modelos oficiais de descrição — texto literal fornecido, com os campos entre colchetes
+   substituídos pelo valor digitado (ou string vazia quando o campo opcional não for preenchido). */
+const EMPGEN_TEMPLATES = {
+  '14': v => `VALOR EMPENHADO PARA PAGAMENTO DE DIARIAS PARA SERVIDORES DO IFPI - INSTITUTO FEDERAL DO PIAUI, CAMPUS SÃO JOÃO/PIAUI, DURANTE O EXERCICIO DE ${v['Ano']}, CONFORME ${v['Ofício']} E PROCESSO SUAP Nº ${v['Processo']}:`,
+  '18': v => `VALOR EMPENHADO PARA PAGAMENTO DE ${v['Introdução']}, DOS ALUNOS DO IFPI - CAMPUS SAO JOAO DO PIAUI, CONFORME OFICIO ${v['Ofício']} ${v['Nota de Crédito']} ${v['Ano']} ${v['Curso']} ${v['SUAP']}`,
+  '20': v => `VALOR EMPENHADO PARA PAGAMENTO DE ${v['Introdução']}, CONFORME ${v['Ofício']}, PARA PESQUISADOR DO CURSO ${v['Curso']} DO CAMPUS SAO JOAO DO PIAUI, DE ACORDO COM O PROCESSO ${v['SUAP']} (ANO ${v['Ano']}) ${v['Nota de Crédito']}`,
+  '30': v => `VALOR EMPENHADO PARA AQUISIÇÃO DE ${v['Introdução']} PARA O REFEITORIO DO IFPI CAMPUS SAO JOAO DO PIAUI, REFERENTE AO PREGAO ELETRONICO Nº ${v['Pregão']} SRP GERENCIADO ${v['Gerenciado']}, CONFORME ${v['Ofício']} ${v['Nota de Crédito']} ${v['Dispensa']}`,
+  '32': v => `VALOR EMPENHADO PARA PAGAMENTO DE DESPESA COM AQUISIÇÃO DE ALIMENTOS ORIUNDOS DA AGRICULTURA FAMILIAR PARA USO NO RESTAURANTE INSTITUCIONAL DO IFPI- CAMPUS SÃO JOÃO DO PIAUÍ. DISPENSA ${v['Dispensa']}. EDITAL ${v['Edital']} - CHAMADA PÚBLICA PNAE- ${v['Chamada Pública']} PROCESSO ${v['SUAP']}-AGRICULTOR ${v['Agricultor']}- CONFORME OFICIO ${v['Ofício']} ${v['Nota de Crédito']}`,
+  '37': v => `VALOR EMPENHADO PARA PAGAMENTO DE DESPESAS COM ${v['Introdução']} NAS DEPENDENCIAS DO IFPI - CAMPUS SAO JOAO DO PIAUI, CONFORME PREGAO ${v['Pregão']}, CONFORME DISPENSA Nº ${v['Dispensa']} CONTRATO ${v['Contrato']} OFICIO ${v['Ofício']} - EXERCICIO ${v['Ano']} ${v['Nota de Crédito']}`,
+  '39': v => `VALOR EMPENHADO PARA CONTRATACAO DE EMPRESA ESPECIALIZADA EM SERVICOS DE ${v['Introdução']} - NAS DEPENDENCIAS DO IFPI - CAMPUS SAO JOAO DO PIAUI, CONFORME OFICIO ${v['Ofício']}- E PREGAO Nº ${v['Pregão']} REFERENTE AO CONTRATO Nº ${v['Contrato']}, NO ANO DE ${v['Ano']} ${v['Nota de Crédito']}`,
+  '40': v => `VALOR EMPENHADO PARA CONTRATACAO DE EMPRESA ESPECIALIZADA EM SERVICOS DE ${v['Introdução']} CONFORME OFICIO ${v['Ofício']}-REFERENTE AO CONTRATO Nº ${v['Contrato']}, ${v['Nota de Crédito']} ${v['SUAP']}`,
+  '47': v => `VALOR EMPENHADO PARA PAGAMENTO DE DESPESA COM ${v['Introdução']} NO IFPI - CAMPUS SAO JOAO DO PIAUI, CONFORME CONTRATO ${v['Contrato']} - OFICIO ${v['Ofício']} ANO ${v['Ano']} ${v['Nota de Crédito']}`,
+  '92': v => `VALOR EMPENHADO DE RECONHECIMENTO DE DIVIDA PARA PAGAMENTO ${v['Introdução']} REFERENTE A ${v['Serviços']} NO IFPI-CAMPUS SAO JOAO DO PIAUI, CONFORME CONTRATO ${v['Contrato']} E OFICIO ${v['Ofício']} ${v['Nota de Crédito']}`,
+  '93': v => `VALOR EMPENHADO PARA PAGAMENTO DE DESPESAS COM RESSARCIMENTOS DE PASSAGENS DURANTE O EXERCICIO DE ${v['Ano']}, IFPI - CAMPUS SAO JOAO DO PIAUI, CONFORME OFICIO ${v['Ofício']} PROCESSO SUAP ${v['SUAP']} ${v['Nota de Crédito']}`
+};
+
+let empgenTipoSelecionado = null;
+
+function empgenCampoId(nome){
+  return 'empgen-campo-' + nome.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+}
+function empgenPlaceholder(nome){
+  const ex = {
+    'Ano':'2026','Ofício':'Ofício nº 123/2026','Processo':'23292.001234/2026-11',
+    'Introdução':'Ex: aquisição de material de expediente','Nota de Crédito':'2026NE000001','Curso':'Técnico em Informática',
+    'SUAP':'23292.001234/2026-11','Pregão':'10/2026','Gerenciado':'UASG 158214','Dispensa':'5/2026',
+    'Edital':'1/2026','Chamada Pública':'1/2026','Agricultor':'Nome do fornecedor',
+    'Contrato':'3/2026','Serviços':'manutenção predial'
+  };
+  return ex[nome] || '';
+}
+/* Limpeza leve do texto final: preserva a pontuação oficial dos modelos (vírgulas, hífens, parênteses),
+   apenas removendo espaços duplicados/órfãos que sobram quando um campo opcional fica em branco. */
+function empgenSanitizarDescricao(txt){
+  return (txt||'')
+    .replace(/\s+/g,' ')          // colapsa espaços duplicados
+    .replace(/\s+([,.;:)])/g,'$1') // remove espaço antes de , . ; : )
+    .replace(/\(\s+/g,'(')         // remove espaço logo após (
+    .trim()
+    .toUpperCase();
+}
+
+function empgenSelecionarTipo(codigo){
+  empgenTipoSelecionado = codigo;
+  document.querySelectorAll('.empgen-tipo-card').forEach(el => el.classList.toggle('selected', el.getAttribute('data-tipo') === codigo));
+  const info = EMPGEN_TIPOS[codigo];
+  const tituloEl = document.getElementById('empgen-especificos-titulo');
+  if(tituloEl) tituloEl.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg> Campos Específicos — '+codigo+' '+info.nome;
+  const wrap = document.getElementById('empgen-campos-especificos-wrap');
+  if(wrap) wrap.innerHTML = info.campos.map(c =>
+    '<div class="form-group"><label class="form-label">'+c+'</label>'+
+    '<input class="form-input" id="'+empgenCampoId(c)+'" placeholder="'+empgenPlaceholder(c)+'" oninput="empgenAtualizarResultado()"></div>'
+  ).join('');
+  empgenAtualizarResultado();
+}
+function empgenRenderTiposGrid(){
+  const grid = document.getElementById('empgen-tipos-grid');
+  if(!grid) return;
+  grid.innerHTML = Object.keys(EMPGEN_TIPOS).map(cod => {
+    const t = EMPGEN_TIPOS[cod];
+    return '<div class="empgen-tipo-card'+(empgenTipoSelecionado===cod?' selected':'')+'" data-tipo="'+cod+'" onclick="empgenSelecionarTipo(\''+cod+'\')">'
+      + '<span class="empgen-tipo-icone">'+t.icone+'</span>'
+      + '<div class="empgen-tipo-codigo">'+cod+'</div>'
+      + '<div class="empgen-tipo-nome">'+t.nome+'</div>'
+      + '</div>';
+  }).join('');
+}
+
+function empgenGerarDescricao(){
+  if(!empgenTipoSelecionado) return '';
+  const info = EMPGEN_TIPOS[empgenTipoSelecionado];
+  const template = EMPGEN_TEMPLATES[empgenTipoSelecionado];
+  if(!template) return '';
+  const valores = {};
+  info.campos.forEach(c => { valores[c] = (document.getElementById(empgenCampoId(c))?.value || '').trim(); });
+  return empgenSanitizarDescricao(template(valores));
+}
+
+function empgenFiltrarPlanoInterno(){
+  const ptres = document.getElementById('empgen-ptres')?.value || '';
+  const sel = document.getElementById('empgen-planointerno');
+  if(!sel) return;
+  const opts = State.baseOrcPlanosInternos.filter(pi => pi.ptres === ptres);
+  sel.innerHTML = '<option value="">'+(ptres ? '— Selecione —' : 'Selecione um PTRES primeiro')+'</option>' + opts.map(pi => '<option value="'+pi.id+'">'+pi.planoInterno+'</option>').join('');
+  sel.disabled = !ptres;
+  empgenAtualizarResultado();
+}
+function empgenFiltrarElemento(){
+  const natureza = document.getElementById('empgen-natureza')?.value || '';
+  const sel = document.getElementById('empgen-elemento');
+  if(!sel) return;
+  const opts = State.baseOrcElementos.filter(e => e.natureza === natureza);
+  sel.innerHTML = '<option value="">'+(natureza ? '— Selecione —' : 'Selecione uma Natureza primeiro')+'</option>' + opts.map(e => '<option value="'+e.id+'">'+e.elemento+'</option>').join('');
+  sel.disabled = !natureza;
+  empgenAtualizarResultado();
+}
+function empgenPopularSelects(){
+  const selPtres = document.getElementById('empgen-ptres');
+  if(selPtres){
+    const cur = selPtres.value;
+    selPtres.innerHTML = '<option value="">— Selecione —</option>' + State.baseOrcPtres.map(p => '<option value="'+p.ptres+'">'+p.ptres+'</option>').join('');
+    if(State.baseOrcPtres.some(p => p.ptres === cur)) selPtres.value = cur;
+  }
+  const selNatureza = document.getElementById('empgen-natureza');
+  if(selNatureza){
+    const cur = selNatureza.value;
+    selNatureza.innerHTML = '<option value="">— Selecione —</option>' + State.baseOrcNaturezas.map(n => '<option value="'+n.natureza+'">'+n.natureza+'</option>').join('');
+    if(State.baseOrcNaturezas.some(n => n.natureza === cur)) selNatureza.value = cur;
+  }
+  const selFonte = document.getElementById('empgen-fonte');
+  if(selFonte){
+    const cur = selFonte.value;
+    selFonte.innerHTML = '<option value="">— Selecione —</option>' + State.baseOrcFontes.map(f => '<option value="'+f.fonte+'">'+f.fonte+'</option>').join('');
+    if(State.baseOrcFontes.some(f => f.fonte === cur)) selFonte.value = cur;
+  }
+  empgenFiltrarPlanoInterno();
+  empgenFiltrarElemento();
+}
+
+function empgenAtualizarResultado(){
+  const esfera = document.getElementById('empgen-esfera')?.value.trim() || '';
+  const ptres = document.getElementById('empgen-ptres')?.value || '';
+  const fonte = document.getElementById('empgen-fonte')?.value || '';
+  const natureza = document.getElementById('empgen-natureza')?.value || '';
+  const tipoEmpenho = document.getElementById('empgen-tipoempenho')?.value || '';
+  const valor = document.getElementById('empgen-valor')?.value || '';
+
+  const elementoSel = document.getElementById('empgen-elemento');
+  const elementoTxt = elementoSel && elementoSel.value ? (State.baseOrcElementos.find(e => e.id === elementoSel.value)?.elemento || '') : '';
+  const planoSel = document.getElementById('empgen-planointerno');
+  const planoTxt = planoSel && planoSel.value ? (State.baseOrcPlanosInternos.find(pi => pi.id === planoSel.value)?.planoInterno || '') : '';
+
+  const set = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val || '—'; };
+  set('empgen-resumo-esfera', esfera);
+  set('empgen-resumo-ptres', ptres);
+  set('empgen-resumo-fonte', fonte);
+  set('empgen-resumo-natureza', natureza);
+  set('empgen-resumo-elemento', elementoTxt);
+  set('empgen-resumo-planointerno', planoTxt);
+  set('empgen-resumo-tipo2', tipoEmpenho);
+  const valorFmt = 'R$ ' + (valor || '0,00');
+  const valorEl2 = document.getElementById('empgen-resumo-valor2'); if(valorEl2) valorEl2.textContent = valorFmt;
+
+  const celulaTxt = [esfera&&('Esfera '+esfera), ptres&&('PTRES '+ptres), fonte&&('Fonte '+fonte), natureza&&('Nat. '+natureza), planoTxt&&('PI '+planoTxt)].filter(Boolean).join(' · ');
+  const celEl = document.getElementById('empgen-resumo-celula'); if(celEl) celEl.textContent = celulaTxt || '—';
+  const tipoEl = document.getElementById('empgen-resumo-tipo'); if(tipoEl) tipoEl.textContent = tipoEmpenho || '—';
+  const valEl = document.getElementById('empgen-resumo-valor'); if(valEl) valEl.textContent = valorFmt;
+
+  const descEl = document.getElementById('empgen-descricao-final');
+  const desc = empgenGerarDescricao();
+  if(descEl) descEl.value = desc;
+
+  // Botões de exportação só ficam ativos quando há um tipo selecionado e uma descrição gerada
+  const podeExportar = !!(empgenTipoSelecionado && desc);
+  const btnPdf = document.getElementById('empgen-btn-pdf');
+  const btnExcel = document.getElementById('empgen-btn-excel');
+  if(btnPdf) btnPdf.disabled = !podeExportar;
+  if(btnExcel) btnExcel.disabled = !podeExportar;
+}
+
+function empgenCopiarDescricao(){
+  const desc = document.getElementById('empgen-descricao-final')?.value || '';
+  if(!desc){ showToast('Nenhuma descrição gerada ainda. Selecione um tipo de empenho e preencha os campos.','error'); return; }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(desc)
+      .then(() => showToast('📋 Descrição copiada para a área de transferência!','success'))
+      .catch(() => showToast('Não foi possível copiar automaticamente. Selecione o texto manualmente.','error'));
+  } else {
+    showToast('Não foi possível copiar automaticamente. Selecione o texto manualmente.','error');
+  }
+}
+
+/* Coleta todos os dados atuais do Gerador de Empenho (orçamentários + campos específicos + descrição),
+   reutilizados tanto pelo PDF quanto pelo Excel. */
+function empgenColetarDados(){
+  const elementoSel = document.getElementById('empgen-elemento');
+  const elementoTxt = elementoSel && elementoSel.value ? (State.baseOrcElementos.find(e => e.id === elementoSel.value)?.elemento || '') : '';
+  const planoSel = document.getElementById('empgen-planointerno');
+  const planoTxt = planoSel && planoSel.value ? (State.baseOrcPlanosInternos.find(pi => pi.id === planoSel.value)?.planoInterno || '') : '';
+  const info = empgenTipoSelecionado ? EMPGEN_TIPOS[empgenTipoSelecionado] : null;
+  const camposEspecificos = info ? info.campos.map(c => ({
+    campo: c, valor: (document.getElementById(empgenCampoId(c))?.value || '').trim()
+  })) : [];
+  return {
+    tipoCodigo: empgenTipoSelecionado || '',
+    tipoNome: info ? info.nome : '',
+    esfera: document.getElementById('empgen-esfera')?.value.trim() || '',
+    ptres: document.getElementById('empgen-ptres')?.value || '',
+    fonte: document.getElementById('empgen-fonte')?.value || '',
+    natureza: document.getElementById('empgen-natureza')?.value || '',
+    elemento: elementoTxt,
+    planoInterno: planoTxt,
+    tipoEmpenho: document.getElementById('empgen-tipoempenho')?.value || '',
+    valor: parseMoneyBR(document.getElementById('empgen-valor')?.value || '0'),
+    camposEspecificos,
+    descricao: empgenGerarDescricao()
+  };
+}
+
+/* ── Exportação PDF (mesmo design visual do módulo Empenho) — só habilitada com tipo selecionado e descrição gerada ── */
+function empgenGerarPDF(){
+  const d = empgenColetarDados();
+  if(!d.tipoCodigo || !d.descricao){
+    showToast('Selecione um tipo de empenho e preencha os campos antes de gerar o PDF.','error');
+    return;
+  }
+  const agora = new Date();
+  const nomeArquivoPdf = 'EMPENHO_' + d.tipoCodigo + '_' + agora.toISOString().slice(0,10);
+  const camposRows = d.camposEspecificos.map(c => `<tr><td style="font-weight:700;width:220px">${c.campo}</td><td>${c.valor || '-'}</td></tr>`).join('');
+
+  const w = window.open('', '_blank');
+  w.document.write(`<!DOCTYPE html><html><head><title>${nomeArquivoPdf}</title>
+  <style>
+    body{font-family:'Segoe UI',sans-serif;font-size:12px;color:#1a1a1a;padding:32px;max-width:1200px;margin:auto}
+    h1{font-size:18px;font-weight:800;margin-bottom:2px;color:#1a1a1a}
+    .subtitle{font-size:11px;color:#666;margin-bottom:4px;text-transform:uppercase;letter-spacing:.08em}
+    .header-logo{display:flex;align-items:center;gap:12px;margin-bottom:18px;padding-bottom:14px;border-bottom:2px solid #f97316}
+    .logo-box{width:36px;height:36px;background:#f97316;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+    h2{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#f97316;margin:22px 0 10px;padding-bottom:6px;border-bottom:1px solid #eee}
+    table{width:100%;border-collapse:collapse;font-size:10.5px;margin-bottom:8px}
+    thead{display:table-header-group}
+    th{background:#f97316;color:#fff;padding:7px 8px;text-align:left;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+    td{padding:6px 8px;border-bottom:1px solid #e9ecef}
+    tr:nth-child(even) td{background:#f8f9fa}
+    tr{page-break-inside:avoid}
+    .tag-tipo{display:inline-block;background:#fff3e8;color:#f97316;font-weight:800;padding:4px 10px;border-radius:6px;font-size:11px;margin-bottom:14px}
+    .desc-box{background:#f8f9fa;border-left:4px solid #f97316;padding:14px 16px;margin-top:6px;font-family:Consolas,monospace;font-size:11.5px;line-height:1.6;white-space:pre-wrap}
+    .footer-summary{margin-top:18px;padding-top:12px;border-top:2px solid #f97316;display:flex;justify-content:flex-end;gap:28px}
+    .footer-item{text-align:right}
+    .footer-label{font-size:10px;text-transform:uppercase;color:#666;letter-spacing:.06em}
+    .footer-val{font-size:15px;font-weight:800;color:#1a1a1a}
+    @media print{body{padding:16px}@page{margin:14mm}}
+  </style></head><body>
+  <div class="header-logo">
+    <div class="logo-box"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg></div>
+    <div>
+      <h1>SISMINT — Sistema Integrados de Módulos Independentes</h1>
+      <div class="subtitle">Relatório de Geração de Empenho</div>
+      <div class="subtitle" style="margin-bottom:0">Emitido em ${agora.toLocaleDateString('pt-BR')} às ${agora.toLocaleTimeString('pt-BR')}</div>
+    </div>
+  </div>
+
+  <div class="tag-tipo">${d.tipoCodigo} — ${d.tipoNome}</div>
+
+  <h2>1. Dados Orçamentários</h2>
+  <table><thead><tr><th>Esfera</th><th>PTRES</th><th>Fonte de Recursos</th><th>Natureza da Despesa</th><th>Elemento</th><th>Plano Interno</th><th>Tipo</th><th style="text-align:right">Valor</th></tr></thead>
+  <tbody><tr>
+    <td>${d.esfera||'-'}</td><td>${d.ptres||'-'}</td><td>${d.fonte||'-'}</td>
+    <td>${d.natureza||'-'}</td><td>${d.elemento||'-'}</td><td>${d.planoInterno||'-'}</td><td>${d.tipoEmpenho||'-'}</td>
+    <td style="text-align:right;font-weight:700">${capMoney(d.valor)}</td>
+  </tr></tbody></table>
+
+  <h2>2. Campos Específicos — ${d.tipoCodigo} ${d.tipoNome}</h2>
+  <table><tbody>${camposRows}</tbody></table>
+
+  <h2>3. Descrição Final</h2>
+  <div class="desc-box">${d.descricao}</div>
+
+  <div class="footer-summary">
+    <div class="footer-item"><div class="footer-label">Valor do Empenho</div><div class="footer-val">${capMoney(d.valor)}</div></div>
+  </div>
+  </body></html>`);
+  w.document.close();
+  setTimeout(() => w.print(), 400);
+  showToast('📄 PDF do Gerador de Empenho aberto para impressão!', 'success');
+}
+
+/* ── Exportação Excel (.xlsx, mesma lógica de aba única com dados completos) ── */
+function empgenGerarExcel(){
+  const d = empgenColetarDados();
+  if(!d.tipoCodigo || !d.descricao){
+    showToast('Selecione um tipo de empenho e preencha os campos antes de gerar o Excel.','error');
+    return;
+  }
+  if(typeof XLSX === 'undefined'){ showToast('Biblioteca de exportação (XLSX) não carregada.','error'); return; }
+
+  const aoa = [
+    ['GERADOR DE EMPENHO — ' + d.tipoCodigo + ' ' + d.tipoNome],
+    [],
+    ['Dados Orçamentários'],
+    ['Esfera','PTRES','Fonte de Recursos','Natureza da Despesa','Elemento de Despesa','Plano Interno','Tipo de Empenho','Valor'],
+    [d.esfera, d.ptres, d.fonte, d.natureza, d.elemento, d.planoInterno, d.tipoEmpenho, d.valor],
+    [],
+    ['Campos Específicos — ' + d.tipoCodigo + ' ' + d.tipoNome],
+    ['Campo','Valor'],
+    ...d.camposEspecificos.map(c => [c.campo, c.valor]),
+    [],
+    ['Descrição Final'],
+    [d.descricao]
+  ];
+
+  const ws = XLSX.utils.aoa_to_sheet(aoa);
+  ws['!cols'] = [{wch:22},{wch:22},{wch:22},{wch:22},{wch:22},{wch:22},{wch:18},{wch:16}];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Empenho ' + d.tipoCodigo);
+  XLSX.writeFile(wb, 'EMPENHO_' + d.tipoCodigo + '_' + new Date().toISOString().slice(0,10) + '.xlsx');
+  showToast('📊 Excel do Gerador de Empenho exportado com sucesso!', 'success');
+}
+
+function empgenLimparTudo(){
+  if(!confirm('Isso vai limpar todos os campos do Gerador de Empenho (a Base Orçamentária em Configurações não é afetada). Deseja continuar?')) return;
+  empgenTipoSelecionado = null;
+  document.querySelectorAll('.empgen-tipo-card').forEach(el => el.classList.remove('selected'));
+  const wrap = document.getElementById('empgen-campos-especificos-wrap');
+  if(wrap) wrap.innerHTML = '<div class="cap-empty" style="grid-column:1/-1">Selecione um tipo de empenho acima para exibir os campos específicos.</div>';
+  const tituloEl = document.getElementById('empgen-especificos-titulo');
+  if(tituloEl) tituloEl.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg> Campos Específicos';
+  ['empgen-esfera','empgen-ptres','empgen-fonte','empgen-natureza','empgen-valor'].forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
+  const te = document.getElementById('empgen-tipoempenho'); if(te) te.value = 'Ordinário';
+  empgenFiltrarPlanoInterno();
+  empgenFiltrarElemento();
+  empgenAtualizarResultado();
+  showToast('Formulário do Gerador de Empenho limpo.','info');
+}
+
+function empgenInit(){
+  empgenRenderTiposGrid();
+  empgenPopularSelects();
+  empgenAtualizarResultado();
+}
+
 
 // FIX #8: Exportação em PDF do ciclo atual usando window.print()
 function exportCapPDF(){
@@ -9128,7 +9987,9 @@ function showPage(id) {
   });
   if (id === 'financeiro') renderFinanceiro();
   if (id === 'nexus') { if (typeof nxRenderPage === 'function') nxRenderPage(nxCurTab || 'dashboard'); }
-  if (id === 'empenho') { if (typeof empenhoRecalcular === 'function') empenhoRecalcular(); }
+  if (id === 'empenho') { if (typeof empenhoPopularSelectsOrigem === 'function') empenhoPopularSelectsOrigem(); if (typeof empenhoRecalcular === 'function') empenhoRecalcular(); }
+  if (id === 'config') { if (typeof baseOrcRenderAll === 'function') baseOrcRenderAll(); }
+  if (id === 'empgerador') { if (typeof empgenInit === 'function') empgenInit(); }
 }
 
 /* ============================================================
