@@ -13384,7 +13384,7 @@ document.getElementById("mon-btnExport").addEventListener("click", ()=>{
     "Banco","Agência","Conta Favorecido","Conta Pagadora"];
 
   const rows = students.map(s=>{
-    const valorFmt = formatBRL(common.valorDoc);
+    const valorNum = common.valorDoc;   // valor numérico puro (sem "R$"), usado nas 4 colunas monetárias
     const cpfLimpo = cleanCpf(s.cpf);              // apenas 11 números
     const bancoExp = sanitizeBancoForExport(s.bancoCodigo);   // texto, 3 dígitos
     const agenciaExp = sanitizeAgenciaForExport(s.agencia);   // texto, 4 dígitos, sem verificador
@@ -13392,10 +13392,10 @@ document.getElementById("mon-btnExport").addEventListener("click", ()=>{
     return [
       UG, common.anoDH, "RP", common.dataEmissao, common.dataVencimento, UG,
       common.obsDadosBasicos, common.dataAteste, cpfLimpo, common.dataPagamento, UG,
-      common.dataEmissaoOrigem, common.numDocOrigem, valorFmt, 1, "DSP061",
-      UG, 1, common.empenho, "1", valorFmt, 394110100, 1,
-      3095, common.mes, common.anoDH, 0, 1, 1, valorFmt,
-      cpfLimpo, valorFmt, common.obsPreDoc, "OBC", cpfLimpo,
+      common.dataEmissaoOrigem, common.numDocOrigem, valorNum, 1, "DSP061",
+      UG, 1, common.empenho, "1", valorNum, 394110100, 1,
+      3095, common.mes, common.anoDH, 0, 1, 1, valorNum,
+      cpfLimpo, valorNum, common.obsPreDoc, "OBC", cpfLimpo,
       bancoExp, agenciaExp, contaExp, "UNICA"
     ];
   });
@@ -13413,6 +13413,18 @@ document.getElementById("mon-btnExport").addEventListener("click", ()=>{
       const cellRef = XLSX.utils.encode_cell({r: rowIdx, c});
       const cell = ws[cellRef];
       if(cell){ cell.t = 's'; cell.z = '@'; }
+    });
+  }
+
+  // Força formato NUMÉRICO (sem "R$") nas colunas de valor: N=Valor Doc Origem(13), U=Valor(20), AD=Valor Custo(29), AF=Valor Pagamento(31) — índices 0-based
+  // Ex.: 3852,15 fica gravado como número puro na célula (não como texto "R$ 3.852,15")
+  const moneyCols = [13, 20, 29, 31];
+  for(let r=0; r<rows.length; r++){
+    const rowIdx = r + 1; // +1 pelo cabeçalho (linha 0)
+    moneyCols.forEach(c=>{
+      const cellRef = XLSX.utils.encode_cell({r: rowIdx, c});
+      const cell = ws[cellRef];
+      if(cell && typeof cell.v === 'number'){ cell.t = 'n'; cell.z = '0.00'; }
     });
   }
 
