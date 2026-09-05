@@ -3759,6 +3759,76 @@ input.cap-date.form-input {
   #page-relatoriosuap .btn-gold { background: var(--gold);    color: #fff; }
   #page-relatoriosuap .btn-navy { background: var(--navy);    color: #fff; }
   #page-relatoriosuap .btn-pdf { background: #8b0000;        color: #fff; }
+  #page-relatoriosuap .btn-codigo { background: #5b4f00;      color: #fff; }
+
+  /* Painel de assinaturas — visível ao processar um relatório */
+  #page-relatoriosuap .assinaturas-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin-bottom: 18px;
+    display: none;
+  }
+  #page-relatoriosuap .assinaturas-panel h4 {
+    font-size: .88rem; font-weight: 700; color: var(--navy);
+    text-transform: uppercase; letter-spacing: .4px; margin-bottom: 14px;
+  }
+  #page-relatoriosuap .assinaturas-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+  }
+  @media (max-width: 900px) { #page-relatoriosuap .assinaturas-grid { grid-template-columns: 1fr; } }
+  #page-relatoriosuap .assin-field label {
+    display: block; font-size: .78rem; font-weight: 600;
+    color: var(--muted); margin-bottom: 4px; text-transform: uppercase;
+  }
+  #page-relatoriosuap .assin-field input {
+    width: 100%; padding: 7px 10px; border: 1px solid var(--border);
+    border-radius: 6px; font-size: .9rem; color: var(--text);
+    background: #fafbfc; outline: none;
+  }
+  #page-relatoriosuap .assin-field input:focus { border-color: var(--accent); background: #fff; }
+  /* Modal para o código fonte gerado */
+  #suap2-codigo-modal {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,.55); z-index: 2000; justify-content: center; align-items: center;
+  }
+  #suap2-codigo-modal.open { display: flex; }
+  #suap2-codigo-modal .modal-box {
+    background: #1a1a2e; color: #e2e8f0;
+    border-radius: 12px; padding: 0; max-width: 860px; width: 94vw;
+    max-height: 88vh; display: flex; flex-direction: column; box-shadow: 0 24px 64px rgba(0,0,0,.6);
+  }
+  #suap2-codigo-modal .modal-header {
+    padding: 16px 22px; border-bottom: 1px solid #2d3748;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  #suap2-codigo-modal .modal-header h3 { font-size: 1rem; font-weight: 700; color: #a3bffa; }
+  #suap2-codigo-modal .modal-header p  { font-size: .78rem; color: #90a0b7; margin-top: 2px; }
+  #suap2-codigo-modal .modal-close-btn {
+    background: none; border: none; color: #90a0b7; cursor: pointer;
+    font-size: 1.3rem; padding: 4px 8px; border-radius: 6px; line-height: 1;
+  }
+  #suap2-codigo-modal .modal-close-btn:hover { background: #2d3748; color: #fff; }
+  #suap2-codigo-modal .modal-body { flex: 1; overflow: auto; padding: 16px 22px; }
+  #suap2-codigo-modal textarea {
+    width: 100%; height: 380px; background: #0d1117; color: #c9d1d9;
+    border: 1px solid #30363d; border-radius: 8px;
+    font-family: 'Courier New', Consolas, monospace; font-size: 11.5px;
+    line-height: 1.5; padding: 12px 14px; resize: vertical;
+  }
+  #suap2-codigo-modal .modal-footer {
+    padding: 14px 22px; border-top: 1px solid #2d3748;
+    display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+  }
+  #suap2-codigo-modal .modal-footer .info {
+    margin-left: auto; font-size: .75rem; color: #90a0b7;
+  }
+  #suap2-codigo-modal .btn-copiar-codigo {
+    background: #1a6fc4; color: #fff; border: none; border-radius: 7px;
+    padding: 8px 18px; font-size: .88rem; font-weight: 600; cursor: pointer; transition: background .15s;
+  }
+  #suap2-codigo-modal .btn-copiar-codigo:hover { background: #2589e6; }
   #page-relatoriosuap .btn-outline { background: #fff; color: var(--navy); border: 1.5px solid var(--border); }
   #page-relatoriosuap .btn:not(:disabled):hover { opacity: .88; }
 
@@ -5886,7 +5956,63 @@ input.cap-date.form-input {
     <button class="btn btn-success"  id="suap2-btn-copy"    disabled>📋 Copiar Tabela SUAP</button>
     <button class="btn btn-navy"     id="suap2-btn-html"    disabled>💾 Exportar HTML</button>
     <button class="btn btn-pdf"      id="suap2-btn-pdf"     disabled>🖨️ Gerar PDF</button>
+    <button class="btn btn-codigo"   id="suap2-btn-codigo"  disabled title="Gera o código fonte HTML completo (com cabeçalho, tabela, demonstrativo de receita e assinaturas) para colar na opção Código Fonte do SUAP">🖥️ Código Fonte SUAP</button>
     <button class="btn btn-outline"  id="suap2-btn-reset"   style="margin-left:auto">🔄 Novo Relatório</button>
+  </div>
+
+  <!-- PAINEL DE ASSINATURAS (aparece após processar) -->
+  <div class="assinaturas-panel" id="suap2-assinaturas-panel">
+    <h4>Assinantes do Relatório</h4>
+    <div class="assinaturas-grid">
+      <div class="assin-field">
+        <label>1º Signatário — Nome</label>
+        <input type="text" id="suap2-ass1-nome" placeholder="Ex.: GERFFESON THIAGO MOTA DE ALMEIDA SILVA" value="GERFFESON THIAGO MOTA DE ALMEIDA SILVA">
+      </div>
+      <div class="assin-field">
+        <label>1º Signatário — Cargo</label>
+        <input type="text" id="suap2-ass1-cargo" placeholder="Ex.: Diretor-Geral" value="Diretor-Geral">
+      </div>
+      <div></div>
+      <div class="assin-field">
+        <label>2º Signatário — Nome</label>
+        <input type="text" id="suap2-ass2-nome" placeholder="Ex.: JACQUELINE RIBEIRO DE BRITO" value="JACQUELINE RIBEIRO DE BRITO">
+      </div>
+      <div class="assin-field">
+        <label>2º Signatário — Cargo</label>
+        <input type="text" id="suap2-ass2-cargo" placeholder="Ex.: Chefe do Departamento de Administração" value="Chefe do Departamento de Administração-em exercício">
+      </div>
+      <div></div>
+      <div class="assin-field">
+        <label>3º Signatário — Nome</label>
+        <input type="text" id="suap2-ass3-nome" placeholder="Ex.: JOSE MARCONDES RIBEIRO COELHO" value="JOSE MARCONDES RIBEIRO COELHO">
+      </div>
+      <div class="assin-field">
+        <label>3º Signatário — Cargo</label>
+        <input type="text" id="suap2-ass3-cargo" placeholder="Ex.: Contador" value="Contador">
+      </div>
+      <div></div>
+    </div>
+  </div>
+
+  <!-- MODAL: CÓDIGO FONTE SUAP -->
+  <div id="suap2-codigo-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div>
+          <h3>🖥️ Código Fonte para o SUAP</h3>
+          <p>Copie todo o conteúdo abaixo → vá ao SUAP → clique em Código Fonte → cole e salve.</p>
+        </div>
+        <button class="modal-close-btn" onclick="document.getElementById('suap2-codigo-modal').classList.remove('open')" title="Fechar">✕</button>
+      </div>
+      <div class="modal-body">
+        <textarea id="suap2-codigo-textarea" spellcheck="false" readonly></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-copiar-codigo" onclick="suap2CopiarCodigo()">📋 Copiar tudo</button>
+        <button class="btn-copiar-codigo" style="background:#1a8a5a" onclick="suap2SelecionarTudo()">◻ Selecionar tudo</button>
+        <span class="info" id="suap2-codigo-chars"></span>
+      </div>
+    </div>
   </div>
 
   <!-- ALERTS -->
@@ -6367,16 +6493,18 @@ input.cap-date.form-input {
               <tr>
                 <th>Mês</th>
                 <th style="text-align:right">Valor NP</th>
-                <th style="text-align:right">DARF 6190</th>
-                <th style="text-align:right">DARF 6147</th>
-                <th style="text-align:right">Total Líquido</th>
+                <th style="text-align:right">Base DARF 6190</th>
+                <th style="text-align:right">DARF 6190 (9,45%)</th>
+                <th style="text-align:right">Base DARF 6147</th>
+                <th style="text-align:right">DARF 6147 (5,85%)</th>
                 <th style="text-align:right">DSP001</th>
                 <th style="text-align:right">DSP002</th>
-                <th></th>
+                <th style="text-align:right">Líquido</th>
+                <th>Ações</th>
               </tr>
             </thead>
             <tbody id="energia-registros-tbody">
-              <tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text-muted)">Nenhum registro salvo ainda.</td></tr>
+              <tr><td colspan="10" style="text-align:center;padding:24px;color:var(--text-muted)">Nenhum registro salvo ainda.</td></tr>
             </tbody>
           </table>
         </div>
@@ -14000,9 +14128,11 @@ document.getElementById('suap2-btn-reset').addEventListener('click', () => {
 });
 
 function setButtonsState(enabled) {
-  ['suap2-btn-copy','suap2-btn-html','suap2-btn-pdf'].forEach(id => {
+  ['suap2-btn-copy','suap2-btn-html','suap2-btn-pdf','suap2-btn-codigo'].forEach(id => {
     document.getElementById(id).disabled = !enabled;
   });
+  const assPanel = document.getElementById('suap2-assinaturas-panel');
+  if (assPanel) assPanel.style.display = enabled ? 'block' : 'none';
 }
 
 // ─────────────────────────────────────────────
@@ -15132,7 +15262,202 @@ function generatePDF() {
 }
 
 // ─────────────────────────────────────────────
-// DOWNLOAD HELPER
+// CÓDIGO FONTE SUAP — gera o HTML completo no formato exato
+// do editor do SUAP (CKEditor) para colar via "Código Fonte"
+// ─────────────────────────────────────────────
+document.getElementById('suap2-btn-codigo').addEventListener('click', () => {
+  if (!state.suapRows) return;
+  const codigo = buildSuapCodigoFonte();
+  const ta = document.getElementById('suap2-codigo-textarea');
+  ta.value = codigo;
+  document.getElementById('suap2-codigo-chars').textContent =
+    codigo.length.toLocaleString('pt-BR') + ' caracteres';
+  document.getElementById('suap2-codigo-modal').classList.add('open');
+});
+
+function suap2CopiarCodigo() {
+  const ta = document.getElementById('suap2-codigo-textarea');
+  ta.select();
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(ta.value)
+      .then(() => toast('✅ Código fonte copiado! Abra o SUAP → Código Fonte → Cole.'))
+      .catch(() => { document.execCommand('copy'); toast('✅ Código fonte copiado!'); });
+  } else {
+    document.execCommand('copy');
+    toast('✅ Código fonte copiado!');
+  }
+}
+
+function suap2SelecionarTudo() {
+  const ta = document.getElementById('suap2-codigo-textarea');
+  ta.focus(); ta.select();
+}
+
+/* Converte caracteres acentuados e especiais para entidades HTML (formato usado pelo SUAP CKEditor) */
+function entidadesSuap(s) {
+  if (!s) return '';
+  const map = {
+    'á':'&aacute;','à':'&agrave;','â':'&acirc;','ã':'&atilde;','ä':'&auml;',
+    'Á':'&Aacute;','À':'&Agrave;','Â':'&Acirc;','Ã':'&Atilde;',
+    'é':'&eacute;','ê':'&ecirc;','É':'&Eacute;','Ê':'&Ecirc;',
+    'í':'&iacute;','Í':'&Iacute;',
+    'ó':'&oacute;','ô':'&ocirc;','õ':'&otilde;','Ó':'&Oacute;','Ô':'&Ocirc;','Õ':'&Otilde;',
+    'ú':'&uacute;','Ú':'&Uacute;',
+    'ç':'&ccedil;','Ç':'&Ccedil;',
+    '–':'&ndash;','—':'&mdash;',
+  };
+  return String(s).replace(/[áàâãäÁÀÂÃéêÉÊíÍóôõÓÔÕúÚçÇ–—]/g, c => map[c] || c);
+}
+
+/* ── Estilos inline reutilizados (exatamente como no código de referência do SUAP) ── */
+const S_TH   = 'border: 1px solid rgb(200, 208, 220); font-family: Inter, \'Segoe UI\', system-ui, sans-serif; padding: 9px 10px; background: rgb(237, 240, 244); color: rgb(58, 69, 88); font-size: 11px; font-weight: 600; letter-spacing: 0.3px;';
+const S_ELC  = 'padding: 7px 10px; text-align: center; vertical-align: middle; background-color: rgb(247, 248, 250); border: 1px solid rgb(209, 217, 227);';
+const S_ELD  = 'padding: 7px 10px; vertical-align: middle; background-color: rgb(247, 248, 250); border: 1px solid rgb(209, 217, 227);';
+const S_NAC  = 'padding: 7px 10px; text-align: center; vertical-align: middle; border: 1px solid rgb(209, 217, 227);';
+const S_NAD  = 'padding: 7px 10px; vertical-align: middle; border: 1px solid rgb(209, 217, 227);';
+const S_MON  = 'padding: 7px 10px; text-align: right; white-space: nowrap; vertical-align: middle; border: 1px solid rgb(209, 217, 227);';
+const S_TOTL = 'padding: 7px 10px; text-align: right; background-color: rgb(237, 240, 244); border: 1px solid rgb(209, 217, 227);';
+const S_TOTM = 'padding: 7px 10px; text-align: right; background-color: rgb(237, 240, 244); border: 1px solid rgb(209, 217, 227);';
+const S_TGER = 'padding: 9px 10px; text-align: right; background-color: rgb(224, 229, 237); border: 1px solid rgb(200, 208, 220);';
+
+const spEl  = t => `<span style="font-size: 12pt;"><span style="font-family: 'Inter','Segoe UI',system-ui,sans-serif;"><span style="font-weight: 600;"><span style="color: #2d3748;">${t}</span></span></span></span>`;
+const spNat = t => `<span style="font-size: 12pt;"><span style="font-family: 'Inter','Segoe UI',system-ui,sans-serif;"><span style="font-weight: 600;"><span style="color: #3a4558;">${t}</span></span></span></span>`;
+const spNad = t => `<span style="font-size: 16px; font-family: Inter, 'Segoe UI', system-ui, sans-serif; font-weight: 400; color: rgb(0, 0, 0); vertical-align: baseline;">${entidadesSuap(t)}</span>`;
+const spMon = t => `<span style="font-size: 12pt;">${t}</span>`;
+const spTot = ()  => `<span style="font-size: 12pt;"><span style="font-family: 'Inter','Segoe UI',system-ui,sans-serif;"><span style="font-style: italic;"><span style="color: #5a6a7e;"><span style="font-weight: 600;">Total</span></span></span></span></span>`;
+const spTg  = t => `<span style="font-size: 12pt;"><span style="font-family: 'Inter','Segoe UI',system-ui,sans-serif;"><span style="color: #2d3748;"><span style="font-weight: bold;">R$ ${t}</span></span></span></span>`;
+
+function buildSuapCodigoFonte() {
+  const rows    = state.suapRows;
+  const mesRef  = state.mesReferencia || '';
+  const mesMaiusc = mesRef.toUpperCase();
+  const partesMes = mesRef.split('/');
+  const mesNome   = (partesMes[0] || mesRef).toLowerCase();
+  const anoNome   = partesMes[1] || '';
+  const mesLabel  = anoNome ? mesNome + ' de ' + anoNome : mesNome;
+  const totRow    = rows.find(r => r.type === 'total_geral') || {};
+
+  // ── Assinantes ──
+  const ass = ['1','2','3'].map(n => ({
+    nome:  (document.getElementById('suap2-ass'+n+'-nome')?.value  || '').trim(),
+    cargo: (document.getElementById('suap2-ass'+n+'-cargo')?.value || '').trim(),
+  }));
+
+  // ── Agrupamento por elemento ──
+  const dataRows  = rows.filter(r => r.type === 'data');
+  const subtotals = {};
+  rows.filter(r => r.type === 'subtotal_elem').forEach(r => { subtotals[r.elemNum] = r; });
+  const ordem = []; const grupos = {};
+  dataRows.forEach(r => {
+    if (!grupos[r.elemNum]) { grupos[r.elemNum] = { elemNum: r.elemNum, elemDesc: r.elemDesc, itens: [] }; ordem.push(r.elemNum); }
+    grupos[r.elemNum].itens.push(r);
+  });
+
+  // ── Linhas da tabela ──
+  let tableRows = '';
+  ordem.forEach(elemNum => {
+    const g = grupos[elemNum];
+    const nItens = g.itens.length;
+    const rowspan = nItens + 1; // +1 para a linha de Total
+    const hElem = 48.0208; const hItem = 24.0104;
+
+    g.itens.forEach((r, i) => {
+      const natCode  = r.only9 ? '-9' : ('3390' + pad2(r.elemNum) + pad2(r.subNum));
+      const provFmt  = r.prov === 0 ? '-' : fmtMoney(r.prov);
+      const empFmt   = r.emp  === 0 ? '-' : fmtMoney(r.emp);
+      const liqFmt   = r.liq  === 0 ? '-' : fmtMoney(r.liq);
+      const pagoFmt  = r.pago === 0 ? '-' : fmtMoney(r.pago);
+      let firstCols  = '';
+      if (i === 0) {
+        firstCols = `<td style="${S_ELC} height: ${hElem}px; width: 2.81202%;" rowspan="${rowspan}">${spEl(elemNum)}</td>` +
+          `<td style="${S_ELD} height: ${hElem}px; width: 27.9796%;" rowspan="${rowspan}">${spEl(entidadesSuap(g.elemDesc))}</td>`;
+      }
+      tableRows += `<tr style="height: ${hItem}px;">\n${firstCols}` +
+        `<td style="${S_NAC} height: ${hItem}px; width: 6.60825%;">${spNat(natCode)}</td>` +
+        `<td style="${S_NAD} height: ${hItem}px; width: 30.2292%;">${spNad(r.subDesc)}</td>` +
+        `<td style="${S_MON} height: ${hItem}px; width: 8.50636%;">${spMon(provFmt)}</td>` +
+        `<td style="${S_MON} height: ${hItem}px; width: 8.50636%;">${spMon(empFmt)}</td>` +
+        `<td style="${S_MON} height: ${hItem}px; width: 7.87365%;">${spMon(liqFmt)}</td>` +
+        `<td style="${S_MON} height: ${hItem}px; width: 7.45185%;">${spMon(pagoFmt)}</td>\n</tr>\n`;
+    });
+
+    // Linha Total do elemento
+    const st = subtotals[elemNum] || {};
+    const fst = f => (st[f] !== undefined ? ('<strong>' + (st[f] === 0 ? 'R$ 0,00' : fmtMoney(st[f])) + '</strong>') : '—');
+    tableRows += `<tr style="height: ${hItem}px;">\n` +
+      `<td style="${S_TOTL} height: ${hItem}px; width: 6.60825%;">${spTot()}</td>` +
+      `<td style="${S_TOTL} height: ${hItem}px; width: 30.2292%;">&nbsp;</td>` +
+      `<td style="${S_TOTM} height: ${hItem}px; width: 8.50636%;">${spMon(fst('prov'))}</td>` +
+      `<td style="${S_TOTM} height: ${hItem}px; width: 8.50636%;">${spMon(fst('emp'))}</td>` +
+      `<td style="${S_TOTM} height: ${hItem}px; width: 7.87365%;">${spMon(fst('liq'))}</td>` +
+      `<td style="${S_TOTM} height: ${hItem}px; width: 7.45185%;">${spMon(fst('pago'))}</td>\n</tr>\n`;
+  });
+
+  // Linha TOTAL GERAL
+  tableRows += `<tr>\n<td colspan="4" style="${S_TGER} height: 48.0208px; width: 67.9596%; text-align: right;"><span style="font-size: 12pt;"><span style="font-family: 'Inter','Segoe UI',system-ui,sans-serif;"><span style="color: #2d3748;"><strong>TOTAL GERAL</strong></span></span></span></td>` +
+    `<td style="${S_TGER} height: 48.0208px; width: 8.50636%;">${spTg(fmtMoney(totRow.prov||0))}</td>` +
+    `<td style="${S_TGER} height: 48.0208px; width: 8.50636%;">${spTg(fmtMoney(totRow.emp||0))}</td>` +
+    `<td style="${S_TGER} height: 48.0208px; width: 7.87365%;">${spTg(fmtMoney(totRow.liq||0))}</td>` +
+    `<td style="${S_TGER} height: 48.0208px; width: 7.45185%;">${spTg(fmtMoney(totRow.pago||0))}</td>\n</tr>`;
+
+  // ── Bloco de assinaturas ──
+  const assBlock = ({nome, cargo}) => {
+    if (!nome) return '';
+    return `<p style="-webkit-text-stroke-width: 0px; margin-left: 0cm; margin-right: 0cm; text-align: center;">&nbsp;</p>\n` +
+      `<p style="-webkit-text-stroke-width: 0px; margin-left: 0cm; margin-right: 0cm; text-align: center;"><span style="font-family: Carlito; font-size: 20px; font-weight: bold; color: rgb(0, 0, 0); vertical-align: baseline;"><strong>${entidadesSuap(nome)}</strong></span></p>\n` +
+      `<p style="-webkit-text-stroke-width: 0px; margin-left: 0cm; margin-right: 0cm; text-align: center;"><span style="font-family: Carlito;"><span style="font-size: 20px;">${entidadesSuap(cargo)}</span></span></p>\n`;
+  };
+
+  // ── Monta o HTML completo ──
+  const demoMes = entidadesSuap(mesMaiusc).replace('/', ' - ');
+  return `<div id="suap-ckeditor" style="padding: 20px 66.66666666666667px 20px 66.66666666666667px;" data-left="1.75" data-right="19.25">
+<p><span style="font-family: Carlito;"><span style="font-size: 20px;">Relat&oacute;rio da despesa realizada &ndash; Por Sub Elemento de Despesa (Subitem)</span></span></p>
+<p><span style="font-family: Carlito;"><span style="font-size: 20px;">Exerc&iacute;cio Financeiro de <strong>${entidadesSuap(mesLabel)}</strong></span></span></p>
+<p><span style="font-family: Carlito;"><span style="font-size: 20px;">Em R$.</span></span></p>
+<h3 style="text-align: center; margin-bottom: 14px;"><span style="font-family: Arial,sans-serif;"><span style="text-transform: uppercase;">EXECU&Ccedil;&Atilde;O DAS DESPESAS OR&Ccedil;AMENT&Aacute;RIAS &mdash; ${entidadesSuap(mesMaiusc)}</span></span></h3>
+<table class="cke_show_border" style="width: 100%; border-collapse: collapse; font-size: 12px; font-family: Inter, 'Segoe UI', system-ui, sans-serif; border: 1px solid rgb(200, 208, 220);">
+<thead style="display: table-row-group;">
+<tr style="height: 49.5312px;">
+<th style="${S_TH} text-align: left; height: 49.5312px; width: 30.7916%;" colspan="2">ELEMENTO DESPESA</th>
+<th style="${S_TH} text-align: left; height: 49.5312px; width: 36.8375%;" colspan="2">NATUREZA DESPESA DETALHADA</th>
+<th style="${S_TH} text-align: center; height: 49.5312px; width: 8.50636%;">15<br>PROVIS&Atilde;O<br>RECEBIDA</th>
+<th style="${S_TH} text-align: center; height: 49.5312px; width: 8.50636%;">23<br>DESPESAS<br>EMPENHADAS</th>
+<th style="${S_TH} text-align: center; height: 49.5312px; width: 7.87365%;">25<br>DESPESAS<br>LIQUIDADAS</th>
+<th style="${S_TH} text-align: center; height: 49.5312px; width: 7.45185%;">28<br>DESPESAS<br>PAGAS</th>
+</tr>
+</thead>
+<tbody>
+${tableRows}</tbody>
+</table>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p style="margin: 0cm 0cm 10pt; text-align: center;"><span style="font-family: Carlito;"><span style="font-size: 20px;"><span style="color: #000000;"><strong>DEMONSTRATIVO DE RECEITA - ${demoMes}</strong></span></span></span></p>
+<table style="width: 503px;" border="1" cellspacing="1" cellpadding="1" align="center">
+<tbody>
+<tr>
+<td style="text-align: center;"><span style="font-family: Carlito;"><span style="font-size: 14px;"><strong><span style="color: #000000;">NOME DA RECEITA</span></strong></span></span></td>
+<td style="text-align: center; width: 166px;"><span style="font-family: Carlito;"><span style="font-size: 14px;"><strong><span style="color: #000000;">VALOR EM R$</span></strong></span></span></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span style="font-family: Carlito;"><strong><span style="font-size: 14px;"><span style="color: #000000;">Multa Biblioteca</span></span></strong></span></td>
+<td style="text-align: center; width: 166px;"><span style="font-family: Carlito;"><span style="font-size: 14px;"><span style="color: #000000;">0,00</span></span></span></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span style="font-family: Carlito;"><strong><span style="font-size: 14px;"><span style="color: #000000;">Cess&atilde;o de Espa&ccedil;o (Lanchonete)</span></span></strong></span></td>
+<td style="text-align: center; width: 166px;"><span style="font-family: Carlito;"><span style="font-size: 14px;"><span style="color: #000000;">0,00</span></span></span></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span style="font-family: Carlito;"><strong><span style="font-size: 14px;"><span style="color: #000000;">Outras receitas</span></span></strong></span></td>
+<td style="text-align: center; width: 166px;"><span style="font-family: Carlito;"><span style="font-size: 14px;"><span style="color: #000000;">0,00</span></span></span></td>
+</tr>
+<tr>
+<td style="text-align: center;"><span style="font-family: Carlito;"><span style="font-size: 14px;"><strong><span style="color: #000000;">TOTAL</span></strong></span></span></td>
+<td style="text-align: center; width: 166px;"><span style="font-family: Carlito;"><span style="font-size: 14px;"><strong><span style="color: #000000;">0,00</span></strong></span></span></td>
+</tr>
+</tbody>
+</table>
+${ass.map(assBlock).join('')}</div>`;
+}
 // ─────────────────────────────────────────────
 function download(content, filename, mime) {
   const blob = new Blob([content], { type: mime });
@@ -15428,21 +15753,27 @@ function renderRegistros() {
   const regs = State.energiaRegistros || [];
   document.getElementById('energia-registros-count').textContent = regs.length + (regs.length === 1 ? ' registro' : ' registros');
   if (regs.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text-muted)">Nenhum registro salvo ainda.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:24px;color:var(--text-muted)">Nenhum registro salvo ainda.</td></tr>';
     return;
   }
+  const mo = r => formatBRLEnergia(r);
   tbody.innerHTML = regs.slice().reverse().map((r) => {
     const idx = regs.indexOf(r);
     return `
     <tr>
       <td>${r.mes || '—'} ${r.divergente ? '<span title="Divergência com o total da fatura" style="color:#fca5a5">⚠️</span>' : ''}</td>
-      <td style="text-align:right;font-variant-numeric:tabular-nums">${formatBRLEnergia(r.valorNp)}</td>
-      <td style="text-align:right;font-variant-numeric:tabular-nums">${formatBRLEnergia(r.darf6190)}</td>
-      <td style="text-align:right;font-variant-numeric:tabular-nums">${formatBRLEnergia(r.darf6147)}</td>
-      <td style="text-align:right;font-variant-numeric:tabular-nums">${formatBRLEnergia(r.totalLiquido)}</td>
-      <td style="text-align:right;font-variant-numeric:tabular-nums">${formatBRLEnergia(r.dsp001)}</td>
-      <td style="text-align:right;font-variant-numeric:tabular-nums">${formatBRLEnergia(r.dsp002)}</td>
-      <td><button class="btn" style="padding:4px 8px;font-size:11px" onclick="SIS_ENERGIA.excluirRegistro(${idx})">Excluir</button></td>
+      <td style="text-align:right;font-variant-numeric:tabular-nums">${mo(r.valorNp)}</td>
+      <td style="text-align:right;font-variant-numeric:tabular-nums">${mo(r.base6190 != null ? r.base6190 : undefined)}</td>
+      <td style="text-align:right;font-variant-numeric:tabular-nums">${mo(r.darf6190)}</td>
+      <td style="text-align:right;font-variant-numeric:tabular-nums">${mo(r.base6147 != null ? r.base6147 : undefined)}</td>
+      <td style="text-align:right;font-variant-numeric:tabular-nums">${mo(r.darf6147)}</td>
+      <td style="text-align:right;font-variant-numeric:tabular-nums">${mo(r.dsp001)}</td>
+      <td style="text-align:right;font-variant-numeric:tabular-nums">${mo(r.dsp002)}</td>
+      <td style="text-align:right;font-variant-numeric:tabular-nums">${mo(r.totalLiquido)}</td>
+      <td style="white-space:nowrap">
+        <button class="row-act-btn edit" style="font-size:11px;padding:3px 8px" onclick="SIS_ENERGIA.editarRegistro(${idx})" title="Editar registro">✎</button>
+        <button class="row-act-btn del" style="font-size:11px;padding:3px 8px" onclick="SIS_ENERGIA.excluirRegistro(${idx})" title="Excluir registro">×</button>
+      </td>
     </tr>`;
   }).join('');
 }
@@ -15503,11 +15834,13 @@ function salvarRegistro() {
   const registro = {
     mes: r.mes || '',
     valorNp: r.valorNp,
+    base6190: r.base6190,
     darf6190: r.darf6190,
+    base6147: r.base6147,
     darf6147: r.darf6147,
-    totalLiquido: r.totalLiquido,
     dsp001: r.dsp001,
     dsp002: r.dsp002,
+    totalLiquido: r.totalLiquido,
     totalFatura: r.totalFatura,
     divergente: r.divergente,
     empenho1: document.getElementById('energia-empenho1').value,
@@ -15533,6 +15866,64 @@ function excluirRegistro(idx) {
   State.energiaRegistros.splice(idx, 1);
   persistirRegistros();
   renderRegistros();
+}
+
+/* ── Editar registro existente: carrega os dados no formulário, simula o objeto
+   currentExtracted a partir do registro salvo e rola a tela para os resultados,
+   permitindo que o usuário altere campos manualmente e salve (sobrescreve pelo mês). ── */
+function editarRegistro(idx) {
+  const r = State.energiaRegistros[idx];
+  if (!r) return;
+
+  // Preenche os campos de empenho/nd
+  const emp1El = document.getElementById('energia-empenho1');
+  const nd1El  = document.getElementById('energia-nd1');
+  const emp2El = document.getElementById('energia-empenho2');
+  const nd2El  = document.getElementById('energia-nd2');
+  if (emp1El) emp1El.value = r.empenho1 || '';
+  if (nd1El)  nd1El.value  = r.nd1  || '';
+  if (emp2El) emp2El.value = r.empenho2 || '';
+  if (nd2El)  nd2El.value  = r.nd2  || '';
+
+  // Reconstrói um objeto de detalhes mínimo para renderResultado aceitar
+  const detalhes = [];
+
+  // Restaura currentExtracted com os valores salvos — os valores são editáveis
+  // pelo usuário via campos do formulário, sem necessidade de re-parsear o PDF.
+  currentExtracted = {
+    mes: r.mes || '',
+    base6190: r.base6190 != null ? r.base6190 : 0,
+    darf6190: r.darf6190 != null ? r.darf6190 : 0,
+    base6147: r.base6147 != null ? r.base6147 : 0,
+    darf6147: r.darf6147 != null ? r.darf6147 : 0,
+    valorNp:  r.valorNp  != null ? r.valorNp  : 0,
+    totalLiquido: r.totalLiquido != null ? r.totalLiquido : 0,
+    dsp001:   r.dsp001   != null ? r.dsp001   : 0,
+    dsp002:   r.dsp002   != null ? r.dsp002   : 0,
+    totalFatura: r.totalFatura != null ? r.totalFatura : 0,
+    divergente: r.divergente || false,
+    cosip: r.dsp002 != null ? r.dsp002 : 0,
+    detalhes: detalhes
+  };
+
+  // Popula os cards visuais
+  renderResultado(currentExtracted);
+  if (emp1El && nd1El) {
+    document.getElementById('energia-dsp001-ref').textContent = '('+emp1El.value+' / '+nd1El.value+')';
+  }
+  if (emp2El && nd2El) {
+    document.getElementById('energia-dsp002-ref').textContent = '('+emp2El.value+' / '+nd2El.value+')';
+  }
+
+  // Atualiza o label do mês
+  const mesLabel = document.getElementById('energia-mes-label');
+  if (mesLabel) mesLabel.textContent = r.mes || '—';
+
+  // Rola para a seção de resultados
+  const results = document.getElementById('energia-results');
+  if (results) results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  if (typeof showToast === 'function') showToast('Registro do mês '+r.mes+' carregado para edição. Altere os campos e clique em "Salvar Registro".', 'info');
 }
 
 function resetar() {
@@ -15591,6 +15982,7 @@ if (document.readyState === 'loading') {
 return {
   salvarRegistro: salvarRegistro,
   excluirRegistro: excluirRegistro,
+  editarRegistro: editarRegistro,
   resetar: resetar,
   renderRegistros: renderRegistros,
 };
