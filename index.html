@@ -2040,6 +2040,11 @@ input.cap-date.form-input {
 .cap-table-title svg { width: 16px; height: 16px; color: var(--accent-teal); }
 
 /* ── GERADOR DE EMPENHO — grade de tipos (11 cartões fixos) ── */
+/* Célula Orçamentária agora pode combinar código + descrição (mais longo) — evita corte do texto no card */
+#empgen-resumo-cards .stat-card,
+#empenho-cards-row .stat-card { overflow: visible; }
+#empgen-resumo-celula { white-space: normal; overflow-wrap: break-word; }
+
 .grid-empgen-tipos {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -5171,18 +5176,6 @@ input.cap-date.form-input {
         </div>
       </div>
 
-      <!-- Campos Específicos do tipo selecionado -->
-      <div class="cap-table-card">
-        <div class="cap-table-header"><div class="cap-table-title" id="empgen-especificos-titulo">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-          Campos Específicos</div></div>
-        <div class="cap-form-body">
-          <div class="cap-grid-3" id="empgen-campos-especificos-wrap">
-            <div class="cap-empty" style="grid-column:1/-1">Selecione um tipo de empenho acima para exibir os campos específicos.</div>
-          </div>
-        </div>
-      </div>
-
       <!-- Dados Orçamentários (campos universais) -->
       <div class="cap-table-card">
         <div class="cap-table-header"><div class="cap-table-title">
@@ -5208,6 +5201,18 @@ input.cap-date.form-input {
             <div class="form-group"><label class="form-label">Valor (R$)</label><input class="form-input highlight" id="empgen-valor" placeholder="0,00" oninput="maskMoneyInput(this);empgenAtualizarResultado()"></div>
           </div>
           <div style="font-size:11px;color:var(--text-muted);margin-top:4px">PTRES, Fonte, Natureza, Elemento e Plano Interno vêm de <strong>Configurações → Base Orçamentária</strong>.</div>
+        </div>
+      </div>
+
+      <!-- Campos Específicos do tipo selecionado -->
+      <div class="cap-table-card">
+        <div class="cap-table-header"><div class="cap-table-title" id="empgen-especificos-titulo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+          Campos Específicos</div></div>
+        <div class="cap-form-body">
+          <div class="cap-grid-3" id="empgen-campos-especificos-wrap">
+            <div class="cap-empty" style="grid-column:1/-1">Selecione um tipo de empenho acima para exibir os campos específicos.</div>
+          </div>
         </div>
       </div>
 
@@ -5408,11 +5413,16 @@ input.cap-date.form-input {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
             PTRES</div></div>
           <div class="cap-form-body">
+            <input type="hidden" id="baseorc-ptres-edit-id">
             <div class="cap-grid-2">
-              <div class="form-group"><label class="form-label">PTRES (6 dígitos)</label><input class="form-input" id="baseorc-ptres-input" placeholder="231704" maxlength="6" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,6)" onkeydown="if(event.key==='Enter')baseOrcAddPtres()"></div>
-              <div class="form-group" style="align-self:end"><button class="btn btn-teal" onclick="baseOrcAddPtres()" style="width:100%;justify-content:center">+ Adicionar</button></div>
+              <div class="form-group"><label class="form-label">PTRES (6 dígitos)</label><input class="form-input" id="baseorc-ptres-input" placeholder="231704" maxlength="6" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,6)"></div>
+              <div class="form-group"><label class="form-label">Descrição</label><input class="form-input" id="baseorc-ptres-descricao" placeholder="Custeio" onkeydown="if(event.key==='Enter')baseOrcAddPtres()"></div>
             </div>
-            <div class="cap-table-wrap"><table class="data-table"><thead><tr><th>PTRES</th><th>Ações</th></tr></thead><tbody id="baseorc-ptres-tbody"></tbody></table></div>
+            <div style="display:flex;gap:8px;margin-bottom:14px">
+              <button class="btn btn-teal" onclick="baseOrcAddPtres()" style="flex:1;justify-content:center" id="baseorc-ptres-savebtn">+ Adicionar</button>
+              <button class="btn btn-ghost" onclick="baseOrcCancelEdit('ptres')" style="display:none" id="baseorc-ptres-cancelbtn">Cancelar</button>
+            </div>
+            <div class="cap-table-wrap"><table class="data-table"><thead><tr><th>PTRES</th><th>Descrição</th><th>Ações</th></tr></thead><tbody id="baseorc-ptres-tbody"></tbody></table></div>
           </div>
         </div>
 
@@ -5422,11 +5432,16 @@ input.cap-date.form-input {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
             Natureza da Despesa</div></div>
           <div class="cap-form-body">
+            <input type="hidden" id="baseorc-natureza-edit-id">
             <div class="cap-grid-2">
-              <div class="form-group"><label class="form-label">Natureza (6 dígitos)</label><input class="form-input" id="baseorc-natureza-input" placeholder="339018" maxlength="6" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,6)" onkeydown="if(event.key==='Enter')baseOrcAddNatureza()"></div>
-              <div class="form-group" style="align-self:end"><button class="btn btn-teal" onclick="baseOrcAddNatureza()" style="width:100%;justify-content:center">+ Adicionar</button></div>
+              <div class="form-group"><label class="form-label">Natureza (6 dígitos)</label><input class="form-input" id="baseorc-natureza-input" placeholder="339018" maxlength="6" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,6)"></div>
+              <div class="form-group"><label class="form-label">Descrição</label><input class="form-input" id="baseorc-natureza-descricao" placeholder="Diárias" onkeydown="if(event.key==='Enter')baseOrcAddNatureza()"></div>
             </div>
-            <div class="cap-table-wrap"><table class="data-table"><thead><tr><th>Natureza</th><th>Ações</th></tr></thead><tbody id="baseorc-natureza-tbody"></tbody></table></div>
+            <div style="display:flex;gap:8px;margin-bottom:14px">
+              <button class="btn btn-teal" onclick="baseOrcAddNatureza()" style="flex:1;justify-content:center" id="baseorc-natureza-savebtn">+ Adicionar</button>
+              <button class="btn btn-ghost" onclick="baseOrcCancelEdit('natureza')" style="display:none" id="baseorc-natureza-cancelbtn">Cancelar</button>
+            </div>
+            <div class="cap-table-wrap"><table class="data-table"><thead><tr><th>Natureza</th><th>Descrição</th><th>Ações</th></tr></thead><tbody id="baseorc-natureza-tbody"></tbody></table></div>
           </div>
         </div>
 
@@ -5436,14 +5451,21 @@ input.cap-date.form-input {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
             Plano Interno</div></div>
           <div class="cap-form-body">
+            <input type="hidden" id="baseorc-pi-edit-id">
             <div class="cap-grid-2">
               <div class="form-group"><label class="form-label">PTRES</label>
                 <select class="form-select" id="baseorc-pi-ptres"><option value="">— Selecione —</option></select>
               </div>
-              <div class="form-group"><label class="form-label">Plano Interno</label><input class="form-input" id="baseorc-pi-texto" placeholder="L29AFP2300N" maxlength="11" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,11)" onkeydown="if(event.key==='Enter')baseOrcAddPlanoInterno()"></div>
+              <div class="form-group"><label class="form-label">Plano Interno (11 caracteres)</label><input class="form-input" id="baseorc-pi-texto" placeholder="L2994P2300N" maxlength="11" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,11)"></div>
             </div>
-            <button class="btn btn-teal" onclick="baseOrcAddPlanoInterno()" style="margin-bottom:14px">+ Adicionar Plano Interno</button>
-            <div class="cap-table-wrap"><table class="data-table"><thead><tr><th>PTRES</th><th>Plano Interno</th><th>Ações</th></tr></thead><tbody id="baseorc-pi-tbody"></tbody></table></div>
+            <div class="cap-grid-2">
+              <div class="form-group" style="grid-column:1/-1"><label class="form-label">Descrição</label><input class="form-input" id="baseorc-pi-descricao" placeholder="Assistência aos Estudantes" onkeydown="if(event.key==='Enter')baseOrcAddPlanoInterno()"></div>
+            </div>
+            <div style="display:flex;gap:8px;margin-bottom:14px">
+              <button class="btn btn-teal" onclick="baseOrcAddPlanoInterno()" style="flex:1;justify-content:center" id="baseorc-pi-savebtn">+ Adicionar Plano Interno</button>
+              <button class="btn btn-ghost" onclick="baseOrcCancelEdit('pi')" style="display:none" id="baseorc-pi-cancelbtn">Cancelar</button>
+            </div>
+            <div class="cap-table-wrap"><table class="data-table"><thead><tr><th>PTRES</th><th>Plano Interno</th><th>Descrição</th><th>Ações</th></tr></thead><tbody id="baseorc-pi-tbody"></tbody></table></div>
           </div>
         </div>
 
@@ -5453,14 +5475,21 @@ input.cap-date.form-input {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
             Elemento de Despesa</div></div>
           <div class="cap-form-body">
+            <input type="hidden" id="baseorc-elem-edit-id">
             <div class="cap-grid-2">
               <div class="form-group"><label class="form-label">Natureza</label>
                 <select class="form-select" id="baseorc-elem-natureza"><option value="">— Selecione —</option></select>
               </div>
-              <div class="form-group"><label class="form-label">Elemento</label><input class="form-input" id="baseorc-elem-texto" placeholder="Ex: Material de Consumo" onkeydown="if(event.key==='Enter')baseOrcAddElemento()"></div>
+              <div class="form-group"><label class="form-label">Elemento (2 dígitos)</label><input class="form-input" id="baseorc-elem-texto" placeholder="14" maxlength="2" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,2)"></div>
             </div>
-            <button class="btn btn-teal" onclick="baseOrcAddElemento()" style="margin-bottom:14px">+ Adicionar Elemento</button>
-            <div class="cap-table-wrap"><table class="data-table"><thead><tr><th>Natureza</th><th>Elemento</th><th>Ações</th></tr></thead><tbody id="baseorc-elem-tbody"></tbody></table></div>
+            <div class="cap-grid-2">
+              <div class="form-group" style="grid-column:1/-1"><label class="form-label">Descrição</label><input class="form-input" id="baseorc-elem-descricao" placeholder="Diárias no País" onkeydown="if(event.key==='Enter')baseOrcAddElemento()"></div>
+            </div>
+            <div style="display:flex;gap:8px;margin-bottom:14px">
+              <button class="btn btn-teal" onclick="baseOrcAddElemento()" style="flex:1;justify-content:center" id="baseorc-elem-savebtn">+ Adicionar Elemento</button>
+              <button class="btn btn-ghost" onclick="baseOrcCancelEdit('elem')" style="display:none" id="baseorc-elem-cancelbtn">Cancelar</button>
+            </div>
+            <div class="cap-table-wrap"><table class="data-table"><thead><tr><th>Natureza</th><th>Elemento</th><th>Descrição</th><th>Ações</th></tr></thead><tbody id="baseorc-elem-tbody"></tbody></table></div>
           </div>
         </div>
 
@@ -5470,9 +5499,13 @@ input.cap-date.form-input {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
             Fonte de Recurso</div></div>
           <div class="cap-form-body">
+            <input type="hidden" id="baseorc-fonte-edit-id">
             <div class="cap-grid-2">
               <div class="form-group"><label class="form-label">Fonte (até 10 dígitos)</label><input class="form-input" id="baseorc-fonte-input" placeholder="1000000000" maxlength="10" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)" onkeydown="if(event.key==='Enter')baseOrcAddFonte()"></div>
-              <div class="form-group" style="align-self:end"><button class="btn btn-teal" onclick="baseOrcAddFonte()" style="width:100%;justify-content:center">+ Adicionar</button></div>
+              <div class="form-group" style="align-self:end;display:flex;gap:8px">
+                <button class="btn btn-teal" onclick="baseOrcAddFonte()" style="flex:1;justify-content:center" id="baseorc-fonte-savebtn">+ Adicionar</button>
+                <button class="btn btn-ghost" onclick="baseOrcCancelEdit('fonte')" style="display:none" id="baseorc-fonte-cancelbtn">Cancelar</button>
+              </div>
             </div>
             <div class="cap-table-wrap"><table class="data-table"><thead><tr><th>Fonte</th><th>Ações</th></tr></thead><tbody id="baseorc-fonte-tbody"></tbody></table></div>
           </div>
@@ -8785,17 +8818,20 @@ let empenhoDestinos = []; // {id, fornId, nome, tipo, esfera, ptres, fonte, natu
 
 function empenhoGetOrigem(){
   const ptresSel = document.getElementById('empenho-ptres');
+  const naturezaSel = document.getElementById('empenho-natureza');
   const planoSel = document.getElementById('empenho-planointerno');
   const elementoSel = document.getElementById('empenho-elemento');
-  const planoTxt = planoSel && planoSel.value ? (State.baseOrcPlanosInternos.find(pi => pi.id === planoSel.value)?.planoInterno || '') : '';
-  const elementoTxt = elementoSel && elementoSel.value ? (State.baseOrcElementos.find(e => e.id === elementoSel.value)?.elemento || '') : '';
+  const ptresRec = ptresSel && ptresSel.value ? State.baseOrcPtres.find(p => p.ptres === ptresSel.value) : null;
+  const naturezaRec = naturezaSel && naturezaSel.value ? State.baseOrcNaturezas.find(n => n.natureza === naturezaSel.value) : null;
+  const planoRec = planoSel && planoSel.value ? State.baseOrcPlanosInternos.find(pi => pi.id === planoSel.value) : null;
+  const elementoRec = elementoSel && elementoSel.value ? State.baseOrcElementos.find(e => e.id === elementoSel.value) : null;
   return {
     esfera:        document.getElementById('empenho-esfera')?.value.trim()        || '',
-    ptres:         ptresSel?.value || '',
+    ptres:         ptresRec ? baseOrcDisplayPtres(ptresRec) : (ptresSel?.value || ''),
     fonte:         document.getElementById('empenho-fonte')?.value || '',
-    natureza:      document.getElementById('empenho-natureza')?.value || '',
-    elemento:      elementoTxt,
-    planoInterno:  planoTxt,
+    natureza:      naturezaRec ? baseOrcDisplayNatureza(naturezaRec) : (naturezaSel?.value || ''),
+    elemento:      elementoRec ? baseOrcDisplayElemento(elementoRec) : '',
+    planoInterno:  planoRec ? baseOrcDisplayPlanoInterno(planoRec) : '',
     valor:         parseMoneyBR(document.getElementById('empenho-valor-origem')?.value || '0')
   };
 }
@@ -8807,7 +8843,7 @@ function empenhoFiltrarPlanoInterno(){
   const sel = document.getElementById('empenho-planointerno');
   if(!sel) return;
   const opts = State.baseOrcPlanosInternos.filter(pi => pi.ptres === ptres);
-  sel.innerHTML = '<option value="">'+(ptres ? '— Selecione —' : 'Selecione um PTRES primeiro')+'</option>' + opts.map(pi => '<option value="'+pi.id+'">'+pi.planoInterno+'</option>').join('');
+  sel.innerHTML = '<option value="">'+(ptres ? '— Selecione —' : 'Selecione um PTRES primeiro')+'</option>' + opts.map(pi => '<option value="'+pi.id+'">'+baseOrcDisplayPlanoInterno(pi)+'</option>').join('');
   sel.disabled = !ptres;
   empenhoAtualizarResumo();
 }
@@ -8816,7 +8852,7 @@ function empenhoFiltrarElemento(){
   const sel = document.getElementById('empenho-elemento');
   if(!sel) return;
   const opts = State.baseOrcElementos.filter(e => e.natureza === natureza);
-  sel.innerHTML = '<option value="">'+(natureza ? '— Selecione —' : 'Selecione uma Natureza primeiro')+'</option>' + opts.map(e => '<option value="'+e.id+'">'+e.elemento+'</option>').join('');
+  sel.innerHTML = '<option value="">'+(natureza ? '— Selecione —' : 'Selecione uma Natureza primeiro')+'</option>' + opts.map(e => '<option value="'+e.id+'">'+baseOrcDisplayElemento(e)+'</option>').join('');
   sel.disabled = !natureza;
   empenhoAtualizarResumo();
 }
@@ -8825,13 +8861,13 @@ function empenhoPopularSelectsOrigem(){
   const selPtres = document.getElementById('empenho-ptres');
   if(selPtres){
     const cur = selPtres.value;
-    selPtres.innerHTML = '<option value="">— Selecione —</option>' + State.baseOrcPtres.map(p => '<option value="'+p.ptres+'">'+p.ptres+'</option>').join('');
+    selPtres.innerHTML = '<option value="">— Selecione —</option>' + State.baseOrcPtres.map(p => '<option value="'+p.ptres+'">'+baseOrcDisplayPtres(p)+'</option>').join('');
     if(State.baseOrcPtres.some(p => p.ptres === cur)) selPtres.value = cur;
   }
   const selNatureza = document.getElementById('empenho-natureza');
   if(selNatureza){
     const cur = selNatureza.value;
-    selNatureza.innerHTML = '<option value="">— Selecione —</option>' + State.baseOrcNaturezas.map(n => '<option value="'+n.natureza+'">'+n.natureza+'</option>').join('');
+    selNatureza.innerHTML = '<option value="">— Selecione —</option>' + State.baseOrcNaturezas.map(n => '<option value="'+n.natureza+'">'+baseOrcDisplayNatureza(n)+'</option>').join('');
     if(State.baseOrcNaturezas.some(n => n.natureza === cur)) selNatureza.value = cur;
   }
   const selFonte = document.getElementById('empenho-fonte');
@@ -9226,10 +9262,10 @@ function empenhoGerarExcel(){
    Não modifica nada do módulo "Empenho" (distribuição de crédito) nem
    de Contas a Pagar/Financeiro/Relatórios/Dashboard.
    ============================================================ */
-State.baseOrcPtres        = Storage.get('baseOrcPtres', []);        // [{id, ptres}]
-State.baseOrcPlanosInternos = Storage.get('baseOrcPlanosInternos', []); // [{id, ptres, planoInterno}]
-State.baseOrcNaturezas    = Storage.get('baseOrcNaturezas', []);    // [{id, natureza}]
-State.baseOrcElementos    = Storage.get('baseOrcElementos', []);    // [{id, natureza, elemento}]
+State.baseOrcPtres        = Storage.get('baseOrcPtres', []);        // [{id, ptres, descricao}]
+State.baseOrcPlanosInternos = Storage.get('baseOrcPlanosInternos', []); // [{id, ptres, planoInterno, descricao}]
+State.baseOrcNaturezas    = Storage.get('baseOrcNaturezas', []);    // [{id, natureza, descricao}]
+State.baseOrcElementos    = Storage.get('baseOrcElementos', []);    // [{id, natureza, elemento, descricao}]
 State.baseOrcFontes       = Storage.get('baseOrcFontes', []);       // [{id, fonte}]
 
 function baseOrcPersist(){
@@ -9241,17 +9277,56 @@ function baseOrcPersist(){
   Storage.set('baseOrcFontes', State.baseOrcFontes);
 }
 
+/* ── Textos de apresentação "código - descrição", usados em Configurações, Detalha Cred e Gerador de Empenho.
+   Compatível com registros antigos sem descrição (mostra apenas o código, como antes). ── */
+function baseOrcDisplayPtres(p){ return p ? (p.descricao ? (p.ptres+' - '+p.descricao) : p.ptres) : ''; }
+function baseOrcDisplayNatureza(n){ return n ? (n.descricao ? (n.natureza+' - '+n.descricao) : n.natureza) : ''; }
+function baseOrcDisplayPlanoInterno(pi){ return pi ? (pi.descricao ? (pi.planoInterno+' - '+pi.descricao) : pi.planoInterno) : ''; }
+function baseOrcDisplayElemento(e){ return e ? (e.descricao ? (e.elemento+' - '+e.descricao) : e.elemento) : ''; }
+
+/* Alterna entre os botões "Adicionar"/"Cancelar" e recolhe o formulário do modo edição */
+function baseOrcCancelEdit(tipo){
+  const idEl = document.getElementById('baseorc-'+tipo+'-edit-id');
+  if(idEl) idEl.value = '';
+  const cancelBtn = document.getElementById('baseorc-'+tipo+'-cancelbtn');
+  if(cancelBtn) cancelBtn.style.display = 'none';
+  const saveBtn = document.getElementById('baseorc-'+tipo+'-savebtn');
+  const labels = {ptres:'+ Adicionar', natureza:'+ Adicionar', pi:'+ Adicionar Plano Interno', elem:'+ Adicionar Elemento', fonte:'+ Adicionar'};
+  if(saveBtn) saveBtn.textContent = labels[tipo] || '+ Adicionar';
+}
+
 /* ── 4.1 PTRES ── */
 function baseOrcAddPtres(){
+  const editIdEl = document.getElementById('baseorc-ptres-edit-id');
+  const editId = editIdEl?.value || '';
   const el = document.getElementById('baseorc-ptres-input');
+  const descEl = document.getElementById('baseorc-ptres-descricao');
   const v = (el?.value || '').trim();
+  const desc = (descEl?.value || '').trim();
   if(v.length !== 6) return showToast('O PTRES deve ter exatamente 6 dígitos.','error');
-  if(State.baseOrcPtres.some(p => p.ptres === v)) return showToast('Este PTRES já está cadastrado.','error');
-  State.baseOrcPtres.push({ id: capId('ptres'), ptres: v });
-  el.value = '';
+  if(!desc) return showToast('Informe a descrição do PTRES.','error');
+  const duplicado = State.baseOrcPtres.some(p => p.ptres === v && p.id !== editId);
+  if(duplicado) return showToast('Este PTRES já está cadastrado.','error');
+  if(editId){
+    const item = State.baseOrcPtres.find(x => x.id === editId);
+    if(item){ item.ptres = v; item.descricao = desc; }
+  } else {
+    State.baseOrcPtres.push({ id: capId('ptres'), ptres: v, descricao: desc });
+  }
+  el.value = ''; descEl.value = '';
+  baseOrcCancelEdit('ptres');
   baseOrcPersist();
   baseOrcRenderPtres();
-  showToast('✅ PTRES '+v+' cadastrado.','success');
+  showToast(editId ? '✅ PTRES atualizado.' : '✅ PTRES '+v+' cadastrado.','success');
+}
+function baseOrcEditPtres(id){
+  const p = State.baseOrcPtres.find(x => x.id === id); if(!p) return;
+  document.getElementById('baseorc-ptres-edit-id').value = p.id;
+  document.getElementById('baseorc-ptres-input').value = p.ptres;
+  document.getElementById('baseorc-ptres-descricao').value = p.descricao || '';
+  document.getElementById('baseorc-ptres-savebtn').textContent = '💾 Salvar Alteração';
+  document.getElementById('baseorc-ptres-cancelbtn').style.display = 'inline-flex';
+  document.getElementById('baseorc-ptres-input').scrollIntoView({behavior:'smooth', block:'center'});
 }
 function baseOrcDeletePtres(id){
   const p = State.baseOrcPtres.find(x => x.id === id);
@@ -9267,22 +9342,44 @@ function baseOrcDeletePtres(id){
 function baseOrcRenderPtres(){
   const tb = document.getElementById('baseorc-ptres-tbody');
   if(tb) tb.innerHTML = State.baseOrcPtres.map(p =>
-    '<tr><td style="font-family:var(--font-mono)">'+p.ptres+'</td><td><button class="row-act-btn del" onclick="baseOrcDeletePtres(\''+p.id+'\')">×</button></td></tr>'
-  ).join('') || '<tr><td colspan="2"><div class="cap-empty">Nenhum PTRES cadastrado.</div></td></tr>';
+    '<tr><td style="font-family:var(--font-mono)">'+p.ptres+'</td><td>'+(p.descricao||'<span style="color:var(--text-muted)">—</span>')+'</td>'+
+    '<td><button class="row-act-btn edit" onclick="baseOrcEditPtres(\''+p.id+'\')">✎</button><button class="row-act-btn del" onclick="baseOrcDeletePtres(\''+p.id+'\')">×</button></td></tr>'
+  ).join('') || '<tr><td colspan="3"><div class="cap-empty">Nenhum PTRES cadastrado.</div></td></tr>';
   baseOrcAtualizarSelectPtres();
 }
 
 /* ── 4.3 Natureza da Despesa ── */
 function baseOrcAddNatureza(){
+  const editIdEl = document.getElementById('baseorc-natureza-edit-id');
+  const editId = editIdEl?.value || '';
   const el = document.getElementById('baseorc-natureza-input');
+  const descEl = document.getElementById('baseorc-natureza-descricao');
   const v = (el?.value || '').trim();
+  const desc = (descEl?.value || '').trim();
   if(v.length !== 6) return showToast('A Natureza da Despesa deve ter exatamente 6 dígitos.','error');
-  if(State.baseOrcNaturezas.some(n => n.natureza === v)) return showToast('Esta Natureza já está cadastrada.','error');
-  State.baseOrcNaturezas.push({ id: capId('nat'), natureza: v });
-  el.value = '';
+  if(!desc) return showToast('Informe a descrição da Natureza.','error');
+  const duplicado = State.baseOrcNaturezas.some(n => n.natureza === v && n.id !== editId);
+  if(duplicado) return showToast('Esta Natureza já está cadastrada.','error');
+  if(editId){
+    const item = State.baseOrcNaturezas.find(x => x.id === editId);
+    if(item){ item.natureza = v; item.descricao = desc; }
+  } else {
+    State.baseOrcNaturezas.push({ id: capId('nat'), natureza: v, descricao: desc });
+  }
+  el.value = ''; descEl.value = '';
+  baseOrcCancelEdit('natureza');
   baseOrcPersist();
   baseOrcRenderNaturezas();
-  showToast('✅ Natureza '+v+' cadastrada.','success');
+  showToast(editId ? '✅ Natureza atualizada.' : '✅ Natureza '+v+' cadastrada.','success');
+}
+function baseOrcEditNatureza(id){
+  const n = State.baseOrcNaturezas.find(x => x.id === id); if(!n) return;
+  document.getElementById('baseorc-natureza-edit-id').value = n.id;
+  document.getElementById('baseorc-natureza-input').value = n.natureza;
+  document.getElementById('baseorc-natureza-descricao').value = n.descricao || '';
+  document.getElementById('baseorc-natureza-savebtn').textContent = '💾 Salvar Alteração';
+  document.getElementById('baseorc-natureza-cancelbtn').style.display = 'inline-flex';
+  document.getElementById('baseorc-natureza-input').scrollIntoView({behavior:'smooth', block:'center'});
 }
 function baseOrcDeleteNatureza(id){
   const n = State.baseOrcNaturezas.find(x => x.id === id);
@@ -9298,25 +9395,48 @@ function baseOrcDeleteNatureza(id){
 function baseOrcRenderNaturezas(){
   const tb = document.getElementById('baseorc-natureza-tbody');
   if(tb) tb.innerHTML = State.baseOrcNaturezas.map(n =>
-    '<tr><td style="font-family:var(--font-mono)">'+n.natureza+'</td><td><button class="row-act-btn del" onclick="baseOrcDeleteNatureza(\''+n.id+'\')">×</button></td></tr>'
-  ).join('') || '<tr><td colspan="2"><div class="cap-empty">Nenhuma Natureza cadastrada.</div></td></tr>';
+    '<tr><td style="font-family:var(--font-mono)">'+n.natureza+'</td><td>'+(n.descricao||'<span style="color:var(--text-muted)">—</span>')+'</td>'+
+    '<td><button class="row-act-btn edit" onclick="baseOrcEditNatureza(\''+n.id+'\')">✎</button><button class="row-act-btn del" onclick="baseOrcDeleteNatureza(\''+n.id+'\')">×</button></td></tr>'
+  ).join('') || '<tr><td colspan="3"><div class="cap-empty">Nenhuma Natureza cadastrada.</div></td></tr>';
   baseOrcAtualizarSelectNatureza();
 }
 
 /* ── 4.2 Plano Interno (depende do PTRES) ── */
 function baseOrcAddPlanoInterno(){
+  const editIdEl = document.getElementById('baseorc-pi-edit-id');
+  const editId = editIdEl?.value || '';
   const ptresEl = document.getElementById('baseorc-pi-ptres');
   const textoEl = document.getElementById('baseorc-pi-texto');
+  const descEl = document.getElementById('baseorc-pi-descricao');
   const ptres = ptresEl?.value || '';
   const texto = (textoEl?.value || '').trim().toUpperCase();
+  const desc = (descEl?.value || '').trim();
   if(!ptres) return showToast('Selecione o PTRES.','error');
-  if(!texto) return showToast('Informe o Plano Interno.','error');
-  if(State.baseOrcPlanosInternos.some(pi => pi.ptres === ptres && pi.planoInterno === texto)) return showToast('Este Plano Interno já está cadastrado para este PTRES.','error');
-  State.baseOrcPlanosInternos.push({ id: capId('pi'), ptres, planoInterno: texto });
-  textoEl.value = '';
+  if(texto.length !== 11) return showToast('O Plano Interno deve ter exatamente 11 caracteres.','error');
+  if(!desc) return showToast('Informe a descrição do Plano Interno.','error');
+  const duplicado = State.baseOrcPlanosInternos.some(pi => pi.ptres === ptres && pi.planoInterno === texto && pi.id !== editId);
+  if(duplicado) return showToast('Este Plano Interno já está cadastrado para este PTRES.','error');
+  if(editId){
+    const item = State.baseOrcPlanosInternos.find(x => x.id === editId);
+    if(item){ item.ptres = ptres; item.planoInterno = texto; item.descricao = desc; }
+  } else {
+    State.baseOrcPlanosInternos.push({ id: capId('pi'), ptres, planoInterno: texto, descricao: desc });
+  }
+  textoEl.value = ''; descEl.value = '';
+  baseOrcCancelEdit('pi');
   baseOrcPersist();
   baseOrcRenderPlanosInternos();
-  showToast('✅ Plano Interno '+texto+' vinculado ao PTRES '+ptres+'.','success');
+  showToast(editId ? '✅ Plano Interno atualizado.' : '✅ Plano Interno '+texto+' vinculado ao PTRES '+ptres+'.','success');
+}
+function baseOrcEditPlanoInterno(id){
+  const pi = State.baseOrcPlanosInternos.find(x => x.id === id); if(!pi) return;
+  document.getElementById('baseorc-pi-edit-id').value = pi.id;
+  document.getElementById('baseorc-pi-ptres').value = pi.ptres;
+  document.getElementById('baseorc-pi-texto').value = pi.planoInterno;
+  document.getElementById('baseorc-pi-descricao').value = pi.descricao || '';
+  document.getElementById('baseorc-pi-savebtn').textContent = '💾 Salvar Alteração';
+  document.getElementById('baseorc-pi-cancelbtn').style.display = 'inline-flex';
+  document.getElementById('baseorc-pi-texto').scrollIntoView({behavior:'smooth', block:'center'});
 }
 function baseOrcDeletePlanoInterno(id){
   State.baseOrcPlanosInternos = State.baseOrcPlanosInternos.filter(x => x.id !== id);
@@ -9326,25 +9446,49 @@ function baseOrcDeletePlanoInterno(id){
 function baseOrcRenderPlanosInternos(){
   const tb = document.getElementById('baseorc-pi-tbody');
   if(tb) tb.innerHTML = State.baseOrcPlanosInternos.map(pi =>
-    '<tr><td style="font-family:var(--font-mono)">'+pi.ptres+'</td><td>'+pi.planoInterno+'</td><td><button class="row-act-btn del" onclick="baseOrcDeletePlanoInterno(\''+pi.id+'\')">×</button></td></tr>'
-  ).join('') || '<tr><td colspan="3"><div class="cap-empty">Nenhum Plano Interno cadastrado.</div></td></tr>';
+    '<tr><td style="font-family:var(--font-mono)">'+pi.ptres+'</td><td style="font-family:var(--font-mono)">'+pi.planoInterno+'</td><td>'+(pi.descricao||'<span style="color:var(--text-muted)">—</span>')+'</td>'+
+    '<td><button class="row-act-btn edit" onclick="baseOrcEditPlanoInterno(\''+pi.id+'\')">✎</button><button class="row-act-btn del" onclick="baseOrcDeletePlanoInterno(\''+pi.id+'\')">×</button></td></tr>'
+  ).join('') || '<tr><td colspan="4"><div class="cap-empty">Nenhum Plano Interno cadastrado.</div></td></tr>';
   if(typeof empgenFiltrarPlanoInterno === 'function') empgenFiltrarPlanoInterno();
+  if(typeof empenhoFiltrarPlanoInterno === 'function') empenhoFiltrarPlanoInterno();
 }
 
 /* ── 4.4 Elemento de Despesa (depende da Natureza) ── */
 function baseOrcAddElemento(){
+  const editIdEl = document.getElementById('baseorc-elem-edit-id');
+  const editId = editIdEl?.value || '';
   const natEl = document.getElementById('baseorc-elem-natureza');
   const textoEl = document.getElementById('baseorc-elem-texto');
+  const descEl = document.getElementById('baseorc-elem-descricao');
   const natureza = natEl?.value || '';
   const texto = (textoEl?.value || '').trim();
+  const desc = (descEl?.value || '').trim();
   if(!natureza) return showToast('Selecione a Natureza da Despesa.','error');
-  if(!texto) return showToast('Informe o Elemento.','error');
-  if(State.baseOrcElementos.some(e => e.natureza === natureza && e.elemento.toLowerCase() === texto.toLowerCase())) return showToast('Este Elemento já está cadastrado para esta Natureza.','error');
-  State.baseOrcElementos.push({ id: capId('elem'), natureza, elemento: texto });
-  textoEl.value = '';
+  if(texto.length !== 2) return showToast('O Elemento deve ter exatamente 2 dígitos.','error');
+  if(!desc) return showToast('Informe a descrição do Elemento.','error');
+  const duplicado = State.baseOrcElementos.some(e => e.natureza === natureza && e.elemento === texto && e.id !== editId);
+  if(duplicado) return showToast('Este Elemento já está cadastrado para esta Natureza.','error');
+  if(editId){
+    const item = State.baseOrcElementos.find(x => x.id === editId);
+    if(item){ item.natureza = natureza; item.elemento = texto; item.descricao = desc; }
+  } else {
+    State.baseOrcElementos.push({ id: capId('elem'), natureza, elemento: texto, descricao: desc });
+  }
+  textoEl.value = ''; descEl.value = '';
+  baseOrcCancelEdit('elem');
   baseOrcPersist();
   baseOrcRenderElementos();
-  showToast('✅ Elemento "'+texto+'" vinculado à Natureza '+natureza+'.','success');
+  showToast(editId ? '✅ Elemento atualizado.' : '✅ Elemento "'+texto+'" vinculado à Natureza '+natureza+'.','success');
+}
+function baseOrcEditElemento(id){
+  const e = State.baseOrcElementos.find(x => x.id === id); if(!e) return;
+  document.getElementById('baseorc-elem-edit-id').value = e.id;
+  document.getElementById('baseorc-elem-natureza').value = e.natureza;
+  document.getElementById('baseorc-elem-texto').value = e.elemento;
+  document.getElementById('baseorc-elem-descricao').value = e.descricao || '';
+  document.getElementById('baseorc-elem-savebtn').textContent = '💾 Salvar Alteração';
+  document.getElementById('baseorc-elem-cancelbtn').style.display = 'inline-flex';
+  document.getElementById('baseorc-elem-texto').scrollIntoView({behavior:'smooth', block:'center'});
 }
 function baseOrcDeleteElemento(id){
   State.baseOrcElementos = State.baseOrcElementos.filter(x => x.id !== id);
@@ -9354,23 +9498,42 @@ function baseOrcDeleteElemento(id){
 function baseOrcRenderElementos(){
   const tb = document.getElementById('baseorc-elem-tbody');
   if(tb) tb.innerHTML = State.baseOrcElementos.map(e =>
-    '<tr><td style="font-family:var(--font-mono)">'+e.natureza+'</td><td>'+e.elemento+'</td><td><button class="row-act-btn del" onclick="baseOrcDeleteElemento(\''+e.id+'\')">×</button></td></tr>'
-  ).join('') || '<tr><td colspan="3"><div class="cap-empty">Nenhum Elemento cadastrado.</div></td></tr>';
+    '<tr><td style="font-family:var(--font-mono)">'+e.natureza+'</td><td style="font-family:var(--font-mono)">'+e.elemento+'</td><td>'+(e.descricao||'<span style="color:var(--text-muted)">—</span>')+'</td>'+
+    '<td><button class="row-act-btn edit" onclick="baseOrcEditElemento(\''+e.id+'\')">✎</button><button class="row-act-btn del" onclick="baseOrcDeleteElemento(\''+e.id+'\')">×</button></td></tr>'
+  ).join('') || '<tr><td colspan="4"><div class="cap-empty">Nenhum Elemento cadastrado.</div></td></tr>';
   if(typeof empgenFiltrarElemento === 'function') empgenFiltrarElemento();
+  if(typeof empenhoFiltrarElemento === 'function') empenhoFiltrarElemento();
 }
 
 /* ── 4.5 Fonte de Recurso ── */
 function baseOrcAddFonte(){
+  const editIdEl = document.getElementById('baseorc-fonte-edit-id');
+  const editId = editIdEl?.value || '';
   const el = document.getElementById('baseorc-fonte-input');
   const v = (el?.value || '').trim();
   if(!v) return showToast('Informe a Fonte de Recurso.','error');
   if(v.length > 10) return showToast('A Fonte de Recurso deve ter no máximo 10 dígitos.','error');
-  if(State.baseOrcFontes.some(f => f.fonte === v)) return showToast('Esta Fonte já está cadastrada.','error');
-  State.baseOrcFontes.push({ id: capId('fonte'), fonte: v });
+  const duplicado = State.baseOrcFontes.some(f => f.fonte === v && f.id !== editId);
+  if(duplicado) return showToast('Esta Fonte já está cadastrada.','error');
+  if(editId){
+    const item = State.baseOrcFontes.find(x => x.id === editId);
+    if(item){ item.fonte = v; }
+  } else {
+    State.baseOrcFontes.push({ id: capId('fonte'), fonte: v });
+  }
   el.value = '';
+  baseOrcCancelEdit('fonte');
   baseOrcPersist();
   baseOrcRenderFontes();
-  showToast('✅ Fonte '+v+' cadastrada.','success');
+  showToast(editId ? '✅ Fonte atualizada.' : '✅ Fonte '+v+' cadastrada.','success');
+}
+function baseOrcEditFonte(id){
+  const f = State.baseOrcFontes.find(x => x.id === id); if(!f) return;
+  document.getElementById('baseorc-fonte-edit-id').value = f.id;
+  document.getElementById('baseorc-fonte-input').value = f.fonte;
+  document.getElementById('baseorc-fonte-savebtn').textContent = '💾 Salvar Alteração';
+  document.getElementById('baseorc-fonte-cancelbtn').style.display = 'inline-flex';
+  document.getElementById('baseorc-fonte-input').scrollIntoView({behavior:'smooth', block:'center'});
 }
 function baseOrcDeleteFonte(id){
   State.baseOrcFontes = State.baseOrcFontes.filter(x => x.id !== id);
@@ -9380,17 +9543,20 @@ function baseOrcDeleteFonte(id){
 function baseOrcRenderFontes(){
   const tb = document.getElementById('baseorc-fonte-tbody');
   if(tb) tb.innerHTML = State.baseOrcFontes.map(f =>
-    '<tr><td style="font-family:var(--font-mono)">'+f.fonte+'</td><td><button class="row-act-btn del" onclick="baseOrcDeleteFonte(\''+f.id+'\')">×</button></td></tr>'
+    '<tr><td style="font-family:var(--font-mono)">'+f.fonte+'</td>'+
+    '<td><button class="row-act-btn edit" onclick="baseOrcEditFonte(\''+f.id+'\')">✎</button><button class="row-act-btn del" onclick="baseOrcDeleteFonte(\''+f.id+'\')">×</button></td></tr>'
   ).join('') || '<tr><td colspan="2"><div class="cap-empty">Nenhuma Fonte cadastrada.</div></td></tr>';
   baseOrcAtualizarSelectFonte();
 }
 
-/* ── Selects dependentes (Configurações: PTRES→Plano Interno / Natureza→Elemento) ── */
+/* ── Selects dependentes (Configurações: PTRES→Plano Interno / Natureza→Elemento) ──
+   Os <option value> continuam sendo o código puro (necessário para os filtros por igualdade);
+   o texto exibido passa a ser "código - descrição". */
 function baseOrcAtualizarSelectPtres(){
   const sel = document.getElementById('baseorc-pi-ptres');
   if(sel){
     const cur = sel.value;
-    sel.innerHTML = '<option value="">— Selecione —</option>' + State.baseOrcPtres.map(p => '<option value="'+p.ptres+'">'+p.ptres+'</option>').join('');
+    sel.innerHTML = '<option value="">— Selecione —</option>' + State.baseOrcPtres.map(p => '<option value="'+p.ptres+'">'+baseOrcDisplayPtres(p)+'</option>').join('');
     if(State.baseOrcPtres.some(p => p.ptres === cur)) sel.value = cur;
   }
   if(typeof empgenPopularSelects === 'function') empgenPopularSelects();
@@ -9400,7 +9566,7 @@ function baseOrcAtualizarSelectNatureza(){
   const sel = document.getElementById('baseorc-elem-natureza');
   if(sel){
     const cur = sel.value;
-    sel.innerHTML = '<option value="">— Selecione —</option>' + State.baseOrcNaturezas.map(n => '<option value="'+n.natureza+'">'+n.natureza+'</option>').join('');
+    sel.innerHTML = '<option value="">— Selecione —</option>' + State.baseOrcNaturezas.map(n => '<option value="'+n.natureza+'">'+baseOrcDisplayNatureza(n)+'</option>').join('');
     if(State.baseOrcNaturezas.some(n => n.natureza === cur)) sel.value = cur;
   }
   if(typeof empgenPopularSelects === 'function') empgenPopularSelects();
@@ -9520,7 +9686,7 @@ function empgenFiltrarPlanoInterno(){
   const sel = document.getElementById('empgen-planointerno');
   if(!sel) return;
   const opts = State.baseOrcPlanosInternos.filter(pi => pi.ptres === ptres);
-  sel.innerHTML = '<option value="">'+(ptres ? '— Selecione —' : 'Selecione um PTRES primeiro')+'</option>' + opts.map(pi => '<option value="'+pi.id+'">'+pi.planoInterno+'</option>').join('');
+  sel.innerHTML = '<option value="">'+(ptres ? '— Selecione —' : 'Selecione um PTRES primeiro')+'</option>' + opts.map(pi => '<option value="'+pi.id+'">'+baseOrcDisplayPlanoInterno(pi)+'</option>').join('');
   sel.disabled = !ptres;
   empgenAtualizarResultado();
 }
@@ -9529,7 +9695,7 @@ function empgenFiltrarElemento(){
   const sel = document.getElementById('empgen-elemento');
   if(!sel) return;
   const opts = State.baseOrcElementos.filter(e => e.natureza === natureza);
-  sel.innerHTML = '<option value="">'+(natureza ? '— Selecione —' : 'Selecione uma Natureza primeiro')+'</option>' + opts.map(e => '<option value="'+e.id+'">'+e.elemento+'</option>').join('');
+  sel.innerHTML = '<option value="">'+(natureza ? '— Selecione —' : 'Selecione uma Natureza primeiro')+'</option>' + opts.map(e => '<option value="'+e.id+'">'+baseOrcDisplayElemento(e)+'</option>').join('');
   sel.disabled = !natureza;
   empgenAtualizarResultado();
 }
@@ -9537,13 +9703,13 @@ function empgenPopularSelects(){
   const selPtres = document.getElementById('empgen-ptres');
   if(selPtres){
     const cur = selPtres.value;
-    selPtres.innerHTML = '<option value="">— Selecione —</option>' + State.baseOrcPtres.map(p => '<option value="'+p.ptres+'">'+p.ptres+'</option>').join('');
+    selPtres.innerHTML = '<option value="">— Selecione —</option>' + State.baseOrcPtres.map(p => '<option value="'+p.ptres+'">'+baseOrcDisplayPtres(p)+'</option>').join('');
     if(State.baseOrcPtres.some(p => p.ptres === cur)) selPtres.value = cur;
   }
   const selNatureza = document.getElementById('empgen-natureza');
   if(selNatureza){
     const cur = selNatureza.value;
-    selNatureza.innerHTML = '<option value="">— Selecione —</option>' + State.baseOrcNaturezas.map(n => '<option value="'+n.natureza+'">'+n.natureza+'</option>').join('');
+    selNatureza.innerHTML = '<option value="">— Selecione —</option>' + State.baseOrcNaturezas.map(n => '<option value="'+n.natureza+'">'+baseOrcDisplayNatureza(n)+'</option>').join('');
     if(State.baseOrcNaturezas.some(n => n.natureza === cur)) selNatureza.value = cur;
   }
   const selFonte = document.getElementById('empgen-fonte');
@@ -9558,29 +9724,34 @@ function empgenPopularSelects(){
 
 function empgenAtualizarResultado(){
   const esfera = document.getElementById('empgen-esfera')?.value.trim() || '';
-  const ptres = document.getElementById('empgen-ptres')?.value || '';
+  const ptresSel = document.getElementById('empgen-ptres');
+  const naturezaSel = document.getElementById('empgen-natureza');
   const fonte = document.getElementById('empgen-fonte')?.value || '';
-  const natureza = document.getElementById('empgen-natureza')?.value || '';
   const tipoEmpenho = document.getElementById('empgen-tipoempenho')?.value || '';
   const valor = document.getElementById('empgen-valor')?.value || '';
 
+  const ptresRec = ptresSel && ptresSel.value ? State.baseOrcPtres.find(p => p.ptres === ptresSel.value) : null;
+  const naturezaRec = naturezaSel && naturezaSel.value ? State.baseOrcNaturezas.find(n => n.natureza === naturezaSel.value) : null;
+  const ptresTxt = ptresRec ? baseOrcDisplayPtres(ptresRec) : (ptresSel?.value || '');
+  const naturezaTxt = naturezaRec ? baseOrcDisplayNatureza(naturezaRec) : (naturezaSel?.value || '');
+
   const elementoSel = document.getElementById('empgen-elemento');
-  const elementoTxt = elementoSel && elementoSel.value ? (State.baseOrcElementos.find(e => e.id === elementoSel.value)?.elemento || '') : '';
+  const elementoTxt = elementoSel && elementoSel.value ? baseOrcDisplayElemento(State.baseOrcElementos.find(e => e.id === elementoSel.value)) : '';
   const planoSel = document.getElementById('empgen-planointerno');
-  const planoTxt = planoSel && planoSel.value ? (State.baseOrcPlanosInternos.find(pi => pi.id === planoSel.value)?.planoInterno || '') : '';
+  const planoTxt = planoSel && planoSel.value ? baseOrcDisplayPlanoInterno(State.baseOrcPlanosInternos.find(pi => pi.id === planoSel.value)) : '';
 
   const set = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val || '—'; };
   set('empgen-resumo-esfera', esfera);
-  set('empgen-resumo-ptres', ptres);
+  set('empgen-resumo-ptres', ptresTxt);
   set('empgen-resumo-fonte', fonte);
-  set('empgen-resumo-natureza', natureza);
+  set('empgen-resumo-natureza', naturezaTxt);
   set('empgen-resumo-elemento', elementoTxt);
   set('empgen-resumo-planointerno', planoTxt);
   set('empgen-resumo-tipo2', tipoEmpenho);
   const valorFmt = 'R$ ' + (valor || '0,00');
   const valorEl2 = document.getElementById('empgen-resumo-valor2'); if(valorEl2) valorEl2.textContent = valorFmt;
 
-  const celulaTxt = [esfera&&('Esfera '+esfera), ptres&&('PTRES '+ptres), fonte&&('Fonte '+fonte), natureza&&('Nat. '+natureza), planoTxt&&('PI '+planoTxt)].filter(Boolean).join(' · ');
+  const celulaTxt = [esfera&&('Esfera '+esfera), ptresTxt&&('PTRES '+ptresTxt), fonte&&('Fonte '+fonte), naturezaTxt&&('Nat. '+naturezaTxt), planoTxt&&('PI '+planoTxt)].filter(Boolean).join(' · ');
   const celEl = document.getElementById('empgen-resumo-celula'); if(celEl) celEl.textContent = celulaTxt || '—';
   const tipoEl = document.getElementById('empgen-resumo-tipo'); if(tipoEl) tipoEl.textContent = tipoEmpenho || '—';
   const valEl = document.getElementById('empgen-resumo-valor'); if(valEl) valEl.textContent = valorFmt;
@@ -9612,10 +9783,14 @@ function empgenCopiarDescricao(){
 /* Coleta todos os dados atuais do Gerador de Empenho (orçamentários + campos específicos + descrição),
    reutilizados tanto pelo PDF quanto pelo Excel. */
 function empgenColetarDados(){
+  const ptresSel = document.getElementById('empgen-ptres');
+  const naturezaSel = document.getElementById('empgen-natureza');
+  const ptresRec = ptresSel && ptresSel.value ? State.baseOrcPtres.find(p => p.ptres === ptresSel.value) : null;
+  const naturezaRec = naturezaSel && naturezaSel.value ? State.baseOrcNaturezas.find(n => n.natureza === naturezaSel.value) : null;
   const elementoSel = document.getElementById('empgen-elemento');
-  const elementoTxt = elementoSel && elementoSel.value ? (State.baseOrcElementos.find(e => e.id === elementoSel.value)?.elemento || '') : '';
+  const elementoTxt = elementoSel && elementoSel.value ? baseOrcDisplayElemento(State.baseOrcElementos.find(e => e.id === elementoSel.value)) : '';
   const planoSel = document.getElementById('empgen-planointerno');
-  const planoTxt = planoSel && planoSel.value ? (State.baseOrcPlanosInternos.find(pi => pi.id === planoSel.value)?.planoInterno || '') : '';
+  const planoTxt = planoSel && planoSel.value ? baseOrcDisplayPlanoInterno(State.baseOrcPlanosInternos.find(pi => pi.id === planoSel.value)) : '';
   const info = empgenTipoSelecionado ? EMPGEN_TIPOS[empgenTipoSelecionado] : null;
   const camposEspecificos = info ? info.campos.map(c => ({
     campo: c, valor: (document.getElementById(empgenCampoId(c))?.value || '').trim()
@@ -9624,9 +9799,9 @@ function empgenColetarDados(){
     tipoCodigo: empgenTipoSelecionado || '',
     tipoNome: info ? info.nome : '',
     esfera: document.getElementById('empgen-esfera')?.value.trim() || '',
-    ptres: document.getElementById('empgen-ptres')?.value || '',
+    ptres: ptresRec ? baseOrcDisplayPtres(ptresRec) : (ptresSel?.value || ''),
     fonte: document.getElementById('empgen-fonte')?.value || '',
-    natureza: document.getElementById('empgen-natureza')?.value || '',
+    natureza: naturezaRec ? baseOrcDisplayNatureza(naturezaRec) : (naturezaSel?.value || ''),
     elemento: elementoTxt,
     planoInterno: planoTxt,
     tipoEmpenho: document.getElementById('empgen-tipoempenho')?.value || '',
