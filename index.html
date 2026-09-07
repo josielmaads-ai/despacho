@@ -497,35 +497,57 @@ body::before {
 }
 .stat-card {
   background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 20px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
   display: flex; align-items: flex-start; gap: 14px;
   transition: var(--transition);
   position: relative;
   overflow: hidden;
+  box-shadow: var(--shadow-card);
 }
+.stat-card:hover { transform: translateY(-2px); }
+/* Borda inferior colorida no hover */
 .stat-card::after {
   content: '';
   position: absolute;
   bottom: 0; left: 0; right: 0;
-  height: 2px;
+  height: 2.5px;
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: opacity 0.25s;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
 }
 .stat-card:hover::after { opacity: 1; }
-.stat-card.stat-orange::after { background: var(--accent-orange); }
+/* Gradiente de fundo sutil por cor */
+.stat-card.stat-rose   { background: linear-gradient(145deg, rgba(244,63,94,.08) 0%, var(--bg-card) 60%);   border-color: rgba(244,63,94,.25); }
+.stat-card.stat-rose::after   { background: var(--accent-rose); }
+.stat-card.stat-rose:hover   { box-shadow: 0 0 24px rgba(244,63,94,.18), var(--shadow-card); border-color: rgba(244,63,94,.5); }
+.stat-card.stat-amber  { background: linear-gradient(145deg, rgba(245,158,11,.08) 0%, var(--bg-card) 60%);  border-color: rgba(245,158,11,.25); }
+.stat-card.stat-amber::after  { background: var(--accent-amber); }
+.stat-card.stat-amber:hover  { box-shadow: 0 0 24px rgba(245,158,11,.18), var(--shadow-card); border-color: rgba(245,158,11,.5); }
+.stat-card.stat-blue   { background: linear-gradient(145deg, rgba(59,130,246,.08) 0%, var(--bg-card) 60%);  border-color: rgba(59,130,246,.25); }
+.stat-card.stat-blue::after   { background: var(--accent-blue); }
+.stat-card.stat-blue:hover   { box-shadow: 0 0 24px rgba(59,130,246,.18), var(--shadow-card); border-color: rgba(59,130,246,.5); }
+.stat-card.stat-teal   { background: linear-gradient(145deg, rgba(20,184,166,.08) 0%, var(--bg-card) 60%);  border-color: rgba(20,184,166,.25); }
+.stat-card.stat-teal::after   { background: var(--accent-teal); }
+.stat-card.stat-teal:hover   { box-shadow: 0 0 24px rgba(20,184,166,.18), var(--shadow-card); border-color: rgba(20,184,166,.5); }
+.stat-card.stat-purple { background: linear-gradient(145deg, rgba(168,85,247,.08) 0%, var(--bg-card) 60%); border-color: rgba(168,85,247,.25); }
 .stat-card.stat-purple::after { background: var(--accent-purple); }
-.stat-card.stat-green::after { background: var(--accent-green); }
-.stat-card.stat-amber::after { background: var(--accent-amber); }
-.stat-card.stat-blue::after { background: var(--accent-blue); }
-.stat-card.stat-teal::after { background: var(--accent-teal); }
-.stat-card.stat-rose::after { background: var(--accent-rose); }
-.stat-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.stat-card.stat-purple:hover { box-shadow: 0 0 24px rgba(168,85,247,.18), var(--shadow-card); border-color: rgba(168,85,247,.5); }
+.stat-card.stat-green  { background: linear-gradient(145deg, rgba(34,197,94,.08) 0%, var(--bg-card) 60%);   border-color: rgba(34,197,94,.25); }
+.stat-card.stat-green::after  { background: var(--accent-green); }
+.stat-card.stat-green:hover  { box-shadow: 0 0 24px rgba(34,197,94,.18), var(--shadow-card); border-color: rgba(34,197,94,.5); }
+.stat-card.stat-orange { background: linear-gradient(145deg, rgba(249,115,22,.08) 0%, var(--bg-card) 60%); border-color: rgba(249,115,22,.25); }
+.stat-card.stat-orange::after { background: var(--accent-orange); }
+.stat-card.stat-orange:hover { box-shadow: 0 0 24px rgba(249,115,22,.18), var(--shadow-card); border-color: rgba(249,115,22,.5); }
+.stat-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .stat-icon svg { width: 18px; height: 18px; }
 .stat-info { flex: 1; }
-.stat-label { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; }
-.stat-value { font-size: 24px; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+.stat-label { font-size: 10.5px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 4px; }
+.stat-value { font-size: 22px; font-weight: 800; color: var(--text-primary); font-variant-numeric: tabular-nums; letter-spacing: -.3px; }
+/* Linha divisória entre seção pendências e acompanhamento */
+.pend-section-note { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 5px; }
+
 
 /* ============================================================
    MODAL SYSTEM
@@ -1612,42 +1634,125 @@ body::before {
 .financeiro .card-icon-wrap svg { color: var(--accent-teal); }
 .financeiro .card-tag { color: var(--accent-teal); }
 
-/* Mini cards EXE/RAP no dashboard */
+/* ── Mini cards EXE/RAP premium — dashboard principal ── */
 .fin-mini-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 14px;
-  margin-bottom: 30px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 18px;
+  margin-bottom: 32px;
 }
 .fin-mini-card {
   background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 16px 18px;
+  border-radius: var(--radius-xl);
+  padding: 26px 28px;
   position: relative;
   overflow: hidden;
   transition: var(--transition);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 160px;
+  box-shadow: var(--shadow-card);
 }
-.fin-mini-card::after {
-  content: '';
+/* Borda colorida lateral esquerda */
+.fin-mini-card::before {
+  content: "";
   position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  border: 1.5px solid transparent;
+  transition: border-color .2s, box-shadow .2s;
 }
-.fin-mini-card.exe-card::after { background: linear-gradient(90deg, var(--accent-teal), #0891b2); }
-.fin-mini-card.rap-card::after { background: linear-gradient(90deg, var(--accent-amber), #d97706); }
-.fin-mini-card:hover { border-color: var(--border-bright); transform: translateY(-2px); }
+.fin-mini-card.exe-card {
+  background: linear-gradient(145deg, rgba(20,184,166,.06) 0%, var(--bg-card) 55%);
+}
+.fin-mini-card.exe-card::before {
+  border-color: rgba(20,184,166,.35);
+}
+.fin-mini-card.exe-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 32px rgba(20,184,166,.22), var(--shadow-card);
+}
+.fin-mini-card.exe-card:hover::before { border-color: rgba(20,184,166,.65); }
+.fin-mini-card.rap-card {
+  background: linear-gradient(145deg, rgba(245,158,11,.06) 0%, var(--bg-card) 55%);
+}
+.fin-mini-card.rap-card::before {
+  border-color: rgba(245,158,11,.35);
+}
+.fin-mini-card.rap-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 32px rgba(245,158,11,.22), var(--shadow-card);
+}
+.fin-mini-card.rap-card:hover::before { border-color: rgba(245,158,11,.65); }
+/* Cabeçalho do card */
+.fin-mini-head { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
+.fin-mini-left { display: flex; flex-direction: column; gap: 4px; }
 .fin-mini-label {
-  font-size: 10px;
-  font-weight: 800;
+  font-size: 11px;
+  font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 0.18em;
-  margin-bottom: 4px;
+  letter-spacing: 0.22em;
 }
 .exe-card .fin-mini-label { color: var(--accent-teal); }
 .rap-card .fin-mini-label { color: var(--accent-amber); }
-.fin-mini-fonte { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; }
-.fin-mini-value { font-size: 20px; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+.fin-mini-fonte { font-size: 11.5px; color: var(--text-secondary); font-weight: 500; }
+/* Botão TOTAL DISPONÍVEL */
+.fin-mini-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .1em;
+  padding: 4px 10px; border-radius: 20px; border: none; cursor: pointer;
+  white-space: nowrap; transition: all .15s;
+}
+.exe-card .fin-mini-btn { background: rgba(20,184,166,.15); color: var(--accent-teal); border: 1px solid rgba(20,184,166,.3); }
+.exe-card .fin-mini-btn:hover { background: rgba(20,184,166,.28); }
+.rap-card .fin-mini-btn { background: rgba(245,158,11,.15); color: var(--accent-amber); border: 1px solid rgba(245,158,11,.3); }
+.rap-card .fin-mini-btn:hover { background: rgba(245,158,11,.28); }
+/* Valor principal */
+.fin-mini-value {
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -1px;
+  margin: 8px 0 6px;
+  font-variant-numeric: tabular-nums;
+}
+.exe-card .fin-mini-value { color: var(--accent-teal); }
+.rap-card .fin-mini-value { color: var(--accent-amber); }
+.fin-mini-cod { font-size: 10.5px; color: var(--text-muted); font-weight: 600; }
+/* Mini gráfico de barras */
+.fin-mini-chart {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 56px;
+  opacity: .55;
+  pointer-events: none;
+}
+.fin-mini-bar {
+  width: 7px;
+  border-radius: 3px 3px 0 0;
+  min-height: 4px;
+  transition: height .4s;
+}
+.exe-card .fin-mini-bar { background: var(--accent-teal); }
+.rap-card .fin-mini-bar { background: var(--accent-amber); }
+/* Ícone do card */
+.fin-mini-icon {
+  width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.exe-card .fin-mini-icon { background: rgba(20,184,166,.15); }
+.rap-card .fin-mini-icon { background: rgba(245,158,11,.15); }
+.fin-mini-icon svg { width: 22px; height: 22px; }
+.exe-card .fin-mini-icon svg { color: var(--accent-teal); stroke: var(--accent-teal); }
+.rap-card .fin-mini-icon svg { color: var(--accent-amber); stroke: var(--accent-amber); }
 
 /* Page Contas a Pagar */
 #page-financeiro { padding-bottom: 60px; }
@@ -2553,11 +2658,15 @@ input.cap-date.form-input {
 #page-nexus .bx-gr {background:rgba(34,197,94,.15);color:var(--accent-green)}
 #page-nexus .bx-rd {background:rgba(244,63,94,.15);color:var(--accent-rose)}
 #page-nexus .bx-gy {background:var(--bg-surface);color:var(--text-secondary)}
+#page-nexus .bx-purple {background:rgba(168,85,247,.15);color:var(--accent-purple)}
 #page-nexus .tprio {margin-left:auto;display:flex;align-items:center;gap:7px;flex-shrink:0}
 #page-nexus .pdot {width:7px;height:7px;border-radius:50%}
 #page-nexus .p-a {background:var(--accent-rose)}
 #page-nexus .p-m {background:var(--accent-amber)}
 #page-nexus .p-b {background:var(--accent-green)}
+/* ETAPA SUAP: dois novos níveis de prioridade (Altíssima/Normal), adicionados sem remover os existentes */
+#page-nexus .p-altissima {background:var(--accent-purple)}
+#page-nexus .p-normal {background:var(--accent-blue)}
 #page-nexus .fltrs {display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
 #page-nexus .fb {padding:5px 13px;border-radius:20px;font-size:.74rem;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text-muted)}
 #page-nexus .fb.on {background:rgba(249,115,22,.12);color:var(--accent-orange-light);border-color:rgba(249,115,22,.4)}
@@ -2621,6 +2730,210 @@ input.cap-date.form-input {
 #page-nexus .tact-btn svg { width:13px; height:13px; }
 #page-nexus .bx.bx-status-trigger { cursor:pointer; }
 #page-nexus .bx.bx-status-trigger:hover { filter:brightness(1.25); }
+
+/* ═══════════════════════════════════════════════════════════
+   CARD SUAP — layout inspirado no registro do SUAP
+   Exibido apenas para tarefas origemSuap:true (tipo=trabalho)
+   ═══════════════════════════════════════════════════════════ */
+#page-nexus .suap-card {
+  background: linear-gradient(135deg, #0d1b3e 0%, #0f2557 60%, #1a2a6c 100%);
+  border: 1.5px solid rgba(99,179,255,.25);
+  border-radius: 18px;
+  overflow: hidden;
+  margin-bottom: 14px;
+  box-shadow: 0 4px 32px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.06);
+  position: relative;
+  transition: border-color .2s, box-shadow .2s, transform .15s;
+}
+#page-nexus .suap-card::before {
+  content: ''; position: absolute; top: 0; right: 0; bottom: 0; left: 0;
+  background: linear-gradient(135deg, transparent 55%, rgba(59,130,246,.06) 100%);
+  pointer-events: none; border-radius: inherit;
+}
+#page-nexus .suap-card:hover {
+  border-color: rgba(99,179,255,.5);
+  box-shadow: 0 8px 48px rgba(0,0,0,.55), 0 0 0 1px rgba(99,179,255,.15);
+  transform: translateY(-1px);
+}
+
+/* ── Cabeçalho: rótulo + status + prioridade + botões de ação ── */
+#page-nexus .suap-card-hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 18px; gap: 10px; flex-wrap: wrap;
+  border-bottom: 1px solid rgba(99,179,255,.12);
+  background: rgba(0,0,0,.18);
+}
+
+/* Pills de rótulo/status/prioridade no cabeçalho */
+#page-nexus .suap-hdr-pills { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+#page-nexus .suap-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: .72rem; font-weight: 700; padding: 5px 12px; border-radius: 20px;
+  white-space: nowrap; letter-spacing: .3px;
+}
+/* Rótulo SUAP */
+#page-nexus .suap-pill.p-rotulo-roxo    { background: #6f42c1; color: #fff; }
+#page-nexus .suap-pill.p-rotulo-amarelo { background: #e6a800; color: #1a1a00; }
+#page-nexus .suap-pill.p-rotulo-verde   { background: #1a8a5a; color: #fff; }
+#page-nexus .suap-pill.p-rotulo-azul    { background: #1a6fc4; color: #fff; }
+#page-nexus .suap-pill.p-rotulo-laranja { background: #d95f00; color: #fff; }
+#page-nexus .suap-pill.p-rotulo-sem     { background: rgba(148,163,184,.2); color: #94a3b8; border: 1px solid rgba(148,163,184,.3); }
+/* Status no cabeçalho */
+#page-nexus .suap-pill.p-stat-pendente    { background: #c2410c; color: #fff; }
+#page-nexus .suap-pill.p-stat-nao_iniciado{ background: rgba(148,163,184,.2); color: #94a3b8; }
+#page-nexus .suap-pill.p-stat-em_andamento{ background: #1d4ed8; color: #fff; }
+#page-nexus .suap-pill.p-stat-concluido   { background: #15803d; color: #fff; }
+#page-nexus .suap-pill.p-stat-cancelado   { background: #9f1239; color: #fff; }
+/* Prioridade */
+#page-nexus .suap-pill.p-prio-altissima{ background: rgba(168,85,247,.25); color: #d8b4fe; border: 1px solid rgba(168,85,247,.4); }
+#page-nexus .suap-pill.p-prio-alta     { background: rgba(244,63,94,.25);  color: #fda4af; border: 1px solid rgba(244,63,94,.4); }
+#page-nexus .suap-pill.p-prio-media    { background: rgba(245,158,11,.22); color: #fcd34d; border: 1px solid rgba(245,158,11,.4); }
+#page-nexus .suap-pill.p-prio-normal   { background: rgba(59,130,246,.22); color: #93c5fd; border: 1px solid rgba(59,130,246,.4); }
+#page-nexus .suap-pill.p-prio-baixa    { background: rgba(34,197,94,.18);  color: #86efac; border: 1px solid rgba(34,197,94,.35); }
+
+/* Botões de ação */
+#page-nexus .suap-card-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+#page-nexus .suap-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: .72rem; font-weight: 700; padding: 5px 13px; border-radius: 10px;
+  border: 1.5px solid transparent; cursor: pointer; transition: all .15s;
+  white-space: nowrap; letter-spacing: .2px;
+}
+#page-nexus .suap-btn svg { flex-shrink: 0; }
+#page-nexus .suap-btn.b-fin { background: #16a34a; color: #fff; border-color: #22c55e; }
+#page-nexus .suap-btn.b-fin:hover { background: #15803d; box-shadow: 0 0 16px rgba(34,197,94,.4); }
+#page-nexus .suap-btn.b-edt { background: rgba(29,78,216,.3); color: #93c5fd; border-color: rgba(59,130,246,.5); }
+#page-nexus .suap-btn.b-edt:hover { background: rgba(29,78,216,.5); }
+#page-nexus .suap-btn.b-dup { background: rgba(109,40,217,.3); color: #d8b4fe; border-color: rgba(139,92,246,.5); }
+#page-nexus .suap-btn.b-dup:hover { background: rgba(109,40,217,.5); }
+#page-nexus .suap-btn.b-del { background: rgba(190,18,60,.3); color: #fda4af; border-color: rgba(244,63,94,.5); }
+#page-nexus .suap-btn.b-del:hover { background: rgba(190,18,60,.5); }
+#page-nexus .suap-btn.b-com { background: rgba(180,112,0,.3); color: #fcd34d; border-color: rgba(245,158,11,.5); }
+#page-nexus .suap-btn.b-com:hover { background: rgba(180,112,0,.5); }
+
+/* ── Corpo do card ── */
+#page-nexus .suap-card-body { padding: 18px 20px 14px; display: flex; gap: 16px; align-items: flex-start; }
+#page-nexus .suap-card-icon {
+  width: 46px; height: 46px; border-radius: 12px; flex-shrink: 0;
+  background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 14px rgba(59,130,246,.4);
+}
+#page-nexus .suap-card-icon svg { width: 24px; height: 24px; color: #fff; }
+#page-nexus .suap-card-content { flex: 1; min-width: 0; }
+#page-nexus .suap-proc-row { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; flex-wrap: wrap; }
+#page-nexus .suap-proc-num {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 1.25rem; font-weight: 800; color: #60a5fa;
+  letter-spacing: .3px; line-height: 1.2; white-space: nowrap;
+}
+#page-nexus .suap-copy-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: .65rem; font-weight: 700; color: #94a3b8;
+  background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12);
+  border-radius: 8px; padding: 3px 9px; cursor: pointer; transition: all .15s; white-space: nowrap;
+}
+#page-nexus .suap-copy-btn:hover { color: #93c5fd; border-color: rgba(99,179,255,.4); background: rgba(59,130,246,.1); }
+#page-nexus .suap-copy-btn.copied { color: #86efac; border-color: rgba(34,197,94,.4); }
+#page-nexus .suap-desc { font-size: .83rem; color: #cbd5e1; line-height: 1.55; margin-bottom: 10px; }
+#page-nexus .suap-meta-row {
+  display: flex; align-items: center; gap: 6px;
+  font-size: .78rem; color: #94a3b8;
+}
+#page-nexus .suap-meta-row strong { color: #e2e8f0; font-weight: 700; }
+#page-nexus .suap-meta-row .suap-date-val { color: #60a5fa; font-weight: 600; }
+
+/* Decoração canto inferior direito (// do print) */
+#page-nexus .suap-card-deco {
+  position: absolute; bottom: 14px; right: 16px;
+  font-size: 1.4rem; font-weight: 900; color: rgba(99,179,255,.18);
+  letter-spacing: -2px; pointer-events: none; line-height: 1; user-select: none;
+}
+
+/* ── Rodapé: seletor de status ── */
+#page-nexus .suap-footer {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 20px 12px; border-top: 1px solid rgba(99,179,255,.1);
+}
+#page-nexus .suap-footer-icon {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: rgba(34,197,94,.15); border: 1.5px solid rgba(34,197,94,.4);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+#page-nexus .suap-footer-icon svg { width: 14px; height: 14px; color: #86efac; }
+#page-nexus .suap-footer label { font-size: .78rem; font-weight: 700; color: #94a3b8; }
+#page-nexus .suap-stat-sel {
+  font-size: .78rem; font-weight: 700; padding: 5px 12px 5px 10px;
+  border: 1.5px solid rgba(99,179,255,.3); border-radius: 10px;
+  background: rgba(15,37,87,.8); color: #e2e8f0;
+  cursor: pointer; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center; padding-right: 30px;
+  transition: border-color .15s;
+}
+#page-nexus .suap-stat-sel:hover, #page-nexus .suap-stat-sel:focus { outline: none; border-color: rgba(99,179,255,.6); }
+
+/* ── Comentários ── */
+#page-nexus .suap-comments { margin: 0 20px 12px; display: flex; flex-direction: column; gap: 6px; }
+#page-nexus .suap-comment-item {
+  background: rgba(245,158,11,.08); border-left: 3px solid rgba(245,158,11,.5);
+  border-radius: 0 8px 8px 0; padding: 8px 12px; font-size: .77rem;
+}
+#page-nexus .suap-comment-item .sc-meta {
+  font-size: .64rem; color: #fcd34d; margin-bottom: 3px; font-weight: 700;
+}
+#page-nexus .suap-comment-item .sc-body { color: #e2e8f0; line-height: 1.45; word-break: break-word; }
+
+/* ── Formulário inline de edição (mostrado ao clicar em Editar) ── */
+#page-nexus .suap-edit-form {
+  padding: 16px 20px; background: rgba(0,0,0,.25);
+  border-top: 1px solid rgba(99,179,255,.15);
+  display: none; /* mostrado via JS (.suap-edit-form.open) */
+  flex-direction: column; gap: 12px;
+}
+#page-nexus .suap-edit-form.open { display: flex; }
+#page-nexus .suap-edit-form label {
+  font-size: .68rem; font-weight: 700; color: #94a3b8;
+  text-transform: uppercase; letter-spacing: .8px; display: block; margin-bottom: 4px;
+}
+#page-nexus .suap-edit-form input,
+#page-nexus .suap-edit-form textarea,
+#page-nexus .suap-edit-form select {
+  width: 100%; padding: 8px 11px; font-size: .82rem; color: #e2e8f0;
+  background: rgba(15,37,87,.9); border: 1.5px solid rgba(99,179,255,.25);
+  border-radius: 8px; font-family: inherit; transition: border-color .15s;
+  appearance: none;
+}
+#page-nexus .suap-edit-form input:focus,
+#page-nexus .suap-edit-form textarea:focus,
+#page-nexus .suap-edit-form select:focus { outline: none; border-color: rgba(99,179,255,.6); }
+#page-nexus .suap-edit-form textarea { min-height: 72px; resize: vertical; line-height: 1.5; }
+#page-nexus .suap-edit-form .suap-edit-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 600px) { #page-nexus .suap-edit-form .suap-edit-row { grid-template-columns: 1fr; } }
+#page-nexus .suap-edit-actions { display: flex; gap: 8px; padding-top: 4px; }
+#page-nexus .suap-edit-save {
+  padding: 7px 18px; font-size: .78rem; font-weight: 700;
+  background: #1d4ed8; color: #fff; border: none; border-radius: 9px; cursor: pointer;
+  transition: background .15s;
+}
+#page-nexus .suap-edit-save:hover { background: #2563eb; }
+#page-nexus .suap-edit-cancel {
+  padding: 7px 14px; font-size: .78rem; font-weight: 700;
+  background: rgba(255,255,255,.06); color: #94a3b8;
+  border: 1px solid rgba(255,255,255,.12); border-radius: 9px; cursor: pointer;
+  transition: all .15s;
+}
+#page-nexus .suap-edit-cancel:hover { color: #e2e8f0; border-color: rgba(255,255,255,.22); }
+
+/* Modal de comentário */
+#nx-m-suap-comentario .mbody { padding: 18px 22px; }
+#nx-m-suap-comentario textarea {
+  width: 100%; min-height: 90px; resize: vertical; padding: 10px;
+  background: var(--bg-elevated); border: 1px solid var(--border);
+  border-radius: 8px; color: var(--text-primary); font-size: .85rem;
+  font-family: inherit; line-height: 1.5;
+}
+#nx-m-suap-comentario textarea:focus { outline: none; border-color: var(--accent-blue); }
 
 /* ---- Modal de alteração rápida de status ---- */
 .nx-status-overlay { position:fixed; inset:0; z-index:9998; background:rgba(8,10,16,.6); backdrop-filter:blur(2px); display:none; align-items:center; justify-content:center; padding:16px; opacity:0; transition:opacity .18s ease; }
@@ -4528,15 +4841,21 @@ input.cap-date.form-input {
         <!-- Populated dynamically -->
       </div>
 
-      <!-- PENDÊNCIAS FINANCEIRAS — NÃO PAGO (Contas a Pagar) -->
-      <div class="section-subtitle" style="margin:28px 0 12px;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--accent-rose)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent-rose)" stroke-width="2" style="width:14px;height:14px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        Pendências Financeiras (Não Pago)
+      <!-- PENDÊNCIAS FINANCEIRAS — NÃO PAGO -->
+      <div style="margin:30px 0 14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.14em;color:var(--accent-rose)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent-rose)" stroke-width="2.5" style="width:16px;height:16px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Pendências Financeiras (Não Pago)
+        </div>
+        <div style="font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:5px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:12px;height:12px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Acompanhamento de obrigações em aberto
+        </div>
       </div>
-      <div class="stats-row" id="dash-naopago-cards" style="margin-bottom:16px">
+      <div class="stats-row" id="dash-naopago-cards" style="margin-bottom:14px">
         <!-- Populated dynamically by renderDashNaoPagoCards() -->
       </div>
-      <div class="stats-row" id="dash-naopago-combo-cards">
+      <div class="stats-row" id="dash-naopago-combo-cards" style="margin-bottom:6px">
         <!-- Populated dynamically by renderDashNaoPagoCards() -->
       </div>
 
@@ -5640,6 +5959,11 @@ input.cap-date.form-input {
           <div class="section-subtitle">Tarefas, agenda, prestadores e indicadores de produtividade pessoal e profissional</div>
         </div>
         <div style="display:flex;gap:8px">
+          <input type="file" id="nx-suap-file-input" accept=".json,application/json" style="display:none" onchange="nxSuapFileSelected(event)">
+          <button class="btn btn-ghost" onclick="document.getElementById('nx-suap-file-input').click()" title="Importar processos exportados pela extensão SUAP → SISMINT (arquivo .json)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Importar Processos SUAP
+          </button>
           <button class="btn btn-ghost" onclick="nxExportData()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             Exportar
@@ -6629,7 +6953,38 @@ input.cap-date.form-input {
      Usam classes próprias (.nx-mover/.nx-modal) para não colidir
      com o sistema de modais nativo do SIGPAG (.modal-overlay).
      ============================================================ -->
-<div class="nx-mover" id="nx-m-task"><div class="nx-modal"><div class="mhd"><div class="mttl" id="nx-m-task-ttl">Nova Tarefa</div><button class="mcls" onclick="nxCloseModal('nx-m-task')">✕</button></div><div class="mbody"><div class="fg"><label class="fl">Tipo</label><select class="fs" id="nx-f-tipo" onchange="nxUpdateTipoFields()"><option value="trabalho">◈ Trabalho</option><option value="casa">⬟ Casa</option><option value="servico">◇ Serviço</option></select></div><div class="fg"><label class="fl">Título *</label><input class="fi" id="nx-f-titulo"></div><div class="fg"><label class="fl">Descrição</label><textarea class="fta" id="nx-f-desc"></textarea></div><div id="nx-ex-trab"><div class="dv"></div><div class="fg2"><div class="fg"><label class="fl">Nº Processo</label><input class="fi" id="nx-f-proc"></div><div class="fg"><label class="fl">Fornecedor</label><input class="fi" id="nx-f-forn"></div></div><div class="fg"><label class="fl">Pendências</label><textarea class="fta" id="nx-f-pend"></textarea></div></div><div id="nx-ex-svc" style="display:none"><div class="dv"></div><div class="fg2"><div class="fg"><label class="fl">Prestador</label><select class="fs" id="nx-f-prest"><option value="">Selecionar</option></select></div><div class="fg"><label class="fl">Valor (R$)</label><input class="fi" id="nx-f-val" type="number" step="0.01"></div></div><div class="fg"><label class="fl">Data Pagamento</label><input class="fi" id="nx-f-dpag" type="date"></div></div><div class="fg3"><div class="fg"><label class="fl">Data *</label><input class="fi" id="nx-f-data" type="date"></div><div class="fg"><label class="fl">Início</label><input class="fi" id="nx-f-ini" type="time"></div><div class="fg"><label class="fl">Fim</label><input class="fi" id="nx-f-fim" type="time"></div></div><div class="fg2"><div class="fg"><label class="fl">Prioridade</label><select class="fs" id="nx-f-prio"><option value="alta">Alta</option><option value="media" selected>Média</option><option value="baixa">Baixa</option></select></div><div class="fg"><label class="fl">Status</label><select class="fs" id="nx-f-stat"><option value="pendente">Pendente</option><option value="nao_iniciado">Não Iniciado</option><option value="em_andamento">Em Andamento</option><option value="concluido">Concluído</option><option value="pago">Pago</option></select></div></div><div class="fg"><label class="fl">Recorrência</label><select class="fs" id="nx-f-rec"><option value="">Sem recorrência</option><option value="diaria">Diária</option><option value="semanal">Semanal</option><option value="mensal">Mensal</option></select></div></div><div class="mft"><button class="btn btn-g" onclick="nxCloseModal('nx-m-task')">Cancelar</button><button class="btn btn-p" id="nx-btn-save-task" onclick="nxSaveTask()">Salvar</button></div></div></div>
+<div class="nx-mover" id="nx-m-task"><div class="nx-modal"><div class="mhd"><div class="mttl" id="nx-m-task-ttl">Nova Tarefa</div><button class="mcls" onclick="nxCloseModal('nx-m-task')">✕</button></div><div class="mbody"><div class="fg"><label class="fl">Tipo</label><select class="fs" id="nx-f-tipo" onchange="nxUpdateTipoFields()"><option value="trabalho">◈ Trabalho</option><option value="casa">⬟ Casa</option><option value="servico">◇ Serviço</option></select></div><div class="fg"><label class="fl">Título *</label><input class="fi" id="nx-f-titulo"></div><div class="fg"><label class="fl">Descrição</label><textarea class="fta" id="nx-f-desc"></textarea></div><div id="nx-ex-trab"><div class="dv"></div><div class="fg2"><div class="fg"><label class="fl">Nº Processo</label><input class="fi" id="nx-f-proc"></div><div class="fg"><label class="fl">Fornecedor</label><input class="fi" id="nx-f-forn"></div></div><div class="fg"><label class="fl">Pendências</label><textarea class="fta" id="nx-f-pend"></textarea></div></div><div id="nx-ex-svc" style="display:none"><div class="dv"></div><div class="fg2"><div class="fg"><label class="fl">Prestador</label><select class="fs" id="nx-f-prest"><option value="">Selecionar</option></select></div><div class="fg"><label class="fl">Valor (R$)</label><input class="fi" id="nx-f-val" type="number" step="0.01"></div></div><div class="fg"><label class="fl">Data Pagamento</label><input class="fi" id="nx-f-dpag" type="date"></div></div><div class="fg3"><div class="fg"><label class="fl">Data *</label><input class="fi" id="nx-f-data" type="date"></div><div class="fg"><label class="fl">Início</label><input class="fi" id="nx-f-ini" type="time"></div><div class="fg"><label class="fl">Fim</label><input class="fi" id="nx-f-fim" type="time"></div></div><div class="fg2"><div class="fg"><label class="fl">Prioridade</label><select class="fs" id="nx-f-prio"><option value="altissima">Altíssima</option><option value="alta">Alta</option><option value="media" selected>Média</option><option value="normal">Normal</option><option value="baixa">Baixa</option></select></div><div class="fg"><label class="fl">Status</label><select class="fs" id="nx-f-stat"><option value="pendente">Pendente</option><option value="nao_iniciado">Não Iniciado</option><option value="em_andamento">Em Andamento</option><option value="concluido">Concluído</option><option value="pago">Pago</option></select></div></div><div class="fg"><label class="fl">Recorrência</label><select class="fs" id="nx-f-rec"><option value="">Sem recorrência</option><option value="diaria">Diária</option><option value="semanal">Semanal</option><option value="mensal">Mensal</option></select></div></div><div class="mft"><button class="btn btn-g" onclick="nxCloseModal('nx-m-task')">Cancelar</button><button class="btn btn-p" id="nx-btn-save-task" onclick="nxSaveTask()">Salvar</button></div></div></div>
+
+<!-- ETAPA SUAP: modal de pré-visualização da importação de processos exportados pela extensão -->
+<div class="nx-mover" id="nx-m-import-suap">
+  <div class="nx-modal" style="max-width:920px">
+    <div class="mhd">
+      <div class="mttl">Importar Processos SUAP</div>
+      <button class="mcls" onclick="nxSuapCancelarImportacao()">✕</button>
+    </div>
+    <div class="mbody">
+      <div id="nx-suap-preview-resumo" style="font-size:.85rem;color:var(--text-secondary);margin-bottom:16px"></div>
+      <div style="overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius-lg)">
+        <table style="width:100%;border-collapse:collapse;font-size:.8rem">
+          <thead>
+            <tr style="background:var(--bg-elevated)">
+              <th style="padding:9px 10px;text-align:left;font-size:.65rem;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted)">Rótulo</th>
+              <th style="padding:9px 10px;text-align:left;font-size:.65rem;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted)">Processo</th>
+              <th style="padding:9px 10px;text-align:left;font-size:.65rem;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted)">Descrição</th>
+              <th style="padding:9px 10px;text-align:left;font-size:.65rem;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted)">Recebimento</th>
+              <th style="padding:9px 10px;text-align:left;font-size:.65rem;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted)">Prioridade</th>
+            </tr>
+          </thead>
+          <tbody id="nx-suap-preview-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="mft">
+      <button class="btn btn-g" onclick="nxSuapCancelarImportacao()">Cancelar</button>
+      <button class="btn btn-p" id="nx-btn-confirmar-import-suap" onclick="nxSuapConfirmarImportacao()">Confirmar Importação</button>
+    </div>
+  </div>
+</div>
 <div class="nx-mover" id="nx-m-det"><div class="nx-modal"><div class="mhd"><div class="mttl" id="nx-m-det-ttl">Detalhe</div><button class="mcls" onclick="nxCloseModal('nx-m-det')">✕</button></div><div class="mbody" id="nx-m-det-body"></div><div class="mft"><button class="btn btn-d btn-sm" id="nx-btn-del">Excluir</button><button class="btn btn-g btn-sm" id="nx-btn-dup">Duplicar</button><button class="btn btn-g btn-sm" id="nx-btn-stat">Status</button><button class="btn btn-g btn-sm" onclick="nxCloseModal('nx-m-det')">Fechar</button><button class="btn btn-p btn-sm" id="nx-btn-edit">✎ Editar</button></div></div></div>
 <div class="nx-mover" id="nx-m-prest"><div class="nx-modal"><div class="mhd"><div class="mttl">Novo Prestador</div><button class="mcls" onclick="nxCloseModal('nx-m-prest')">✕</button></div><div class="mbody"><div class="fg"><label class="fl">Nome *</label><input class="fi" id="nx-p-nome"></div><div class="fg2"><div class="fg"><label class="fl">Especialidade</label><input class="fi" id="nx-p-esp"></div><div class="fg"><label class="fl">Telefone</label><input class="fi" id="nx-p-tel"></div></div><div class="fg"><label class="fl">Email</label><input class="fi" id="nx-p-email" type="email"></div><div class="fg"><label class="fl">Observações</label><textarea class="fta" id="nx-p-obs"></textarea></div></div><div class="mft"><button class="btn btn-g" onclick="nxCloseModal('nx-m-prest')">Cancelar</button><button class="btn btn-p" id="nx-btn-save-prest" onclick="nxSavePrest()">Salvar</button></div></div></div>
 
@@ -8399,24 +8754,66 @@ function renderCapDashboard(){
     {lbl:'Saldo Total',val:capMoney(saldos),cls:'stat-blue',icon:'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',col:'var(--accent-blue)'},
   ].map(x=>`<div class="stat-card ${x.cls}"><div class="stat-icon" style="background:rgba(0,0,0,0.15)"><svg viewBox="0 0 24 24" fill="none" stroke="${x.col}" stroke-width="2">${x.icon}</svg></div><div class="stat-info"><div class="stat-label">${x.lbl}</div><div class="stat-value" style="font-size:${typeof x.val==='number'?'24px':'16px'}">${x.val}</div></div></div>`).join('');
 
-  // Mini cards EXE por fonte + RAP por fonte com cores distintas
-  const mini=document.getElementById('fin-mini-cards-row');
+  // ── Mini cards EXE/RAP premium (layout do print modelo) ──
+  const mini = document.getElementById('fin-mini-cards-row');
   if(mini){
-    const mExe={}, mRap={};
-    contas.forEach(c=>{
-      if(c.tipo==='EXE') mExe[c.fonte]=(mExe[c.fonte]||0)+c.valor;
-      else mRap[c.fonte]=(mRap[c.fonte]||0)+c.valor;
+    // Totais por tipo e fonte
+    const mExe = {}, mRap = {};
+    contas.forEach(c => {
+      if(c.tipo === 'EXE') mExe[c.fonte] = (mExe[c.fonte]||0) + c.valor;
+      else                mRap[c.fonte] = (mRap[c.fonte]||0) + c.valor;
     });
-    const exeCards=Object.entries(mExe).map(([fonte,val])=>{
-      const f=fonteByCodigo(fonte);
-      return `<div class="fin-mini-card exe-card"><div class="fin-mini-label">EXE</div><div class="fin-mini-fonte">${fonte} · ${f.descricao||fonte}</div><div class="fin-mini-value" style="color:var(--accent-teal)">${capMoney(val)}</div><div style="font-size:10px;color:var(--text-muted);margin-top:2px">Cód: ${f.codsol||'-'}</div></div>`;
-    });
-    const rapCards=Object.entries(mRap).map(([fonte,val])=>{
-      const f=fonteByCodigo(fonte);
-      return `<div class="fin-mini-card rap-card"><div class="fin-mini-label">RAP</div><div class="fin-mini-fonte">${fonte} · ${f.descricao||fonte}</div><div class="fin-mini-value" style="color:var(--accent-amber)">${capMoney(val)}</div><div style="font-size:10px;color:var(--text-muted);margin-top:2px">Cód: ${f.codsol||'-'}</div></div>`;
-    });
-    mini.innerHTML=[...exeCards,...rapCards].join('')||'';
+
+    // Gera alturas aleatórias para o mini gráfico de barras decorativo
+    function miniBars(cor){
+      const alts = [30,55,40,70,45,80,60,75,50,90,65,85];
+      return alts.map(h => '<div class="fin-mini-bar" style="height:'+h+'%"></div>').join('');
+    }
+
+    // SVG do ícone EXE (cartão de crédito)
+    const exeSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M7 14h3M14 14h3"/></svg>';
+    // SVG do ícone RAP (camadas)
+    const rapSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2L2 7l10 5 10-5-10-5"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>';
+    // SVG seta para TOTAL DISPONÍVEL
+    const arrowSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="10" height="10"><polyline points="18 15 12 9 6 15"/></svg>';
+
+    function buildCard(tipo, fonte, val){
+      const f = fonteByCodigo(fonte);
+      const cls = tipo === "EXE" ? "exe-card" : "rap-card";
+      const svg = tipo === "EXE" ? exeSvg : rapSvg;
+      const descricao = (f.descricao || fonte).replace('Fonte ','');
+      const codsol = f.codsol || "—";
+      // Calcula total disponível (saldo) para essa fonte
+      const saldoFonte = (State.capSaldos || []).filter(s => s.fonte === fonte).reduce((a,s) => a+(Number(s.valor)||0), 0);
+      const totalDisp = capMoney(saldoFonte);
+      return (
+        '<div class="fin-mini-card ' + cls + '" onclick="showPage(\'financeiro\')">'
+          + '<div class="fin-mini-head">'
+            + '<div class="fin-mini-left">'
+              + '<div style="display:flex;align-items:center;gap:8px">'
+                + '<div class="fin-mini-icon">' + svg + '</div>'
+              + '</div>'
+              + '<div style="margin-top:10px">'
+                + '<div class="fin-mini-label">' + tipo + '</div>'
+                + '<div class="fin-mini-fonte">' + fonte + ' &middot; ' + descricao.toUpperCase() + '</div>'
+              + '</div>'
+            + '</div>'
+            + '<button class="fin-mini-btn" onclick="event.stopPropagation();showPage(\'financeiro\')">'
+              + arrowSvg + ' TOTAL DISPONÍVEL'
+            + '</button>'
+          + '</div>'
+          + '<div class="fin-mini-value">' + capMoney(val) + '</div>'
+          + '<div class="fin-mini-cod">Cód: ' + codsol + '</div>'
+          + '<div class="fin-mini-chart">' + miniBars() + '</div>'
+        + '</div>'
+      );
+    }
+
+    const exeCards = Object.entries(mExe).map(([fonte, val]) => buildCard("EXE", fonte, val));
+    const rapCards = Object.entries(mRap).map(([fonte, val]) => buildCard("RAP", fonte, val));
+    mini.innerHTML = [...exeCards, ...rapCards].join('') || '';
   }
+
 
   // Populate competencia filter
   const compFilter=document.getElementById('cap-filter-competencia');
@@ -8429,57 +8826,64 @@ function renderCapDashboard(){
 // Reaproveita State.capContas (mesma fonte de dados usada em toda a Tabela de Lançamentos)
 // e a função capMoney já existente para formatação em R$ 0.000,00
 function renderDashNaoPagoCards(){
-  const mainRow=document.getElementById('dash-naopago-cards');
-  const comboRow=document.getElementById('dash-naopago-combo-cards');
-  if(!mainRow&&!comboRow) return;
-  const naoPagos=(State.capContas||[]).filter(c=>c.pago==='nao');
-  const somaOnde=(pred)=>naoPagos.filter(pred).reduce((a,c)=>a+(Number(c.valor)||0),0);
+  const mainRow  = document.getElementById('dash-naopago-cards');
+  const comboRow = document.getElementById('dash-naopago-combo-cards');
+  if(!mainRow && !comboRow) return;
 
-  const totalGeral=somaOnde(()=>true);
-  const totalFonte1133=somaOnde(c=>c.fonte==='1133000000');
-  const totalFonte1000=somaOnde(c=>c.fonte==='1000000000');
-  const totalExe=somaOnde(c=>c.tipo==='EXE');
-  const totalRap=somaOnde(c=>c.tipo==='RAP');
-  const exeFonte1133=somaOnde(c=>c.tipo==='EXE'&&c.fonte==='1133000000');
-  const exeFonte1000=somaOnde(c=>c.tipo==='EXE'&&c.fonte==='1000000000');
-  const rapFonte1133=somaOnde(c=>c.tipo==='RAP'&&c.fonte==='1133000000');
-  const rapFonte1000=somaOnde(c=>c.tipo==='RAP'&&c.fonte==='1000000000');
+  const naoPagos = (State.capContas||[]).filter(c => c.pago === 'nao');
+  const soma = pred => naoPagos.filter(pred).reduce((a,c) => a+(Number(c.valor)||0), 0);
 
-  // Helper: monta um card com valor sempre ancorado na base (evita desalinhamento
-  // quando o rótulo quebra em mais linhas em alguns cards da mesma linha) e dá
-  // destaque visual ao número da fonte e ao termo EXE/RAP.
-  const pendCard=(x)=>{
-    const tagHTML=x.tag?`<span style="display:inline-block;font-size:10px;font-weight:800;letter-spacing:.06em;padding:2px 8px;border-radius:5px;background:${x.col}26;color:${x.col};margin-bottom:5px">${x.tag}</span>`:'';
-    const fonteHTML=x.fonte?`<div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;font-weight:800;color:${x.col};letter-spacing:.01em;margin-top:2px">Fonte ${x.fonte}</div>`:'';
-    return `<div class="stat-card ${x.cls}" style="flex-direction:column;align-items:stretch;justify-content:space-between;min-height:120px">
-      <div style="display:flex;align-items:flex-start;gap:12px">
-        ${x.icon?`<div class="stat-icon" style="background:rgba(0,0,0,0.15);flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="${x.col}" stroke-width="2">${x.icon}</svg></div>`:''}
-        <div style="min-width:0">
-          ${tagHTML?`<div>${tagHTML}</div>`:''}
-          <div class="stat-label" style="margin-bottom:0">${x.lbl}</div>
-          ${fonteHTML}
-        </div>
-      </div>
-      <div class="stat-value" style="font-size:${x.big?'19px':'17px'};color:${x.col};margin-top:12px">${capMoney(x.val)}</div>
-    </div>`;
-  };
+  const totalGeral   = soma(() => true);
+  const t1133        = soma(c => c.fonte === '1133000000');
+  const t1000        = soma(c => c.fonte === '1000000000');
+  const totalExe     = soma(c => c.tipo  === 'EXE');
+  const totalRap     = soma(c => c.tipo  === 'RAP');
+  const exe1133      = soma(c => c.tipo  === 'EXE' && c.fonte === '1133000000');
+  const exe1000      = soma(c => c.tipo  === 'EXE' && c.fonte === '1000000000');
+  const rap1133      = soma(c => c.tipo  === 'RAP' && c.fonte === '1133000000');
+  const rap1000      = soma(c => c.tipo  === 'RAP' && c.fonte === '1000000000');
+
+  /* ── helper: card de pendência premium (idêntico ao print modelo) ── */
+  function pendCard(x){
+    const tagEl   = x.tag   ? '<span style="display:inline-block;font-size:9.5px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:5px;background:'+x.col+'22;color:'+x.col+';margin-bottom:4px">'+x.tag+'</span>' : '';
+    const fonteEl = x.fonte ? '<div style="font-family:ui-monospace,monospace;font-size:13.5px;font-weight:800;color:'+x.col+';margin-top:3px">Fonte '+x.fonte+'</div>' : '';
+    const iconEl  = x.icon  ? '<div style="width:38px;height:38px;border-radius:10px;background:'+x.col+'18;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="'+x.col+'" stroke-width="2" width="18" height="18">'+x.icon+'</svg></div>' : '';
+    return (
+      '<div class="stat-card '+x.cls+'" style="flex-direction:column;align-items:stretch;justify-content:space-between;min-height:130px;padding:16px 18px">'
+      + '<div style="display:flex;align-items:flex-start;gap:11px">'
+        + iconEl
+        + '<div style="min-width:0">'
+          + (tagEl ? '<div>'+tagEl+'</div>' : '')
+          + '<div class="stat-label" style="margin-bottom:0;font-size:11px">'+x.lbl+'</div>'
+          + fonteEl
+        + '</div>'
+      + '</div>'
+      + '<div class="stat-value" style="font-size:'+(x.big?'20px':'18px')+';color:'+x.col+';margin-top:14px;letter-spacing:-.5px">'+capMoney(x.val)+'</div>'
+    + '</div>'
+    );
+  }
+
+  const icoDolar = '<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>';
+  const icoAlerta= '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>';
+  const icoExe   = '<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M7 14h3M14 14h3"/>';
+  const icoRap   = '<path d="M12 2L2 7l10 5 10-5-10-5"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>';
 
   if(mainRow){
-    mainRow.innerHTML=[
-      {lbl:'Total Geral a Pagar',val:totalGeral,cls:'stat-rose',col:'var(--accent-rose)',icon:'<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>',big:true},
-      {lbl:'Não Pago',val:totalFonte1133,cls:'stat-amber',col:'var(--accent-amber)',icon:'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',fonte:'1133000000'},
-      {lbl:'Não Pago',val:totalFonte1000,cls:'stat-blue',col:'var(--accent-blue)',icon:'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',fonte:'1000000000'},
-      {lbl:'Total Não Pago',val:totalExe,cls:'stat-teal',col:'var(--accent-teal)',icon:'<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M7 14h3M14 14h3"/>',tag:'EXE'},
-      {lbl:'Total Não Pago',val:totalRap,cls:'stat-purple',col:'var(--accent-purple)',icon:'<path d="M12 2L2 7l10 5 10-5-10-5"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>',tag:'RAP'},
+    mainRow.innerHTML = [
+      {lbl:'TOTAL GERAL A PAGAR', val:totalGeral, cls:'stat-rose',   col:'var(--accent-rose)',   icon:icoAlerta, big:true},
+      {lbl:'NÃO PAGO',           val:t1133,       cls:'stat-amber',  col:'var(--accent-amber)',  icon:icoDolar,  fonte:'1133000000'},
+      {lbl:'NÃO PAGO',           val:t1000,       cls:'stat-blue',   col:'var(--accent-blue)',   icon:icoDolar,  fonte:'1000000000'},
+      {lbl:'TOTAL NÃO PAGO',     val:totalExe,    cls:'stat-teal',   col:'var(--accent-teal)',   icon:icoExe,    tag:'EXE'},
+      {lbl:'TOTAL NÃO PAGO',     val:totalRap,    cls:'stat-purple', col:'var(--accent-purple)', icon:icoRap,    tag:'RAP'},
     ].map(pendCard).join('');
   }
 
   if(comboRow){
-    comboRow.innerHTML=[
-      {lbl:'Não Pago',val:exeFonte1133,cls:'stat-teal',col:'var(--accent-teal)',tag:'EXE',fonte:'1133000000'},
-      {lbl:'Não Pago',val:exeFonte1000,cls:'stat-teal',col:'var(--accent-teal)',tag:'EXE',fonte:'1000000000'},
-      {lbl:'Não Pago',val:rapFonte1133,cls:'stat-purple',col:'var(--accent-purple)',tag:'RAP',fonte:'1133000000'},
-      {lbl:'Não Pago',val:rapFonte1000,cls:'stat-purple',col:'var(--accent-purple)',tag:'RAP',fonte:'1000000000'},
+    comboRow.innerHTML = [
+      {lbl:'NÃO PAGO', val:exe1133, cls:'stat-teal',   col:'var(--accent-teal)',   tag:'EXE', fonte:'1133000000'},
+      {lbl:'NÃO PAGO', val:exe1000, cls:'stat-teal',   col:'var(--accent-teal)',   tag:'EXE', fonte:'1000000000'},
+      {lbl:'NÃO PAGO', val:rap1133, cls:'stat-purple', col:'var(--accent-purple)', tag:'RAP', fonte:'1133000000'},
+      {lbl:'NÃO PAGO', val:rap1000, cls:'stat-purple', col:'var(--accent-purple)', tag:'RAP', fonte:'1000000000'},
     ].map(pendCard).join('');
   }
 }
@@ -11564,9 +11968,13 @@ const NX_STAT_BX  = { pendente:'bx-or', nao_iniciado:'bx-gy', em_andamento:'bx-b
 /* Ordem e metadados usados no menu rápido de alteração de status */
 const NX_STAT_ORDER = ['nao_iniciado','pendente','em_andamento','concluido'];
 const NX_STAT_DOT   = { nao_iniciado:'gy', pendente:'or', em_andamento:'bl', concluido:'gr' };
-const NX_PRIO_LBL = { alta:'Alta', media:'Média', baixa:'Baixa' };
-const NX_PRIO_BX  = { alta:'bx-rd', media:'bx-or', baixa:'bx-gy' };
-const NX_PRIO_DOT = { alta:'p-a', media:'p-m', baixa:'p-b' };
+const NX_PRIO_LBL = { alta:'Alta', media:'Média', baixa:'Baixa', altissima:'Altíssima', normal:'Normal' };
+const NX_PRIO_BX  = { alta:'bx-rd', media:'bx-or', baixa:'bx-gy', altissima:'bx-purple', normal:'bx-bl' };
+const NX_PRIO_DOT = { alta:'p-a', media:'p-m', baixa:'p-b', altissima:'p-altissima', normal:'p-normal' };
+/* ETAPA SUAP: mapeamento oficial Rótulo → Prioridade e ordem de exibição na listagem */
+const NX_SUAP_ROTULO_PRIORIDADE = { 'Sem rótulo':'altissima', 'Amarelo':'alta', 'Laranja':'media', 'Roxo':'normal', 'Azul':'baixa', 'Verde':'baixa' };
+const NX_SUAP_ROTULO_ORDEM      = { 'Sem rótulo':0, 'Amarelo':1, 'Laranja':2, 'Roxo':3, 'Azul':4, 'Verde':5 };
+const NX_SUAP_ROTULO_COR        = { 'Sem rótulo':'#6c757d', 'Amarelo':'#ffc107', 'Laranja':'#fd7e14', 'Roxo':'#6f42c1', 'Azul':'#3b82f6', 'Verde':'#22c55e' };
 const NX_PAGE_TITLES = { dashboard:'Dashboard', agenda:'Agenda', trabalho:'Trabalho', casa:'Casa', servicos:'Serviços', prestadores:'Prestadores', historico:'Histórico' };
 
 let nxCurTab = 'dashboard';
@@ -11682,6 +12090,9 @@ function nxRenderPage(pg){
 
 /* ---------- render de card de tarefa (compartilhado entre telas) ---------- */
 function nxTcHTML(t){
+  // ── Cards SUAP: layout inspirado no registro do SUAP (origemSuap:true) ──
+  if(t.origemSuap) return nxSuapCardHTML(t);
+  // Renderização padrão para tarefas não-SUAP (inalterada)
   let done=(t.status==='concluido'||t.status==='pago')?'on':'';
   let doneCls=done?'done':'';
   let tipoCls=NX_TIPO_CLS[t.tipo]||'';
@@ -11691,10 +12102,106 @@ function nxTcHTML(t){
   let checkTxt=done?'✓':'';
   let valBx=(t.tipo==='servico'&&t.valor)?'<span class="bx bx-gr">R$ '+Number(t.valor).toFixed(2).replace('.',',')+'</span>':'';
   let pendBx=(t.status==='pendente'&&t.motivoPendencia)?'<span class="bx bx-or" title="Motivo da pendência">'+nxEscH(t.motivoPendencia)+'</span>':'';
-  // ETAPA 7: interface simplificada — sem botões avulsos sobre o cartão.
-  // Clicar em qualquer parte do cartão abre a janela de detalhes; o círculo
-  // de conclusão rápida (data-nxchk) intercepta o clique antes disso.
   return `<div class="tc ${tipoCls} ${doneCls}" data-nxid="${t.id}" data-nxdet="${t.id}"><div class="tcheck ${done}" data-nxchk="${t.id}">${checkTxt}</div><div class="tinfo"><div class="ttl ${done?'done-ttl':''}">${nxEscH(t.titulo)}</div><div class="tmeta"><span class="ttime">${timeTxt}</span><span class="bx ${NX_TIPO_BX[t.tipo]}">${NX_TIPO_LBL[t.tipo]}</span><span class="bx ${NX_STAT_BX[t.status]}">${NX_STAT_LBL[t.status]}</span>${procBx}${pendBx}${overBx}${valBx}</div></div><div class="tprio"><span class="bx ${NX_PRIO_BX[t.prioridade]}">${NX_PRIO_LBL[t.prioridade]}</span><div class="pdot ${NX_PRIO_DOT[t.prioridade]}"></div></div></div>`;
+}
+
+/* Gera o HTML do card SUAP (layout próprio, inspirado no visual do SUAP) */
+function nxSuapCardHTML(t){
+  const st = t.status || 'pendente';
+  const stLbl = NX_STAT_LBL[st] || st;
+  const rotulo = t.suapRotulo || '';
+  const rotuloCls = 'p-rotulo-'+(rotulo||'sem').toLowerCase();
+  const prioCls   = 'p-prio-'+(t.prioridade||'altissima');
+  const statCls   = 'p-stat-'+st;
+
+  // Comentários
+  const comentarios = (t.comentariosSuap || []);
+  const comentHtml = comentarios.length
+    ? `<div class="suap-comments">${comentarios.map(c=>`<div class="suap-comment-item"><div class="sc-meta">${nxEscH(c.ts)}</div><div class="sc-body">${nxEscH(c.texto)}</div></div>`).join('')}</div>`
+    : '';
+
+  // Select de status
+  const statOpts = ['pendente','nao_iniciado','em_andamento','concluido','cancelado']
+    .map(s=>`<option value="${s}"${s===st?' selected':''}>${NX_STAT_LBL[s]}</option>`).join('');
+
+  // Formulário inline de edição (oculto por padrão)
+  const editForm = `<div class="suap-edit-form" id="suap-ef-${t.id}">
+    <div><label>Número do Processo</label><input type="text" id="suap-ef-proc-${t.id}" value="${nxEscH(t.titulo)}" readonly style="opacity:.7;cursor:not-allowed" title="O número do processo não pode ser alterado"></div>
+    <div><label>Descrição</label><textarea id="suap-ef-desc-${t.id}">${nxEscH(t.desc||'')}</textarea></div>
+    <div class="suap-edit-row">
+      <div><label>Recebimento (DD/MM/AAAA ou DD/MM/AAAA HH:MM)</label><input type="text" id="suap-ef-rec-${t.id}" value="${nxEscH(t.recebimento||'')}" placeholder="Ex: 23/06/2026 10:37:18"></div>
+      <div><label>Rótulo SUAP</label><select id="suap-ef-rot-${t.id}">
+        ${['Sem rótulo','Roxo','Amarelo','Verde','Azul','Laranja'].map(r=>`<option value="${r}"${r===(t.suapRotulo||'Sem rótulo')?' selected':''}>${r}</option>`).join('')}
+      </select></div>
+    </div>
+    <div class="suap-edit-row">
+      <div><label>Status</label><select id="suap-ef-stat-${t.id}">${statOpts}</select></div>
+      <div><label>Prioridade</label><select id="suap-ef-prio-${t.id}">
+        ${['altissima','alta','media','normal','baixa'].map(p=>`<option value="${p}"${p===t.prioridade?' selected':''}>${NX_PRIO_LBL[p]}</option>`).join('')}
+      </select></div>
+    </div>
+    <div class="suap-edit-actions">
+      <button class="suap-edit-save" onclick="nxSuapSalvarEdicao('${t.id}')">💾 Salvar Alterações</button>
+      <button class="suap-edit-cancel" onclick="nxSuapFecharEdicao('${t.id}')">Cancelar</button>
+    </div>
+  </div>`;
+
+  return `<div class="suap-card" data-nxid="${t.id}">
+  <div class="suap-card-hdr">
+    <div class="suap-hdr-pills">
+      <span class="suap-pill ${rotuloCls}"><svg viewBox="0 0 24 24" fill="currentColor" width="11" height="11"><circle cx="12" cy="12" r="6"/></svg>${nxEscH(rotulo||'Sem rótulo')}</span>
+      <span class="suap-pill ${statCls}"><svg viewBox="0 0 24 24" fill="currentColor" width="10" height="10"><path d="M3 6h18M3 12h18M3 18h18"/></svg>${stLbl}</span>
+      <span class="suap-pill ${prioCls}">${NX_PRIO_LBL[t.prioridade]||''}</span>
+    </div>
+    <div class="suap-card-actions">
+      <button class="suap-btn b-fin" onclick="nxSuapFinalizar('${t.id}')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="12" height="12"><path d="M20 6 9 17l-5-5"/></svg> Finalizar
+      </button>
+      <button class="suap-btn b-edt" onclick="nxSuapToggleEdicao('${t.id}')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg> Editar
+      </button>
+      <button class="suap-btn b-dup" onclick="nxSuapDuplicar('${t.id}')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Duplicar
+      </button>
+      <button class="suap-btn b-del" onclick="nxSuapExcluir('${t.id}')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg> Excluir
+      </button>
+      <button class="suap-btn b-com" onclick="nxSuapAbrirComentario('${t.id}')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Comentário
+      </button>
+    </div>
+  </div>
+  <div class="suap-card-body">
+    <div class="suap-card-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="12" y2="17"/>
+      </svg>
+    </div>
+    <div class="suap-card-content">
+      <div class="suap-proc-row">
+        <span class="suap-proc-num">${nxEscH(t.titulo)}</span>
+        <button class="suap-copy-btn" onclick="nxSuapCopiarNumero(this,'${nxEscH(t.titulo)}')" title="Copiar número do processo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar
+        </button>
+      </div>
+      <div class="suap-desc">${nxEscH(t.desc||'')}</div>
+      <div class="suap-meta-row">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <strong>Recebimento:</strong> <span class="suap-date-val">${nxEscH(t.recebimento||(t.data?nxFmtDate(t.data):'—'))}</span>
+      </div>
+    </div>
+  </div>
+  ${comentHtml}
+  ${editForm}
+  <div class="suap-footer">
+    <div class="suap-footer-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    </div>
+    <label>Status:</label>
+    <select class="suap-stat-sel" onchange="nxSuapAlterarStatus('${t.id}',this.value)">${statOpts}</select>
+  </div>
+  <div class="suap-card-deco">//</div>
+</div>`;
 }
 function nxEmptyHTML(msg){ return `<div class="empty"><span class="empty-ic">◌</span><div class="empty-tx">${msg}</div></div>`; }
 
@@ -11883,7 +12390,23 @@ function nxOpenModalForDate(){
 function nxRenderTrab(){
   let list=nxVisible(State.nxTasks.filter(t=>t.tipo==='trabalho'));
   if(nxWFilt!=='all') list=list.filter(t=>t.status===nxWFilt);
-  list.sort((a,b)=>({alta:0,media:1,baixa:2}[a.prioridade]||1)-({alta:0,media:1,baixa:2}[b.prioridade]||1));
+  // ETAPA SUAP: peso unificado — Altíssima(0) < Alta(1) < Média(2) < Normal(3) < Baixa(4).
+  // Compatível com tarefas antigas (só alta/media/baixa) e novas (5 níveis vindas do SUAP).
+  const PESO = { altissima:0, alta:1, media:2, normal:3, baixa:4 };
+  list.sort((a,b)=>{
+    const wA = PESO[a.prioridade] ?? 2, wB = PESO[b.prioridade] ?? 2;
+    if(wA !== wB) return wA - wB;
+    // Empate na prioridade: se ambos vieram do SUAP, desempata pela ordem exata do rótulo
+    // (necessário porque Azul e Verde compartilham a mesma prioridade "Baixa")
+    if(a.suapRotulo && b.suapRotulo){
+      const rA = NX_SUAP_ROTULO_ORDEM[a.suapRotulo] ?? 99, rB = NX_SUAP_ROTULO_ORDEM[b.suapRotulo] ?? 99;
+      if(rA !== rB) return rA - rB;
+      const dA = a.recebimentoISO || '', dB = b.recebimentoISO || '';
+      if(dA !== dB) return dA.localeCompare(dB);
+      return (a.proc||'').localeCompare(b.proc||'');
+    }
+    return 0;
+  });
   document.getElementById('nx-wk-tot').innerText=State.nxTasks.filter(t=>t.tipo==='trabalho').length;
   document.getElementById('nx-wk-atr').innerText=State.nxTasks.filter(t=>t.tipo==='trabalho'&&nxIsOverdue(t)).length;
   document.getElementById('nx-wk-and').innerText=State.nxTasks.filter(t=>t.tipo==='trabalho'&&t.status==='em_andamento').length;
@@ -11974,6 +12497,345 @@ function nxOpenModal(type,preType){
   }
 }
 function nxCloseModal(id){ document.getElementById(id).classList.remove('on'); }
+
+/* ============================================================
+   ETAPA SUAP — Importação de Processos (arquivo .json exportado
+   pela extensão do Chrome). 100% local, sem alterar nenhuma
+   regra existente do módulo Atividades — apenas cria tarefas na
+   categoria "Trabalho" a partir do arquivo.
+   ============================================================ */
+let nxSuapPending = []; // processos do arquivo carregado, já com metadados calculados
+
+/* Converte "23/06/2026" -> "2026-06-23" (formato usado pelo campo t.data) */
+function nxSuapDataParaISO(ddmmaaaa){
+  if(!ddmmaaaa) return '';
+  const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(String(ddmmaaaa).trim());
+  if(!m) return '';
+  return m[3]+'-'+m[2]+'-'+m[1];
+}
+
+/* Valida a estrutura mínima exigida do arquivo exportado pela extensão */
+function nxSuapValidarEstrutura(json){
+  if(!json || typeof json !== 'object') return {valid:false, error:'Arquivo inválido: o conteúdo não é um JSON reconhecível.'};
+  if(json.sistema !== 'SUAP') return {valid:false, error:'Arquivo não reconhecido: este não é um arquivo exportado pela extensão SUAP → SISMINT.'};
+  if(!Array.isArray(json.processos)) return {valid:false, error:'Arquivo inválido: o campo "processos" está ausente ou não é uma lista.'};
+  if(!json.processos.length) return {valid:false, error:'O arquivo não contém nenhum processo para importar.'};
+  for(const p of json.processos){
+    // Aceita "numero_processo" (v4) OU "processo" (v3/compatibilidade)
+    const num = p.numero_processo || p.processo;
+    if(!p || !num){
+      return {valid:false, error:'Um ou mais processos do arquivo estão sem número. Verifique se a extensão está atualizada (v4).'};
+    }
+  }
+  return {valid:true};
+}
+
+/* Disparado pelo <input type="file"> escondido no cabeçalho do módulo */
+function nxSuapFileSelected(ev){
+  const file = ev.target.files && ev.target.files[0];
+  if(!file) return;
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    let json;
+    try { json = JSON.parse(e.target.result); }
+    catch(err){ showToast('Arquivo JSON inválido ou corrompido.','error'); ev.target.value=''; return; }
+
+    const val = nxSuapValidarEstrutura(json);
+    if(!val.valid){ showToast(val.error,'error'); ev.target.value=''; return; }
+
+    // Remove duplicados dentro do próprio arquivo (por número de processo)
+    const vistosNoArquivo = new Set();
+    const unicos = json.processos.filter(p=>{
+      // Normaliza: aceita "numero_processo" (v4) OU "processo" (v3)
+      const num = p.numero_processo || p.processo;
+      if(!num || vistosNoArquivo.has(num)) return false;
+      vistosNoArquivo.add(num);
+      return true;
+    });
+
+    // Rótulos fora da tabela oficial (Vermelho, Rosa, Cinza etc.) são tratados como "Sem rótulo"
+    nxSuapPending = unicos.map(p=>{
+      const num    = p.numero_processo || p.processo || '';
+      const rotulo = (p.rotulo && NX_SUAP_ROTULO_ORDEM.hasOwnProperty(p.rotulo)) ? p.rotulo : 'Sem rótulo';
+      // "recebimento" já vem consolidado na v4 (data + hora num único campo)
+      const rec    = p.recebimento || '';
+      // recebimentoISO: extrai apenas os primeiros 10 chars "DD/MM/AAAA" e converte
+      const recISO = nxSuapDataParaISO(rec.slice(0,10));
+      const jaExistePendente = State.nxTasks.some(t=>t.proc === num && t.status === 'pendente');
+      const jaExisteQualquer = State.nxTasks.some(t=>t.proc === num);
+      return {
+        rotulo,
+        processo:          num,
+        descricao:         p.descricao || '',
+        recebimento:       rec,
+        recebimentoISO:    recISO,
+        prioridade:        NX_SUAP_ROTULO_PRIORIDADE[rotulo] || 'altissima',
+        duplicado:         jaExistePendente,
+        existeOutroStatus: jaExisteQualquer && !jaExistePendente,
+      };
+    });
+
+    nxSuapShowPreview();
+    ev.target.value = ''; // permite selecionar o mesmo arquivo de novo depois, se precisar
+  };
+  reader.onerror = () => { showToast('Não foi possível ler o arquivo selecionado.','error'); ev.target.value=''; };
+  reader.readAsText(file, 'UTF-8');
+}
+
+/* Renderiza a tabela de pré-visualização e abre o modal */
+function nxSuapShowPreview(){
+  const total      = nxSuapPending.length;
+  const duplicados = nxSuapPending.filter(p=>p.duplicado).length;
+  const novos      = total - duplicados;
+
+  document.getElementById('nx-suap-preview-resumo').innerHTML =
+    `<strong>${total}</strong> processo${total>1?'s':''} encontrado${total>1?'s':''} no arquivo — `+
+    `<span style="color:var(--accent-green)"><strong>${novos}</strong> nov${novos===1?'o':'os'} a importar</span>`+
+    (duplicados ? ` · <span style="color:#f87171"><strong>${duplicados}</strong> já Pendente${duplicados>1?'s':''} (ser${duplicados>1?'ão':'á'} rejeitado${duplicados>1?'s':''})</span>` : '');
+
+  document.getElementById('nx-suap-preview-tbody').innerHTML = nxSuapPending.map(p=>{
+    const cor = NX_SUAP_ROTULO_COR[p.rotulo] || '#6c757d';
+    const descEsc = (p.descricao||'').replace(/</g,'&lt;');
+    let statusNote = '';
+    if(p.duplicado) statusNote = ' <span style="color:#f87171;font-size:.62rem;font-weight:700">⛔ Já existe Pendente — será rejeitado</span>';
+    else if(p.existeOutroStatus) statusNote = ' <span style="color:#94a3b8;font-size:.62rem">↩ existe c/ outro status — será importado</span>';
+    return `<tr style="border-top:1px solid var(--border);${p.duplicado?'opacity:.55':''}">
+      <td style="padding:9px 10px"><span style="font-size:.65rem;font-weight:700;padding:2px 9px;border-radius:12px;background:${cor}22;color:${cor};white-space:nowrap">${p.rotulo}</span></td>
+      <td style="padding:9px 10px;font-family:monospace;font-size:.78rem;white-space:nowrap">${p.processo}</td>
+      <td style="padding:9px 10px;font-size:.78rem;max-width:320px">${descEsc}</td>
+      <td style="padding:9px 10px;font-size:.78rem;white-space:nowrap">${p.recebimento || '—'}</td>
+      <td style="padding:9px 10px;font-size:.75rem;white-space:nowrap">${NX_PRIO_LBL[p.prioridade] || p.prioridade}${statusNote}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('nx-m-import-suap').classList.add('on');
+}
+
+/* Confirma a importação: cria uma tarefa (categoria Trabalho) por processo novo.
+   Regra de duplicidade: rejeita processos cujo número já existe com status "pendente".
+   Processos com o mesmo número mas outro status (não iniciado, em andamento, concluído,
+   cancelado) são importados normalmente, sem alerta. */
+function nxSuapConfirmarImportacao(){
+  const novos     = nxSuapPending.filter(p=>!p.duplicado);
+  const ignorados = nxSuapPending.length - novos.length;
+
+  // ── Validação extra: rejeita processos que já existem com status PENDENTE ──
+  const rejeitadosPendente = novos.filter(p=>{
+    return State.nxTasks.some(t=>
+      t.proc === p.processo && t.status === 'pendente'
+    );
+  });
+
+  if(rejeitadosPendente.length){
+    const nums = rejeitadosPendente.map(p=>`\n• ${p.processo}`).join('');
+    showToast(
+      `❌ ${rejeitadosPendente.length} processo${rejeitadosPendente.length>1?'s':''} não importado${rejeitadosPendente.length>1?'s':''} — já existem com status Pendente:${nums}`,
+      'error', 6000
+    );
+    // Remove os rejeitados da lista a importar, mantendo os demais
+    const rejNums = new Set(rejeitadosPendente.map(p=>p.processo));
+    const paraImportar = novos.filter(p=>!rejNums.has(p.processo));
+
+    if(!paraImportar.length && !ignorados){
+      nxSuapPending = [];
+      document.getElementById('nx-m-import-suap').classList.remove('on');
+      return;
+    }
+    // Se ainda houver processos válidos, segue com eles
+    nxSuapExecutarImportacao(paraImportar, ignorados + rejeitadosPendente.length);
+    return;
+  }
+
+  nxSuapExecutarImportacao(novos, ignorados);
+}
+
+function nxSuapExecutarImportacao(novos, ignorados){
+  novos.forEach(p=>{
+    const agora = new Date().toISOString();
+    State.nxTasks.push({
+      id: nxUid(),
+      tipo: 'trabalho',
+      titulo: p.processo,
+      desc: p.descricao,
+      proc: p.processo,
+      forn: '',
+      pend: '',
+      data: p.recebimentoISO || nxTodayStr(),
+      ini: '', fim: '',
+      prioridade: p.prioridade,
+      status: 'pendente',
+      rec: '',
+      criado: agora,
+      atualizado: agora,
+      origemSuap: true,
+      suapRotulo: p.rotulo,
+      recebimento: p.recebimento,
+      recebimentoISO: p.recebimentoISO,
+      comentariosSuap: [],
+    });
+  });
+
+  if(novos.length) nxAddHist(`Importação SUAP: ${novos.length} processo${novos.length>1?'s':''} adicionado${novos.length>1?'s':''} ao Trabalho.`);
+  nxPersist();
+
+  const msg = novos.length
+    ? `${novos.length} processo${novos.length>1?'s':''} importado${novos.length>1?'s':''}`+
+      (ignorados ? ` e ${ignorados} processo${ignorados>1?'s':''} ignorado${ignorados>1?'s':''} por já existir no SISMINT.` : '.')
+    : `Nenhum processo novo — ${ignorados===1?'ele já existia':'todos os '+ignorados+' já existiam'} no SISMINT.`;
+  showToast(msg, novos.length ? 'success' : 'info');
+
+  nxSuapPending = [];
+  document.getElementById('nx-m-import-suap').classList.remove('on');
+  nxCurTab = 'trabalho';
+  nxGoTo('trabalho');
+}
+
+/* ── Ações dos cards SUAP ── */
+function nxSuapFinalizar(id){
+  const t = State.nxTasks.find(x=>x.id===id); if(!t) return;
+  t.status = 'concluido'; t.atualizado = new Date().toISOString();
+  nxAddHist(`"${t.titulo}" finalizado → Concluído`);
+  nxPersist(); nxRenderPage(nxCurTab);
+  showToast('✅ Processo marcado como Concluído.','success');
+}
+
+function nxSuapAlterarStatus(id, novoStatus){
+  const t = State.nxTasks.find(x=>x.id===id); if(!t||t.status===novoStatus) return;
+  // Regra de duplicidade ao colocar em Pendente: impede duplicata com outro já Pendente
+  if(novoStatus === 'pendente'){
+    const outroPendente = State.nxTasks.find(x=>x.id!==id && x.proc===t.proc && x.status==='pendente');
+    if(outroPendente){
+      showToast(`❌ Já existe um registro Pendente com o processo ${t.proc}. Não é possível duplicar o status Pendente.`,'error');
+      // Reverte o select para o valor anterior
+      setTimeout(()=>nxRenderPage(nxCurTab), 50);
+      return;
+    }
+  }
+  t.status = novoStatus; t.atualizado = new Date().toISOString();
+  nxAddHist(`"${t.titulo}" → ${NX_STAT_LBL[novoStatus]}`);
+  nxPersist(); nxRenderPage(nxCurTab);
+}
+
+function nxSuapDuplicar(id){
+  const t = State.nxTasks.find(x=>x.id===id); if(!t) return;
+  const copia = JSON.parse(JSON.stringify(t));
+  copia.id = nxUid();
+  copia.criado = copia.atualizado = new Date().toISOString();
+  copia.status = 'nao_iniciado'; // cópia começa como "não iniciado"
+  copia.comentariosSuap = [];
+  State.nxTasks.push(copia);
+  nxPersist(); nxRenderPage(nxCurTab);
+  showToast('Processo duplicado (status: Não Iniciado).','success');
+}
+
+function nxSuapExcluir(id){
+  if(!confirm('Excluir este processo? Esta ação não pode ser desfeita.')) return;
+  State.nxTasks = State.nxTasks.filter(x=>x.id!==id);
+  nxPersist(); nxRenderPage(nxCurTab);
+  showToast('Processo excluído.','info');
+}
+
+let _nxSuapComId = null;
+function nxSuapAbrirComentario(id){
+  _nxSuapComId = id;
+  const ta = document.getElementById('nx-suap-com-textarea');
+  if(ta) ta.value = '';
+  document.getElementById('nx-m-suap-comentario').classList.add('on');
+  setTimeout(()=>{ if(ta) ta.focus(); }, 150);
+}
+function nxSuapSalvarComentario(){
+  if(!_nxSuapComId) return;
+  const ta = document.getElementById('nx-suap-com-textarea');
+  const texto = (ta?.value||'').trim();
+  if(!texto){ showToast('Digite o comentário antes de salvar.','error'); return; }
+  const t = State.nxTasks.find(x=>x.id===_nxSuapComId); if(!t) return;
+  if(!Array.isArray(t.comentariosSuap)) t.comentariosSuap = [];
+  const agora = new Date();
+  const ts = `${agora.toLocaleDateString('pt-BR')} às ${agora.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}`;
+  t.comentariosSuap.push({ ts, texto });
+  t.atualizado = agora.toISOString();
+  nxPersist(); nxRenderPage(nxCurTab);
+  nxCloseModal('nx-m-suap-comentario');
+  showToast('💬 Comentário salvo.','success');
+  _nxSuapComId = null;
+}
+
+function nxSuapCopiarNumero(btn, numero){
+  const txt = numero;
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt)
+      .then(()=>{ btn.classList.add('copied'); btn.textContent='✓ Copiado'; setTimeout(()=>{ btn.classList.remove('copied'); btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar'; },2000); })
+      .catch(()=>{ document.execCommand('copy'); });
+  } else { document.execCommand('copy'); }
+}
+
+/* ── Edição inline: abre/fecha o formulário embutido no card ── */
+function nxSuapToggleEdicao(id){
+  const form = document.getElementById('suap-ef-'+id);
+  if(!form) return;
+  const open = form.classList.contains('open');
+  // Fecha todos os outros formulários abertos antes de abrir este
+  document.querySelectorAll('.suap-edit-form.open').forEach(f=>f.classList.remove('open'));
+  if(!open){ form.classList.add('open'); form.scrollIntoView({behavior:'smooth',block:'nearest'}); }
+}
+function nxSuapFecharEdicao(id){
+  const form = document.getElementById('suap-ef-'+id);
+  if(form) form.classList.remove('open');
+}
+function nxSuapSalvarEdicao(id){
+  const t = State.nxTasks.find(x=>x.id===id); if(!t) return;
+  const desc  = document.getElementById('suap-ef-desc-'+id)?.value.trim() || '';
+  const rec   = document.getElementById('suap-ef-rec-'+id)?.value.trim()  || '';
+  const rotul = document.getElementById('suap-ef-rot-'+id)?.value         || 'Sem rótulo';
+  const stat  = document.getElementById('suap-ef-stat-'+id)?.value        || t.status;
+  const prio  = document.getElementById('suap-ef-prio-'+id)?.value        || t.prioridade;
+
+  // Validação de duplicidade se mudando para pendente
+  if(stat === 'pendente' && t.status !== 'pendente'){
+    const outro = State.nxTasks.find(x=>x.id!==id && x.proc===t.proc && x.status==='pendente');
+    if(outro){ showToast('❌ Já existe um registro Pendente com este número de processo.','error'); return; }
+  }
+
+  t.desc          = desc;
+  t.recebimento   = rec;
+  t.suapRotulo    = rotul === 'Sem rótulo' ? '' : rotul;
+  t.status        = stat;
+  t.prioridade    = prio;
+  t.atualizado    = new Date().toISOString();
+  // Atualiza a prioridade com base no novo rótulo (se mudou)
+  if(rotul) t.prioridade = NX_SUAP_ROTULO_PRIORIDADE[rotul] || prio;
+  // Override manual do usuário
+  t.prioridade = prio;
+
+  nxAddHist(`"${t.titulo}" editado.`);
+  nxPersist();
+  nxRenderPage(nxCurTab);
+  showToast('✅ Processo atualizado com sucesso.','success');
+}
+
+function nxSuapCancelarImportacao(){
+  nxSuapPending = [];
+  document.getElementById('nx-m-import-suap').classList.remove('on');
+}
+
+/* ── Modal de comentário para cards SUAP ── */
+(function(){
+  if(document.getElementById('nx-m-suap-comentario')) return;
+  const m = document.createElement('div');
+  m.className = 'nx-mover'; m.id = 'nx-m-suap-comentario';
+  m.innerHTML = `<div class="nx-modal" style="max-width:480px">
+    <div class="mhd"><div class="mttl">💬 Adicionar Comentário</div><button class="mcls" onclick="nxCloseModal('nx-m-suap-comentario')">✕</button></div>
+    <div class="mbody" id="nx-m-suap-comentario-body">
+      <textarea id="nx-suap-com-textarea" placeholder="Digite o comentário..."></textarea>
+    </div>
+    <div class="mft">
+      <button class="btn btn-g" onclick="nxCloseModal('nx-m-suap-comentario')">Cancelar</button>
+      <button class="btn btn-p" onclick="nxSuapSalvarComentario()">Salvar Comentário</button>
+    </div>
+  </div>`;
+  document.body.appendChild(m);
+})();
 function nxUpdateTipoFields(){
   let v=document.getElementById('nx-f-tipo').value;
   document.getElementById('nx-ex-trab').style.display=v==='trabalho'?'block':'none';
