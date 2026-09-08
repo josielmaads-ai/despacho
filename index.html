@@ -3008,7 +3008,101 @@ input.cap-date.form-input {
 }
 #nx-m-suap-comentario textarea:focus { outline: none; border-color: var(--accent-blue); }
 
-/* ---- Modal de alteração rápida de status ---- */
+/* ── Busca inteligente de processos ── */
+#page-nexus .nx-search-bar {
+  margin-bottom: 18px;
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+}
+#page-nexus .nx-search-inner {
+  flex: 1; min-width: 240px; position: relative;
+  display: flex; align-items: center;
+  background: rgba(13,27,62,.7);
+  border: 1.5px solid rgba(99,179,255,.28);
+  border-radius: 14px;
+  transition: border-color .2s, box-shadow .2s;
+  box-shadow: 0 2px 16px rgba(0,0,0,.3);
+}
+#page-nexus .nx-search-inner:focus-within {
+  border-color: rgba(99,179,255,.65);
+  box-shadow: 0 0 0 3px rgba(59,130,246,.12), 0 2px 16px rgba(0,0,0,.3);
+}
+#page-nexus .nx-search-ico {
+  width: 16px; height: 16px; flex-shrink: 0;
+  color: #60a5fa; margin-left: 14px; pointer-events: none;
+}
+#page-nexus .nx-search-input {
+  flex: 1; background: transparent; border: none; outline: none;
+  padding: 11px 10px 11px 10px;
+  font-size: .85rem; color: #e2e8f0; font-family: inherit;
+  min-width: 0;
+}
+#page-nexus .nx-search-input::placeholder { color: #475569; }
+#page-nexus .nx-search-clear {
+  padding: 4px 10px; margin-right: 6px;
+  background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1);
+  border-radius: 8px; color: #64748b; font-size: .75rem; cursor: pointer;
+  transition: all .15s; white-space: nowrap;
+}
+#page-nexus .nx-search-clear:hover { color: #e2e8f0; border-color: rgba(255,255,255,.2); }
+#page-nexus .nx-search-count {
+  font-size: .74rem; font-weight: 700; color: #60a5fa;
+  white-space: nowrap; padding: 5px 14px;
+  background: rgba(59,130,246,.1); border: 1px solid rgba(59,130,246,.25);
+  border-radius: 10px; display: none;
+}
+#page-nexus .nx-search-count.visible { display: inline-block; }
+
+/* ── Comentários: ações de editar/excluir por item ── */
+#page-nexus .suap-comment-item { position: relative; }
+#page-nexus .sc-actions {
+  display: inline-flex; align-items: center; gap: 4px;
+  margin-left: 8px; vertical-align: middle;
+}
+#page-nexus .sc-act-btn {
+  font-size: .64rem; font-weight: 700; padding: 1px 7px; border-radius: 5px;
+  border: 1px solid transparent; cursor: pointer; transition: all .12s;
+  line-height: 1.6;
+}
+#page-nexus .sc-act-btn.edit { background: rgba(29,78,216,.2); color: #93c5fd; border-color: rgba(59,130,246,.35); }
+#page-nexus .sc-act-btn.edit:hover { background: rgba(29,78,216,.45); }
+#page-nexus .sc-act-btn.del { background: rgba(190,18,60,.2); color: #fda4af; border-color: rgba(244,63,94,.35); }
+#page-nexus .sc-act-btn.del:hover { background: rgba(190,18,60,.45); }
+#page-nexus .sc-edit-form { margin-top: 7px; display: none; gap: 6px; flex-direction: column; }
+#page-nexus .sc-edit-form.open { display: flex; }
+#page-nexus .sc-edit-form textarea {
+  width: 100%; padding: 7px 10px; font-size: .78rem; color: #e2e8f0;
+  background: rgba(15,37,87,.95); border: 1.5px solid rgba(99,179,255,.3);
+  border-radius: 8px; font-family: inherit; resize: vertical; min-height: 52px;
+  transition: border-color .15s;
+}
+#page-nexus .sc-edit-form textarea:focus { outline: none; border-color: rgba(99,179,255,.6); }
+#page-nexus .sc-edit-btns { display: flex; gap: 6px; }
+#page-nexus .sc-save-btn {
+  padding: 4px 13px; font-size: .72rem; font-weight: 700;
+  background: #1d4ed8; color: #fff; border: none; border-radius: 7px; cursor: pointer; transition: background .15s;
+}
+#page-nexus .sc-save-btn:hover { background: #2563eb; }
+#page-nexus .sc-cancel-btn {
+  padding: 4px 10px; font-size: .72rem; font-weight: 700;
+  background: rgba(255,255,255,.06); color: #94a3b8;
+  border: 1px solid rgba(255,255,255,.12); border-radius: 7px; cursor: pointer; transition: all .15s;
+}
+#page-nexus .sc-cancel-btn:hover { color: #e2e8f0; }
+
+/* Número do processo: branco vibrante (override do azul anterior) */
+#page-nexus .suap-proc-num {
+  font-size: 1.22rem; font-weight: 900; color: #ffffff !important;
+  letter-spacing: .5px; line-height: 1.2; white-space: nowrap;
+  text-shadow: 0 0 18px rgba(255,255,255,.35), 0 1px 0 rgba(0,0,0,.5);
+}
+
+/* Decoração // — mais visível como no print */
+#page-nexus .suap-card-deco {
+  font-size: 1.6rem; font-weight: 900; color: rgba(99,179,255,.28) !important;
+  letter-spacing: -2px;
+}
+
+/* ══════════════════════════════════════════════════════════ */
 .nx-status-overlay { position:fixed; inset:0; z-index:9998; background:rgba(8,10,16,.6); backdrop-filter:blur(2px); display:none; align-items:center; justify-content:center; padding:16px; opacity:0; transition:opacity .18s ease; }
 .nx-status-overlay.on { display:flex; opacity:1; }
 .nx-status-pop { position:relative; width:100%; max-width:360px; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:0 20px 50px rgba(0,0,0,.5); padding:0; transform:translateY(10px) scale(.97); opacity:0; transition:transform .18s ease, opacity .18s ease; }
@@ -5879,7 +5973,7 @@ input.cap-date.form-input {
       <div class="section-sep"></div>
 
       <!-- ==================== BASE ORÇAMENTÁRIA (usada pelo módulo Gerador de Empenho) ====================
-           100% local — persistência via localStorage (Storage.set), sem sincronização com Supabase. ==================== -->
+           Persistência via localStorage (cache local) + Supabase (sync automático via scheduleAutoSave). ==================== -->
       <div class="section-header">
         <div>
           <div class="section-title">Base Orçamentária</div>
@@ -6144,6 +6238,18 @@ input.cap-date.form-input {
             <div class="sec-ttl">Processos</div>
             <div class="fltrs"><button class="fb on" data-nxwf="all">Todos</button><button class="fb" data-nxwf="pendente">Pendentes</button><button class="fb" data-nxwf="em_andamento">Em Andamento</button><button class="fb" data-nxwf="concluido">Concluídos</button></div>
             <button class="btn btn-p btn-sm" onclick="nxOpenModal('task','trabalho')">+ Processo</button>
+          </div>
+          <!-- ── Busca inteligente de processos ── -->
+          <div class="nx-search-bar" id="nx-trab-search-wrap">
+            <div class="nx-search-inner">
+              <svg class="nx-search-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input class="nx-search-input" id="nx-trab-search" type="text"
+                placeholder="Buscar por número do processo, descrição ou data de recebimento…"
+                oninput="nxTrabSearch(this.value)" autocomplete="off">
+              <button class="nx-search-clear" id="nx-trab-search-clear"
+                onclick="document.getElementById('nx-trab-search').value='';nxTrabSearch('');" title="Limpar busca">✕</button>
+            </div>
+            <span class="nx-search-count" id="nx-trab-search-count"></span>
           </div>
           <div class="tlist" id="nx-trab-list"></div>
         </div>
@@ -9879,10 +9985,11 @@ function empenhoGerarExcel(){
 
 /* ============================================================
    BASE ORÇAMENTÁRIA (Configurações) + GERADOR DE EMPENHO (módulo novo)
-   100% local. Persistência EXCLUSIVA via localStorage (Storage.set),
-   SEM chamar scheduleAutoSave() em nenhum momento — proibido usar Supabase
-   neste escopo. O formulário do Gerador de Empenho fica só em memória
-   (não é persistido) e nenhum histórico é criado, conforme especificado.
+   Persistência via localStorage (cache local imediato) + Supabase
+   (sync automático via scheduleAutoSave(), usando a mesma infraestrutura
+   dos demais módulos). Os dados são incluídos no payload de driveSaveData
+   e restaurados em driveLoadData, igual a capFontes, capFornecedores etc.
+   O formulário do Gerador de Empenho fica só em memória (sem persistência).
    Não modifica nada do módulo "Empenho" (distribuição de crédito) nem
    de Contas a Pagar/Financeiro/Relatórios/Dashboard.
    ============================================================ */
@@ -9893,12 +10000,14 @@ State.baseOrcElementos    = Storage.get('baseOrcElementos', []);    // [{id, nat
 State.baseOrcFontes       = Storage.get('baseOrcFontes', []);       // [{id, fonte}]
 
 function baseOrcPersist(){
-  // Local apenas — NUNCA chama scheduleAutoSave()/Supabase, conforme exigido para este módulo.
+  // Persiste localmente (cache imediato para o navegador)
   Storage.set('baseOrcPtres', State.baseOrcPtres);
   Storage.set('baseOrcPlanosInternos', State.baseOrcPlanosInternos);
   Storage.set('baseOrcNaturezas', State.baseOrcNaturezas);
   Storage.set('baseOrcElementos', State.baseOrcElementos);
   Storage.set('baseOrcFontes', State.baseOrcFontes);
+  // Sincroniza com Supabase usando a mesma infraestrutura dos demais módulos
+  if (typeof scheduleAutoSave === 'function') scheduleAutoSave();
 }
 
 /* ── Textos de apresentação "código - descrição", usados em Configurações, Detalha Cred e Gerador de Empenho.
@@ -11671,6 +11780,11 @@ async function driveSaveData() {
     nxPrest:              State.nxPrest              || [],
     nxHist:               State.nxHist               || [],
     energiaRegistros:     State.energiaRegistros     || [],
+    baseOrcPtres:         State.baseOrcPtres         || [],
+    baseOrcPlanosInternos: State.baseOrcPlanosInternos || [],
+    baseOrcNaturezas:     State.baseOrcNaturezas     || [],
+    baseOrcElementos:     State.baseOrcElementos     || [],
+    baseOrcFontes:        State.baseOrcFontes        || [],
   };
   // Checksum de integridade (mantido no formato original para compatibilidade
   // com dados já salvos no Supabase — mudar a fórmula quebraria a validação
@@ -11806,6 +11920,11 @@ async function driveLoadData() {
     if (backup.nxPrest)                State.nxPrest            = backup.nxPrest;
     if (backup.nxHist)                 State.nxHist             = backup.nxHist;
     if (backup.energiaRegistros)       State.energiaRegistros   = backup.energiaRegistros;
+    if (backup.baseOrcPtres)           State.baseOrcPtres        = backup.baseOrcPtres;
+    if (backup.baseOrcPlanosInternos)  State.baseOrcPlanosInternos = backup.baseOrcPlanosInternos;
+    if (backup.baseOrcNaturezas)       State.baseOrcNaturezas    = backup.baseOrcNaturezas;
+    if (backup.baseOrcElementos)       State.baseOrcElementos    = backup.baseOrcElementos;
+    if (backup.baseOrcFontes)          State.baseOrcFontes       = backup.baseOrcFontes;
 
     // Persiste localmente (cache para a próxima abertura do navegador)
     saveStateLocalOnly();
@@ -11816,6 +11935,8 @@ async function driveLoadData() {
     Storage.set('capRelatoriosCiclos', State.capRelatoriosCiclos||[]);
     Storage.set('capCicloLabel', State.capCicloLabel||'');
     Storage.set('capCicloInicioAt', State.capCicloInicioAt||null);
+    // Persiste Base Orçamentária localmente (cache)
+    baseOrcPersist();
     // Re-renderiza todos os módulos, incluindo fontes e fornecedores CAP
     renderFornecedoresTable();
     renderFinanceiro();
@@ -11824,6 +11945,14 @@ async function driveLoadData() {
     if (typeof SIS_ENERGIA !== 'undefined' && SIS_ENERGIA.renderRegistros) SIS_ENERGIA.renderRegistros();
     // Re-popula datalists para autocomplete
     if (typeof refreshCapDatalists === 'function') refreshCapDatalists();
+    // Re-renderiza Base Orçamentária (PTRES, Natureza, Plano Interno, Elemento, Fonte)
+    if (typeof baseOrcRenderPtres === 'function') baseOrcRenderPtres();
+    if (typeof baseOrcRenderNaturezas === 'function') baseOrcRenderNaturezas();
+    if (typeof baseOrcRenderPlanosInternos === 'function') baseOrcRenderPlanosInternos();
+    if (typeof baseOrcRenderElementos === 'function') baseOrcRenderElementos();
+    if (typeof baseOrcRenderFontes === 'function') baseOrcRenderFontes();
+    if (typeof empgenPopularSelects === 'function') empgenPopularSelects();
+    if (typeof empenhoPopularSelectsOrigem === 'function') empenhoPopularSelectsOrigem();
     setDriveStatus('connected', 'Supabase sincronizado');
     showToast('✅ Dados restaurados do Supabase! (v'+(backup.version||'?')+')', 'success');
   } catch(e) {
@@ -11924,6 +12053,11 @@ function exportBackup() {
     capCicloLabel: State.capCicloLabel||'',
     capCicloInicioAt: State.capCicloInicioAt||null,
     energiaRegistros: State.energiaRegistros||[],
+    baseOrcPtres:     State.baseOrcPtres||[],
+    baseOrcPlanosInternos: State.baseOrcPlanosInternos||[],
+    baseOrcNaturezas: State.baseOrcNaturezas||[],
+    baseOrcElementos: State.baseOrcElementos||[],
+    baseOrcFontes:    State.baseOrcFontes||[],
   };
   // Checksum simples de integridade
   payload._checksum = (payload.capContas.length * 7 + payload.capSaldos.length * 13 + payload.capHistorico.length * 31).toString(36);
@@ -11980,6 +12114,11 @@ function importBackup(event) {
       if (data.capCicloLabel !== undefined)    State.capCicloLabel = data.capCicloLabel || '';
       if (data.capCicloInicioAt !== undefined) State.capCicloInicioAt = data.capCicloInicioAt || null;
       if (data.energiaRegistros) State.energiaRegistros = data.energiaRegistros;
+      if (data.baseOrcPtres)          State.baseOrcPtres         = data.baseOrcPtres;
+      if (data.baseOrcPlanosInternos) State.baseOrcPlanosInternos = data.baseOrcPlanosInternos;
+      if (data.baseOrcNaturezas)      State.baseOrcNaturezas     = data.baseOrcNaturezas;
+      if (data.baseOrcElementos)      State.baseOrcElementos     = data.baseOrcElementos;
+      if (data.baseOrcFontes)         State.baseOrcFontes        = data.baseOrcFontes;
 
       // Auditoria da importação
       capAudit('BACKUP IMPORTADO', file.name, null, {versao: data.version, contas: (data.capContas||[]).length, historico: (data.capHistorico||[]).length});
@@ -11992,6 +12131,13 @@ function importBackup(event) {
       Storage.set('capRelatoriosCiclos', State.capRelatoriosCiclos||[]);
       Storage.set('capCicloLabel', State.capCicloLabel||'');
       Storage.set('capCicloInicioAt', State.capCicloInicioAt||null);
+      // Persiste e re-renderiza Base Orçamentária após importação
+      baseOrcPersist();
+      if (typeof baseOrcRenderPtres === 'function') baseOrcRenderPtres();
+      if (typeof baseOrcRenderNaturezas === 'function') baseOrcRenderNaturezas();
+      if (typeof baseOrcRenderPlanosInternos === 'function') baseOrcRenderPlanosInternos();
+      if (typeof baseOrcRenderElementos === 'function') baseOrcRenderElementos();
+      if (typeof baseOrcRenderFontes === 'function') baseOrcRenderFontes();
       renderFornecedoresTable();
       renderFinanceiro();
       updateStats();
@@ -12072,6 +12218,7 @@ const NX_PAGE_TITLES = { dashboard:'Dashboard', agenda:'Agenda', trabalho:'Traba
 let nxCurTab = 'dashboard';
 let nxEditId = null, nxDetId = null;
 let nxAgFilt='all', nxWFilt='all', nxCFilt='all', nxSFilt='all';
+let _nxSearchTerm = '';
 let nxCalDt = new Date(), nxCalSel = null;
 // ETAPA 6: atividades concluídas ficam ocultas da listagem principal por
 // padrão (o registro permanece salvo no banco — apenas não é exibido).
@@ -12206,10 +12353,27 @@ function nxSuapCardHTML(t){
   const prioCls   = 'p-prio-'+(t.prioridade||'altissima');
   const statCls   = 'p-stat-'+st;
 
-  // Comentários
+  // Comentários (com ações de editar/excluir por item)
   const comentarios = (t.comentariosSuap || []);
   const comentHtml = comentarios.length
-    ? `<div class="suap-comments">${comentarios.map(c=>`<div class="suap-comment-item"><div class="sc-meta">${nxEscH(c.ts)}</div><div class="sc-body">${nxEscH(c.texto)}</div></div>`).join('')}</div>`
+    ? `<div class="suap-comments">${comentarios.map((c,ci)=>`
+        <div class="suap-comment-item" id="sc-${t.id}-${ci}">
+          <div class="sc-meta">
+            ${nxEscH(c.ts)}
+            <span class="sc-actions">
+              <button class="sc-act-btn edit" onclick="nxComEditOpen('${t.id}',${ci})" title="Editar comentário">✎ Editar</button>
+              <button class="sc-act-btn del" onclick="nxComDelete('${t.id}',${ci})" title="Excluir comentário">× Excluir</button>
+            </span>
+          </div>
+          <div class="sc-body" id="sc-body-${t.id}-${ci}">${nxEscH(c.texto)}</div>
+          <div class="sc-edit-form" id="sc-ef-${t.id}-${ci}">
+            <textarea id="sc-ef-ta-${t.id}-${ci}">${nxEscH(c.texto)}</textarea>
+            <div class="sc-edit-btns">
+              <button class="sc-save-btn" onclick="nxComEditSave('${t.id}',${ci})">💾 Salvar</button>
+              <button class="sc-cancel-btn" onclick="nxComEditClose('${t.id}',${ci})">Cancelar</button>
+            </div>
+          </div>
+        </div>`).join('')}</div>`
     : '';
 
   // Select de status
@@ -12503,7 +12667,32 @@ function nxRenderTrab(){
   document.getElementById('nx-wk-atr').innerText=State.nxTasks.filter(t=>t.tipo==='trabalho'&&nxIsOverdue(t)).length;
   document.getElementById('nx-wk-and').innerText=State.nxTasks.filter(t=>t.tipo==='trabalho'&&t.status==='em_andamento').length;
   document.getElementById('nx-wk-con').innerText=State.nxTasks.filter(t=>t.tipo==='trabalho'&&(t.status==='concluido'||t.status==='pago')).length;
-  document.getElementById('nx-trab-list').innerHTML=list.length?list.map(nxTcHTML).join(''):nxEmptyHTML('Nenhum processo');
+
+  // ── Aplica filtro de busca inteligente ──
+  const q = (typeof _nxSearchTerm !== 'undefined') ? _nxSearchTerm : '';
+  let filtered = list;
+  if(q){
+    filtered = list.filter(t=>{
+      const num = (t.titulo||'').toLowerCase();
+      const desc = (t.desc||'').toLowerCase();
+      const rec = (t.recebimento||(t.data?nxFmtDate(t.data):'')).toLowerCase();
+      return num.includes(q) || desc.includes(q) || rec.includes(q);
+    });
+  }
+
+  // Atualiza contador de resultados
+  const countEl = document.getElementById('nx-trab-search-count');
+  if(countEl){
+    if(q){
+      countEl.textContent = filtered.length + ' resultado' + (filtered.length!==1?'s':'') + ' de ' + list.length;
+      countEl.classList.add('visible');
+    } else {
+      countEl.textContent = '';
+      countEl.classList.remove('visible');
+    }
+  }
+
+  document.getElementById('nx-trab-list').innerHTML=filtered.length?filtered.map(nxTcHTML).join(''):(q?nxEmptyHTML('Nenhum processo encontrado para "'+q+'"'):nxEmptyHTML('Nenhum processo'));
 }
 function nxRenderCasa(){
   let list=nxVisible(State.nxTasks.filter(t=>t.tipo==='casa'));
@@ -12851,6 +13040,50 @@ function nxSuapSalvarComentario(){
   nxCloseModal('nx-m-suap-comentario');
   showToast('💬 Comentário salvo.','success');
   _nxSuapComId = null;
+}
+
+/* ── Editar comentário inline ── */
+function nxComEditOpen(taskId, idx){
+  // Fecha outros abertos
+  document.querySelectorAll('.sc-edit-form.open').forEach(f=>f.classList.remove('open'));
+  const ef = document.getElementById('sc-ef-'+taskId+'-'+idx);
+  if(!ef) return;
+  ef.classList.add('open');
+  const ta = document.getElementById('sc-ef-ta-'+taskId+'-'+idx);
+  if(ta){ ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); }
+}
+function nxComEditClose(taskId, idx){
+  const ef = document.getElementById('sc-ef-'+taskId+'-'+idx); if(ef) ef.classList.remove('open');
+}
+function nxComEditSave(taskId, idx){
+  const t = State.nxTasks.find(x=>x.id===taskId); if(!t) return;
+  if(!Array.isArray(t.comentariosSuap)) return;
+  const ta = document.getElementById('sc-ef-ta-'+taskId+'-'+idx);
+  const texto = (ta?.value||'').trim();
+  if(!texto){ showToast('O comentário não pode ficar vazio.','error'); return; }
+  t.comentariosSuap[idx].texto = texto;
+  t.atualizado = new Date().toISOString();
+  nxPersist();
+  nxRenderPage(nxCurTab);
+  showToast('✅ Comentário atualizado.','success');
+}
+function nxComDelete(taskId, idx){
+  if(!confirm('Excluir este comentário?')) return;
+  const t = State.nxTasks.find(x=>x.id===taskId); if(!t) return;
+  if(!Array.isArray(t.comentariosSuap)) return;
+  t.comentariosSuap.splice(idx, 1);
+  t.atualizado = new Date().toISOString();
+  nxPersist();
+  nxRenderPage(nxCurTab);
+  showToast('🗑 Comentário excluído.','success');
+}
+
+/* ── Busca inteligente de processos (módulo Atividades / Trabalho) ── */
+function nxTrabSearch(term){
+  _nxSearchTerm = (term||'').trim().toLowerCase();
+  const clearBtn = document.getElementById('nx-trab-search-clear');
+  if(clearBtn) clearBtn.style.opacity = _nxSearchTerm ? '1' : '0.4';
+  nxRenderTrab();
 }
 
 function nxSuapCopiarNumero(btn, numero){
