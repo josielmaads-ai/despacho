@@ -3008,6 +3008,294 @@ input.cap-date.form-input {
 }
 #nx-m-suap-comentario textarea:focus { outline: none; border-color: var(--accent-blue); }
 
+/* ── Botão Em andamento nos cards SUAP ── */
+#page-nexus .suap-btn.b-and {
+  background: rgba(59,130,246,.12);
+  color: #60a5fa;
+  border-color: rgba(59,130,246,.35);
+}
+#page-nexus .suap-btn.b-and:hover {
+  background: rgba(59,130,246,.28);
+  border-color: rgba(59,130,246,.65);
+  box-shadow: 0 0 12px rgba(59,130,246,.25);
+}
+/* Botão "Voltar para Pendente" no painel de Em andamento — destaque amarelo âmbar */
+#page-nexus .suap-btn.b-voltar-pend {
+  background: rgba(251,191,36,.1);
+  color: #fbbf24;
+  border-color: rgba(251,191,36,.35);
+  font-weight: 700;
+}
+#page-nexus .suap-btn.b-voltar-pend:hover {
+  background: rgba(251,191,36,.22);
+  border-color: rgba(251,191,36,.6);
+  box-shadow: 0 0 12px rgba(251,191,36,.18);
+}
+
+/* ══ PAINEL DE FILTROS UNIFICADO ══ */
+/* ══ FILTROS MODERNOS EM SELECT ══ */
+/* ══ PAINEL DE FILTROS EM SELECT ══ */
+.nx-filter-panel {
+  background: rgba(8,15,35,.7);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 16px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  backdrop-filter: blur(14px);
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  align-items: center;
+  gap: 10px;
+}
+/* Label flutuante acima de cada select */
+.nx-fp-select-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.nx-fp-sel-label {
+  display: flex; align-items: center; gap: 5px;
+  font-size: .6rem; font-weight: 800; letter-spacing: .1em;
+  text-transform: uppercase; color: #3d4f6b;
+  padding-left: 4px;
+  white-space: nowrap;
+}
+.nx-fp-sel-label svg { width: 10px; height: 10px; flex-shrink: 0; }
+.nx-fp-sel-inner {
+  position: relative;
+}
+.nx-fp-select-icon {
+  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  width: 13px; height: 13px; color: #3d4f6b; pointer-events: none; z-index: 1;
+  transition: color .18s;
+}
+.nx-fp-select {
+  width: 100%;
+  appearance: none; -webkit-appearance: none;
+  background: rgba(255,255,255,.03);
+  border: 1.5px solid rgba(255,255,255,.09);
+  border-radius: 11px;
+  color: #64748b;
+  font-size: .8rem; font-weight: 600;
+  font-family: inherit;
+  padding: 9px 32px 9px 33px;
+  height: 42px;
+  cursor: pointer;
+  transition: border-color .2s, background .2s, box-shadow .2s, color .2s;
+  outline: none;
+  letter-spacing: .01em;
+}
+.nx-fp-select option {
+  background: #0c1628;
+  color: #cbd5e1;
+  font-weight: 600;
+}
+.nx-fp-select:hover {
+  border-color: rgba(255,255,255,.18);
+  background: rgba(255,255,255,.06);
+  color: #94a3b8;
+}
+.nx-fp-select:hover ~ .nx-fp-select-icon,
+.nx-fp-sel-inner:hover .nx-fp-select-icon { color: #64748b; }
+.nx-fp-select:focus {
+  border-color: rgba(99,179,255,.5);
+  background: rgba(59,130,246,.07);
+  color: #93c5fd;
+  box-shadow: 0 0 0 3px rgba(59,130,246,.1);
+}
+/* Estado ativo (valor diferente de "all") */
+.nx-fp-select[data-nxselfilt="status"].nx-sel-active {
+  border-color: rgba(249,115,22,.45);
+  background: rgba(249,115,22,.07);
+  color: #fb923c;
+  box-shadow: 0 0 0 3px rgba(249,115,22,.08);
+}
+.nx-fp-select[data-nxselfilt="status"].nx-sel-active + .nx-fp-select-icon { color: #f97316; }
+.nx-fp-select[data-nxselfilt="rotulo"].nx-sel-active {
+  border-color: rgba(168,85,247,.45);
+  background: rgba(168,85,247,.07);
+  color: #c084fc;
+  box-shadow: 0 0 0 3px rgba(168,85,247,.08);
+}
+.nx-fp-select[data-nxselfilt="rotulo"].nx-sel-active + .nx-fp-select-icon { color: #a855f7; }
+.nx-fp-select[data-nxselfilt="urgencia"].nx-sel-active {
+  border-color: rgba(239,68,68,.45);
+  background: rgba(239,68,68,.07);
+  color: #f87171;
+  box-shadow: 0 0 0 3px rgba(239,68,68,.08);
+}
+.nx-fp-select[data-nxselfilt="urgencia"].nx-sel-active + .nx-fp-select-icon { color: #ef4444; }
+/* Seta decorativa */
+.nx-fp-select-arrow {
+  position: absolute; right: 11px; top: 50%; transform: translateY(-50%);
+  width: 12px; height: 12px; color: #2d3e56; pointer-events: none;
+}
+/* Botão reset */
+.nx-fp-reset {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 0 16px; height: 42px; border-radius: 11px;
+  font-size: .72rem; font-weight: 700; cursor: pointer;
+  background: rgba(244,63,94,.08); color: #f43f5e;
+  border: 1.5px solid rgba(244,63,94,.22);
+  transition: all .18s; white-space: nowrap;
+  align-self: flex-end; margin-top: 20px;
+}
+.nx-fp-reset:hover { background: rgba(244,63,94,.18); border-color: rgba(244,63,94,.45); color: #fb7185; }
+.nx-fp-reset svg { width: 11px; height: 11px; }
+/* Banner filtros ativos */
+.nx-fp-active-wrap {
+  grid-column: 1 / -1;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255,255,255,.05);
+  display: none;
+  margin-top: 2px;
+}
+.nx-fp-active-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.nx-fp-active-label { font-size: .62rem; font-weight: 800; color: #2d3e56; text-transform: uppercase; letter-spacing: .08em; }
+.nx-fp-active-tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 20px; font-size: .69rem; font-weight: 700;
+  background: rgba(59,130,246,.1); color: #60a5fa; border: 1px solid rgba(59,130,246,.22);
+}
+/* ocultar chips legados */
+.nx-chip, .nx-fp-row, .nx-fp-chips, .nx-fp-divider, .nx-fp-vsep { display: none !important; }
+.nx-fp-select-group { display: none !important; }
+
+/* ══ CARDS DE INDICADORES DA ABA TRABALHO ══ */
+.nx-wk-cards {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.nx-wk-card {
+  background: rgba(8,15,35,.65);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 14px;
+  padding: 16px 16px 14px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .22s, box-shadow .22s, transform .18s;
+  cursor: default;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.nx-wk-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  border-radius: 0 0 14px 14px;
+  transition: opacity .22s;
+  opacity: .7;
+}
+.nx-wk-card.nwc-total::after  { background: linear-gradient(90deg,#475569,transparent); }
+.nx-wk-card.nwc-urgente::after { background: linear-gradient(90deg,#ef4444,transparent); }
+.nx-wk-card.nwc-and::after    { background: linear-gradient(90deg,#3b82f6,transparent); }
+.nx-wk-card.nwc-conc::after   { background: linear-gradient(90deg,#22c55e,transparent); }
+.nx-wk-card.nwc-sem::after    { background: linear-gradient(90deg,#6c757d,transparent); }
+.nx-wk-card:hover {
+  border-color: rgba(255,255,255,.14);
+  box-shadow: 0 6px 24px rgba(0,0,0,.25);
+  transform: translateY(-2px);
+}
+.nx-wk-card:hover::after { opacity: 1; }
+/* Ícone no topo do card */
+.nx-wk-card-ico {
+  width: 32px; height: 32px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 14px;
+}
+.nx-wk-card-ico svg { width: 15px; height: 15px; }
+.nwc-total   .nx-wk-card-ico { background: rgba(71,85,105,.18);   color: #64748b; }
+.nwc-urgente .nx-wk-card-ico { background: rgba(239,68,68,.14);   color: #f87171; }
+.nwc-and     .nx-wk-card-ico { background: rgba(59,130,246,.14);  color: #60a5fa; }
+.nwc-conc    .nx-wk-card-ico { background: rgba(34,197,94,.14);   color: #4ade80; }
+.nwc-sem     .nx-wk-card-ico { background: rgba(100,116,139,.14); color: #64748b; }
+/* Valor numérico */
+.nx-wk-card-val {
+  font-family: 'Syne', sans-serif;
+  font-size: 2rem; font-weight: 800; line-height: 1;
+  margin-bottom: 6px; letter-spacing: -.03em;
+}
+.nwc-total   .nx-wk-card-val { color: #e2e8f0; }
+.nwc-urgente .nx-wk-card-val { color: #f87171; }
+.nwc-and     .nx-wk-card-val { color: #60a5fa; }
+.nwc-conc    .nx-wk-card-val { color: #4ade80; }
+.nwc-sem     .nx-wk-card-val { color: #64748b; }
+/* Rótulo do card */
+.nx-wk-card-lbl {
+  font-size: .62rem; font-weight: 800; letter-spacing: .1em;
+  text-transform: uppercase; color: #2d3e56;
+}
+
+/* ── Responsivo ── */
+@media (max-width: 1100px) {
+  .nx-filter-panel { grid-template-columns: 1fr 1fr 1fr; }
+  .nx-fp-reset { grid-column: 1 / -1; margin-top: 0; width: 100%; }
+  .nx-fp-active-wrap { grid-column: 1 / -1; }
+}
+@media (max-width: 900px) {
+  .nx-wk-cards { grid-template-columns: repeat(3, 1fr); }
+  .nx-filter-panel { grid-template-columns: 1fr 1fr; }
+  .nx-fp-reset { grid-column: 1 / -1; }
+}
+@media (max-width: 600px) {
+  .nx-wk-cards { grid-template-columns: 1fr 1fr; }
+  .nx-filter-panel { grid-template-columns: 1fr; }
+}
+
+/* ── Aba Em andamento: banner informativo ── */
+.nx-andamento-info {
+  display: flex; align-items: flex-start; gap: 10px;
+  background: rgba(59,130,246,.08); border: 1px solid rgba(59,130,246,.25);
+  border-radius: 10px; padding: 12px 16px; margin-bottom: 18px;
+  font-size: .82rem; color: #93c5fd; line-height: 1.55;
+}
+
+/* ── Campo Processo Administrativo no Contas a Pagar ── */
+.cap-proc-search-wrap {
+  position: relative;
+}
+.cap-proc-inner {
+  display: flex; align-items: center;
+  background: var(--bg-input, rgba(255,255,255,.06));
+  border: 1.5px solid var(--border, rgba(255,255,255,.12));
+  border-radius: var(--radius-sm, 8px);
+  transition: border-color .2s, box-shadow .2s;
+}
+.cap-proc-inner:focus-within {
+  border-color: var(--accent-teal, #2dd4bf);
+  box-shadow: 0 0 0 3px rgba(45,212,191,.1);
+}
+.cap-proc-input {
+  flex: 1; background: transparent; border: none; outline: none;
+  padding: 10px 10px 10px 10px; font-size: .85rem;
+  color: var(--text-primary, #e2e8f0); font-family: inherit; min-width: 0;
+}
+.cap-proc-input::placeholder { color: #475569; }
+.cap-proc-clear {
+  padding: 4px 10px; margin-right: 6px;
+  background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1);
+  border-radius: 8px; color: #64748b; font-size: .75rem; cursor: pointer;
+  transition: all .15s; white-space: nowrap; opacity: .4;
+}
+.cap-proc-clear:hover { color: #e2e8f0; border-color: rgba(255,255,255,.2); opacity: 1; }
+.cap-proc-dropdown {
+  display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 500;
+  background: #1a2035; border: 1.5px solid rgba(99,179,255,.3);
+  border-radius: 10px; box-shadow: 0 8px 32px rgba(0,0,0,.45);
+  max-height: 280px; overflow-y: auto;
+}
+.cap-proc-option {
+  display: flex; flex-direction: column; gap: 2px; padding: 10px 14px; cursor: pointer;
+  border-bottom: 1px solid rgba(255,255,255,.05); transition: background .12s;
+}
+.cap-proc-option:last-child { border-bottom: none; }
+.cap-proc-option:hover { background: rgba(99,179,255,.1); }
+
 /* ── Busca inteligente de processos ── */
 #page-nexus .nx-search-bar {
   margin-bottom: 18px;
@@ -5384,7 +5672,7 @@ input.cap-date.form-input {
             </div>
 
             <!-- Linha 4: Data Solicitação | Data Pagamento | Observações -->
-            <div class="cap-grid-3" style="margin-bottom:24px">
+            <div class="cap-grid-3" style="margin-bottom:18px">
               <div class="form-group">
                 <label class="form-label">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;color:var(--accent-teal)"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
@@ -5410,6 +5698,32 @@ input.cap-date.form-input {
               <div class="form-group">
                 <label class="form-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;color:var(--accent-orange)"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Observações</label>
                 <input class="form-input" id="cap-obs" placeholder="Histórico, processo, comprovante...">
+              </div>
+            </div>
+
+            <!-- Linha 5: Processo Administrativo (busca inteligente integrada ao módulo Atividades) -->
+            <div style="margin-bottom:24px">
+              <div class="form-group">
+                <label class="form-label">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;color:var(--accent-orange)"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="12" y2="17"/></svg>
+                  Processo Administrativo
+                </label>
+                <div class="cap-proc-search-wrap" id="cap-proc-search-wrap">
+                  <div class="cap-proc-inner" id="cap-proc-inner">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px;flex-shrink:0;color:#60a5fa;margin-left:12px;pointer-events:none"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input class="cap-proc-input" id="cap-proc-search-input" type="text"
+                      placeholder="Buscar por número do processo, descrição ou data de recebimento…"
+                      oninput="capProcSearch(this.value)" autocomplete="off" spellcheck="false">
+                    <button class="cap-proc-clear" id="cap-proc-clear-btn"
+                      onclick="capProcClear()" title="Limpar processo">✕</button>
+                  </div>
+                  <div class="cap-proc-dropdown" id="cap-proc-dropdown"></div>
+                </div>
+                <input type="hidden" id="cap-processo-admin" value="">
+                <div id="cap-proc-selected-badge" style="display:none;margin-top:6px;padding:6px 12px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.35);border-radius:8px;font-size:.78rem;color:#4ade80;font-weight:700;display:flex;align-items:center;gap:8px">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:13px;height:13px;flex-shrink:0"><path d="M20 6 9 17l-5-5"/></svg>
+                  <span id="cap-proc-badge-text"></span>
+                </div>
               </div>
             </div>
             <div style="display:flex;gap:10px;flex-wrap:wrap">
@@ -6228,17 +6542,142 @@ input.cap-date.form-input {
         </div>
 
         <div class="nx-page" id="nx-pg-trabalho">
-          <div class="grid4">
-            <div class="stat"><div class="stat-lbl">Total</div><div class="stat-n" id="nx-wk-tot">0</div></div>
-            <div class="stat r"><div class="stat-lbl">Atrasados</div><div class="stat-n" id="nx-wk-atr">0</div></div>
-            <div class="stat b"><div class="stat-lbl">Em Andamento</div><div class="stat-n" id="nx-wk-and">0</div></div>
-            <div class="stat g"><div class="stat-lbl">Concluídos</div><div class="stat-n" id="nx-wk-con">0</div></div>
+
+          <!-- ── CARDS DE INDICADORES ── -->
+          <div class="nx-wk-cards" id="nx-wk-cards">
+            <div class="nx-wk-card nwc-total">
+              <div class="nx-wk-card-ico">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="15" x2="12" y2="15"/></svg>
+              </div>
+              <div class="nx-wk-card-val" id="nx-wk-tot">0</div>
+              <div class="nx-wk-card-lbl">Total de processos</div>
+            </div>
+            <div class="nx-wk-card nwc-urgente">
+              <div class="nx-wk-card-ico">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              </div>
+              <div class="nx-wk-card-val" id="nx-wk-urg">0</div>
+              <div class="nx-wk-card-lbl">Altíssima urgência</div>
+            </div>
+            <div class="nx-wk-card nwc-and">
+              <div class="nx-wk-card-ico">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+              </div>
+              <div class="nx-wk-card-val" id="nx-wk-and">0</div>
+              <div class="nx-wk-card-lbl">Em andamento</div>
+            </div>
+            <div class="nx-wk-card nwc-conc">
+              <div class="nx-wk-card-ico">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+              <div class="nx-wk-card-val" id="nx-wk-con">0</div>
+              <div class="nx-wk-card-lbl">Concluídos</div>
+            </div>
+            <div class="nx-wk-card nwc-sem">
+              <div class="nx-wk-card-ico">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+              </div>
+              <div class="nx-wk-card-val" id="nx-wk-sem">0</div>
+              <div class="nx-wk-card-lbl">Sem rótulo</div>
+            </div>
           </div>
-          <div class="sec-hd">
+
+          <!-- ══ PAINEL DE FILTROS EM SELECT ══ -->
+          <div class="nx-filter-panel" id="nx-filter-panel">
+
+            <!-- Select: Status -->
+            <div class="nx-fp-select-wrap">
+              <span class="nx-fp-sel-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                Status
+              </span>
+              <div class="nx-fp-sel-inner">
+                <svg class="nx-fp-select-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <select class="nx-fp-select" id="nx-sel-status" data-nxselfilt="status" onchange="nxSetWFilt(this.value); nxUpdateSelStyle(this)">
+                  <option value="all">Todos os status</option>
+                  <option value="pendente">Pendentes</option>
+                  <option value="em_andamento">Em andamento</option>
+                  <option value="concluido">Concluídos</option>
+                  <option value="cancelado">Cancelados</option>
+                </select>
+                <svg class="nx-fp-select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+            </div>
+
+            <!-- Select: Rótulo -->
+            <div class="nx-fp-select-wrap">
+              <span class="nx-fp-sel-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                Rótulo
+              </span>
+              <div class="nx-fp-sel-inner">
+                <svg class="nx-fp-select-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                <select class="nx-fp-select" id="nx-sel-rotulo" data-nxselfilt="rotulo" onchange="nxSetRotFilt(this.value); nxUpdateSelStyle(this)">
+                  <option value="all">Todos os rótulos</option>
+                  <option value="Sem rótulo">Sem rótulo</option>
+                  <option value="Amarelo">Amarelo</option>
+                  <option value="Roxo">Roxo</option>
+                  <option value="Verde">Verde</option>
+                  <option value="Laranja">Laranja</option>
+                  <option value="Azul">Azul</option>
+                </select>
+                <svg class="nx-fp-select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+            </div>
+
+            <!-- Select: Urgência -->
+            <div class="nx-fp-select-wrap">
+              <span class="nx-fp-sel-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                Urgência
+              </span>
+              <div class="nx-fp-sel-inner">
+                <svg class="nx-fp-select-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                <select class="nx-fp-select" id="nx-sel-urgencia" data-nxselfilt="urgencia" onchange="nxSetUrgFilt(this.value); nxUpdateSelStyle(this)">
+                  <option value="all">Todas as urgências</option>
+                  <option value="altissima">Altíssima</option>
+                  <option value="alta">Alta</option>
+                  <option value="normal">Normal</option>
+                </select>
+                <svg class="nx-fp-select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+            </div>
+
+            <!-- Reset button -->
+            <button class="nx-fp-reset" onclick="nxResetAllFilters()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.51"/></svg>
+              Limpar
+            </button>
+
+            <!-- Banner de filtros ativos -->
+            <div class="nx-fp-active-wrap" id="nx-fp-active-wrap">
+              <div class="nx-fp-active-row">
+                <span class="nx-fp-active-label">Filtros ativos:</span>
+                <span id="nx-fp-active-tags"></span>
+              </div>
+            </div>
+
+            <!-- chips legados ocultos -->
+            <div style="display:none" id="nx-chips-status">
+              <button class="nx-chip nx-chip-status on" data-nxwf="all"></button>
+              <button class="nx-chip nx-chip-status" data-nxwf="pendente"></button>
+              <button class="nx-chip nx-chip-status" data-nxwf="em_andamento"></button>
+              <button class="nx-chip nx-chip-status" data-nxwf="concluido"></button>
+            </div>
+          </div>
+
+          <!-- Cabeçalho com título e botões -->
+          <div class="sec-hd" style="margin-bottom:14px">
             <div class="sec-ttl">Processos</div>
-            <div class="fltrs"><button class="fb on" data-nxwf="all">Todos</button><button class="fb" data-nxwf="pendente">Pendentes</button><button class="fb" data-nxwf="em_andamento">Em Andamento</button><button class="fb" data-nxwf="concluido">Concluídos</button></div>
-            <button class="btn btn-p btn-sm" onclick="nxOpenModal('task','trabalho')">+ Processo</button>
+            <div style="display:flex;gap:8px;align-items:center">
+              <button class="btn btn-sm" style="background:rgba(59,130,246,.15);border:1.5px solid rgba(59,130,246,.35);color:#60a5fa;border-radius:10px;display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:700;padding:7px 14px" onclick="nxSetWFilt('em_andamento');document.getElementById('nx-sel-status').value='em_andamento';nxUpdateSelStyle(document.getElementById('nx-sel-status'))" title="Ver processos em andamento">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+                Em andamento
+              </button>
+              <button class="btn btn-p btn-sm" onclick="nxOpenModal('task','trabalho')">+ Processo</button>
+            </div>
           </div>
+
           <!-- ── Busca inteligente de processos ── -->
           <div class="nx-search-bar" id="nx-trab-search-wrap">
             <div class="nx-search-inner">
@@ -6253,6 +6692,9 @@ input.cap-date.form-input {
           </div>
           <div class="tlist" id="nx-trab-list"></div>
         </div>
+
+        <!-- Página fantasma: mantida para compatibilidade de rotas internas mas nunca exibida na nav -->
+        <div class="nx-page" id="nx-pg-em_andamento_aba" style="display:none!important"></div>
 
         <div class="nx-page" id="nx-pg-casa">
           <div class="sec-hd"><div class="sec-ttl">Tarefas da Casa</div><button class="btn btn-p btn-sm" onclick="nxOpenModal('task','casa')">+ Tarefa</button></div>
@@ -8234,6 +8676,7 @@ function saveCapConta(){
     dataPagamento:document.getElementById('cap-data-pagamento').value,
     situacao:document.getElementById('cap-situacao').value,
     obs:document.getElementById('cap-obs').value.trim(),
+    processoAdmin:(document.getElementById('cap-processo-admin')?.value||'').trim(),
     createdAt:old?.createdAt||new Date().toISOString(),
     historico:[...(old?.historico||[]),{at:new Date().toISOString(),msg:old?'Registro atualizado':'Registro criado'}]
   };
@@ -8300,6 +8743,8 @@ function resetCapForm(){
   ['cap-edit-id','cap-codigo','cap-doc-forn','cap-fornecedor','cap-valor','cap-obs'].forEach(id=>{
     const e=document.getElementById(id); if(e)e.value='';
   });
+  // Limpar campo Processo Administrativo
+  capProcClear();
   // Limpa campo de busca e estado visual do fornecedor
   capFornLimpar();
   // Ocultar badge de fornecedor selecionado (garantia extra)
@@ -12219,6 +12664,8 @@ let nxCurTab = 'dashboard';
 let nxEditId = null, nxDetId = null;
 let nxAgFilt='all', nxWFilt='all', nxCFilt='all', nxSFilt='all';
 let _nxSearchTerm = '';
+let _nxRotFilt = 'all';
+let _nxUrgFilt = 'all';
 let nxCalDt = new Date(), nxCalSel = null;
 // ETAPA 6: atividades concluídas ficam ocultas da listagem principal por
 // padrão (o registro permanece salvo no banco — apenas não é exibido).
@@ -12320,6 +12767,7 @@ function nxRenderPage(pg){
   if(pg==='dashboard') nxRenderDash();
   if(pg==='agenda') nxRenderAgenda();
   if(pg==='trabalho') nxRenderTrab();
+  if(pg==='em_andamento_aba') nxRenderAndamento();
   if(pg==='casa') nxRenderCasa();
   if(pg==='servicos') nxRenderSvc();
   if(pg==='prestadores') nxRenderPrest();
@@ -12413,6 +12861,9 @@ function nxSuapCardHTML(t){
       <button class="suap-btn b-fin" onclick="nxSuapFinalizar('${t.id}')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="12" height="12"><path d="M20 6 9 17l-5-5"/></svg> Finalizar
       </button>
+      <button class="suap-btn b-and" onclick="nxSuapMoverAndamento('${t.id}')" title="Mover para Em andamento (stand by)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Em andamento
+      </button>
       <button class="suap-btn b-edt" onclick="nxSuapToggleEdicao('${t.id}')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg> Editar
       </button>
@@ -12474,14 +12925,18 @@ function nxSetStatus(id,status){
  try {
   let t=State.nxTasks.find(x=>x.id===id); if(!t) return;
   if(t.status===status) return;
-  // ETAPA 5: ao mudar para "Pendente", abre automaticamente uma caixa para
-  // informar o motivo. O texto é salvo no banco (via nxPersist/Supabase).
+  // FIX: ao mudar para pendente via popup, limpa flag emAndamentoAba
   if(status==='pendente'){
-    let motivo=prompt('Informe o motivo da pendência:', t.motivoPendencia||'');
-    if(motivo===null) return; // usuário cancelou — não altera o status
+    let motivo=prompt('Informe o motivo da pendência (opcional):', t.motivoPendencia||'');
+    if(motivo===null) return;
     t.motivoPendencia=motivo.trim();
+    if(t.emAndamentoAba) delete t.emAndamentoAba;
+  } else if(status==='em_andamento'){
+    t.emAndamentoAba = true;
+    t.motivoPendencia='';
   } else {
-    t.motivoPendencia=''; // sai do status Pendente: limpa o motivo anterior
+    t.motivoPendencia='';
+    if(t.emAndamentoAba) delete t.emAndamentoAba;
   }
   t.status=status;
   t.atualizado=new Date().toISOString();
@@ -12489,6 +12944,7 @@ function nxSetStatus(id,status){
   if((status==='concluido'||status==='pago') && t.recorrencia) nxGeraProximaRec(t);
   nxPersist();
   nxRenderPage(nxCurTab);
+  nxRenderAndamento();
   nxCloseStatusMenu();
   if(document.getElementById('nx-m-det').classList.contains('on') && nxDetId===id) nxOpenDet(id);
  } catch(err) {
@@ -12644,8 +13100,31 @@ function nxOpenModalForDate(){
 
 /* ---------- TRABALHO / CASA / SERVIÇOS ---------- */
 function nxRenderTrab(){
-  let list=nxVisible(State.nxTasks.filter(t=>t.tipo==='trabalho'));
-  if(nxWFilt!=='all') list=list.filter(t=>t.status===nxWFilt);
+  // Se status = em_andamento: mostrar apenas os que estão em stand by (emAndamentoAba)
+  // Para todos os outros status: excluir os que estão em stand by
+  let list;
+  if(nxWFilt === 'em_andamento'){
+    // Mostra processos em stand by (emAndamentoAba), independente do status interno
+    list = nxVisible(State.nxTasks.filter(t=>t.tipo==='trabalho' && t.emAndamentoAba));
+  } else if(nxWFilt === 'concluido'){
+    // Concluídos: não estão em stand by, forçar nxShowConcluded temporariamente
+    list = State.nxTasks.filter(t=>t.tipo==='trabalho' && !t.emAndamentoAba && nxIsDone(t));
+  } else {
+    // Todos / Pendentes: excluir os em stand by e os concluídos (a menos que nxShowConcluded)
+    list = nxVisible(State.nxTasks.filter(t=>t.tipo==='trabalho' && !t.emAndamentoAba));
+    if(nxWFilt !== 'all') list = list.filter(t=>t.status===nxWFilt);
+  }
+  // Filtro por rótulo
+  if(typeof _nxRotFilt !== 'undefined' && _nxRotFilt !== 'all'){
+    list = list.filter(t=>{
+      const rot = (t.suapRotulo||'Sem rótulo');
+      return rot === _nxRotFilt;
+    });
+  }
+  // Filtro por urgência
+  if(typeof _nxUrgFilt !== 'undefined' && _nxUrgFilt !== 'all'){
+    list = list.filter(t=> (t.prioridade||'altissima') === _nxUrgFilt);
+  }
   // ETAPA SUAP: peso unificado — Altíssima(0) < Alta(1) < Média(2) < Normal(3) < Baixa(4).
   // Compatível com tarefas antigas (só alta/media/baixa) e novas (5 níveis vindas do SUAP).
   const PESO = { altissima:0, alta:1, media:2, normal:3, baixa:4 };
@@ -12663,10 +13142,16 @@ function nxRenderTrab(){
     }
     return 0;
   });
-  document.getElementById('nx-wk-tot').innerText=State.nxTasks.filter(t=>t.tipo==='trabalho').length;
-  document.getElementById('nx-wk-atr').innerText=State.nxTasks.filter(t=>t.tipo==='trabalho'&&nxIsOverdue(t)).length;
-  document.getElementById('nx-wk-and').innerText=State.nxTasks.filter(t=>t.tipo==='trabalho'&&t.status==='em_andamento').length;
-  document.getElementById('nx-wk-con').innerText=State.nxTasks.filter(t=>t.tipo==='trabalho'&&(t.status==='concluido'||t.status==='pago')).length;
+  // ── Atualiza os 5 cards de indicadores ──
+  const wkAll = State.nxTasks.filter(t=>t.tipo==='trabalho');
+  const _setCard = (id, val) => { const el=document.getElementById(id); if(el) el.innerText=val; };
+  _setCard('nx-wk-tot', wkAll.length);
+  _setCard('nx-wk-urg', wkAll.filter(t=>(t.prioridade||'altissima')==='altissima' && !nxIsDone(t)).length);
+  _setCard('nx-wk-and', wkAll.filter(t=>t.status==='em_andamento').length);
+  _setCard('nx-wk-con', wkAll.filter(t=>t.status==='concluido'||t.status==='pago').length);
+  _setCard('nx-wk-sem', wkAll.filter(t=>!t.suapRotulo||t.suapRotulo===''||t.suapRotulo==='Sem rótulo').length);
+  // mantém compatibilidade com nx-wk-atr (não mais exibido, mas pode ser usado em outro lugar)
+  const atrEl = document.getElementById('nx-wk-atr'); if(atrEl) atrEl.innerText=wkAll.filter(t=>nxIsOverdue(t)).length;
 
   // ── Aplica filtro de busca inteligente ──
   const q = (typeof _nxSearchTerm !== 'undefined') ? _nxSearchTerm : '';
@@ -12755,6 +13240,9 @@ function nxUpdateBadges(){
   let todayPend=State.nxTasks.filter(t=>t.data===td&&t.status!=='concluido'&&t.status!=='pago').length;
   const nbTrab=document.getElementById('nx-nb-trab');
   if(nbTrab) nbTrab.innerText=State.nxTasks.filter(t=>t.tipo==='trabalho'&&(t.status==='pendente'||t.status==='em_andamento'||t.status==='nao_iniciado')).length;
+  // Stat card "Em Andamento" agora inclui os processos em stand by
+  const wkAnd=document.getElementById('nx-wk-and');
+  if(wkAnd) wkAnd.innerText=State.nxTasks.filter(t=>t.tipo==='trabalho'&&t.emAndamentoAba).length;
 }
 
 /* ---------- MODAIS: tarefa / detalhe / prestador ---------- */
@@ -12975,29 +13463,175 @@ function nxSuapExecutarImportacao(novos, ignorados){
 /* ── Ações dos cards SUAP ── */
 function nxSuapFinalizar(id){
   const t = State.nxTasks.find(x=>x.id===id); if(!t) return;
+  // Verifica se existe lançamento vinculado no módulo Contas a Pagar
+  const numProc = (t.titulo||'').trim();
+  const lancVinc = (State.capContas||[]).find(c=>
+    (c.processoAdmin||'').trim().toLowerCase() === numProc.toLowerCase() &&
+    (c.situacao||'') === 'Aguardando comprovante'
+  );
+  const vincMsg = lancVinc
+    ? `\n\nUm lançamento vinculado (${lancVinc.documento}) será atualizado automaticamente para PROCESSO ENVIADO.`
+    : '';
+
+  // Modal de confirmação personalizado
+  nxShowFinalizarModal(id, vincMsg);
+}
+
+function nxShowFinalizarModal(id, vincMsg){
+  let modal = document.getElementById('nx-finalizar-modal');
+  if(!modal){
+    modal = document.createElement('div');
+    modal.id = 'nx-finalizar-modal';
+    modal.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(8,10,16,.72);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:20px';
+    modal.innerHTML = `
+      <div style="background:var(--bg-card,#1a2035);border:1.5px solid var(--border,rgba(255,255,255,.12));border-radius:16px;max-width:440px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.6);padding:28px 28px 22px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" style="width:22px;height:22px;flex-shrink:0"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <span style="font-size:1.08rem;font-weight:800;color:var(--text-primary,#e2e8f0)">Confirmar conclusão do processo?</span>
+        </div>
+        <p id="nx-fin-modal-msg" style="font-size:.85rem;color:var(--text-secondary,#94a3b8);line-height:1.6;margin-bottom:20px"></p>
+        <div style="display:flex;gap:10px;justify-content:flex-end">
+          <button id="nx-fin-modal-cancel" style="padding:9px 20px;border-radius:8px;font-size:.83rem;font-weight:700;cursor:pointer;background:rgba(255,255,255,.07);color:#94a3b8;border:1px solid rgba(255,255,255,.12);transition:all .15s" onmouseover="this.style.background='rgba(255,255,255,.12)'" onmouseout="this.style.background='rgba(255,255,255,.07)'">Cancelar</button>
+          <button id="nx-fin-modal-confirm" style="padding:9px 22px;border-radius:8px;font-size:.83rem;font-weight:800;cursor:pointer;background:#16a34a;color:#fff;border:none;transition:background .15s" onmouseover="this.style.background='#15803d'" onmouseout="this.style.background='#16a34a'">✓ Confirmar Conclusão</button>
+        </div>
+      </div>`;
+    document.body.appendChild(modal);
+  }
+  const msgEl = document.getElementById('nx-fin-modal-msg');
+  if(msgEl) msgEl.innerHTML = 'Ao concluir este processo, seu status será alterado para <strong style="color:#4ade80">Concluído</strong>' + (vincMsg ? ', e o lançamento vinculado no módulo Contas a Pagar será atualizado automaticamente para <strong style="color:#60a5fa">PROCESSO ENVIADO</strong>.' : '.');
+  modal.style.display = 'flex';
+  // Handlers
+  const cancelBtn = document.getElementById('nx-fin-modal-cancel');
+  const confirmBtn = document.getElementById('nx-fin-modal-confirm');
+  const closeModal = () => { modal.style.display = 'none'; };
+  cancelBtn.onclick = closeModal;
+  modal.onclick = e => { if(e.target===modal) closeModal(); };
+  confirmBtn.onclick = () => {
+    closeModal();
+    nxSuapFinalizarConfirmado(id);
+  };
+}
+
+function nxSuapFinalizarConfirmado(id){
+  const t = State.nxTasks.find(x=>x.id===id); if(!t) return;
+  // Se estava na aba Em andamento, remove o flag
+  if(t.emAndamentoAba) delete t.emAndamentoAba;
   t.status = 'concluido'; t.atualizado = new Date().toISOString();
   nxAddHist(`"${t.titulo}" finalizado → Concluído`);
-  nxPersist(); nxRenderPage(nxCurTab);
-  showToast('✅ Processo marcado como Concluído.','success');
+  // Integração automática com Contas a Pagar
+  const numProc = (t.titulo||'').trim();
+  const lancamentos = (State.capContas||[]);
+  let atualizados = 0;
+  lancamentos.forEach(c => {
+    if((c.processoAdmin||'').trim().toLowerCase() === numProc.toLowerCase() &&
+       (c.situacao||'') === 'Aguardando comprovante'){
+      c.situacao = 'Processo enviado';
+      c.historico = [...(c.historico||[]), {at: new Date().toISOString(), msg: `Situação alterada automaticamente para "Processo enviado" ao concluir processo ${numProc} no módulo Atividades`}];
+      atualizados++;
+    }
+  });
+  nxPersist();
+  if(atualizados>0){ capPersist(); showToast('✅ Processo concluído e '+atualizados+' lançamento(s) em Contas a Pagar atualizado(s) para PROCESSO ENVIADO.','success'); }
+  else { showToast('✅ Processo marcado como Concluído.','success'); }
+  nxRenderPage(nxCurTab);
+  if(atualizados>0 && typeof renderFinanceiro==='function') renderFinanceiro();
+}
+
+function nxSuapMoverAndamento(id){
+  const t = State.nxTasks.find(x=>x.id===id); if(!t) return;
+  if(t.emAndamentoAba){ showToast('Este processo já está na aba Em andamento.','info'); return; }
+  t.emAndamentoAba = true;
+  t.atualizado = new Date().toISOString();
+  nxAddHist(`"${t.titulo}" movido para Em andamento (stand by)`);
+  nxPersist(); nxRenderPage(nxCurTab); nxRenderAndamento();
+  showToast('⏳ Processo movido para Em andamento.','info');
+}
+
+function nxRenderAndamento(){
+  const el = document.getElementById('nx-and-list'); if(!el) return;
+  const lista = State.nxTasks.filter(t=>t.origemSuap && t.emAndamentoAba);
+  const badgeEl = document.getElementById('nx-nb-and');
+  if(badgeEl) badgeEl.innerText = lista.length;
+  if(!lista.length){ el.innerHTML = '<div class="empty"><span class="empty-ic">⏳</span><div class="empty-tx">Nenhum processo em stand by</div></div>'; return; }
+  el.innerHTML = lista.map(t => nxAndamentoCardHTML(t)).join('');
+}
+
+function nxAndamentoCardHTML(t){
+  const rotulo = t.suapRotulo || '';
+  const rotuloCls = 'p-rotulo-'+(rotulo||'sem').toLowerCase();
+  const prioCls   = 'p-prio-'+(t.prioridade||'altissima');
+  return `<div class="suap-card" data-nxid="${t.id}">
+  <div class="suap-card-hdr">
+    <div class="suap-hdr-pills">
+      <span class="suap-pill ${rotuloCls}"><svg viewBox="0 0 24 24" fill="currentColor" width="11" height="11"><circle cx="12" cy="12" r="6"/></svg>${nxEscH(rotulo||'Sem rótulo')}</span>
+      <span class="suap-pill" style="background:rgba(59,130,246,.15);color:#60a5fa;border-color:rgba(59,130,246,.4)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="10" height="10"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Em andamento</span>
+      <span class="suap-pill ${prioCls}">${NX_PRIO_LBL[t.prioridade]||''}</span>
+    </div>
+    <div class="suap-card-actions">
+      <button class="suap-btn b-fin" onclick="nxSuapFinalizar('${t.id}')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="12" height="12"><path d="M20 6 9 17l-5-5"/></svg> Finalizar
+      </button>
+      <button class="suap-btn b-voltar-pend" onclick="nxAndamentoVoltarPendente('${t.id}')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg> Voltar para Pendente
+      </button>
+    </div>
+  </div>
+  <div class="suap-card-body">
+    <div class="suap-card-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="12" y2="17"/>
+      </svg>
+    </div>
+    <div class="suap-card-content">
+      <div class="suap-proc-row">
+        <span class="suap-proc-num">${nxEscH(t.titulo)}</span>
+        <button class="suap-copy-btn" onclick="nxSuapCopiarNumero(this,'${nxEscH(t.titulo)}')" title="Copiar número do processo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar
+        </button>
+      </div>
+      <div class="suap-desc">${nxEscH(t.desc||'')}</div>
+      <div class="suap-meta-row">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <strong>Recebimento:</strong> <span class="suap-date-val">${nxEscH(t.recebimento||(t.data?nxFmtDate(t.data):'—'))}</span>
+      </div>
+    </div>
+  </div>
+  <div class="suap-card-deco">//</div>
+</div>`;
+}
+
+function nxAndamentoVoltarPendente(id){
+  const t = State.nxTasks.find(x=>x.id===id); if(!t) return;
+  delete t.emAndamentoAba;
+  t.status = 'pendente';
+  t.atualizado = new Date().toISOString();
+  nxAddHist(`"${t.titulo}" retornou de Em andamento → Pendente`);
+  nxPersist(); nxRenderPage(nxCurTab); nxRenderAndamento();
+  showToast('↩ Processo retornado para Pendente (aba Trabalho).','success');
 }
 
 function nxSuapAlterarStatus(id, novoStatus){
   const t = State.nxTasks.find(x=>x.id===id); if(!t||t.status===novoStatus) return;
-  // Regra de duplicidade ao colocar em Pendente: impede duplicata com outro já Pendente
   if(novoStatus === 'pendente'){
     const outroPendente = State.nxTasks.find(x=>x.id!==id && x.proc===t.proc && x.status==='pendente');
     if(outroPendente){
-      showToast(`❌ Já existe um registro Pendente com o processo ${t.proc}. Não é possível duplicar o status Pendente.`,'error');
-      // Reverte o select para o valor anterior
+      showToast(`❌ Já existe um registro Pendente com o processo ${t.proc}.`,'error');
       setTimeout(()=>nxRenderPage(nxCurTab), 50);
       return;
     }
+    // FIX: remover do painel Em andamento ao retornar para Pendente
+    if(t.emAndamentoAba) delete t.emAndamentoAba;
+  } else if(novoStatus === 'em_andamento'){
+    // ao setar Em andamento via select inline, marca emAndamentoAba
+    t.emAndamentoAba = true;
+  } else {
+    // concluido / cancelado: remove do painel Em andamento
+    if(t.emAndamentoAba) delete t.emAndamentoAba;
   }
   t.status = novoStatus; t.atualizado = new Date().toISOString();
   nxAddHist(`"${t.titulo}" → ${NX_STAT_LBL[novoStatus]}`);
-  nxPersist(); nxRenderPage(nxCurTab);
+  nxPersist(); nxRenderPage(nxCurTab); nxRenderAndamento();
 }
-
 function nxSuapDuplicar(id){
   const t = State.nxTasks.find(x=>x.id===id); if(!t) return;
   const copia = JSON.parse(JSON.stringify(t));
@@ -13085,6 +13719,135 @@ function nxTrabSearch(term){
   if(clearBtn) clearBtn.style.opacity = _nxSearchTerm ? '1' : '0.4';
   nxRenderTrab();
 }
+
+/* ── Filtros do painel em select ── */
+function nxUpdateSelStyle(sel){
+  if(!sel) return;
+  sel.classList.toggle('nx-sel-active', sel.value !== 'all');
+}
+function nxSetWFilt(val){
+  nxWFilt = val;
+  // Sincroniza select visual
+  const sel = document.getElementById('nx-sel-status');
+  if(sel && sel.value !== val){ sel.value = val; nxUpdateSelStyle(sel); }
+  // Retrocompatibilidade: chips legados ocultos
+  document.querySelectorAll('#nx-chips-status .nx-chip-status').forEach(b=>{
+    b.classList.toggle('on', b.getAttribute('data-nxwf')===val);
+  });
+  nxUpdateActiveFilters();
+  nxRenderTrab();
+}
+function nxSetRotFilt(rot){
+  _nxRotFilt = rot;
+  const sel = document.getElementById('nx-sel-rotulo');
+  if(sel && sel.value !== rot){ sel.value = rot; nxUpdateSelStyle(sel); }
+  document.querySelectorAll('[data-nxrot]').forEach(b=>{
+    b.classList.toggle('on', b.getAttribute('data-nxrot')===rot);
+  });
+  nxUpdateActiveFilters();
+  nxRenderTrab();
+}
+function nxSetUrgFilt(urg){
+  _nxUrgFilt = urg;
+  const sel = document.getElementById('nx-sel-urgencia');
+  if(sel && sel.value !== urg){ sel.value = urg; nxUpdateSelStyle(sel); }
+  document.querySelectorAll('[data-nxurg]').forEach(b=>{
+    b.classList.toggle('on', b.getAttribute('data-nxurg')===urg);
+  });
+  nxUpdateActiveFilters();
+  nxRenderTrab();
+}
+function nxResetAllFilters(){
+  // Reset selects visualmente
+  ['nx-sel-status','nx-sel-rotulo','nx-sel-urgencia'].forEach(id=>{
+    const s = document.getElementById(id);
+    if(s){ s.value='all'; s.classList.remove('nx-sel-active'); }
+  });
+  nxWFilt='all'; _nxRotFilt='all'; _nxUrgFilt='all';
+  nxUpdateActiveFilters();
+  nxRenderTrab();
+  const si = document.getElementById('nx-trab-search');
+  if(si){ si.value=''; nxTrabSearch(''); }
+}
+function nxUpdateActiveFilters(){
+  const wrap = document.getElementById('nx-fp-active-wrap');
+  const tagsEl = document.getElementById('nx-fp-active-tags');
+  if(!wrap||!tagsEl) return;
+  const tags = [];
+  const STATUS_LBL = { pendente:'Pendentes', em_andamento:'Em andamento', concluido:'Concluídos', cancelado:'Cancelados' };
+  const ROT_LBL    = { 'Sem rótulo':'Sem rótulo', Amarelo:'Amarelo', Roxo:'Roxo', Verde:'Verde', Laranja:'Laranja', Azul:'Azul' };
+  const URG_LBL    = { altissima:'Altíssima', alta:'Alta', normal:'Normal' };
+  if(nxWFilt !== 'all')     tags.push(`<span class="nx-fp-active-tag">Status: ${STATUS_LBL[nxWFilt]||nxWFilt}</span>`);
+  if(_nxRotFilt !== 'all')  tags.push(`<span class="nx-fp-active-tag">Rótulo: ${ROT_LBL[_nxRotFilt]||_nxRotFilt}</span>`);
+  if(_nxUrgFilt !== 'all')  tags.push(`<span class="nx-fp-active-tag">Urgência: ${URG_LBL[_nxUrgFilt]||_nxUrgFilt}</span>`);
+  const hasActive = tags.length > 0;
+  wrap.style.display = hasActive ? 'block' : 'none';
+  tagsEl.innerHTML = tags.join('');
+}
+
+/* ── Busca inteligente de processos no campo Contas a Pagar ── */
+function capProcSearch(term){
+  const q = (term||'').trim().toLowerCase();
+  const dropdown = document.getElementById('cap-proc-dropdown');
+  const clearBtn = document.getElementById('cap-proc-clear-btn');
+  if(clearBtn) clearBtn.style.opacity = q ? '1' : '0.4';
+  if(!q){ if(dropdown) dropdown.style.display='none'; return; }
+  // Busca nos processos do módulo Atividades (origemSuap=true, tipo='trabalho')
+  const processos = (State.nxTasks||[]).filter(t=>
+    t.origemSuap && t.tipo==='trabalho' && !nxIsDone(t)
+  );
+  const results = processos.filter(t=>{
+    const num = (t.titulo||'').toLowerCase();
+    const desc = (t.desc||'').toLowerCase();
+    const rec = (t.recebimento||'').toLowerCase();
+    return num.includes(q) || desc.includes(q) || rec.includes(q);
+  }).slice(0,8);
+  if(!dropdown) return;
+  if(!results.length){
+    dropdown.innerHTML = '<div style="padding:10px 14px;font-size:.8rem;color:#64748b">Nenhum processo encontrado</div>';
+    dropdown.style.display = 'block';
+    return;
+  }
+  dropdown.innerHTML = results.map(t=>`
+    <div class="cap-proc-option" onclick="capProcSelect('${nxEscH(t.titulo)}','${t.id}')" tabindex="0">
+      <span style="font-weight:700;color:#e2e8f0;font-size:.82rem">${nxEscH(t.titulo)}</span>
+      <span style="color:#64748b;font-size:.74rem;margin-top:2px">${nxEscH((t.desc||'').slice(0,60)+(t.desc&&t.desc.length>60?'…':''))}</span>
+    </div>`).join('');
+  dropdown.style.display = 'block';
+}
+
+function capProcSelect(numero, taskId){
+  const input = document.getElementById('cap-proc-search-input');
+  const hidden = document.getElementById('cap-processo-admin');
+  const dropdown = document.getElementById('cap-proc-dropdown');
+  const badge = document.getElementById('cap-proc-selected-badge');
+  const badgeText = document.getElementById('cap-proc-badge-text');
+  if(input) input.value = numero;
+  if(hidden) hidden.value = numero;
+  if(dropdown) dropdown.style.display = 'none';
+  if(badge){ badge.style.display='flex'; }
+  if(badgeText) badgeText.textContent = numero;
+}
+
+function capProcClear(){
+  const input = document.getElementById('cap-proc-search-input');
+  const hidden = document.getElementById('cap-processo-admin');
+  const dropdown = document.getElementById('cap-proc-dropdown');
+  const badge = document.getElementById('cap-proc-selected-badge');
+  if(input) input.value = '';
+  if(hidden) hidden.value = '';
+  if(dropdown) dropdown.style.display = 'none';
+  if(badge) badge.style.display = 'none';
+}
+
+// Fechar dropdown ao clicar fora
+document.addEventListener('click', function(e){
+  const wrap = document.getElementById('cap-proc-search-wrap');
+  if(wrap && !wrap.contains(e.target)){
+    const dropdown = document.getElementById('cap-proc-dropdown');
+    if(dropdown) dropdown.style.display = 'none';
+  }
+});
 
 function nxSuapCopiarNumero(btn, numero){
   const txt = numero;
@@ -13320,12 +14083,14 @@ function initNexusModule(){
     document.querySelectorAll('#nx-pg-agenda [data-nxaf]').forEach(x=>x.classList.remove('on'));
     this.classList.add('on'); nxRenderAgAll();
   }));
-  // Filtros de trabalho
+  // Filtros de trabalho — chips legados ocultos mantidos para retrocompatibilidade
   document.querySelectorAll('#nx-pg-trabalho [data-nxwf]').forEach(b=>b.addEventListener('click',function(){
-    nxWFilt=this.getAttribute('data-nxwf');
-    document.querySelectorAll('#nx-pg-trabalho [data-nxwf]').forEach(x=>x.classList.remove('on'));
-    this.classList.add('on'); nxRenderTrab();
+    nxSetWFilt(this.getAttribute('data-nxwf'));
   }));
+  // Inicializa estilo visual dos selects (caso já tenham valor diferente de 'all')
+  ['nx-sel-status','nx-sel-rotulo','nx-sel-urgencia'].forEach(id=>{
+    const s=document.getElementById(id); if(s) nxUpdateSelStyle(s);
+  });
   // Filtros de casa
   document.querySelectorAll('#nx-pg-casa [data-nxcf]').forEach(b=>b.addEventListener('click',function(){
     nxCFilt=this.getAttribute('data-nxcf');
