@@ -3266,6 +3266,11 @@ input.cap-date.form-input {
 @media (max-width:1200px) { #dash-trab-kpi-row { grid-template-columns: repeat(3,1fr); } }
 @media (max-width:700px)  { #dash-trab-kpi-row { grid-template-columns: repeat(2,1fr); } }
 
+@keyframes dash-spin { to { transform: rotate(360deg); } }
+@keyframes dash-pulse { 0%,100%{opacity:.35} 50%{opacity:.7} }
+.dtk-val.dash-loading { animation: dash-pulse 1.4s ease-in-out infinite; color: #334155 !important; }
+.dtk-val.dash-loading::after { content: '—'; }
+
 /* ══════════════════════════════════════════════════════
    MÓDULO ATIVIDADES — HEADER, SUBNAV, CARDS (v3 ref-fiel)
 ══════════════════════════════════════════════════════ */
@@ -5966,9 +5971,7 @@ input.cap-date.form-input {
               Ver todos →
             </button>
           </div>
-          <div id="dash-trab-list" style="padding:8px 10px;max-height:340px;overflow-y:auto">
-            <div style="padding:20px;text-align:center;color:#334155;font-size:.82rem">Carregando...</div>
-          </div>
+          <div id="dash-trab-list" style="padding:8px 10px;max-height:340px;overflow-y:auto"></div>
         </div>
 
       </div>
@@ -8683,16 +8686,16 @@ input.cap-date.form-input {
           <span style="font-weight:500;color:var(--text-muted);font-size:.68rem;margin-left:6px">— vínculo com módulo Atividades</span>
         </label>
         <div style="position:relative">
-          <svg style="position:absolute;left:12px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--text-muted);pointer-events:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <svg style="position:absolute;left:12px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--text-muted);pointer-events:none;z-index:1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           <input class="form-input" id="cap-edit-ind-proc-search" type="text"
             placeholder="Buscar processo por número, descrição ou data..."
             style="padding-left:38px;padding-right:36px"
             oninput="capEditProcSearch(this.value)"
             autocomplete="off">
           <button id="cap-edit-ind-proc-clear" onclick="capEditProcClear()" title="Remover vínculo"
-            style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:1rem;line-height:1;padding:2px 4px">✕</button>
+            style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:1rem;line-height:1;padding:2px 4px;z-index:2">✕</button>
+          <div id="cap-edit-ind-proc-dropdown" style="display:none;position:absolute;z-index:10000;left:0;right:0;top:calc(100% + 4px);background:var(--bg-card);border:1.5px solid var(--accent-teal);border-radius:10px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.4);max-height:220px;overflow-y:auto"></div>
         </div>
-        <div id="cap-edit-ind-proc-dropdown" style="display:none;position:absolute;z-index:9999;left:0;right:0;top:calc(100% + 4px);background:var(--bg-card);border:1.5px solid var(--accent-teal);border-radius:10px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.4);max-height:220px;overflow-y:auto"></div>
         <input type="hidden" id="cap-edit-ind-proc-id" value="">
         <div id="cap-edit-ind-proc-tag" style="display:none;margin-top:10px;padding:8px 14px;background:rgba(20,184,166,.12);border:1px solid rgba(20,184,166,.35);border-radius:8px;font-size:.8rem;color:var(--accent-teal);font-weight:700;display:flex;align-items:center;gap:8px">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:13px;height:13px;flex-shrink:0"><path d="M20 6 9 17l-5-5"/></svg>
@@ -9525,6 +9528,7 @@ function resetCapForm(){
 }
 function getFilteredCapContas(){
   const q=(document.getElementById('cap-filter-search')?.value||'').toLowerCase();
+  const qProc=(document.getElementById('cap-filter-proc')?.value||'').toLowerCase();
   const tipo=document.getElementById('cap-filter-tipo')?.value||'';
   const classe=document.getElementById('cap-filter-classe')?.value||'';
   const fonte=(document.getElementById('cap-filter-fonte')?.value||'').toLowerCase();
@@ -12133,6 +12137,12 @@ function showPage(id) {
     if (oc.includes("showPage('"+id+"')") && !oc.includes('setTimeout')) b.classList.add('active');
   });
   if (id === 'financeiro') renderFinanceiro();
+  if (id === 'dashboard') {
+    // Renderiza com o que está no State agora (localStorage ou Supabase já carregado).
+    // Se o Supabase ainda não terminou, o evento 'sismint:supabase-loaded' dispara
+    // um segundo render automático com os dados reais ao final do driveLoadData().
+    setTimeout(()=>{ if (typeof renderDashAtividades === 'function') renderDashAtividades(); }, 30);
+  }
   if (id === 'nexus') { if (typeof nxRenderPage === 'function') nxRenderPage(nxCurTab || 'dashboard'); }
   if (id === 'empenho') { if (typeof empenhoPopularSelectsOrigem === 'function') empenhoPopularSelectsOrigem(); if (typeof empenhoRecalcular === 'function') empenhoRecalcular(); }
   if (id === 'config') { if (typeof baseOrcRenderAll === 'function') baseOrcRenderAll(); }
@@ -12759,6 +12769,7 @@ function showToast(message, type = 'info') {
    STATS UPDATE
    ============================================================ */
 function updateStats() {
+  if(typeof renderDashAtividades==='function') renderDashAtividades();
   const total = State.stats.total || 0;
   const fav   = State.stats.fav || 0;
   const suap  = State.stats.suap || 0;
@@ -13192,6 +13203,10 @@ async function driveLoadData() {
     if (typeof baseOrcRenderFontes === 'function') baseOrcRenderFontes();
     if (typeof empgenPopularSelects === 'function') empgenPopularSelects();
     if (typeof empenhoPopularSelectsOrigem === 'function') empenhoPopularSelectsOrigem();
+    // Notifica todos os ouvintes (Dashboard, widgets) que os dados do Supabase
+    // chegaram. O evento é disparado com pequeno delay para garantir que o State
+    // foi completamente escrito antes de qualquer re-render.
+    setTimeout(()=>{ document.dispatchEvent(new CustomEvent('sismint:supabase-loaded')); }, 80);
     setDriveStatus('connected', 'Supabase sincronizado');
     showToast('✅ Dados restaurados do Supabase! (v'+(backup.version||'?')+')', 'success');
   } catch(e) {
@@ -13220,6 +13235,10 @@ async function driveLoadData() {
         }
       }
     }
+    // Notifica widgets (Dashboard de Atividades, etc.) que o ciclo de carga
+    // terminou — independente de sucesso, erro ou dados vazios. Garante que
+    // qualquer render pendente use o State final correto.
+    setTimeout(()=>{ document.dispatchEvent(new CustomEvent('sismint:supabase-loaded')); }, 80);
   }
 }
 
@@ -13530,6 +13549,7 @@ function nxPersist(){
     Storage.set('nxTasks', State.nxTasks);
     Storage.set('nxPrest', State.nxPrest);
     Storage.set('nxHist', State.nxHist);
+  if(typeof renderDashAtividades==='function') renderDashAtividades();
   } catch(err) {
     console.error('[Atividades] Falha ao salvar localmente (localStorage):', err);
     showToast('⚠️ Falha ao salvar localmente — armazenamento pode estar cheio.', 'error');
@@ -13544,6 +13564,7 @@ function nxPersistLocalOnly(){
   Storage.set('nxTasks', State.nxTasks);
   Storage.set('nxPrest', State.nxPrest);
   Storage.set('nxHist', State.nxHist);
+  if(typeof renderDashAtividades==='function') renderDashAtividades();
 }
 
 /* ---------- navegação interna do módulo ---------- */
@@ -14656,51 +14677,67 @@ function capProcSearch(term){
 function capEditProcSearch(q){
   const dropdown = document.getElementById('cap-edit-ind-proc-dropdown');
   if(!dropdown) return;
-  const wrap = dropdown.parentElement;
-  if(!q || q.length < 2){ dropdown.style.display='none'; return; }
+  const modalEl = dropdown.closest('.modal');
+
+  // Fecha e limpa se query curta demais
+  if(!q || q.length < 2){
+    dropdown.style.display='none';
+    if(modalEl) modalEl.style.overflow='';
+    return;
+  }
+
   const tasks = (State.nxTasks||[]).filter(t=>t.tipo==='trabalho');
   const lq = q.toLowerCase();
   const matches = tasks.filter(t=>{
-    const num = (t.proc||t.titulo||'').toLowerCase();
+    const num  = (t.proc||t.titulo||'').toLowerCase();
     const desc = (t.descricao||t.desc||'').toLowerCase();
-    const rec = (t.recebimento||t.dataRecebimento||'').toLowerCase();
+    const rec  = (t.recebimento||t.dataRecebimento||'').toLowerCase();
     return num.includes(lq)||desc.includes(lq)||rec.includes(lq);
   }).slice(0,12);
-  if(!matches.length){ dropdown.style.display='none'; return; }
-  dropdown.style.display='block';
-  // Position relative to input
-  const input = document.getElementById('cap-edit-ind-proc-search');
-  if(input){
-    const r = input.getBoundingClientRect();
-    dropdown.style.position='fixed';
-    dropdown.style.top=(r.bottom+4)+'px';
-    dropdown.style.left=r.left+'px';
-    dropdown.style.width=r.width+'px';
+
+  if(!matches.length){
+    dropdown.style.display='none';
+    if(modalEl) modalEl.style.overflow='';
+    return;
   }
+
+  // Abre dropdown e garante que o modal não o corte
+  dropdown.style.display='block';
+  if(modalEl) modalEl.style.overflow='visible';
+
   const NX_STAT_COLORS = {pendente:'#f97316',em_andamento:'#3b82f6',stand_by:'#64748b',concluido:'#22c55e',cancelado:'#ef4444'};
   dropdown.innerHTML = matches.map(t=>{
-    const num = t.proc||t.titulo||t.id;
-    const st = t.status||'pendente';
-    const stLabel = (window.NX_STAT_LBL&&NX_STAT_LBL[st])||st;
+    const num     = t.proc||t.titulo||t.id||'';
+    const desc    = (t.descricao||t.desc||'');
+    const st      = t.status||'pendente';
+    const stLabel = (typeof NX_STAT_LBL!=='undefined'&&NX_STAT_LBL[st])||st;
     const stColor = NX_STAT_COLORS[st]||'#64748b';
-    return `<div onclick="capEditProcSelect('${t.id}','${num.replace(/'/g,"\'")}','${(t.descricao||t.desc||'').replace(/'/g,"\'").substring(0,60)}')"
-      style="padding:11px 16px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.05);transition:background .12s"
-      onmouseover="this.style.background='rgba(20,184,166,.1)'" onmouseout="this.style.background=''">
-      <div style="font-weight:700;font-size:.82rem;color:#e2e8f0;font-family:var(--font-mono)">${num}</div>
-      <div style="font-size:.72rem;color:#64748b;margin-top:2px">${(t.descricao||t.desc||'—').substring(0,70)}</div>
-      <span style="font-size:.63rem;font-weight:700;color:${stColor};margin-top:3px;display:inline-block">${stLabel}</span>
-    </div>`;
+    // Escapa aspas simples para uso seguro no atributo onclick inline
+    const safeId  = t.id.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    const safeNum = num.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    const safeDesc= desc.substring(0,60).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    return '<div onclick="capEditProcSelect(\'' + safeId + '\',\'' + safeNum + '\',\'' + safeDesc + '\')"'
+      + ' style="padding:11px 16px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.05);transition:background .12s"'
+      + ' onmouseover="this.style.background=\'rgba(20,184,166,.1)\'" onmouseout="this.style.background=\'\'">  '
+      + '<div style="font-weight:700;font-size:.82rem;color:#e2e8f0;font-family:var(--font-mono)">' + num + '</div>'
+      + '<div style="font-size:.72rem;color:#64748b;margin-top:2px">' + desc.substring(0,70) + '</div>'
+      + '<span style="font-size:.63rem;font-weight:700;color:' + stColor + ';margin-top:3px;display:inline-block">' + stLabel + '</span>'
+      + '</div>';
   }).join('');
-  // Close when clicking outside
-  setTimeout(()=>{
-    const closeHandler = (e)=>{
-      if(!dropdown.contains(e.target)&&e.target.id!=='cap-edit-ind-proc-search'){
+
+  // Registra listener de fechamento uma única vez (flag no elemento)
+  if(!dropdown._capCloseListenerActive){
+    dropdown._capCloseListenerActive = true;
+    document.addEventListener('click', function _capClose(e){
+      if(!dropdown.contains(e.target) && e.target.id!=='cap-edit-ind-proc-search'){
         dropdown.style.display='none';
-        document.removeEventListener('click', closeHandler);
+        const mEl = dropdown.closest('.modal');
+        if(mEl) mEl.style.overflow='';
+        dropdown._capCloseListenerActive = false;
+        document.removeEventListener('click', _capClose);
       }
-    };
-    document.addEventListener('click', closeHandler);
-  }, 100);
+    });
+  }
 }
 function capEditProcSelect(id, num, desc){
   const inp = document.getElementById('cap-edit-ind-proc-search');
@@ -14714,7 +14751,7 @@ function capEditProcSelect(id, num, desc){
   if(tag){ tag.style.display='flex'; }
   if(tagText) tagText.textContent = num + (desc ? ' — '+desc : '');
   if(clr) clr.style.display='block';
-  if(dd) dd.style.display='none';
+  if(dd){ dd.style.display='none'; const mEl=dd.closest('.modal'); if(mEl) mEl.style.overflow=''; }
 }
 function capEditProcClear(){
   const inp = document.getElementById('cap-edit-ind-proc-search');
@@ -16293,15 +16330,31 @@ function escapeHtml(s){ return (s||"").toString().replace(/[&<>"']/g, c=>({"&":"
 /* ══════════════════════════════════════════════
    DASHBOARD — Seção Atividades/Trabalho
 ══════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════
+   renderDashAtividades — v3 (solução definitiva via evento)
+   ──────────────────────────────────────────────────────────────
+   Problema raiz: race condition entre abertura do Dashboard e
+   conclusão assíncrona do driveLoadData(). Flags do GDRIVE não
+   são confiáveis no momento do primeiro render porque connectGoogle
+   Drive() ainda não rodou. Solução: sempre renderizar o que existe
+   no State agora; o driveLoadData() dispara o evento customizado
+   'sismint:supabase-loaded' ao terminar, o que força um segundo
+   render limpo com os dados reais.
+   ══════════════════════════════════════════════════════════════ */
 function renderDashAtividades(){
-  const tasks = (State.nxTasks||[]).filter(t=>t.tipo==='trabalho');
-  const pendentes = tasks.filter(t=>t.status==='pendente'&&!nxIsDone(t)&&!t.emAndamentoAba);
-  const emAnd     = tasks.filter(t=>t.status==='em_andamento'||t.emAndamentoAba);
-  const standBy   = tasks.filter(t=>t.status==='stand_by'&&!t.emAndamentoAba);
-  const concluidos= tasks.filter(t=>nxIsDone(t));
+  const _isDone = typeof nxIsDone === 'function'
+    ? nxIsDone
+    : (t => t.status==='concluido' || t.status==='pago');
+
+  const tasks      = (State.nxTasks||[]).filter(t => t.tipo==='trabalho');
+  const pendentes  = tasks.filter(t => t.status==='pendente' && !_isDone(t) && !t.emAndamentoAba);
+  const emAnd      = tasks.filter(t => t.status==='em_andamento' || t.emAndamentoAba);
+  const standBy    = tasks.filter(t => t.status==='stand_by' && !t.emAndamentoAba);
+  const concluidos = tasks.filter(t => _isDone(t));
   const aEncaminhar = pendentes.length + emAnd.length + standBy.length;
 
-  const _s = (id, v) => { const el=document.getElementById(id); if(el) el.innerText=v; };
+  // ── KPI values ──
+  const _s = (id, v) => { const el=document.getElementById(id); if(el){ el.classList.remove('dash-loading'); el.innerText=v; } };
   _s('dtk-total', tasks.length);
   _s('dtk-pend',  pendentes.length);
   _s('dtk-and',   emAnd.length);
@@ -16309,41 +16362,53 @@ function renderDashAtividades(){
   _s('dtk-conc',  concluidos.length);
   _s('dtk-enc',   aEncaminhar);
 
-  // Lista: pendentes primeiro, depois em andamento, depois stand by (top 8)
+  // ── Lista de processos ──
   const listEl = document.getElementById('dash-trab-list');
-  if(!listEl) return;
-  const PESO = {altissima:0,alta:1,media:2,normal:3,baixa:4};
+  if (!listEl) return;
+
+  const PESO      = {altissima:0,alta:1,media:2,normal:3,baixa:4};
   const listItems = [...pendentes, ...emAnd, ...standBy]
-    .sort((a,b)=>(PESO[a.prioridade]??2)-(PESO[b.prioridade]??2))
-    .slice(0,8);
-  if(!listItems.length){
-    listEl.innerHTML='<div style="padding:24px;text-align:center;color:#334155;font-size:.82rem">Nenhum processo pendente</div>';
+    .sort((a,b) => (PESO[a.prioridade]??2) - (PESO[b.prioridade]??2))
+    .slice(0, 8);
+
+  if (!listItems.length) {
+    listEl.innerHTML = '<div style="padding:24px;text-align:center;color:#334155;font-size:.82rem">Nenhum processo pendente</div>';
     return;
   }
-  const STAT_COLOR={pendente:'#f97316',em_andamento:'#3b82f6',stand_by:'#475569'};
-  const STAT_LBL={pendente:'Pendente',em_andamento:'Em Andamento',stand_by:'Stand By'};
-  const STAT_BG={pendente:'rgba(249,115,22,.15)',em_andamento:'rgba(59,130,246,.15)',stand_by:'rgba(71,85,105,.2)'};
-  const STAT_CLS={pendente:'dti-pend',em_andamento:'dti-and',stand_by:'dti-sb'};
-  listEl.innerHTML = listItems.map(t=>{
-    const st = t.emAndamentoAba?'em_andamento':(t.status||'pendente');
-    const num = t.proc||t.titulo||t.id;
-    const desc = t.descricao||t.desc||t.obs||'—';
-    const stCls = STAT_CLS[st]||'';
-    const stColor = STAT_COLOR[st]||'#64748b';
-    const stBg = STAT_BG[st]||'rgba(100,116,139,.15)';
-    const stLbl = STAT_LBL[st]||st;
-    return `<div class="dash-trab-item ${stCls}"
+
+  const STAT_COLOR = {pendente:'#f97316', em_andamento:'#3b82f6', stand_by:'#475569'};
+  const STAT_LBL   = {pendente:'Pendente', em_andamento:'Em Andamento', stand_by:'Stand By'};
+  const STAT_BG    = {pendente:'rgba(249,115,22,.15)', em_andamento:'rgba(59,130,246,.15)', stand_by:'rgba(71,85,105,.2)'};
+  const STAT_CLS   = {pendente:'dti-pend', em_andamento:'dti-and', stand_by:'dti-sb'};
+
+  listEl.innerHTML = listItems.map(t => {
+    const st       = t.emAndamentoAba ? 'em_andamento' : (t.status||'pendente');
+    const num      = t.proc||t.titulo||t.id||'—';
+    const desc     = t.descricao||t.desc||t.obs||'—';
+    const safeDesc = desc.replace(/"/g,'&quot;').replace(/</g,'&lt;');
+    return `<div class="dash-trab-item ${STAT_CLS[st]||''}"
         onclick="showPage('nexus');setTimeout(()=>{nxGoTo('trabalho');nxSetWFilt('${st}');},80)"
-        title="${desc}">
+        title="${safeDesc}">
       <div class="dash-trab-item-num">${num}</div>
       <div class="dash-trab-item-desc">${desc.substring(0,80)}</div>
-      <span class="dash-trab-item-badge" style="background:${stBg};color:${stColor};border:1px solid ${stColor}40">${stLbl}</span>
+      <span class="dash-trab-item-badge" style="background:${STAT_BG[st]||'rgba(100,116,139,.15)'};color:${STAT_COLOR[st]||'#64748b'};border:1px solid ${(STAT_COLOR[st]||'#64748b')}40">${STAT_LBL[st]||st}</span>
     </div>`;
   }).join('');
 }
 
+/* ── Escuta o evento disparado pelo driveLoadData() ao concluir ──
+   Garante que o Dashboard sempre reflita os dados reais do Supabase,
+   independente de quando o render inicial ocorreu.               */
+(function _bindSupabaseLoadedEvent(){
+  document.addEventListener('sismint:supabase-loaded', () => {
+    if (typeof renderDashAtividades === 'function') renderDashAtividades();
+  });
+})();
+
+/* ── Variável de controle para evitar chamadas redundantes ── */
+let _dashAtividadesRerenderTimer = null;
+
 function updateStats(){
-  renderDashAtividades();
   const total = students.length;
   const ok = students.filter(s=>isValidCpfFormat(s.cpf)).length;
   const bad = total-ok;
