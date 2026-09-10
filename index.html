@@ -3185,6 +3185,88 @@ input.cap-date.form-input {
 /* ══ FILTROS MODERNOS EM SELECT ══ */
 /* ══ PAINEL DE FILTROS EM SELECT ══ */
 /* ══════════════════════════════════════════════════════
+   DASHBOARD — KPI CARDS ATIVIDADES/TRABALHO
+══════════════════════════════════════════════════════ */
+.dash-trab-kpi {
+  border-radius: 14px;
+  padding: 16px 14px 14px;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 0;
+  cursor: pointer; position: relative; overflow: hidden;
+  border: 1px solid rgba(255,255,255,.07);
+  background: rgba(10,18,45,.75);
+  backdrop-filter: blur(12px);
+  transition: transform .2s, box-shadow .2s, border-color .2s;
+}
+.dash-trab-kpi::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+  height: 3px; border-radius: 0 0 14px 14px; opacity: .8;
+  transition: height .2s;
+}
+.dash-trab-kpi:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,.3); border-color: rgba(255,255,255,.13); }
+.dash-trab-kpi:hover::after { height: 4px; }
+
+.dtk-total::after  { background: linear-gradient(90deg,#64748b,transparent); }
+.dtk-pend::after   { background: linear-gradient(90deg,#f97316,#fb923c 60%,transparent); }
+.dtk-and::after    { background: linear-gradient(90deg,#3b82f6,#06b6d4 60%,transparent); }
+.dtk-sb::after     { background: linear-gradient(90deg,#475569,#64748b 60%,transparent); }
+.dtk-conc::after   { background: linear-gradient(90deg,#22c55e,#10b981 60%,transparent); }
+.dtk-enc::after    { background: linear-gradient(90deg,#a855f7,#8b5cf6 60%,transparent); }
+
+.dtk-ico {
+  width: 32px; height: 32px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 12px;
+}
+.dtk-ico svg { width: 15px; height: 15px; }
+.dtk-total .dtk-ico  { background: rgba(100,116,139,.18); color: #94a3b8; }
+.dtk-pend  .dtk-ico  { background: rgba(249,115,22,.18);  color: #fb923c; }
+.dtk-and   .dtk-ico  { background: rgba(59,130,246,.18);  color: #60a5fa; }
+.dtk-sb    .dtk-ico  { background: rgba(71,85,105,.22);   color: #94a3b8; }
+.dtk-conc  .dtk-ico  { background: rgba(34,197,94,.18);   color: #4ade80; }
+.dtk-enc   .dtk-ico  { background: rgba(168,85,247,.18);  color: #c084fc; }
+
+.dtk-val {
+  font-family: 'Syne', sans-serif;
+  font-size: 2rem; font-weight: 900; line-height: 1;
+  letter-spacing: -.05em; margin-bottom: 6px;
+}
+.dtk-total .dtk-val { color: #f1f5f9; }
+.dtk-pend  .dtk-val { color: #fdba74; }
+.dtk-and   .dtk-val { color: #93c5fd; }
+.dtk-sb    .dtk-val { color: #94a3b8; }
+.dtk-conc  .dtk-val { color: #86efac; }
+.dtk-enc   .dtk-val { color: #d8b4fe; }
+
+.dtk-lbl {
+  font-size: .62rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.dtk-total .dtk-lbl { color: #334155; }
+.dtk-pend  .dtk-lbl { color: rgba(249,115,22,.55); }
+.dtk-and   .dtk-lbl { color: rgba(59,130,246,.55); }
+.dtk-sb    .dtk-lbl { color: rgba(100,116,139,.55); }
+.dtk-conc  .dtk-lbl { color: rgba(34,197,94,.55); }
+.dtk-enc   .dtk-lbl { color: rgba(168,85,247,.55); }
+
+/* Item de processo na lista do dashboard */
+.dash-trab-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 10px; border-radius: 10px; cursor: pointer;
+  transition: background .15s; margin-bottom: 2px;
+  border-left: 3px solid transparent;
+}
+.dash-trab-item:hover { background: rgba(255,255,255,.05); }
+.dash-trab-item.dti-pend { border-left-color: #f97316; }
+.dash-trab-item.dti-and  { border-left-color: #3b82f6; }
+.dash-trab-item.dti-sb   { border-left-color: #475569; }
+.dash-trab-item-num { font-family: var(--font-mono); font-size: .8rem; font-weight: 700; color: #fff; white-space: nowrap; }
+.dash-trab-item-desc { font-size: .75rem; color: #64748b; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0; }
+.dash-trab-item-badge { font-size: .6rem; font-weight: 800; padding: 3px 8px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
+
+@media (max-width:1200px) { #dash-trab-kpi-row { grid-template-columns: repeat(3,1fr); } }
+@media (max-width:700px)  { #dash-trab-kpi-row { grid-template-columns: repeat(2,1fr); } }
+
+/* ══════════════════════════════════════════════════════
    MÓDULO ATIVIDADES — HEADER, SUBNAV, CARDS (v3 ref-fiel)
 ══════════════════════════════════════════════════════ */
 
@@ -5802,6 +5884,93 @@ input.cap-date.form-input {
       <!-- FIN MINI CARDS — EXE/RAP por fonte -->
       <div class="fin-mini-cards" id="fin-mini-cards-row">
         <!-- Populated dynamically -->
+      </div>
+
+      <!-- ══════════════════════════════════════════
+           ATIVIDADES — ABA TRABALHO NO DASHBOARD
+           KPIs + lista de pendentes (atalho rápido)
+      ══════════════════════════════════════════ -->
+      <div id="dash-atividades-trabalho" style="margin-bottom:28px">
+
+        <!-- Cabeçalho da seção -->
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,rgba(249,115,22,.25),rgba(249,115,22,.1));border:1.5px solid rgba(249,115,22,.35);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" style="width:18px;height:18px"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="15" x2="12" y2="15"/></svg>
+            </div>
+            <div>
+              <div style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:#f1f5f9;letter-spacing:-.02em">Atividades — Aba Trabalho</div>
+              <div style="font-size:.73rem;color:#475569;font-weight:500;margin-top:1px">Processos administrativos · acesso rápido aos pendentes</div>
+            </div>
+          </div>
+          <button onclick="showPage('nexus');setTimeout(()=>{nxGoTo('trabalho');},80)"
+            style="display:inline-flex;align-items:center;gap:8px;padding:8px 18px;border-radius:10px;background:rgba(249,115,22,.12);border:1.5px solid rgba(249,115,22,.35);color:#fb923c;font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .18s"
+            onmouseover="this.style.background='rgba(249,115,22,.22)'" onmouseout="this.style.background='rgba(249,115,22,.12)'">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            Abrir módulo completo
+          </button>
+        </div>
+
+        <!-- KPI Cards: Total / Pendentes / Em Andamento / Stand By / Concluídos / A Encaminhar -->
+        <div id="dash-trab-kpi-row" style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:16px">
+
+          <div class="dash-trab-kpi dtk-total" onclick="showPage('nexus');setTimeout(()=>{nxGoTo('trabalho');nxResetAllFilters();},80)">
+            <div class="dtk-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="15" x2="12" y2="15"/></svg></div>
+            <div class="dtk-val" id="dtk-total">0</div>
+            <div class="dtk-lbl">Total</div>
+          </div>
+
+          <div class="dash-trab-kpi dtk-pend" onclick="showPage('nexus');setTimeout(()=>{nxGoTo('trabalho');nxSetWFilt('pendente');},80)">
+            <div class="dtk-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+            <div class="dtk-val" id="dtk-pend">0</div>
+            <div class="dtk-lbl">Pendentes</div>
+          </div>
+
+          <div class="dash-trab-kpi dtk-and" onclick="showPage('nexus');setTimeout(()=>{nxGoTo('trabalho');nxSetWFilt('em_andamento');},80)">
+            <div class="dtk-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></div>
+            <div class="dtk-val" id="dtk-and">0</div>
+            <div class="dtk-lbl">Em Andamento</div>
+          </div>
+
+          <div class="dash-trab-kpi dtk-sb" onclick="showPage('nexus');setTimeout(()=>{nxGoTo('trabalho');nxSetWFilt('stand_by');},80)">
+            <div class="dtk-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg></div>
+            <div class="dtk-val" id="dtk-sb">0</div>
+            <div class="dtk-lbl">Stand By</div>
+          </div>
+
+          <div class="dash-trab-kpi dtk-conc" onclick="showPage('nexus');setTimeout(()=>{nxGoTo('trabalho');nxSetWFilt('concluido');},80)">
+            <div class="dtk-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+            <div class="dtk-val" id="dtk-conc">0</div>
+            <div class="dtk-lbl">Concluídos</div>
+          </div>
+
+          <!-- Card especial: A Encaminhar = pendentes + em andamento + stand by -->
+          <div class="dash-trab-kpi dtk-enc" onclick="showPage('nexus');setTimeout(()=>{nxGoTo('trabalho');nxResetAllFilters();},80)" title="Pendentes + Em Andamento + Stand By">
+            <div class="dtk-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></div>
+            <div class="dtk-val" id="dtk-enc">0</div>
+            <div class="dtk-lbl">A Encaminhar</div>
+          </div>
+
+        </div>
+
+        <!-- Lista dos pendentes (top 8) com link para ver todos -->
+        <div style="background:rgba(8,15,35,.7);border:1px solid rgba(255,255,255,.07);border-radius:16px;overflow:hidden;backdrop-filter:blur(12px)">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px 10px;border-bottom:1px solid rgba(255,255,255,.06)">
+            <div style="font-size:.78rem;font-weight:800;color:#475569;text-transform:uppercase;letter-spacing:.08em;display:flex;align-items:center;gap:7px">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" style="width:13px;height:13px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              Processos Pendentes
+            </div>
+            <button onclick="showPage('nexus');setTimeout(()=>{nxGoTo('trabalho');nxSetWFilt('pendente');},80)"
+              style="font-size:.7rem;font-weight:700;color:#64748b;background:none;border:none;cursor:pointer;font-family:inherit;transition:color .15s"
+              onmouseover="this.style.color='#f97316'" onmouseout="this.style.color='#64748b'">
+              Ver todos →
+            </button>
+          </div>
+          <div id="dash-trab-list" style="padding:8px 10px;max-height:340px;overflow-y:auto">
+            <div style="padding:20px;text-align:center;color:#334155;font-size:.82rem">Carregando...</div>
+          </div>
+        </div>
+
       </div>
 
       <!-- MODULE CARDS -->
@@ -8505,6 +8674,32 @@ input.cap-date.form-input {
         <label class="form-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;color:var(--accent-orange)"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Observações</label>
         <input class="form-input" id="cap-edit-ind-obs" placeholder="Histórico, processo, comprovante...">
       </div>
+
+      <!-- ══ PROCESSO ADMINISTRATIVO — vinculação ao módulo Atividades ══ -->
+      <div class="form-group" style="margin-bottom:24px;padding:16px 18px;background:rgba(20,184,166,.06);border:1.5px solid rgba(20,184,166,.2);border-radius:12px">
+        <label class="form-label" style="color:var(--accent-teal);font-weight:800;font-size:.75rem;letter-spacing:.08em;margin-bottom:10px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;vertical-align:middle;margin-right:5px"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="15" x2="12" y2="15"/></svg>
+          PROCESSO ADMINISTRATIVO
+          <span style="font-weight:500;color:var(--text-muted);font-size:.68rem;margin-left:6px">— vínculo com módulo Atividades</span>
+        </label>
+        <div style="position:relative">
+          <svg style="position:absolute;left:12px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--text-muted);pointer-events:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input class="form-input" id="cap-edit-ind-proc-search" type="text"
+            placeholder="Buscar processo por número, descrição ou data..."
+            style="padding-left:38px;padding-right:36px"
+            oninput="capEditProcSearch(this.value)"
+            autocomplete="off">
+          <button id="cap-edit-ind-proc-clear" onclick="capEditProcClear()" title="Remover vínculo"
+            style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:1rem;line-height:1;padding:2px 4px">✕</button>
+        </div>
+        <div id="cap-edit-ind-proc-dropdown" style="display:none;position:absolute;z-index:9999;left:0;right:0;top:calc(100% + 4px);background:var(--bg-card);border:1.5px solid var(--accent-teal);border-radius:10px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.4);max-height:220px;overflow-y:auto"></div>
+        <input type="hidden" id="cap-edit-ind-proc-id" value="">
+        <div id="cap-edit-ind-proc-tag" style="display:none;margin-top:10px;padding:8px 14px;background:rgba(20,184,166,.12);border:1px solid rgba(20,184,166,.35);border-radius:8px;font-size:.8rem;color:var(--accent-teal);font-weight:700;display:flex;align-items:center;gap:8px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:13px;height:13px;flex-shrink:0"><path d="M20 6 9 17l-5-5"/></svg>
+          <span id="cap-edit-ind-proc-tag-text"></span>
+        </div>
+      </div>
+
       <div style="display:flex;gap:10px;justify-content:flex-end">
         <button class="btn btn-ghost" onclick="closeModal('modal-cap-edit-ind')">Cancelar</button>
         <button class="btn btn-primary" onclick="saveCapContaIndependente()">
@@ -9352,6 +9547,13 @@ function getFilteredCapContas(){
     if(dIni&&c.dataSolicitacao&&c.dataSolicitacao<dIni)return false;
     if(dFim&&c.dataSolicitacao&&c.dataSolicitacao>dFim)return false;
     if(q&&![c.documento,c.fonte,c.docFornecedor,c.fornecedor,c.competencia,c.situacao].join(' ').toLowerCase().includes(q))return false;
+    // Filtro por processo administrativo vinculado
+    if(qProc){
+      const procRef=(c.processoAdmin||'').toLowerCase();
+      const tVinc=(State.nxTasks||[]).find(t=>t.id===c.processoAdmin||(t.proc||t.titulo||'')===c.processoAdmin);
+      const procNum=tVinc?(tVinc.proc||tVinc.titulo||'').toLowerCase():procRef;
+      if(!procRef.includes(qProc)&&!procNum.includes(qProc))return false;
+    }
     return true;
   }).sort((a,b)=>((a[State.capSort.key]||'')>(b[State.capSort.key]||'')?1:-1)*(State.capSort.dir==='asc'?1:-1));
 }
@@ -9380,7 +9582,7 @@ function renderCapTable(){ const tb=document.getElementById('cap-table-body'); i
   updateCapSelectAllState();
   updateCapBaixaLoteUI();
 }
-function clearCapFilters(){ ['cap-filter-search','cap-filter-tipo','cap-filter-classe','cap-filter-fonte','cap-filter-pago','cap-filter-situacao','cap-filter-competencia','cap-filter-valor-min','cap-filter-valor-max','cap-filter-data-ini','cap-filter-data-fim'].forEach(id=>{const e=document.getElementById(id); if(e)e.value='';}); renderCapTable(); }
+function clearCapFilters(){ ['cap-filter-search','cap-filter-proc','cap-filter-tipo','cap-filter-classe','cap-filter-fonte','cap-filter-pago','cap-filter-situacao','cap-filter-competencia','cap-filter-valor-min','cap-filter-valor-max','cap-filter-data-ini','cap-filter-data-fim'].forEach(id=>{const e=document.getElementById(id); if(e)e.value='';}); renderCapTable(); }
 
 // ===== SELEÇÃO MÚLTIPLA / BAIXA EM LOTE =====
 function todayISO(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
@@ -9470,6 +9672,27 @@ function editCapConta(id){
   document.querySelector('#modal-cap-edit-ind .modal-title').innerHTML=`
     <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent-orange)" stroke-width="2" style="width:18px;height:18px"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
     Editar: <span style="color:var(--accent-orange);font-family:var(--font-mono)">${c.documento}</span>`;
+  // Carregar processo vinculado no campo de busca do modal de edição
+  const procId = document.getElementById('cap-edit-ind-proc-id');
+  const procSearch = document.getElementById('cap-edit-ind-proc-search');
+  const procTag = document.getElementById('cap-edit-ind-proc-tag');
+  const procTagText = document.getElementById('cap-edit-ind-proc-tag-text');
+  const procClear = document.getElementById('cap-edit-ind-proc-clear');
+  if(procId){ procId.value = c.processoAdmin || ''; }
+  if(procSearch){
+    if(c.processoAdmin){
+      // Buscar o título do processo vinculado
+      const tVinc = (State.nxTasks||[]).find(t=>t.id===c.processoAdmin || t.titulo===c.processoAdmin || (t.proc||t.titulo)===c.processoAdmin);
+      procSearch.value = tVinc ? (tVinc.proc||tVinc.titulo||c.processoAdmin) : c.processoAdmin;
+      if(procTag){ procTag.style.display='flex'; }
+      if(procTagText){ procTagText.textContent = tVinc ? (tVinc.proc||tVinc.titulo) : c.processoAdmin; }
+      if(procClear){ procClear.style.display='block'; }
+    } else {
+      procSearch.value = '';
+      if(procTag){ procTag.style.display='none'; }
+      if(procClear){ procClear.style.display='none'; }
+    }
+  }
   openModal('modal-cap-edit-ind');
 }
 
@@ -9500,9 +9723,17 @@ function saveCapContaIndependente(){
     c.dataPagamento=todayISO();
   }
   c.obs=document.getElementById('cap-edit-ind-obs').value.trim();
+  // Persistir processo administrativo vinculado
+  const editProcId = document.getElementById('cap-edit-ind-proc-id');
+  if(editProcId !== null) {
+    const procVal = editProcId.value.trim();
+    c.processoAdmin = procVal;
+    if(procVal) c.historico = c.historico || [];
+    if(procVal) c.historico.push({at:new Date().toISOString(),msg:`Processo administrativo vinculado: ${procVal}`});
+  }
   if(!c.historico)c.historico=[];
-  c.historico.push({at:new Date().toISOString(),msg:'Registro editado via modal (documento/valor/fonte/tipo/classe/pago)'});
-  capAudit('CONTA EDITADA (INDEPENDENTE)', c.documento, before, {documento:c.documento,valor:c.valor,fonte:c.fonte,tipo:c.tipo,classe:c.classe,pago:c.pago});
+  c.historico.push({at:new Date().toISOString(),msg:'Registro editado via modal (documento/valor/fonte/tipo/classe/pago/processoAdmin)'});
+  capAudit('CONTA EDITADA (INDEPENDENTE)', c.documento, before, {documento:c.documento,valor:c.valor,fonte:c.fonte,tipo:c.tipo,classe:c.classe,pago:c.pago,processoAdmin:c.processoAdmin});
   capPersist();
   closeModal('modal-cap-edit-ind');
   renderFinanceiro();
@@ -14419,6 +14650,84 @@ function capProcSearch(term){
   dropdown.style.display = 'block';
 }
 
+/* ══════════════════════════════════════════════
+   BUSCA DE PROCESSO NO MODAL DE EDIÇÃO DE CONTA
+══════════════════════════════════════════════ */
+function capEditProcSearch(q){
+  const dropdown = document.getElementById('cap-edit-ind-proc-dropdown');
+  if(!dropdown) return;
+  const wrap = dropdown.parentElement;
+  if(!q || q.length < 2){ dropdown.style.display='none'; return; }
+  const tasks = (State.nxTasks||[]).filter(t=>t.tipo==='trabalho');
+  const lq = q.toLowerCase();
+  const matches = tasks.filter(t=>{
+    const num = (t.proc||t.titulo||'').toLowerCase();
+    const desc = (t.descricao||t.desc||'').toLowerCase();
+    const rec = (t.recebimento||t.dataRecebimento||'').toLowerCase();
+    return num.includes(lq)||desc.includes(lq)||rec.includes(lq);
+  }).slice(0,12);
+  if(!matches.length){ dropdown.style.display='none'; return; }
+  dropdown.style.display='block';
+  // Position relative to input
+  const input = document.getElementById('cap-edit-ind-proc-search');
+  if(input){
+    const r = input.getBoundingClientRect();
+    dropdown.style.position='fixed';
+    dropdown.style.top=(r.bottom+4)+'px';
+    dropdown.style.left=r.left+'px';
+    dropdown.style.width=r.width+'px';
+  }
+  const NX_STAT_COLORS = {pendente:'#f97316',em_andamento:'#3b82f6',stand_by:'#64748b',concluido:'#22c55e',cancelado:'#ef4444'};
+  dropdown.innerHTML = matches.map(t=>{
+    const num = t.proc||t.titulo||t.id;
+    const st = t.status||'pendente';
+    const stLabel = (window.NX_STAT_LBL&&NX_STAT_LBL[st])||st;
+    const stColor = NX_STAT_COLORS[st]||'#64748b';
+    return `<div onclick="capEditProcSelect('${t.id}','${num.replace(/'/g,"\'")}','${(t.descricao||t.desc||'').replace(/'/g,"\'").substring(0,60)}')"
+      style="padding:11px 16px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.05);transition:background .12s"
+      onmouseover="this.style.background='rgba(20,184,166,.1)'" onmouseout="this.style.background=''">
+      <div style="font-weight:700;font-size:.82rem;color:#e2e8f0;font-family:var(--font-mono)">${num}</div>
+      <div style="font-size:.72rem;color:#64748b;margin-top:2px">${(t.descricao||t.desc||'—').substring(0,70)}</div>
+      <span style="font-size:.63rem;font-weight:700;color:${stColor};margin-top:3px;display:inline-block">${stLabel}</span>
+    </div>`;
+  }).join('');
+  // Close when clicking outside
+  setTimeout(()=>{
+    const closeHandler = (e)=>{
+      if(!dropdown.contains(e.target)&&e.target.id!=='cap-edit-ind-proc-search'){
+        dropdown.style.display='none';
+        document.removeEventListener('click', closeHandler);
+      }
+    };
+    document.addEventListener('click', closeHandler);
+  }, 100);
+}
+function capEditProcSelect(id, num, desc){
+  const inp = document.getElementById('cap-edit-ind-proc-search');
+  const hidden = document.getElementById('cap-edit-ind-proc-id');
+  const tag = document.getElementById('cap-edit-ind-proc-tag');
+  const tagText = document.getElementById('cap-edit-ind-proc-tag-text');
+  const clr = document.getElementById('cap-edit-ind-proc-clear');
+  const dd = document.getElementById('cap-edit-ind-proc-dropdown');
+  if(inp) inp.value = num;
+  if(hidden) hidden.value = id;
+  if(tag){ tag.style.display='flex'; }
+  if(tagText) tagText.textContent = num + (desc ? ' — '+desc : '');
+  if(clr) clr.style.display='block';
+  if(dd) dd.style.display='none';
+}
+function capEditProcClear(){
+  const inp = document.getElementById('cap-edit-ind-proc-search');
+  const hidden = document.getElementById('cap-edit-ind-proc-id');
+  const tag = document.getElementById('cap-edit-ind-proc-tag');
+  const clr = document.getElementById('cap-edit-ind-proc-clear');
+  if(inp){ inp.value=''; }
+  if(hidden){ hidden.value=''; }
+  if(tag){ tag.style.display='none'; }
+  if(clr){ clr.style.display='none'; }
+}
+
+
 function capProcSelect(numero, taskId){
   const input = document.getElementById('cap-proc-search-input');
   const hidden = document.getElementById('cap-processo-admin');
@@ -15980,7 +16289,61 @@ function render(){
 }
 function escapeHtml(s){ return (s||"").toString().replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
 
+
+/* ══════════════════════════════════════════════
+   DASHBOARD — Seção Atividades/Trabalho
+══════════════════════════════════════════════ */
+function renderDashAtividades(){
+  const tasks = (State.nxTasks||[]).filter(t=>t.tipo==='trabalho');
+  const pendentes = tasks.filter(t=>t.status==='pendente'&&!nxIsDone(t)&&!t.emAndamentoAba);
+  const emAnd     = tasks.filter(t=>t.status==='em_andamento'||t.emAndamentoAba);
+  const standBy   = tasks.filter(t=>t.status==='stand_by'&&!t.emAndamentoAba);
+  const concluidos= tasks.filter(t=>nxIsDone(t));
+  const aEncaminhar = pendentes.length + emAnd.length + standBy.length;
+
+  const _s = (id, v) => { const el=document.getElementById(id); if(el) el.innerText=v; };
+  _s('dtk-total', tasks.length);
+  _s('dtk-pend',  pendentes.length);
+  _s('dtk-and',   emAnd.length);
+  _s('dtk-sb',    standBy.length);
+  _s('dtk-conc',  concluidos.length);
+  _s('dtk-enc',   aEncaminhar);
+
+  // Lista: pendentes primeiro, depois em andamento, depois stand by (top 8)
+  const listEl = document.getElementById('dash-trab-list');
+  if(!listEl) return;
+  const PESO = {altissima:0,alta:1,media:2,normal:3,baixa:4};
+  const listItems = [...pendentes, ...emAnd, ...standBy]
+    .sort((a,b)=>(PESO[a.prioridade]??2)-(PESO[b.prioridade]??2))
+    .slice(0,8);
+  if(!listItems.length){
+    listEl.innerHTML='<div style="padding:24px;text-align:center;color:#334155;font-size:.82rem">Nenhum processo pendente</div>';
+    return;
+  }
+  const STAT_COLOR={pendente:'#f97316',em_andamento:'#3b82f6',stand_by:'#475569'};
+  const STAT_LBL={pendente:'Pendente',em_andamento:'Em Andamento',stand_by:'Stand By'};
+  const STAT_BG={pendente:'rgba(249,115,22,.15)',em_andamento:'rgba(59,130,246,.15)',stand_by:'rgba(71,85,105,.2)'};
+  const STAT_CLS={pendente:'dti-pend',em_andamento:'dti-and',stand_by:'dti-sb'};
+  listEl.innerHTML = listItems.map(t=>{
+    const st = t.emAndamentoAba?'em_andamento':(t.status||'pendente');
+    const num = t.proc||t.titulo||t.id;
+    const desc = t.descricao||t.desc||t.obs||'—';
+    const stCls = STAT_CLS[st]||'';
+    const stColor = STAT_COLOR[st]||'#64748b';
+    const stBg = STAT_BG[st]||'rgba(100,116,139,.15)';
+    const stLbl = STAT_LBL[st]||st;
+    return `<div class="dash-trab-item ${stCls}"
+        onclick="showPage('nexus');setTimeout(()=>{nxGoTo('trabalho');nxSetWFilt('${st}');},80)"
+        title="${desc}">
+      <div class="dash-trab-item-num">${num}</div>
+      <div class="dash-trab-item-desc">${desc.substring(0,80)}</div>
+      <span class="dash-trab-item-badge" style="background:${stBg};color:${stColor};border:1px solid ${stColor}40">${stLbl}</span>
+    </div>`;
+  }).join('');
+}
+
 function updateStats(){
+  renderDashAtividades();
   const total = students.length;
   const ok = students.filter(s=>isValidCpfFormat(s.cpf)).length;
   const bad = total-ok;
