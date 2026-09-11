@@ -3263,7 +3263,7 @@ input.cap-date.form-input {
 .dash-trab-item-desc { font-size: .75rem; color: #64748b; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0; }
 .dash-trab-item-badge { font-size: .6rem; font-weight: 800; padding: 3px 8px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
 
-@media (max-width:1200px) { #dash-trab-kpi-row { grid-template-columns: repeat(3,1fr); } }
+@media (max-width:1200px) { #dash-trab-kpi-row { grid-template-columns: repeat(2,1fr); } }
 @media (max-width:700px)  { #dash-trab-kpi-row { grid-template-columns: repeat(2,1fr); } }
 
 @keyframes dash-spin { to { transform: rotate(360deg); } }
@@ -5886,16 +5886,12 @@ input.cap-date.form-input {
         </div>
       </div>
 
-      <!-- FIN MINI CARDS — EXE/RAP por fonte -->
-      <div class="fin-mini-cards" id="fin-mini-cards-row">
-        <!-- Populated dynamically -->
-      </div>
-
       <!-- ══════════════════════════════════════════
            ATIVIDADES — ABA TRABALHO NO DASHBOARD
-           KPIs + lista de pendentes (atalho rápido)
+           Cards de status sincronizados com o módulo Atividades
+           MOVIDO PARA O TOPO conforme solicitação
       ══════════════════════════════════════════ -->
-      <div id="dash-atividades-trabalho" style="margin-bottom:28px">
+      <div id="dash-atividades-trabalho" style="margin-bottom:28px"><!-- TOPO -->
 
         <!-- Cabeçalho da seção -->
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px">
@@ -5905,7 +5901,7 @@ input.cap-date.form-input {
             </div>
             <div>
               <div style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:#f1f5f9;letter-spacing:-.02em">Atividades — Aba Trabalho</div>
-              <div style="font-size:.73rem;color:#475569;font-weight:500;margin-top:1px">Processos administrativos · acesso rápido aos pendentes</div>
+              <div style="font-size:.73rem;color:#475569;font-weight:500;margin-top:1px">Processos administrativos · sincronizado com o módulo Atividades em tempo real</div>
             </div>
           </div>
           <button onclick="showPage('nexus');setTimeout(()=>{nxGoTo('trabalho');},80)"
@@ -5916,13 +5912,20 @@ input.cap-date.form-input {
           </button>
         </div>
 
-        <!-- KPI Cards: Total / Pendentes / Em Andamento / Stand By / Concluídos / A Encaminhar -->
-        <div id="dash-trab-kpi-row" style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:16px">
+        <!-- KPI Cards: A Encaminhar / Pendentes / Em Andamento / Stand By -->
+        <!-- Cards Total e Concluídos removidos do dashboard; dtk-total e dtk-conc mantidos ocultos para não quebrar a lógica JS -->
+        <div style="display:none">
+          <div class="dtk-val" id="dtk-total">0</div>
+          <div class="dtk-val" id="dtk-conc">0</div>
+        </div>
 
-          <div class="dash-trab-kpi dtk-total" onclick="showPage('nexus');setTimeout(()=>{nxGoTo('trabalho');nxResetAllFilters();},80)">
-            <div class="dtk-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="15" x2="12" y2="15"/></svg></div>
-            <div class="dtk-val" id="dtk-total">0</div>
-            <div class="dtk-lbl">Total</div>
+        <div id="dash-trab-kpi-row" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:0">
+
+          <!-- Card A Encaminhar = pendentes + em andamento + stand by -->
+          <div class="dash-trab-kpi dtk-enc" onclick="showPage('nexus');setTimeout(()=>{nxGoTo('trabalho');nxResetAllFilters();},80)" title="Pendentes + Em Andamento + Stand By">
+            <div class="dtk-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></div>
+            <div class="dtk-val" id="dtk-enc">0</div>
+            <div class="dtk-lbl">A Encaminhar</div>
           </div>
 
           <div class="dash-trab-kpi dtk-pend" onclick="showPage('nexus');setTimeout(()=>{nxGoTo('trabalho');nxSetWFilt('pendente');},80)">
@@ -5943,37 +5946,17 @@ input.cap-date.form-input {
             <div class="dtk-lbl">Stand By</div>
           </div>
 
-          <div class="dash-trab-kpi dtk-conc" onclick="showPage('nexus');setTimeout(()=>{nxGoTo('trabalho');nxSetWFilt('concluido');},80)">
-            <div class="dtk-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-            <div class="dtk-val" id="dtk-conc">0</div>
-            <div class="dtk-lbl">Concluídos</div>
-          </div>
-
-          <!-- Card especial: A Encaminhar = pendentes + em andamento + stand by -->
-          <div class="dash-trab-kpi dtk-enc" onclick="showPage('nexus');setTimeout(()=>{nxGoTo('trabalho');nxResetAllFilters();},80)" title="Pendentes + Em Andamento + Stand By">
-            <div class="dtk-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></div>
-            <div class="dtk-val" id="dtk-enc">0</div>
-            <div class="dtk-lbl">A Encaminhar</div>
-          </div>
-
         </div>
 
-        <!-- Lista dos pendentes (top 8) com link para ver todos -->
-        <div style="background:rgba(8,15,35,.7);border:1px solid rgba(255,255,255,.07);border-radius:16px;overflow:hidden;backdrop-filter:blur(12px)">
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px 10px;border-bottom:1px solid rgba(255,255,255,.06)">
-            <div style="font-size:.78rem;font-weight:800;color:#475569;text-transform:uppercase;letter-spacing:.08em;display:flex;align-items:center;gap:7px">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" style="width:13px;height:13px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-              Processos Pendentes
-            </div>
-            <button onclick="showPage('nexus');setTimeout(()=>{nxGoTo('trabalho');nxSetWFilt('pendente');},80)"
-              style="font-size:.7rem;font-weight:700;color:#64748b;background:none;border:none;cursor:pointer;font-family:inherit;transition:color .15s"
-              onmouseover="this.style.color='#f97316'" onmouseout="this.style.color='#64748b'">
-              Ver todos →
-            </button>
-          </div>
-          <div id="dash-trab-list" style="padding:8px 10px;max-height:340px;overflow-y:auto"></div>
-        </div>
+        <!-- Lista de processos pendentes REMOVIDA conforme solicitação -->
+        <!-- Elemento mantido oculto para preservar referências JS existentes -->
+        <div id="dash-trab-list" style="display:none"></div>
 
+      </div>
+
+      <!-- FIN MINI CARDS — EXE/RAP por fonte (movido para após os cards de status) -->
+      <div class="fin-mini-cards" id="fin-mini-cards-row">
+        <!-- Populated dynamically -->
       </div>
 
       <!-- MODULE CARDS -->
@@ -7472,6 +7455,20 @@ input.cap-date.form-input {
     </div>
   </div>
   <div class="top-actions">
+    <!-- Número de Controle — campo de 3 dígitos, persistido no Supabase, não vai para o Excel -->
+    <div id="mon-numControle-wrap" style="display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.22);border-radius:8px;padding:4px 10px 4px 12px">
+      <span style="font-size:11px;font-weight:700;color:rgba(255,255,255,.75);white-space:nowrap;letter-spacing:.3px">Nº CONTROLE</span>
+      <input id="mon-numControle"
+        type="text"
+        inputmode="numeric"
+        maxlength="3"
+        pattern="[0-9]{1,3}"
+        placeholder="000"
+        title="Número de controle do tipo de pagamento (3 dígitos) — salvo no Supabase"
+        style="width:52px;background:transparent;border:none;outline:none;color:#fff;font-size:15px;font-weight:800;font-family:monospace;text-align:center;letter-spacing:2px;"
+        oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,3);monNumControleSync()"
+      />
+    </div>
     <button class="btn btn-ghost" id="mon-btnTheme" title="Alternar tema">🌓 Tema</button>
     <button class="btn btn-ghost" id="mon-btnSave">💾 Salvar projeto</button>
     <button class="btn btn-ghost" id="mon-btnLoad">📂 Reabrir</button>
@@ -13035,6 +13032,7 @@ async function driveSaveData() {
     baseOrcNaturezas:     State.baseOrcNaturezas     || [],
     baseOrcElementos:     State.baseOrcElementos     || [],
     baseOrcFontes:        State.baseOrcFontes        || [],
+    monNumControle:       State.monNumControle       || '',
   };
   // Checksum de integridade (mantido no formato original para compatibilidade
   // com dados já salvos no Supabase — mudar a fórmula quebraria a validação
@@ -13175,6 +13173,11 @@ async function driveLoadData() {
     if (backup.baseOrcNaturezas)       State.baseOrcNaturezas    = backup.baseOrcNaturezas;
     if (backup.baseOrcElementos)       State.baseOrcElementos    = backup.baseOrcElementos;
     if (backup.baseOrcFontes)          State.baseOrcFontes       = backup.baseOrcFontes;
+    if (backup.monNumControle !== undefined) {
+      State.monNumControle = backup.monNumControle || '';
+      const elNC = document.getElementById('mon-numControle');
+      if(elNC) elNC.value = State.monNumControle;
+    }
 
     // Persiste localmente (cache para a próxima abertura do navegador)
     saveStateLocalOnly();
@@ -13187,6 +13190,7 @@ async function driveLoadData() {
     Storage.set('capCicloInicioAt', State.capCicloInicioAt||null);
     // Persiste Base Orçamentária localmente (cache)
     baseOrcPersist();
+    Storage.set('monNumControle', State.monNumControle||'');
     // Re-renderiza todos os módulos, incluindo fontes e fornecedores CAP
     renderFornecedoresTable();
     renderFinanceiro();
@@ -14168,8 +14172,14 @@ function nxSuapFileSelected(ev){
       const rec    = p.recebimento || '';
       // recebimentoISO: extrai apenas os primeiros 10 chars "DD/MM/AAAA" e converte
       const recISO = nxSuapDataParaISO(rec.slice(0,10));
-      const jaExistePendente = State.nxTasks.some(t=>t.proc === num && t.status === 'pendente');
-      const jaExisteQualquer = State.nxTasks.some(t=>t.proc === num);
+      // Status que BLOQUEIAM nova importação (processo ainda em aberto no sistema)
+      const STATUS_BLOQUEADOS_IMP = ['pendente','em_andamento','stand_by','cancelado'];
+      const tarefaExistente  = State.nxTasks.find(t=>t.proc === num);
+      const jaExisteBloqueado = tarefaExistente
+        ? (STATUS_BLOQUEADOS_IMP.includes(tarefaExistente.status) || !!tarefaExistente.emAndamentoAba)
+        : false;
+      // Existe mas com status permitido (concluido/pago) → pode ser reimportado
+      const jaExisteConcluido = !!(tarefaExistente && !jaExisteBloqueado);
       return {
         rotulo,
         processo:          num,
@@ -14177,8 +14187,9 @@ function nxSuapFileSelected(ev){
         recebimento:       rec,
         recebimentoISO:    recISO,
         prioridade:        NX_SUAP_ROTULO_PRIORIDADE[rotulo] || 'altissima',
-        duplicado:         jaExistePendente,
-        existeOutroStatus: jaExisteQualquer && !jaExistePendente,
+        duplicado:         jaExisteBloqueado,
+        statusAtual:       tarefaExistente ? (tarefaExistente.status || 'pendente') : null,
+        existeOutroStatus: jaExisteConcluido,
       };
     });
 
@@ -14195,17 +14206,19 @@ function nxSuapShowPreview(){
   const duplicados = nxSuapPending.filter(p=>p.duplicado).length;
   const novos      = total - duplicados;
 
+  const STATUS_LABEL_IMP = {pendente:'Pendente', em_andamento:'Em Andamento', stand_by:'Stand By', cancelado:'Cancelado', concluido:'Concluído', pago:'Pago'};
   document.getElementById('nx-suap-preview-resumo').innerHTML =
     `<strong>${total}</strong> processo${total>1?'s':''} encontrado${total>1?'s':''} no arquivo — `+
     `<span style="color:var(--accent-green)"><strong>${novos}</strong> nov${novos===1?'o':'os'} a importar</span>`+
-    (duplicados ? ` · <span style="color:#f87171"><strong>${duplicados}</strong> já Pendente${duplicados>1?'s':''} (ser${duplicados>1?'ão':'á'} rejeitado${duplicados>1?'s':''})</span>` : '');
+    (duplicados ? ` · <span style="color:#f87171"><strong>${duplicados}</strong> já em aberto (ser${duplicados>1?'ão':'á'} rejeitado${duplicados>1?'s':''})</span>` : '');
 
   document.getElementById('nx-suap-preview-tbody').innerHTML = nxSuapPending.map(p=>{
     const cor = NX_SUAP_ROTULO_COR[p.rotulo] || '#6c757d';
     const descEsc = (p.descricao||'').replace(/</g,'&lt;');
     let statusNote = '';
-    if(p.duplicado) statusNote = ' <span style="color:#f87171;font-size:.62rem;font-weight:700">⛔ Já existe Pendente — será rejeitado</span>';
-    else if(p.existeOutroStatus) statusNote = ' <span style="color:#94a3b8;font-size:.62rem">↩ existe c/ outro status — será importado</span>';
+    const stLbl = p.statusAtual ? (STATUS_LABEL_IMP[p.statusAtual] || p.statusAtual) : '';
+    if(p.duplicado) statusNote = ` <span style="color:#f87171;font-size:.62rem;font-weight:700">⛔ Já existe (${stLbl}) — importação bloqueada</span>`;
+    else if(p.existeOutroStatus) statusNote = ' <span style="color:#94a3b8;font-size:.62rem">↩ existe Concluído — será reimportado</span>';
     return `<tr style="border-top:1px solid var(--border);${p.duplicado?'opacity:.55':''}">
       <td style="padding:9px 10px"><span style="font-size:.65rem;font-weight:700;padding:2px 9px;border-radius:12px;background:${cor}22;color:${cor};white-space:nowrap">${p.rotulo}</span></td>
       <td style="padding:9px 10px;font-family:monospace;font-size:.78rem;white-space:nowrap">${p.processo}</td>
@@ -14226,18 +14239,26 @@ function nxSuapConfirmarImportacao(){
   const novos     = nxSuapPending.filter(p=>!p.duplicado);
   const ignorados = nxSuapPending.length - novos.length;
 
-  // ── Validação extra: rejeita processos que já existem com status PENDENTE ──
+  // ── Validação extra: rejeita processos que já existem com status em aberto ──
+  // Regra: só permite importar se o processo NÃO existe no sistema,
+  //        OU se já existe mas com status Concluído/Pago (finalizado).
+  const STATUS_BLOQUEADOS_CONF = ['pendente','em_andamento','stand_by','cancelado'];
+  const STATUS_LABEL_CONF = {pendente:'Pendente', em_andamento:'Em Andamento', stand_by:'Stand By', cancelado:'Cancelado'};
   const rejeitadosPendente = novos.filter(p=>{
-    return State.nxTasks.some(t=>
-      t.proc === p.processo && t.status === 'pendente'
-    );
+    const tarefa = State.nxTasks.find(t=>t.proc === p.processo);
+    if(!tarefa) return false;
+    return STATUS_BLOQUEADOS_CONF.includes(tarefa.status) || !!tarefa.emAndamentoAba;
   });
 
   if(rejeitadosPendente.length){
-    const nums = rejeitadosPendente.map(p=>`\n• ${p.processo}`).join('');
+    const detalhe = rejeitadosPendente.map(p=>{
+      const t = State.nxTasks.find(t2=>t2.proc === p.processo);
+      const stLbl = t ? (STATUS_LABEL_CONF[t.status] || t.status || 'Em aberto') : 'Em aberto';
+      return `\n• ${p.processo}  [${stLbl}]`;
+    }).join('');
     showToast(
-      `❌ ${rejeitadosPendente.length} processo${rejeitadosPendente.length>1?'s':''} não importado${rejeitadosPendente.length>1?'s':''} — já existem com status Pendente:${nums}`,
-      'error', 6000
+      `❌ ${rejeitadosPendente.length} processo${rejeitadosPendente.length>1?'s':''} rejeitado${rejeitadosPendente.length>1?'s':''} — já existe${rejeitadosPendente.length>1?'m':''} em aberto no sistema. Somente processos Concluídos podem ser reimportados:${detalhe}`,
+      'error', 8000
     );
     // Remove os rejeitados da lista a importar, mantendo os demais
     const rejNums = new Set(rejeitadosPendente.map(p=>p.processo));
@@ -14248,7 +14269,7 @@ function nxSuapConfirmarImportacao(){
       document.getElementById('nx-m-import-suap').classList.remove('on');
       return;
     }
-    // Se ainda houver processos válidos, segue com eles
+    // Se ainda houver processos válidos (ex.: processo novo no mesmo arquivo), segue com eles
     nxSuapExecutarImportacao(paraImportar, ignorados + rejeitadosPendente.length);
     return;
   }
@@ -16591,6 +16612,17 @@ function fmtDateBR(iso){
   if(!y) return iso;
   return `${d}/${m}/${y}`;
 }
+/* Converte data ISO "AAAA-MM-DD" em número serial do Excel (base 1900).
+   Exportar como número serial + formato "DD/MM/YYYY" garante que o Excel
+   reconheça a célula como data real (alinhada à direita) e não como texto. */
+function isoToExcelSerial(iso){
+  if(!iso) return "";
+  const d = new Date(iso + "T00:00:00");
+  if(isNaN(d)) return iso;
+  // Serial Excel = dias desde 1899-12-31, com correção do bug do ano 1900
+  const epoch = Date.UTC(1899,11,30);
+  return Math.round((d.getTime() - epoch) / 86400000);
+}
 function parseMoneyToNumber(v){
   if(!v) return "";
   const cleaned = v.toString().replace(/[R$\s.]/g,"").replace(",",".");
@@ -16602,6 +16634,35 @@ function formatBRL(n){
   const num = typeof n === "number" ? n : parseFloat(n);
   if(isNaN(num)) return "";
   return "R$ " + num.toLocaleString("pt-BR", {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+
+/* ── Número de Controle BolsaFlow ─────────────────────────────────────────────
+   Campo de 3 dígitos no cabeçalho do módulo.
+   Persistido em State.monNumControle → Supabase (via driveSync) e localStorage.
+   NÃO exportado para o arquivo Excel.
+   ─────────────────────────────────────────────────────────────────────────── */
+(function _monNumControleInit(){
+  // Inicializa o campo com o valor do State (localStorage ou Supabase já restaurado)
+  if(typeof State !== 'undefined'){
+    const cached = Storage.get('monNumControle','');
+    if(!State.monNumControle && cached) State.monNumControle = cached;
+    const el = document.getElementById('mon-numControle');
+    if(el && State.monNumControle) el.value = State.monNumControle;
+  }
+})();
+
+function monNumControleSync(){
+  const el = document.getElementById('mon-numControle');
+  if(!el) return;
+  const val = el.value.replace(/[^0-9]/g,'').slice(0,3);
+  el.value = val;
+  if(typeof State !== 'undefined') State.monNumControle = val;
+  Storage.set('monNumControle', val);
+  // Agenda sync com Supabase pelo mesmo mecanismo do restante do sistema
+  if(typeof driveSaveData === 'function') {
+    clearTimeout(window._monNumControleTimer);
+    window._monNumControleTimer = setTimeout(()=> driveSaveData(), 1200);
+  }
 }
 
 document.getElementById("mon-btnExport").addEventListener("click", ()=>{
@@ -16645,17 +16706,19 @@ document.getElementById("mon-btnExport").addEventListener("click", ()=>{
 
   const common = {
     anoDH: document.getElementById("mon-f_anoDH").value || 2026,
-    dataEmissao: fmtDateBR(document.getElementById("mon-f_dataEmissao").value),
-    dataVencimento: fmtDateBR(document.getElementById("mon-f_dataVencimento").value),
-    obsDadosBasicos: document.getElementById("mon-f_obsDadosBasicos").value,
-    dataAteste: fmtDateBR(document.getElementById("mon-f_dataAteste").value),
-    dataPagamento: fmtDateBR(document.getElementById("mon-f_dataPagamento").value),
-    dataEmissaoOrigem: fmtDateBR(document.getElementById("mon-f_dataEmissaoOrigem").value),
+    // Datas exportadas como serial numérico Excel (alinhamento à direita, importação sem erro)
+    dataEmissao:       isoToExcelSerial(document.getElementById("mon-f_dataEmissao").value),
+    dataVencimento:    isoToExcelSerial(document.getElementById("mon-f_dataVencimento").value),
+    dataAteste:        isoToExcelSerial(document.getElementById("mon-f_dataAteste").value),
+    dataPagamento:     isoToExcelSerial(document.getElementById("mon-f_dataPagamento").value),
+    dataEmissaoOrigem: isoToExcelSerial(document.getElementById("mon-f_dataEmissaoOrigem").value),
+    // Observações sempre em CAIXA ALTA conforme exigência de importação
+    obsDadosBasicos: (document.getElementById("mon-f_obsDadosBasicos").value || "").toUpperCase(),
+    obsPreDoc:       (document.getElementById("mon-f_obsPreDoc").value || "").toUpperCase(),
     numDocOrigem: document.getElementById("mon-f_numDocOrigem").value,
     valorDoc: parseMoneyToNumber(document.getElementById("mon-f_valorDoc").value),
     empenho: document.getElementById("mon-f_empenho").value,
-    mes: document.getElementById("mon-f_mes").value,
-    obsPreDoc: document.getElementById("mon-f_obsPreDoc").value
+    mes: document.getElementById("mon-f_mes").value
   };
 
   const UG = 154704;
@@ -16711,6 +16774,23 @@ document.getElementById("mon-btnExport").addEventListener("click", ()=>{
       const cellRef = XLSX.utils.encode_cell({r: rowIdx, c});
       const cell = ws[cellRef];
       if(cell && typeof cell.v === 'number'){ cell.t = 'n'; cell.z = '0.00'; }
+    });
+  }
+
+  // Força formato DATA nas colunas de data: D(3)=Emissão, E(4)=Vencimento,
+  // H(7)=Ateste, J(9)=Pagamento, L(11)=Emissão Doc Origem — índices 0-based.
+  // O valor já é o serial numérico Excel (gerado por isoToExcelSerial).
+  // Tipo 'n' + formato 'DD/MM/YYYY' faz o Excel alinhar à direita e reconhecer como data real.
+  const dateCols = [3, 4, 7, 9, 11];
+  for(let r=0; r<rows.length; r++){
+    const rowIdx = r + 1; // +1 pelo cabeçalho
+    dateCols.forEach(c=>{
+      const cellRef = XLSX.utils.encode_cell({r: rowIdx, c});
+      const cell = ws[cellRef];
+      if(cell && typeof cell.v === 'number' && cell.v > 0){
+        cell.t = 'n';
+        cell.z = 'DD/MM/YYYY';
+      }
     });
   }
 
