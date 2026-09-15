@@ -15688,11 +15688,22 @@ function parseBRL(str) {
    Cada campo é localizado por QUALQUER um destes termos aparecendo na linha.
    Isso permite funcionar com qualquer layout de fatura, sem depender de posição. */
 const FIELD_SYNONYMS = {
-  valorAgua:   ['VALOR AGUA', 'VALOR ÁGUA', 'CONSUMO DE AGUA', 'CONSUMO DE ÁGUA', 'SERVICO AGUA', 'SERVIÇO ÁGUA', 'SERVICOS DE AGUA', 'AGUA'],
-  juros:       ['JUROS POR ATRASO', 'JUROS DE MORA', 'JUROS'],
-  multa:       ['MULTA POR ATRASO', 'MULTA DE MORA', 'MULTA'],
+  // Termos do mais específico para o mais genérico.
+  // 'VALOR AGUA' sozinho (sem modificador) é o último recurso — só cai aqui
+  // se nenhum dos termos anteriores casar.
+  valorAgua:   ['VALOR AGUA', 'VALOR ÁGUA', 'CONSUMO DE AGUA', 'CONSUMO DE ÁGUA',
+                 'SERVICO AGUA', 'SERVIÇO ÁGUA', 'SERVICOS DE AGUA', 'VALOR DA AGUA',
+                 'VALOR DA ÁGUA'],
+  // Apenas as formas com "POR ATRASO" ou "DE MORA" — nunca o genérico "JUROS"
+  // ou "MULTA" isolado, pois aparecem em cabeçalhos e histórico de consumo.
+  juros:       ['JUROS POR ATRASO', 'JUROS DE MORA', 'ACRESCIMO DE JUROS', 'ACRÉSCIMO DE JUROS'],
+  multa:       ['MULTA POR ATRASO', 'MULTA DE MORA', 'ACRESCIMO DE MULTA', 'ACRÉSCIMO DE MULTA'],
   abatimento:  ['ABATIMENTO DE AGUA', 'ABATIMENTO DE ÁGUA', 'ABATIMENTO', 'DESCONTO'],
-  totalPagar:  ['TOTAL A PAGAR', 'VALOR A PAGAR', 'VALOR LIQUIDO', 'VALOR LÍQUIDO', 'TOTAL DA FATURA', 'TOTAL DOS SERVICOS', 'TOTAL DOS SERVIÇOS', 'VALOR TOTAL'],
+  // Inclui 'R$ 95' pattern — não, mas adiciona o termo exato da fatura Águas do Piauí
+  // e também variantes do rodapé do boleto onde o total aparece repetido.
+  totalPagar:  ['TOTAL A PAGAR', 'TOTAL(R$)', 'TOTAL (R$)', 'VALOR A PAGAR',
+                 'VALOR LIQUIDO', 'VALOR LÍQUIDO', 'TOTAL DA FATURA',
+                 'TOTAL DOS SERVICOS', 'TOTAL DOS SERVIÇOS', 'VALOR TOTAL'],
 };
 
 function normalize(str) {
@@ -15781,11 +15792,11 @@ async function extractFromPDF(file) {
     ? `Valor Água encontrado ("${aguaR.matches[0].line}") → ${formatBRL(valorAgua)}`
     : 'Valor Água NÃO encontrado', valorAgua !== null ? 'ok' : 'err');
 
-  const jurosR = findField(allLines, FIELD_SYNONYMS.juros, { sumAll: true });
+  const jurosR = findField(allLines, FIELD_SYNONYMS.juros, { sumAll: false });
   const jurosItems = jurosR.matches.map(m => ({ desc: 'Juros por Atraso', ref: m.line, value: m.value }));
   addLog(`Juros encontrados: ${jurosItems.length} linha(s) → soma ${formatBRL(jurosR.value || 0)}`, jurosItems.length > 0 ? 'ok' : 'warn');
 
-  const multaR = findField(allLines, FIELD_SYNONYMS.multa, { sumAll: true });
+  const multaR = findField(allLines, FIELD_SYNONYMS.multa, { sumAll: false });
   const multaItems = multaR.matches.map(m => ({ desc: 'Multa por Atraso', ref: m.line, value: m.value }));
   addLog(`Multas encontradas: ${multaItems.length} linha(s) → soma ${formatBRL(multaR.value || 0)}`, multaItems.length > 0 ? 'ok' : 'warn');
 
@@ -15795,11 +15806,34 @@ async function extractFromPDF(file) {
     ? `Abatimento de Água encontrado → ${formatBRL(abatimento)}`
     : 'Abatimento de Água não encontrado → considerado ZERO', abatimentoR.value !== null ? 'ok' : 'info');
 
+  // totalPagar — estratégia robusta para faturas onde o valor fica em célula
+  // separada da etiqueta (layout tabular do PDF da Águas do Piauí):
+  // 1. Tenta findField normal (etiqueta e valor na mesma linha reconstruída).
+  // 2. Se não encontrar, busca nas linhas seguintes à etiqueta.
+  let totalPagar = null;
   const totalR = findField(allLines, FIELD_SYNONYMS.totalPagar, { sumAll: false });
-  const totalPagar = totalR.value;
-  addLog(totalPagar !== null
-    ? `Total a Pagar/Valor Líquido encontrado ("${totalR.matches[0].line}") → ${formatBRL(totalPagar)}`
-    : 'Total a Pagar NÃO encontrado', totalPagar !== null ? 'ok' : 'err');
+  if (totalR.value !== null) {
+    totalPagar = totalR.value;
+    addLog(`Total a Pagar encontrado ("${totalR.matches[0].line}") → ${formatBRL(totalPagar)}`, 'ok');
+  } else {
+    const normSyns = FIELD_SYNONYMS.totalPagar.map(normalize);
+    outer: for (let i = 0; i < allLines.length - 1; i++) {
+      const normL = normalize(allLines[i]);
+      if (normSyns.some(s => normL.includes(s))) {
+        for (let j = i + 1; j <= Math.min(i + 3, allLines.length - 1); j++) {
+          const nums = extractNumbersFromLine(allLines[j]);
+          if (nums.length > 0) {
+            totalPagar = nums[nums.length - 1];
+            addLog(`Total a Pagar (linha seguinte à etiqueta) → "${allLines[j]}" → ${formatBRL(totalPagar)}`, 'ok');
+            break outer;
+          }
+        }
+      }
+    }
+    if (totalPagar === null) {
+      addLog('Total a Pagar NÃO encontrado — verifique se o PDF é texto extraível', 'err');
+    }
+  }
 
   try {
     const page = await pdf.getPage(1);
