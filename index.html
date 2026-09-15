@@ -15701,9 +15701,12 @@ const FIELD_SYNONYMS = {
   abatimento:  ['ABATIMENTO DE AGUA', 'ABATIMENTO DE ÁGUA', 'ABATIMENTO', 'DESCONTO'],
   // Inclui 'R$ 95' pattern — não, mas adiciona o termo exato da fatura Águas do Piauí
   // e também variantes do rodapé do boleto onde o total aparece repetido.
+  // 'TOTAL' genérico foi removido — casaria com a linha "TOTAL 105,11 0,00 0,10 0,86"
+  // e pegaria 0,86 (CBS) como último número. Mantemos apenas termos com "A PAGAR"
+  // ou suficientemente específicos. O rodapé do boleto repete "TOTAL (R$) 95,18".
   totalPagar:  ['TOTAL A PAGAR', 'TOTAL(R$)', 'TOTAL (R$)', 'VALOR A PAGAR',
                  'VALOR LIQUIDO', 'VALOR LÍQUIDO', 'TOTAL DA FATURA',
-                 'TOTAL DOS SERVICOS', 'TOTAL DOS SERVIÇOS', 'VALOR TOTAL'],
+                 'TOTAL DOS SERVICOS', 'TOTAL DOS SERVIÇOS'],
 };
 
 function normalize(str) {
@@ -15744,8 +15747,14 @@ function groupItemsIntoLines(items) {
 
 function findField(lines, synonyms, opts) {
   opts = opts || {};
-  const sumAll = !!opts.sumAll;
+  const sumAll   = !!opts.sumAll;
   const absValue = !!opts.absValue;
+  // firstNum: pega o PRIMEIRO número da linha em vez do último.
+  // Necessário para "VALOR AGUA 108,57 0,11 0,89" — queremos 108,57, não 0,89.
+  const firstNum = !!opts.firstNum;
+  // minValue: ignora números menores que este limiar (útil para pular colunas
+  // de impostos e CBS que aparecem após o valor principal na mesma linha).
+  const minValue = opts.minValue !== undefined ? opts.minValue : null;
   const matches = [];
   const normSynonyms = synonyms.map(normalize);
   for (const line of lines) {
@@ -15754,7 +15763,10 @@ function findField(lines, synonyms, opts) {
     if (!hit) continue;
     const nums = extractNumbersFromLine(line);
     if (nums.length === 0) continue;
-    let value = nums[nums.length - 1];
+    // Filtra pelo limiar mínimo se definido
+    const candidates = minValue !== null ? nums.filter(n => Math.abs(n) >= minValue) : nums;
+    if (candidates.length === 0) continue;
+    let value = firstNum ? candidates[0] : candidates[candidates.length - 1];
     if (absValue) value = Math.abs(value);
     matches.push({ line, term: hit, value });
     if (!sumAll) break;
@@ -15786,21 +15798,21 @@ async function extractFromPDF(file) {
 
   addLog('Localizando campos por correspondência fuzzy de texto...', 'info');
 
-  const aguaR = findField(allLines, FIELD_SYNONYMS.valorAgua, { sumAll: false });
+  const aguaR = findField(allLines, FIELD_SYNONYMS.valorAgua, { sumAll: false, firstNum: true, minValue: 1 });
   const valorAgua = aguaR.value;
   addLog(valorAgua !== null
     ? `Valor Água encontrado ("${aguaR.matches[0].line}") → ${formatBRL(valorAgua)}`
     : 'Valor Água NÃO encontrado', valorAgua !== null ? 'ok' : 'err');
 
-  const jurosR = findField(allLines, FIELD_SYNONYMS.juros, { sumAll: false });
+  const jurosR = findField(allLines, FIELD_SYNONYMS.juros, { sumAll: false, firstNum: true });
   const jurosItems = jurosR.matches.map(m => ({ desc: 'Juros por Atraso', ref: m.line, value: m.value }));
   addLog(`Juros encontrados: ${jurosItems.length} linha(s) → soma ${formatBRL(jurosR.value || 0)}`, jurosItems.length > 0 ? 'ok' : 'warn');
 
-  const multaR = findField(allLines, FIELD_SYNONYMS.multa, { sumAll: false });
+  const multaR = findField(allLines, FIELD_SYNONYMS.multa, { sumAll: false, firstNum: true });
   const multaItems = multaR.matches.map(m => ({ desc: 'Multa por Atraso', ref: m.line, value: m.value }));
   addLog(`Multas encontradas: ${multaItems.length} linha(s) → soma ${formatBRL(multaR.value || 0)}`, multaItems.length > 0 ? 'ok' : 'warn');
 
-  const abatimentoR = findField(allLines, FIELD_SYNONYMS.abatimento, { sumAll: true, absValue: true });
+  const abatimentoR = findField(allLines, FIELD_SYNONYMS.abatimento, { sumAll: false, firstNum: true, absValue: true });
   const abatimento = abatimentoR.value !== null ? abatimentoR.value : 0;
   addLog(abatimentoR.value !== null
     ? `Abatimento de Água encontrado → ${formatBRL(abatimento)}`
@@ -15811,7 +15823,7 @@ async function extractFromPDF(file) {
   // 1. Tenta findField normal (etiqueta e valor na mesma linha reconstruída).
   // 2. Se não encontrar, busca nas linhas seguintes à etiqueta.
   let totalPagar = null;
-  const totalR = findField(allLines, FIELD_SYNONYMS.totalPagar, { sumAll: false });
+  const totalR = findField(allLines, FIELD_SYNONYMS.totalPagar, { sumAll: false, minValue: 5 });
   if (totalR.value !== null) {
     totalPagar = totalR.value;
     addLog(`Total a Pagar encontrado ("${totalR.matches[0].line}") → ${formatBRL(totalPagar)}`, 'ok');
