@@ -6580,7 +6580,7 @@ input.cap-date.form-input {
          Todo o estado (origem/destinos) é reiniciado ao recarregar a página. ==================== -->
     <div id="page-empenho" class="page">
 
-      <!-- ══ CABEÇALHO FIXO: DETALHAMENTO PARA INCLUSÃO DE PLANO INTERNO ══ -->
+      <!-- ══ CABEÇALHO FIXO: DETALHAMENTO DE CRÉDITO PARA INCLUSÃO DE PLANO INTERNO ══ -->
       <div id="detalha-cred-banner" style="
         display:flex; align-items:center; justify-content:space-between;
         background: linear-gradient(135deg, rgba(249,115,22,0.13) 0%, rgba(168,85,247,0.10) 100%);
@@ -6597,7 +6597,7 @@ input.cap-date.form-input {
             <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent-orange)" stroke-width="2.2" width="20" height="20"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
           </div>
           <div>
-            <div id="detalha-cred-banner-texto" style="font-size:15px;font-weight:800;letter-spacing:0.04em;color:var(--text-primary);line-height:1.2">DETALHAMENTO PARA INCLUSÃO DE PLANO INTERNO</div>
+            <div id="detalha-cred-banner-texto" style="font-size:15px;font-weight:800;letter-spacing:0.04em;color:var(--text-primary);line-height:1.2">DETALHAMENTO DE CRÉDITO PARA INCLUSÃO DE PLANO INTERNO</div>
             <div style="font-size:10.5px;color:var(--text-secondary);margin-top:3px;letter-spacing:0.06em;text-transform:uppercase">Texto configurável · clique em Copiar para usar no SIAFI</div>
           </div>
         </div>
@@ -8984,7 +8984,7 @@ Object.assign(State, {
   capFornecedores: Storage.get('capFornecedores', []),
   capCelulasOrc: Storage.get('capCelulasOrc', []),
   capCelulasEmpenho: Storage.get('capCelulasEmpenho', []), // Nova tabela: Células Orçamentárias por Empenho
-  capDetalhaCredBannerTexto: Storage.get('capDetalhaCredBannerTexto', 'DETALHAMENTO PARA INCLUSÃO DE PLANO INTERNO'),
+  capDetalhaCredBannerTexto: Storage.get('capDetalhaCredBannerTexto', 'DETALHAMENTO DE CRÉDITO PARA INCLUSÃO DE PLANO INTERNO'),
   capAuditLog: Storage.get('capAuditLog', []),
   capCicloLabel: Storage.get('capCicloLabel', ''),
   capCicloInicioAt: Storage.get('capCicloInicioAt', null),
@@ -9020,7 +9020,7 @@ function capPersist(){
   Storage.set('capFornecedores', State.capFornecedores);
   Storage.set('capCelulasOrc', State.capCelulasOrc||[]);
   Storage.set('capCelulasEmpenho', State.capCelulasEmpenho||[]);
-  Storage.set('capDetalhaCredBannerTexto', State.capDetalhaCredBannerTexto||'DETALHAMENTO PARA INCLUSÃO DE PLANO INTERNO');
+  Storage.set('capDetalhaCredBannerTexto', State.capDetalhaCredBannerTexto||'DETALHAMENTO DE CRÉDITO PARA INCLUSÃO DE PLANO INTERNO');
   Storage.set('capAuditLog', State.capAuditLog);
   Storage.set('capCicloLabel', State.capCicloLabel||'');
   Storage.set('capCicloInicioAt', State.capCicloInicioAt||null);
@@ -9039,7 +9039,7 @@ function capPersistLocalOnly(){
   Storage.set('capFornecedores', State.capFornecedores);
   Storage.set('capCelulasOrc', State.capCelulasOrc||[]);
   Storage.set('capCelulasEmpenho', State.capCelulasEmpenho||[]);
-  Storage.set('capDetalhaCredBannerTexto', State.capDetalhaCredBannerTexto||'DETALHAMENTO PARA INCLUSÃO DE PLANO INTERNO');
+  Storage.set('capDetalhaCredBannerTexto', State.capDetalhaCredBannerTexto||'DETALHAMENTO DE CRÉDITO PARA INCLUSÃO DE PLANO INTERNO');
   Storage.set('capAuditLog', State.capAuditLog);
   Storage.set('capCicloLabel', State.capCicloLabel||'');
   Storage.set('capCicloInicioAt', State.capCicloInicioAt||null);
@@ -10992,13 +10992,19 @@ function exportCapCSV(){ const rows=getFilteredCapContas(); const csv=[['Tipo','
    MÓDULO: CABEÇALHO DETALHA CRED (Banner configurável)
    ============================================================ */
 function detalhaCredCopiarBanner(){
-  const texto = State.capDetalhaCredBannerTexto || 'DETALHAMENTO PARA INCLUSÃO DE PLANO INTERNO';
+  const texto = State.capDetalhaCredBannerTexto || 'DETALHAMENTO DE CRÉDITO PARA INCLUSÃO DE PLANO INTERNO';
   if(navigator.clipboard){ navigator.clipboard.writeText(texto).then(()=>showToast('✅ Texto copiado: "'+texto+'"','success')).catch(()=>showToast('Não foi possível copiar.','error')); }
   else{ const ta=document.createElement('textarea'); ta.value=texto; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); showToast('✅ Texto copiado!','success'); }
 }
 function detalhaCredInicializarBanner(){
-  const el=document.getElementById('detalha-cred-banner-texto'); if(!el)return;
-  el.textContent = State.capDetalhaCredBannerTexto || 'DETALHAMENTO PARA INCLUSÃO DE PLANO INTERNO';
+  const el=document.getElementById("detalha-cred-banner-texto"); if(!el)return;
+  const TEXTO_ANTIGO = "DETALHAMENTO PARA INCLUSÃO DE PLANO INTERNO";
+  const TEXTO_NOVO   = "DETALHAMENTO DE CRÉDITO PARA INCLUSÃO DE PLANO INTERNO";
+  if(!State.capDetalhaCredBannerTexto || State.capDetalhaCredBannerTexto === TEXTO_ANTIGO){
+    State.capDetalhaCredBannerTexto = TEXTO_NOVO;
+    Storage.set("capDetalhaCredBannerTexto", TEXTO_NOVO);
+  }
+  el.textContent = State.capDetalhaCredBannerTexto;
 }
 
 /* ============================================================
@@ -11052,18 +11058,23 @@ function _cempRenderFornDropdown(inp){
   }
 
   dd.innerHTML = matches.map(f => {
-    const isPJ = f.tipo==='Pessoa Jurídica';
-    const icon = isPJ ? '🏢' : '👤';
-    const cor  = isPJ ? 'var(--accent-purple)' : 'var(--accent-green)';
-    const bg   = isPJ ? 'rgba(168,85,247,0.1)' : 'rgba(34,197,94,0.1)';
-    const tipoLabel = (f.tipo==='Pessoa Jurídica'||f.tipo==='Pessoa Física') ? f.tipo : capFornTipoLabel ? capFornTipoLabel(f.tipo) : f.tipo;
+    const tipo = f.tipo || '';
+    const isPJ = tipo === 'Pessoa Jurídica';
+    const isPF = tipo === 'Pessoa Física';
+    const icon = isPJ ? '🏢' : isPF ? '👤' : '◆';
+    const cor  = isPJ ? 'var(--accent-purple)' : isPF ? 'var(--accent-green)' : 'var(--accent-teal)';
+    const bg   = isPJ ? 'rgba(168,85,247,0.1)'  : isPF ? 'rgba(34,197,94,0.1)'  : 'rgba(20,184,166,0.1)';
+    // Só mostra doc e tipo se existirem
+    const tipoLabel = tipo ? ((tipo==='Pessoa Jurídica'||tipo==='Pessoa Física') ? tipo : (typeof capFornTipoLabel==='function' ? capFornTipoLabel(tipo) : tipo)) : '';
+    const docStr  = f.doc ? f.doc : '';
+    const metaStr = [docStr, tipoLabel].filter(Boolean).join(' · ');
     return `<div class="cemp-forn-item" tabindex="0" data-forn-id="${f.id}"
       style="padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .12s">
       <div style="display:flex;align-items:center;gap:10px">
         <div style="width:30px;height:30px;border-radius:8px;background:${bg};border:1px solid ${cor}33;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">${icon}</div>
         <div style="flex:1;min-width:0">
           <div style="font-size:13px;font-weight:700;color:var(--text-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${f.nome||'—'}</div>
-          <div style="font-size:11px;font-family:var(--font-mono);color:${cor};margin-top:2px">${f.doc||'—'} · ${tipoLabel}</div>
+          ${metaStr ? `<div style="font-size:11px;font-family:var(--font-mono);color:${cor};margin-top:2px">${metaStr}</div>` : ''}
         </div>
       </div>
     </div>`;
@@ -11098,9 +11109,11 @@ function cempSelecionarFornecedor(fornId){
   const dd = document.getElementById('cemp-busca-forn-dd');
   if(dd) dd.style.display = 'none';
   // Preencher campos readonly
-  const docEl  = document.getElementById('cemp-forn-doc');   if(docEl)  docEl.value  = f.doc  || '';
+  const docEl  = document.getElementById('cemp-forn-doc');   if(docEl)  docEl.value  = f.doc  || '(não informado)';
   const nomeEl = document.getElementById('cemp-forn-nome');  if(nomeEl) nomeEl.value = f.nome || '';
-  const tipoEl = document.getElementById('cemp-forn-tipo');  if(tipoEl) tipoEl.value = (f.tipo==='Pessoa Jurídica'||f.tipo==='Pessoa Física') ? f.tipo : (typeof capFornTipoLabel==='function' ? capFornTipoLabel(f.tipo) : f.tipo);
+  const tipo = f.tipo || '';
+  const tipoLabel = tipo ? ((tipo==='Pessoa Jurídica'||tipo==='Pessoa Física') ? tipo : (typeof capFornTipoLabel==='function' ? capFornTipoLabel(tipo) : tipo)) : '(não informado)';
+  const tipoEl = document.getElementById('cemp-forn-tipo');  if(tipoEl) tipoEl.value = tipoLabel;
 }
 
 document.addEventListener('click', function(e){
@@ -11123,12 +11136,14 @@ function saveCempEmpenho(){
   const editId = document.getElementById('cemp-edit-id')?.value || '';
   const id = editId || capId('cemp');
 
+  const _fTipo = f.tipo || '';
+  const _fTipoLabel = _fTipo ? ((_fTipo==='Pessoa Jurídica'||_fTipo==='Pessoa Física') ? _fTipo : (typeof capFornTipoLabel==='function' ? capFornTipoLabel(_fTipo) : _fTipo)) : '';
   const item = {
     id,
     fornId:         _cempFornSelecionadoId,
     doc:            f.doc || '',
     nome:           f.nome || '',
-    tipo:           (f.tipo==='Pessoa Jurídica'||f.tipo==='Pessoa Física') ? f.tipo : (typeof capFornTipoLabel==='function' ? capFornTipoLabel(f.tipo) : f.tipo),
+    tipo:           _fTipoLabel,
     esfera:         (document.getElementById('cemp-esfera')?.value||'').trim(),
     ptres:          (document.getElementById('cemp-ptres')?.value||'').trim(),
     fonte:          (document.getElementById('cemp-fonte')?.value||'').trim(),
@@ -11159,7 +11174,7 @@ function editCempEmpenho(id){
   const buscaEl = document.getElementById('cemp-busca-forn'); if(buscaEl) buscaEl.value = c.nome;
   const docEl  = document.getElementById('cemp-forn-doc');   if(docEl)  docEl.value  = c.doc;
   const nomeEl = document.getElementById('cemp-forn-nome');  if(nomeEl) nomeEl.value = c.nome;
-  const tipoEl = document.getElementById('cemp-forn-tipo');  if(tipoEl) tipoEl.value = c.tipo;
+  const tipoEl = document.getElementById('cemp-forn-tipo');  if(tipoEl) tipoEl.value = c.tipo || '(não informado)';
   // Preencher campos
   const setVal = (id, v) => { const el=document.getElementById(id); if(el) el.value=v||''; };
   setVal('cemp-edit-id', c.id);
@@ -13460,7 +13475,7 @@ async function driveSaveData() {
     capFornecedores:      State.capFornecedores      || [],
     capCelulasOrc:        State.capCelulasOrc        || [],
     capCelulasEmpenho:    State.capCelulasEmpenho    || [],
-    capDetalhaCredBannerTexto: State.capDetalhaCredBannerTexto || 'DETALHAMENTO PARA INCLUSÃO DE PLANO INTERNO',
+    capDetalhaCredBannerTexto: State.capDetalhaCredBannerTexto || 'DETALHAMENTO DE CRÉDITO PARA INCLUSÃO DE PLANO INTERNO',
     capAuditLog:          State.capAuditLog          || [],
     capRelatoriosCiclos:  State.capRelatoriosCiclos  || [],
     capCicloLabel:        State.capCicloLabel        || '',
@@ -13604,7 +13619,7 @@ async function driveLoadData() {
     if (backup.capFornecedores)        State.capFornecedores    = backup.capFornecedores;
     if (backup.capCelulasOrc)          State.capCelulasOrc      = backup.capCelulasOrc;
     if (backup.capCelulasEmpenho)      State.capCelulasEmpenho  = backup.capCelulasEmpenho;
-    if (backup.capDetalhaCredBannerTexto !== undefined) State.capDetalhaCredBannerTexto = backup.capDetalhaCredBannerTexto || 'DETALHAMENTO PARA INCLUSÃO DE PLANO INTERNO';
+    if (backup.capDetalhaCredBannerTexto !== undefined) State.capDetalhaCredBannerTexto = backup.capDetalhaCredBannerTexto || 'DETALHAMENTO DE CRÉDITO PARA INCLUSÃO DE PLANO INTERNO';
     if (backup.capAuditLog)            State.capAuditLog        = backup.capAuditLog;
     if (backup.capRelatoriosCiclos)    State.capRelatoriosCiclos= backup.capRelatoriosCiclos;
     if (backup.capCicloLabel !== undefined)  State.capCicloLabel = backup.capCicloLabel || '';
