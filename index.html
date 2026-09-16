@@ -6579,6 +6579,40 @@ input.cap-date.form-input {
          100% local/em memória — sem Supabase, sem persistência.
          Todo o estado (origem/destinos) é reiniciado ao recarregar a página. ==================== -->
     <div id="page-empenho" class="page">
+
+      <!-- ══ CABEÇALHO FIXO: DETALHAMENTO PARA INCLUSÃO DE PLANO INTERNO ══ -->
+      <div id="detalha-cred-banner" style="
+        display:flex; align-items:center; justify-content:space-between;
+        background: linear-gradient(135deg, rgba(249,115,22,0.13) 0%, rgba(168,85,247,0.10) 100%);
+        border: 1px solid rgba(249,115,22,0.35);
+        border-radius: 14px;
+        padding: 16px 22px;
+        margin-bottom: 22px;
+        position: relative;
+        overflow: hidden;
+      ">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent-orange),var(--accent-purple),transparent)"></div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="width:42px;height:42px;border-radius:10px;background:rgba(249,115,22,0.15);border:1px solid rgba(249,115,22,0.4);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent-orange)" stroke-width="2.2" width="20" height="20"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
+          </div>
+          <div>
+            <div id="detalha-cred-banner-texto" style="font-size:15px;font-weight:800;letter-spacing:0.04em;color:var(--text-primary);line-height:1.2">DETALHAMENTO PARA INCLUSÃO DE PLANO INTERNO</div>
+            <div style="font-size:10.5px;color:var(--text-secondary);margin-top:3px;letter-spacing:0.06em;text-transform:uppercase">Texto configurável · clique em Copiar para usar no SIAFI</div>
+          </div>
+        </div>
+        <button onclick="detalhaCredCopiarBanner()" style="
+          display:flex;align-items:center;gap:7px;
+          background:rgba(249,115,22,0.12);border:1px solid rgba(249,115,22,0.4);
+          border-radius:8px;padding:8px 16px;cursor:pointer;
+          color:var(--accent-orange);font-size:12px;font-weight:700;
+          transition:all .2s;white-space:nowrap;flex-shrink:0
+        " onmouseover="this.style.background='rgba(249,115,22,0.22)'" onmouseout="this.style.background='rgba(249,115,22,0.12)'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copiar
+        </button>
+      </div>
+
       <div class="cap-header-bar">
         <div class="cap-title-group">
           <div class="cap-page-tag">MÓDULO ORÇAMENTÁRIO</div>
@@ -6657,10 +6691,10 @@ input.cap-date.form-input {
         </div>
         <div class="cap-form-body">
           <div class="form-group" style="position:relative;margin-bottom:18px">
-            <label class="form-label">Pesquisar favorecido (CPF, CNPJ, Nome, Benefício, Diárias, Passagens, Suprimento, Outro)</label>
+            <label class="form-label">Pesquisar por Fornecedor / Nº de Empenho (Configurações → Células Orçamentárias por Empenho)</label>
             <div style="position:relative">
               <svg style="position:absolute;left:10px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--text-muted);pointer-events:none;z-index:1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              <input class="form-input" id="empenho-busca" placeholder="Digite para buscar e pressione Enter ou clique no resultado..."
+              <input class="form-input" id="empenho-busca" placeholder="Digite CNPJ, nome do fornecedor ou número do empenho..."
                 oninput="empenhoBuscaInput(this)" onfocus="empenhoBuscaInput(this)" onkeydown="empenhoBuscaKeydown(event)"
                 autocomplete="off" style="padding-left:34px">
             </div>
@@ -6668,7 +6702,7 @@ input.cap-date.form-input {
           <div class="cap-table-wrap">
             <table class="data-table">
               <thead><tr><th>Nome</th><th>Tipo</th><th>Esfera</th><th>PTRES</th><th>Fonte</th><th>Natureza</th><th>UGR</th><th>Plano Interno</th><th>Nº Empenho</th><th style="text-align:right">Valor</th><th>Ações</th></tr></thead>
-              <tbody id="empenho-destinos-tbody"><tr><td colspan="11"><div class="cap-empty">Nenhum destino adicionado. Pesquise um favorecido acima.</div></td></tr></tbody>
+              <tbody id="empenho-destinos-tbody"><tr><td colspan="11"><div class="cap-empty">Nenhum destino adicionado. Pesquise um empenho acima.</div></td></tr></tbody>
             </table>
           </div>
         </div>
@@ -6897,16 +6931,6 @@ input.cap-date.form-input {
             <div class="form-group"><label class="form-label">Status</label><select class="form-select" id="cfg-forn-status"><option value="ativo">✅ Ativo</option><option value="inativo">🔴 Inativo</option><option value="pendente">⚠️ Pendente</option></select></div>
           </div>
 
-          <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.14em;color:var(--accent-teal);margin:22px 0 12px;padding-top:14px;border-top:1px dashed var(--border)">Célula Orçamentária</div>
-          <div class="cap-grid-3">
-            <div class="form-group" style="grid-column:1/-1"><label class="form-label">Vincular Célula Orçamentária <span style="color:var(--text-muted);font-weight:400;font-size:10px">(opcional — cadastre as células na seção abaixo)</span></label>
-              <select class="form-select" id="cfg-forn-celula-id" onchange="capFornCelulaPreview()">
-                <option value="">— Sem célula vinculada —</option>
-              </select>
-              <div id="cfg-forn-celula-preview" style="display:none;margin-top:6px;padding:8px 12px;background:rgba(20,184,166,0.05);border:1px dashed rgba(20,184,166,0.3);border-radius:6px;font-family:var(--font-mono);font-size:11px;color:var(--text-secondary);line-height:1.7"></div>
-            </div>
-          </div>
-
           <div class="cap-grid-3">
             <div class="form-group"><label class="form-label">Observações</label><input class="form-input" id="cfg-forn-obs" placeholder="Dados bancários, contatos..."></div>
             <div class="form-group" style="align-self:end"><button class="btn btn-teal" onclick="saveCapFornecedor()">Salvar Fornecedor</button></div>
@@ -6922,40 +6946,71 @@ input.cap-date.form-input {
                 title="Limpar filtro" style="display:none;position:absolute;right:8px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.08);border:none;cursor:pointer;color:var(--text-muted);font-size:13px;width:22px;height:22px;border-radius:4px;line-height:1;transition:all .15s">✕</button>
             </div>
           </div>
-          <div class="cap-table-wrap"><table class="data-table"><thead><tr><th>CPF/CNPJ</th><th>Nome</th><th>Tipo</th><th>Célula Orçamentária</th><th>Telefone</th><th>E-mail</th><th>Status</th><th>Ações</th></tr></thead><tbody id="cap-forn-tbody"></tbody></table></div>
+          <div class="cap-table-wrap"><table class="data-table"><thead><tr><th>CPF/CNPJ</th><th>Nome</th><th>Tipo</th><th>Telefone</th><th>E-mail</th><th>Status</th><th>Ações</th></tr></thead><tbody id="cap-forn-tbody"></tbody></table></div>
         </div>
       </div>
 
       <div class="section-sep"></div>
 
-      <!-- ==================== CÉLULAS ORÇAMENTÁRIAS (vinculadas a Fornecedores Financeiros) ==================== -->
+      <!-- ==================== CÉLULAS ORÇAMENTÁRIAS POR EMPENHO ==================== -->
       <div class="section-header">
         <div>
-          <div class="section-title">Células Orçamentárias</div>
-          <div class="section-subtitle">Cadastre células orçamentárias com título de identificação para vincular aos Fornecedores Financeiros</div>
+          <div class="section-title">Células Orçamentárias por Empenho</div>
+          <div class="section-subtitle">Cadastre empenhos com suas células orçamentárias vinculadas a um fornecedor — um mesmo fornecedor pode ter vários empenhos</div>
         </div>
       </div>
       <div class="cap-form-card">
         <div class="cap-form-body">
-          <input type="hidden" id="cfg-celula-edit-id">
+          <input type="hidden" id="cemp-edit-id">
+
+          <!-- Etapa 1: Busca de fornecedor -->
+          <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.14em;color:var(--accent-teal);margin-bottom:10px">Etapa 1 — Selecionar Fornecedor</div>
+          <div class="form-group" style="position:relative;margin-bottom:14px">
+            <label class="form-label">Buscar Fornecedor Financeiro</label>
+            <div style="position:relative">
+              <svg style="position:absolute;left:10px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--text-muted);pointer-events:none;z-index:1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input class="form-input" id="cemp-busca-forn" placeholder="Digite CNPJ, CPF ou nome do fornecedor..." oninput="cempBuscaFornInput(this)" onfocus="cempBuscaFornInput(this)" onkeydown="cempBuscaFornKeydown(event)" autocomplete="off" style="padding-left:34px">
+            </div>
+            <div id="cemp-busca-forn-dd" style="display:none;position:fixed;z-index:9999;background:var(--bg-elevated);border:1px solid var(--border-bright);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,0.5);overflow:hidden;max-height:260px;overflow-y:auto"></div>
+          </div>
+          <div class="cap-grid-3" style="margin-bottom:14px">
+            <div class="form-group"><label class="form-label">CNPJ / CPF</label><input class="form-input" id="cemp-forn-doc" readonly placeholder="—" style="background:rgba(255,255,255,0.03);color:var(--text-secondary)"></div>
+            <div class="form-group"><label class="form-label">Nome do Fornecedor</label><input class="form-input" id="cemp-forn-nome" readonly placeholder="—" style="background:rgba(255,255,255,0.03);color:var(--text-secondary)"></div>
+            <div class="form-group"><label class="form-label">Tipo</label><input class="form-input" id="cemp-forn-tipo" readonly placeholder="—" style="background:rgba(255,255,255,0.03);color:var(--text-secondary)"></div>
+          </div>
+
+          <!-- Etapa 2: Campos da célula + empenho -->
+          <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.14em;color:var(--accent-orange);margin:18px 0 10px;padding-top:14px;border-top:1px dashed var(--border)">Etapa 2 — Dados do Empenho e Célula Orçamentária</div>
           <div class="cap-grid-3">
-            <div class="form-group" style="grid-column:1/-1"><label class="form-label">Título da Célula *</label><input class="form-input" id="cfg-celula-titulo" placeholder="Ex: MATERIAL DE CONSUMO, OUTROS SERVIÇOS PJ..." style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"></div>
+            <div class="form-group"><label class="form-label">Esfera</label><input class="form-input" id="cemp-esfera" placeholder="1" maxlength="5"></div>
+            <div class="form-group"><label class="form-label">PTRES</label><input class="form-input" id="cemp-ptres" placeholder="231704" maxlength="6" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,6)"></div>
+            <div class="form-group"><label class="form-label">Fonte de Recursos</label><input class="form-input" id="cemp-fonte" placeholder="1000000000" maxlength="10"></div>
           </div>
           <div class="cap-grid-3">
-            <div class="form-group"><label class="form-label">Esfera</label><input class="form-input" id="cfg-celula-esfera" placeholder="1" maxlength="5" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,5)"></div>
-            <div class="form-group"><label class="form-label">PTRES</label><input class="form-input" id="cfg-celula-ptres" placeholder="231704" maxlength="6" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,6)"></div>
-            <div class="form-group"><label class="form-label">Fonte de Recursos</label><input class="form-input" id="cfg-celula-fonte" placeholder="1000000000" maxlength="10" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)"></div>
+            <div class="form-group"><label class="form-label">Natureza da Despesa</label><input class="form-input" id="cemp-natureza" placeholder="339018" maxlength="6" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,6)"></div>
+            <div class="form-group"><label class="form-label">UGR</label><input class="form-input" id="cemp-ugr" placeholder="15858"></div>
+            <div class="form-group"><label class="form-label">Plano Interno</label><input class="form-input" id="cemp-planointerno" placeholder="L29AFP2300N" maxlength="11" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,11)"></div>
           </div>
           <div class="cap-grid-3">
-            <div class="form-group"><label class="form-label">Natureza da Despesa</label><input class="form-input" id="cfg-celula-natureza" placeholder="339018" maxlength="6" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,6)"></div>
-            <div class="form-group"><label class="form-label">UGR</label><input class="form-input" id="cfg-celula-ugr" placeholder="15858" oninput="this.value=this.value.replace(/[^A-Za-z0-9]/g,'')"></div>
-            <div class="form-group"><label class="form-label">Plano Interno</label><input class="form-input" id="cfg-celula-planointerno" placeholder="L29AFP2300N" maxlength="11" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,11)"></div>
+            <div class="form-group"><label class="form-label">Nº do Empenho *</label><input class="form-input" id="cemp-numero-empenho" placeholder="2026NE000001" style="text-transform:uppercase;font-family:var(--font-mono)" oninput="this.value=this.value.toUpperCase()"></div>
+            <div class="form-group"><label class="form-label">Valor (R$)</label><input class="form-input" id="cemp-valor" placeholder="0,00" oninput="maskMoneyInput(this)"></div>
+            <div class="form-group" style="align-self:end;display:flex;gap:8px">
+              <button class="btn btn-teal" onclick="saveCempEmpenho()" style="flex:1">Salvar</button>
+              <button class="btn btn-ghost" id="cemp-cancel-btn" style="display:none;flex:1" onclick="cancelCempEmpenho()">Cancelar</button>
+            </div>
           </div>
-          <div class="cap-grid-3">
-            <div class="form-group" style="align-self:end"><button class="btn btn-teal" onclick="saveCelulaOrc()">Salvar Célula</button></div>
-            <div class="form-group" style="align-self:end"><button class="btn btn-ghost" id="cfg-celula-cancel-btn" style="display:none" onclick="cancelCelulaOrc()">Cancelar</button></div>
+
+          <!-- Tabela de registros -->
+          <div class="cap-table-wrap" style="margin-top:16px;overflow-x:auto">
+            <table class="data-table" style="min-width:900px">
+              <thead>
+                <tr>
+                  <th>CNPJ/CPF</th><th>Fornecedor</th><th>Tipo</th><th>Esfera</th><th>PTRES</th><th>Fonte</th><th>Natureza</th><th>UGR</th><th>Plano Interno</th><th>Nº Empenho</th><th style="text-align:right">Valor</th><th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="cemp-tbody"></tbody>
+            </table>
           </div>
-          <div class="cap-table-wrap" style="margin-top:8px"><table class="data-table"><thead><tr><th>Título</th><th>Célula Orçamentária</th><th>Ações</th></tr></thead><tbody id="cfg-celulas-tbody"></tbody></table></div>
         </div>
       </div>
 
@@ -8928,6 +8983,8 @@ Object.assign(State, {
   capFontes: Storage.get('capFontes', CAP_DEFAULT_FONTES),
   capFornecedores: Storage.get('capFornecedores', []),
   capCelulasOrc: Storage.get('capCelulasOrc', []),
+  capCelulasEmpenho: Storage.get('capCelulasEmpenho', []), // Nova tabela: Células Orçamentárias por Empenho
+  capDetalhaCredBannerTexto: Storage.get('capDetalhaCredBannerTexto', 'DETALHAMENTO PARA INCLUSÃO DE PLANO INTERNO'),
   capAuditLog: Storage.get('capAuditLog', []),
   capCicloLabel: Storage.get('capCicloLabel', ''),
   capCicloInicioAt: Storage.get('capCicloInicioAt', null),
@@ -8962,6 +9019,8 @@ function capPersist(){
   Storage.set('capFontes', State.capFontes);
   Storage.set('capFornecedores', State.capFornecedores);
   Storage.set('capCelulasOrc', State.capCelulasOrc||[]);
+  Storage.set('capCelulasEmpenho', State.capCelulasEmpenho||[]);
+  Storage.set('capDetalhaCredBannerTexto', State.capDetalhaCredBannerTexto||'DETALHAMENTO PARA INCLUSÃO DE PLANO INTERNO');
   Storage.set('capAuditLog', State.capAuditLog);
   Storage.set('capCicloLabel', State.capCicloLabel||'');
   Storage.set('capCicloInicioAt', State.capCicloInicioAt||null);
@@ -8979,6 +9038,8 @@ function capPersistLocalOnly(){
   Storage.set('capFontes', State.capFontes);
   Storage.set('capFornecedores', State.capFornecedores);
   Storage.set('capCelulasOrc', State.capCelulasOrc||[]);
+  Storage.set('capCelulasEmpenho', State.capCelulasEmpenho||[]);
+  Storage.set('capDetalhaCredBannerTexto', State.capDetalhaCredBannerTexto||'DETALHAMENTO PARA INCLUSÃO DE PLANO INTERNO');
   Storage.set('capAuditLog', State.capAuditLog);
   Storage.set('capCicloLabel', State.capCicloLabel||'');
   Storage.set('capCicloInicioAt', State.capCicloInicioAt||null);
@@ -10921,17 +10982,249 @@ function renderCapFornecedoresTable(){
   };
   const tipoCell = f => (f.tipo==='Pessoa Jurídica'||f.tipo==='Pessoa Física') ? f.tipo : capFornTipoLabel(f.tipo);
   const vazio = q
-    ? '<tr><td colspan="8"><div class="cap-empty">Nenhum fornecedor encontrado para "'+ (filtroEl.value||'').replace(/</g,'&lt;') +'".</div></td></tr>'
-    : '<tr><td colspan="8"><div class="cap-empty">Nenhum fornecedor financeiro.</div></td></tr>';
-  tb.innerHTML=lista.map(f=>'<tr><td>'+f.doc+'</td><td>'+f.nome+'</td><td>'+tipoCell(f)+'</td><td>'+celulaCell(f)+'</td><td>'+(f.telefone||'-')+'</td><td>'+(f.email?'<a href="mailto:'+f.email+'" style="color:var(--accent-teal)">'+f.email+'</a>':'-')+'</td><td>'+statusBadge(f.status||'ativo')+'</td><td><button class="row-act-btn edit" onclick="editCapFornecedor(\''+f.id+'\')">✎</button><button class="row-act-btn del" onclick="deleteCapFornecedor(\''+f.id+'\')">×</button></td></tr>').join('')||vazio; 
+    ? '<tr><td colspan="7"><div class="cap-empty">Nenhum fornecedor encontrado para "'+ (filtroEl.value||'').replace(/</g,'&lt;') +'".</div></td></tr>'
+    : '<tr><td colspan="7"><div class="cap-empty">Nenhum fornecedor financeiro.</div></td></tr>';
+  tb.innerHTML=lista.map(f=>'<tr><td>'+f.doc+'</td><td>'+f.nome+'</td><td>'+tipoCell(f)+'</td><td>'+(f.telefone||'-')+'</td><td>'+(f.email?'<a href="mailto:'+f.email+'" style="color:var(--accent-teal)">'+f.email+'</a>':'-')+'</td><td>'+statusBadge(f.status||'ativo')+'</td><td><button class="row-act-btn edit" onclick="editCapFornecedor(\''+f.id+'\')">✎</button><button class="row-act-btn del" onclick="deleteCapFornecedor(\''+f.id+'\')">×</button></td></tr>').join('')||vazio; 
 }
 function exportCapCSV(){ const rows=getFilteredCapContas(); const csv=[['Tipo','Classe','Documento','Fonte','Fornecedor','Valor'],...rows.map(c=>[c.tipo,c.classe,c.documento,c.fonte,c.fornecedor,c.valor])].map(r=>r.join(';')).join('\n'); const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='contas_a_pagar.csv'; a.click(); }
+
+/* ============================================================
+   MÓDULO: CABEÇALHO DETALHA CRED (Banner configurável)
+   ============================================================ */
+function detalhaCredCopiarBanner(){
+  const texto = State.capDetalhaCredBannerTexto || 'DETALHAMENTO PARA INCLUSÃO DE PLANO INTERNO';
+  if(navigator.clipboard){ navigator.clipboard.writeText(texto).then(()=>showToast('✅ Texto copiado: "'+texto+'"','success')).catch(()=>showToast('Não foi possível copiar.','error')); }
+  else{ const ta=document.createElement('textarea'); ta.value=texto; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); showToast('✅ Texto copiado!','success'); }
+}
+function detalhaCredInicializarBanner(){
+  const el=document.getElementById('detalha-cred-banner-texto'); if(!el)return;
+  el.textContent = State.capDetalhaCredBannerTexto || 'DETALHAMENTO PARA INCLUSÃO DE PLANO INTERNO';
+}
+
+/* ============================================================
+   MÓDULO: CÉLULAS ORÇAMENTÁRIAS POR EMPENHO (CEMP)
+   Tabela própria — fornecedor como referência, vários empenhos por fornecedor.
+   Persistência via localStorage + Supabase (scheduleAutoSave).
+   ============================================================ */
+
+/* -- Busca de fornecedor no formulário CEMP -- */
+let _cempBuscaDebounce = null;
+let _cempFornSelecionadoId = null;
+
+function cempBuscaFornInput(inp){
+  clearTimeout(_cempBuscaDebounce);
+  _cempBuscaDebounce = setTimeout(() => _cempRenderFornDropdown(inp), 120);
+}
+
+function _cempDropdownPosition(){
+  const inp = document.getElementById('cemp-busca-forn');
+  const dd  = document.getElementById('cemp-busca-forn-dd');
+  if(!inp || !dd) return;
+  const r = inp.getBoundingClientRect();
+  dd.style.top   = (r.bottom + 4) + 'px';
+  dd.style.left  = r.left + 'px';
+  dd.style.width = r.width + 'px';
+}
+
+function _cempRenderFornDropdown(inp){
+  const q  = (inp.value || '').toLowerCase().trim();
+  const dd = document.getElementById('cemp-busca-forn-dd');
+  if(!dd) return;
+  const lista = State.capFornecedores || [];
+
+  if(!lista.length){
+    dd.innerHTML = '<div style="padding:14px 16px;font-size:12px;color:var(--accent-amber)">Nenhum fornecedor cadastrado. Acesse <strong>Configurações → Fornecedores Financeiros</strong>.</div>';
+    _cempDropdownPosition(); dd.style.display = 'block'; return;
+  }
+
+  const qDigits = capDigits(q);
+  const matches = q
+    ? lista.filter(f => {
+        const nomeLow = (f.nome||'').toLowerCase();
+        const docLow  = (f.doc||'').toLowerCase();
+        return nomeLow.includes(q) || docLow.includes(q) || (qDigits.length >= 3 && capDigits(f.doc||'').includes(qDigits));
+      }).slice(0, 12)
+    : lista.slice(0, 10);
+
+  if(!matches.length){
+    dd.innerHTML = '<div style="padding:14px 16px;font-size:12px;color:var(--text-muted)">Nenhum resultado.</div>';
+    _cempDropdownPosition(); dd.style.display = 'block'; return;
+  }
+
+  dd.innerHTML = matches.map(f => {
+    const isPJ = f.tipo==='Pessoa Jurídica';
+    const icon = isPJ ? '🏢' : '👤';
+    const cor  = isPJ ? 'var(--accent-purple)' : 'var(--accent-green)';
+    const bg   = isPJ ? 'rgba(168,85,247,0.1)' : 'rgba(34,197,94,0.1)';
+    const tipoLabel = (f.tipo==='Pessoa Jurídica'||f.tipo==='Pessoa Física') ? f.tipo : capFornTipoLabel ? capFornTipoLabel(f.tipo) : f.tipo;
+    return `<div class="cemp-forn-item" tabindex="0" data-forn-id="${f.id}"
+      style="padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .12s">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:30px;height:30px;border-radius:8px;background:${bg};border:1px solid ${cor}33;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">${icon}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:700;color:var(--text-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${f.nome||'—'}</div>
+          <div style="font-size:11px;font-family:var(--font-mono);color:${cor};margin-top:2px">${f.doc||'—'} · ${tipoLabel}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  dd.querySelectorAll('.cemp-forn-item').forEach(el => {
+    el.addEventListener('mouseenter', () => el.style.background = 'rgba(249,115,22,0.07)');
+    el.addEventListener('mouseleave', () => el.style.background = '');
+    el.addEventListener('mousedown', (e) => { e.preventDefault(); cempSelecionarFornecedor(el.getAttribute('data-forn-id')); });
+  });
+
+  _cempDropdownPosition();
+  dd.style.display = 'block';
+}
+
+function cempBuscaFornKeydown(e){
+  if(e.key === 'Escape'){ document.getElementById('cemp-busca-forn-dd').style.display='none'; return; }
+  if(e.key === 'Enter'){
+    e.preventDefault();
+    const dd = document.getElementById('cemp-busca-forn-dd');
+    const first = dd && dd.style.display !== 'none' ? dd.querySelector('.cemp-forn-item') : null;
+    if(first) cempSelecionarFornecedor(first.getAttribute('data-forn-id'));
+  }
+}
+
+function cempSelecionarFornecedor(fornId){
+  const f = (State.capFornecedores||[]).find(x => x.id === fornId);
+  if(!f) return;
+  _cempFornSelecionadoId = fornId;
+  const buscaEl = document.getElementById('cemp-busca-forn');
+  if(buscaEl) buscaEl.value = f.nome;
+  const dd = document.getElementById('cemp-busca-forn-dd');
+  if(dd) dd.style.display = 'none';
+  // Preencher campos readonly
+  const docEl  = document.getElementById('cemp-forn-doc');   if(docEl)  docEl.value  = f.doc  || '';
+  const nomeEl = document.getElementById('cemp-forn-nome');  if(nomeEl) nomeEl.value = f.nome || '';
+  const tipoEl = document.getElementById('cemp-forn-tipo');  if(tipoEl) tipoEl.value = (f.tipo==='Pessoa Jurídica'||f.tipo==='Pessoa Física') ? f.tipo : (typeof capFornTipoLabel==='function' ? capFornTipoLabel(f.tipo) : f.tipo);
+}
+
+document.addEventListener('click', function(e){
+  if(!e.target.closest('#cemp-busca-forn') && !e.target.closest('#cemp-busca-forn-dd')){
+    const dd = document.getElementById('cemp-busca-forn-dd');
+    if(dd) dd.style.display = 'none';
+  }
+});
+window.addEventListener('scroll', function(){ _cempDropdownPosition(); }, true);
+
+/* -- CRUD das Células por Empenho -- */
+function saveCempEmpenho(){
+  if(!_cempFornSelecionadoId) return showToast('Selecione um fornecedor primeiro.','error');
+  const numeroEmpenho = (document.getElementById('cemp-numero-empenho')?.value||'').trim().toUpperCase();
+  if(!numeroEmpenho) return showToast('Informe o Nº do Empenho.','error');
+
+  const f = (State.capFornecedores||[]).find(x => x.id === _cempFornSelecionadoId);
+  if(!f) return showToast('Fornecedor não encontrado.','error');
+
+  const editId = document.getElementById('cemp-edit-id')?.value || '';
+  const id = editId || capId('cemp');
+
+  const item = {
+    id,
+    fornId:         _cempFornSelecionadoId,
+    doc:            f.doc || '',
+    nome:           f.nome || '',
+    tipo:           (f.tipo==='Pessoa Jurídica'||f.tipo==='Pessoa Física') ? f.tipo : (typeof capFornTipoLabel==='function' ? capFornTipoLabel(f.tipo) : f.tipo),
+    esfera:         (document.getElementById('cemp-esfera')?.value||'').trim(),
+    ptres:          (document.getElementById('cemp-ptres')?.value||'').trim(),
+    fonte:          (document.getElementById('cemp-fonte')?.value||'').trim(),
+    natureza:       (document.getElementById('cemp-natureza')?.value||'').trim(),
+    ugr:            (document.getElementById('cemp-ugr')?.value||'').trim(),
+    planointerno:   (document.getElementById('cemp-planointerno')?.value||'').trim().toUpperCase(),
+    numeroEmpenho,
+    valor:          parseMoneyBR(document.getElementById('cemp-valor')?.value||'0'),
+    updatedAt:      new Date().toISOString()
+  };
+
+  if(!State.capCelulasEmpenho) State.capCelulasEmpenho = [];
+  const idx = State.capCelulasEmpenho.findIndex(c => c.id === id);
+  if(idx >= 0) State.capCelulasEmpenho[idx] = item;
+  else         State.capCelulasEmpenho.push(item);
+
+  cancelCempEmpenho();
+  capPersist();
+  renderCempTable();
+  showToast('✅ Célula/Empenho "'+numeroEmpenho+'" salva para "'+f.nome+'"!','success');
+}
+
+function editCempEmpenho(id){
+  const c = (State.capCelulasEmpenho||[]).find(x => x.id === id);
+  if(!c) return;
+  // Selecionar o fornecedor
+  _cempFornSelecionadoId = c.fornId;
+  const buscaEl = document.getElementById('cemp-busca-forn'); if(buscaEl) buscaEl.value = c.nome;
+  const docEl  = document.getElementById('cemp-forn-doc');   if(docEl)  docEl.value  = c.doc;
+  const nomeEl = document.getElementById('cemp-forn-nome');  if(nomeEl) nomeEl.value = c.nome;
+  const tipoEl = document.getElementById('cemp-forn-tipo');  if(tipoEl) tipoEl.value = c.tipo;
+  // Preencher campos
+  const setVal = (id, v) => { const el=document.getElementById(id); if(el) el.value=v||''; };
+  setVal('cemp-edit-id', c.id);
+  setVal('cemp-esfera', c.esfera);
+  setVal('cemp-ptres', c.ptres);
+  setVal('cemp-fonte', c.fonte);
+  setVal('cemp-natureza', c.natureza);
+  setVal('cemp-ugr', c.ugr);
+  setVal('cemp-planointerno', c.planointerno);
+  setVal('cemp-numero-empenho', c.numeroEmpenho);
+  const valEl = document.getElementById('cemp-valor');
+  if(valEl && c.valor) valEl.value = (c.valor).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const cancelBtn = document.getElementById('cemp-cancel-btn'); if(cancelBtn) cancelBtn.style.display='';
+  document.getElementById('cemp-busca-forn')?.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function deleteCempEmpenho(id){
+  const c = (State.capCelulasEmpenho||[]).find(x => x.id === id);
+  if(!confirm('Remover o empenho "'+(c?.numeroEmpenho||id)+'" do fornecedor "'+(c?.nome||'')+'"?')) return;
+  State.capCelulasEmpenho = (State.capCelulasEmpenho||[]).filter(x => x.id !== id);
+  capPersist();
+  renderCempTable();
+  showToast('Registro removido.','info');
+}
+
+function cancelCempEmpenho(){
+  _cempFornSelecionadoId = null;
+  ['cemp-edit-id','cemp-busca-forn','cemp-forn-doc','cemp-forn-nome','cemp-forn-tipo',
+   'cemp-esfera','cemp-ptres','cemp-fonte','cemp-natureza','cemp-ugr','cemp-planointerno','cemp-numero-empenho','cemp-valor'].forEach(eid => {
+    const el = document.getElementById(eid); if(el) el.value = '';
+  });
+  const cancelBtn = document.getElementById('cemp-cancel-btn'); if(cancelBtn) cancelBtn.style.display='none';
+}
+
+function renderCempTable(){
+  const tb = document.getElementById('cemp-tbody'); if(!tb) return;
+  const lista = State.capCelulasEmpenho || [];
+  if(!lista.length){
+    tb.innerHTML = '<tr><td colspan="12"><div class="cap-empty">Nenhuma célula orçamentária por empenho cadastrada.</div></td></tr>';
+    return;
+  }
+  tb.innerHTML = lista.map(c => `<tr>
+    <td style="font-family:var(--font-mono);font-size:11px">${c.doc||'—'}</td>
+    <td style="font-weight:700">${c.nome||'—'}</td>
+    <td>${c.tipo||'—'}</td>
+    <td>${c.esfera||'—'}</td>
+    <td style="font-family:var(--font-mono);font-size:11px">${c.ptres||'—'}</td>
+    <td style="font-family:var(--font-mono);font-size:11px">${c.fonte||'—'}</td>
+    <td style="font-family:var(--font-mono);font-size:11px">${c.natureza||'—'}</td>
+    <td>${c.ugr||'—'}</td>
+    <td style="font-family:var(--font-mono);font-size:11px">${c.planointerno||'—'}</td>
+    <td style="font-family:var(--font-mono);font-size:11px;color:var(--accent-orange);font-weight:700">${c.numeroEmpenho||'—'}</td>
+    <td style="text-align:right;font-weight:700">${capMoney(c.valor||0)}</td>
+    <td>
+      <button class="row-act-btn edit" onclick="editCempEmpenho('${c.id}')" title="Editar">✎</button>
+      <button class="row-act-btn del"  onclick="deleteCempEmpenho('${c.id}')" title="Excluir">×</button>
+    </td>
+  </tr>`).join('');
+}
 
 /* ============================================================
    MÓDULO EMPENHO — Detalhamento de distribuição de crédito orçamentário
    100% local/em memória. Sem Supabase, sem Storage.set, sem persistência —
    o estado (origem/destinos) é reiniciado a cada carregamento da página.
-   Reutiliza State.capFornecedores (cadastro de Configurações) como base
+   Reutiliza State.capCelulasEmpenho (nova tabela de Configurações) como base
    de busca, e as funções globais capMoney/parseMoneyBR/maskMoneyInput/capId.
    ============================================================ */
 let empenhoDestinos = []; // {id, fornId, nome, tipo, esfera, ptres, fonte, natureza, ugr, planoInterno, numeroEmpenho, valor}
@@ -11147,22 +11440,22 @@ function _empenhoRenderDropdown(inp){
   const q  = (inp.value || '').toLowerCase().trim();
   const dd = document.getElementById('empenho-busca-dropdown');
   if(!dd) return;
-  const lista = State.capFornecedores || [];
+  // Busca na nova tabela capCelulasEmpenho
+  const lista = State.capCelulasEmpenho || [];
 
   if(!lista.length){
-    dd.innerHTML = '<div style="padding:14px 16px;font-size:12px;color:var(--accent-amber)">Nenhum fornecedor cadastrado. Acesse <strong>Configurações → Fornecedores Financeiros</strong>.</div>';
+    dd.innerHTML = '<div style="padding:14px 16px;font-size:12px;color:var(--accent-amber)">Nenhuma célula orçamentária por empenho cadastrada. Acesse <strong>Configurações → Células Orçamentárias por Empenho</strong>.</div>';
     _empenhoDropdownPosition(); dd.style.display = 'block'; return;
   }
 
   const qDigits = capDigits(q);
   const matches = q
-    ? lista.filter(f => {
-        const nomeLow = (f.nome||'').toLowerCase();
-        const docLow  = (f.doc||'').toLowerCase();
-        const tipoLow = capFornTipoLabel(f.tipo).toLowerCase();
-        const tipoRaw = (f.tipo||'').toLowerCase();
-        return nomeLow.includes(q) || docLow.includes(q) || tipoLow.includes(q) || tipoRaw.includes(q)
-            || (qDigits.length >= 3 && capDigits(f.doc||'').includes(qDigits));
+    ? lista.filter(c => {
+        const nomeLow = (c.nome||'').toLowerCase();
+        const docLow  = (c.doc||'').toLowerCase();
+        const neLow   = (c.numeroEmpenho||'').toLowerCase();
+        return nomeLow.includes(q) || docLow.includes(q) || neLow.includes(q)
+            || (qDigits.length >= 3 && capDigits(c.doc||'').includes(qDigits));
       }).slice(0, 15)
     : lista.slice(0, 12);
 
@@ -11171,26 +11464,18 @@ function _empenhoRenderDropdown(inp){
     _empenhoDropdownPosition(); dd.style.display = 'block'; return;
   }
 
-  const tipoMeta = (tipo) => {
-    if(tipo === 'beneficio') return { icon:'★', color:'var(--accent-teal)',  bg:'rgba(20,184,166,0.12)' };
-    if(['diarias','passagens','suprimento','outro'].includes(tipo)) return { icon:'◆', color:'var(--accent-amber)', bg:'rgba(245,158,11,0.12)' };
-    if(tipo === 'Pessoa Física') return { icon:'👤', color:'var(--accent-green)', bg:'rgba(34,197,94,0.10)' };
-    return { icon:'🏢', color:'var(--accent-purple)', bg:'rgba(139,92,246,0.10)' };
-  };
-  const NO_DOC_LABELS = ['BENEFÍCIO','DIÁRIAS','PASSAGENS','SUPRIMENTO DE FUNDOS','OUTRO'];
-
-  dd.innerHTML = matches.map((f) => {
-    const m = tipoMeta(f.tipo);
-    const docEx = (f.doc && !NO_DOC_LABELS.includes(f.doc)) ? f.doc : '—';
-    return `<div class="empenho-item" tabindex="0" data-forn-id="${f.id}"
+  dd.innerHTML = matches.map((c) => {
+    return `<div class="empenho-item" tabindex="0" data-cemp-id="${c.id}"
       style="padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .12s">
       <div style="display:flex;align-items:center;gap:10px">
-        <div style="width:30px;height:30px;border-radius:8px;background:${m.bg};border:1px solid ${m.color}33;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">${m.icon}</div>
+        <div style="width:30px;height:30px;border-radius:8px;background:rgba(249,115,22,0.12);border:1px solid rgba(249,115,22,0.3);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">📄</div>
         <div style="flex:1;min-width:0">
-          <div style="font-size:13px;font-weight:700;color:var(--text-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${f.nome || '—'}</div>
-          <div style="display:flex;gap:8px;margin-top:2px;align-items:center">
-            <span style="font-size:11px;font-family:var(--font-mono);color:${m.color}">${docEx}</span>
-            <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:${m.color}">${capFornTipoLabel(f.tipo)}</span>
+          <div style="font-size:13px;font-weight:700;color:var(--text-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.nome||'—'}</div>
+          <div style="display:flex;gap:8px;margin-top:2px;align-items:center;flex-wrap:wrap">
+            <span style="font-size:11px;font-family:var(--font-mono);color:var(--accent-orange);font-weight:700">${c.numeroEmpenho||'—'}</span>
+            <span style="font-size:10px;color:var(--text-secondary);font-family:var(--font-mono)">${c.doc||'—'}</span>
+            ${c.natureza ? '<span style="font-size:10px;color:var(--text-muted)">ND '+c.natureza+'</span>' : ''}
+            ${c.valor ? '<span style="font-size:10px;font-weight:700;color:var(--accent-green)">'+ capMoney(c.valor) +'</span>' : ''}
           </div>
         </div>
       </div>
@@ -11200,7 +11485,7 @@ function _empenhoRenderDropdown(inp){
   dd.querySelectorAll('.empenho-item').forEach(el => {
     el.addEventListener('mouseenter', () => el.style.background = 'rgba(20,184,166,0.07)');
     el.addEventListener('mouseleave', () => el.style.background = '');
-    el.addEventListener('mousedown', (e) => { e.preventDefault(); empenhoSelecionarFavorecido(el.getAttribute('data-forn-id')); });
+    el.addEventListener('mousedown', (e) => { e.preventDefault(); empenhoSelecionarFavorecido(el.getAttribute('data-cemp-id')); });
   });
 
   _empenhoDropdownPosition();
@@ -11212,26 +11497,30 @@ function empenhoBuscaKeydown(e){
     e.preventDefault();
     const dd = document.getElementById('empenho-busca-dropdown');
     const first = dd && dd.style.display !== 'none' ? dd.querySelector('.empenho-item') : null;
-    if(first) empenhoSelecionarFavorecido(first.getAttribute('data-forn-id'));
+    if(first) empenhoSelecionarFavorecido(first.getAttribute('data-cemp-id'));
   }
 }
-function empenhoSelecionarFavorecido(fornId){
-  const f = State.capFornecedores.find(x => x.id === fornId);
-  if(!f) return;
+function empenhoSelecionarFavorecido(cempId){
+  // Busca na nova tabela por ID de célula/empenho
+  const c = (State.capCelulasEmpenho||[]).find(x => x.id === cempId);
+  if(!c) return;
   empenhoDestinos.push({
     id: capId('empdest'),
-    fornId: f.id,
-    nome: f.nome,
-    tipo: (f.tipo === 'Pessoa Jurídica' || f.tipo === 'Pessoa Física') ? f.tipo : capFornTipoLabel(f.tipo),
-    esfera: f.esfera||'', ptres: f.ptres||'', fonte: f.fonteRecursos||'', natureza: f.natureza||'',
-    ugr: f.ugr||'', planoInterno: f.planoInterno||'', numeroEmpenho: '',
-    valor: 0
+    cempId: c.id,
+    fornId: c.fornId || '',
+    nome: c.nome,
+    tipo: c.tipo,
+    esfera: c.esfera||'', ptres: c.ptres||'', fonte: c.fonte||'', natureza: c.natureza||'',
+    ugr: c.ugr||'', planoInterno: c.planointerno||'',
+    // Empenho e Valor são editáveis — pré-preenchidos mas alteráveis
+    numeroEmpenho: c.numeroEmpenho||'',
+    valor: c.valor||0
   });
   const buscaEl = document.getElementById('empenho-busca');
   if(buscaEl){ buscaEl.value=''; buscaEl.focus(); }
   _empenhoFecharDropdown();
   empenhoRecalcular();
-  showToast('✅ "'+f.nome+'" adicionado ao destino do crédito.', 'success');
+  showToast('✅ Empenho "'+c.numeroEmpenho+'" de "'+c.nome+'" adicionado ao destino.', 'success');
 }
 function _empenhoFecharDropdown(){ const dd = document.getElementById('empenho-busca-dropdown'); if(dd) dd.style.display = 'none'; }
 document.addEventListener('click', function(e){
@@ -12193,7 +12482,7 @@ function exportCapLancamentosPDF(){
   showToast('📄 PDF dos lançamentos filtrados aberto para impressão!','success');
 }
 function renderFinanceiro(){
-  refreshCapDatalists(); renderCapDashboard(); renderCapTable(); renderSaldos(); renderRelatorios(); renderHistorico(); renderFontesTable(); renderCelulasOrcTable(); populateCelulaSelect(); renderCapFornecedoresTable();
+  refreshCapDatalists(); renderCapDashboard(); renderCapTable(); renderSaldos(); renderRelatorios(); renderHistorico(); renderFontesTable(); renderCelulasOrcTable(); populateCelulaSelect(); renderCapFornecedoresTable(); renderCempTable(); detalhaCredInicializarBanner();
   // Atualiza indicador de status do ciclo
   const ind=document.getElementById('ciclo-status-indicator');
   if(ind) ind.style.display=State._solicitacaoExecutada?'flex':'none';
@@ -13169,6 +13458,9 @@ async function driveSaveData() {
     capHistorico:         State.capHistorico         || [],
     capFontes:            State.capFontes            || [],
     capFornecedores:      State.capFornecedores      || [],
+    capCelulasOrc:        State.capCelulasOrc        || [],
+    capCelulasEmpenho:    State.capCelulasEmpenho    || [],
+    capDetalhaCredBannerTexto: State.capDetalhaCredBannerTexto || 'DETALHAMENTO PARA INCLUSÃO DE PLANO INTERNO',
     capAuditLog:          State.capAuditLog          || [],
     capRelatoriosCiclos:  State.capRelatoriosCiclos  || [],
     capCicloLabel:        State.capCicloLabel        || '',
@@ -13310,6 +13602,9 @@ async function driveLoadData() {
     if (backup.capHistorico)           State.capHistorico       = backup.capHistorico;
     if (backup.capFontes)              State.capFontes          = backup.capFontes;
     if (backup.capFornecedores)        State.capFornecedores    = backup.capFornecedores;
+    if (backup.capCelulasOrc)          State.capCelulasOrc      = backup.capCelulasOrc;
+    if (backup.capCelulasEmpenho)      State.capCelulasEmpenho  = backup.capCelulasEmpenho;
+    if (backup.capDetalhaCredBannerTexto !== undefined) State.capDetalhaCredBannerTexto = backup.capDetalhaCredBannerTexto || 'DETALHAMENTO PARA INCLUSÃO DE PLANO INTERNO';
     if (backup.capAuditLog)            State.capAuditLog        = backup.capAuditLog;
     if (backup.capRelatoriosCiclos)    State.capRelatoriosCiclos= backup.capRelatoriosCiclos;
     if (backup.capCicloLabel !== undefined)  State.capCicloLabel = backup.capCicloLabel || '';
