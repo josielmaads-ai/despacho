@@ -172,6 +172,73 @@ body::before {
   opacity: 1;
 }
 
+/* ── Tarjas de destaque: Atividades (azul) e Contas a Pagar (verde) ── */
+.sidebar-btn.sb-destaque-ativ {
+  background: linear-gradient(90deg, rgba(59,130,246,0.13) 0%, rgba(59,130,246,0.04) 100%);
+  border-left: 2px solid rgba(59,130,246,0.55);
+  color: #60a5fa;
+  position: relative;
+}
+.sidebar-btn.sb-destaque-ativ::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(90deg, rgba(59,130,246,0.10) 0%, transparent 70%);
+  pointer-events: none;
+}
+.sidebar-btn.sb-destaque-ativ .sb-label {
+  color: #3b82f6;
+  font-weight: 700;
+}
+.sidebar-btn.sb-destaque-ativ svg {
+  color: #60a5fa;
+}
+.sidebar-btn.sb-destaque-ativ:hover {
+  background: linear-gradient(90deg, rgba(59,130,246,0.22) 0%, rgba(59,130,246,0.08) 100%);
+  color: #93c5fd;
+}
+.sidebar-btn.sb-destaque-ativ:hover .sb-label { color: #93c5fd; }
+.sidebar-btn.sb-destaque-ativ.active {
+  background: linear-gradient(90deg, rgba(59,130,246,0.28) 0%, rgba(59,130,246,0.10) 100%);
+  border-left: 2px solid #3b82f6;
+  color: #93c5fd;
+}
+.sidebar-btn.sb-destaque-ativ.active .sb-label { color: #93c5fd; }
+
+.sidebar-btn.sb-destaque-cap {
+  background: linear-gradient(90deg, rgba(34,197,94,0.12) 0%, rgba(34,197,94,0.04) 100%);
+  border-left: 2px solid rgba(34,197,94,0.50);
+  color: #4ade80;
+  position: relative;
+}
+.sidebar-btn.sb-destaque-cap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(90deg, rgba(34,197,94,0.09) 0%, transparent 70%);
+  pointer-events: none;
+}
+.sidebar-btn.sb-destaque-cap .sb-label {
+  color: #16a34a;
+  font-weight: 700;
+}
+.sidebar-btn.sb-destaque-cap svg {
+  color: #4ade80;
+}
+.sidebar-btn.sb-destaque-cap:hover {
+  background: linear-gradient(90deg, rgba(34,197,94,0.20) 0%, rgba(34,197,94,0.07) 100%);
+  color: #86efac;
+}
+.sidebar-btn.sb-destaque-cap:hover .sb-label { color: #86efac; }
+.sidebar-btn.sb-destaque-cap.active {
+  background: linear-gradient(90deg, rgba(34,197,94,0.25) 0%, rgba(34,197,94,0.09) 100%);
+  border-left: 2px solid #22c55e;
+  color: #86efac;
+}
+.sidebar-btn.sb-destaque-cap.active .sb-label { color: #86efac; }
+
 /* MAIN CONTENT */
 .main {
   margin-left: 188px;
@@ -5736,7 +5803,11 @@ input.cap-date.form-input {
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
       <span class="sb-label">Dashboard</span>
     </button>
-    <button class="sidebar-btn" onclick="showPage('financeiro')" title="Contas a Pagar">
+    <button class="sidebar-btn sb-destaque-ativ" onclick="showPage('nexus')" title="Gestão de Atividades e Produtividade">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      <span class="sb-label">Atividades</span>
+    </button>
+    <button class="sidebar-btn sb-destaque-cap" onclick="showPage('financeiro')" title="Contas a Pagar">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/><path d="M14 15h4"/></svg>
       <span class="sb-label">Contas a Pagar</span>
     </button>
@@ -5755,10 +5826,6 @@ input.cap-date.form-input {
     <button class="sidebar-btn" onclick="showPage('monitorias')" title="Monitorias">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       <span class="sb-label">Monitorias</span>
-    </button>
-    <button class="sidebar-btn" onclick="showPage('nexus')" title="Gestão de Atividades e Produtividade">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-      <span class="sb-label">Atividades</span>
     </button>
     <button class="sidebar-btn" onclick="openDespachos()" title="Despachos">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
@@ -14633,8 +14700,14 @@ function nxSuapFileSelected(ev){
       // recebimentoISO: extrai apenas os primeiros 10 chars "DD/MM/AAAA" e converte
       const recISO = nxSuapDataParaISO(rec.slice(0,10));
       // Status que BLOQUEIAM nova importação (processo ainda em aberto no sistema)
-      const STATUS_BLOQUEADOS_IMP = ['pendente','em_andamento','stand_by','cancelado'];
-      const tarefaExistente  = State.nxTasks.find(t=>t.proc === num);
+      // Chave única: numero_processo buscado em t.proc OU t.titulo (compatibilidade)
+      const STATUS_BLOQUEADOS_IMP = ['pendente','em_andamento','stand_by','cancelado','nao_iniciado'];
+      const STATUS_PERMITIDOS_IMP = ['concluido','pago'];
+      const numNorm = num.trim().toLowerCase();
+      const tarefaExistente = State.nxTasks.find(t=>
+        (t.proc  && t.proc.trim().toLowerCase()  === numNorm) ||
+        (t.titulo && t.titulo.trim().toLowerCase() === numNorm)
+      );
       const jaExisteBloqueado = tarefaExistente
         ? (STATUS_BLOQUEADOS_IMP.includes(tarefaExistente.status) || !!tarefaExistente.emAndamentoAba)
         : false;
@@ -14699,37 +14772,47 @@ function nxSuapConfirmarImportacao(){
   const novos     = nxSuapPending.filter(p=>!p.duplicado);
   const ignorados = nxSuapPending.length - novos.length;
 
-  // ── Validação extra: rejeita processos que já existem com status em aberto ──
-  // Regra: só permite importar se o processo NÃO existe no sistema,
-  //        OU se já existe mas com status Concluído/Pago (finalizado).
-  const STATUS_BLOQUEADOS_CONF = ['pendente','em_andamento','stand_by','cancelado'];
-  const STATUS_LABEL_CONF = {pendente:'Pendente', em_andamento:'Em Andamento', stand_by:'Stand By', cancelado:'Cancelado'};
+  // ── Validação extra (dupla segurança): rejeita processos que já existem com status em aberto ──
+  // Regra definitiva: chave única = numero_processo. Bloqueado se existir com qualquer
+  // status que não seja Concluído ou Pago. Busca por t.proc OU t.titulo (compatibilidade).
+  const STATUS_BLOQUEADOS_CONF = ['pendente','em_andamento','stand_by','cancelado','nao_iniciado'];
+  const STATUS_LABEL_CONF = {pendente:'Pendente', em_andamento:'Em Andamento', stand_by:'Stand By', cancelado:'Cancelado', nao_iniciado:'Não Iniciado'};
   const rejeitadosPendente = novos.filter(p=>{
-    const tarefa = State.nxTasks.find(t=>t.proc === p.processo);
+    const numN = (p.processo||'').trim().toLowerCase();
+    const tarefa = State.nxTasks.find(t=>
+      (t.proc   && t.proc.trim().toLowerCase()   === numN) ||
+      (t.titulo && t.titulo.trim().toLowerCase() === numN)
+    );
     if(!tarefa) return false;
     return STATUS_BLOQUEADOS_CONF.includes(tarefa.status) || !!tarefa.emAndamentoAba;
   });
 
   if(rejeitadosPendente.length){
     const detalhe = rejeitadosPendente.map(p=>{
-      const t = State.nxTasks.find(t2=>t2.proc === p.processo);
-      const stLbl = t ? (STATUS_LABEL_CONF[t.status] || t.status || 'Em aberto') : 'Em aberto';
+      const numN = (p.processo||'').trim().toLowerCase();
+      const t = State.nxTasks.find(t2=>
+        (t2.proc   && t2.proc.trim().toLowerCase()   === numN) ||
+        (t2.titulo && t2.titulo.trim().toLowerCase() === numN)
+      );
+      const stLbl = t
+        ? (t.emAndamentoAba ? 'Em Andamento' : (STATUS_LABEL_CONF[t.status] || t.status || 'Em aberto'))
+        : 'Em aberto';
       return `\n• ${p.processo}  [${stLbl}]`;
     }).join('');
     showToast(
-      `❌ ${rejeitadosPendente.length} processo${rejeitadosPendente.length>1?'s':''} rejeitado${rejeitadosPendente.length>1?'s':''} — já existe${rejeitadosPendente.length>1?'m':''} em aberto no sistema. Somente processos Concluídos podem ser reimportados:${detalhe}`,
-      'error', 8000
+      `❌ ${rejeitadosPendente.length} processo${rejeitadosPendente.length>1?'s':''} bloqueado${rejeitadosPendente.length>1?'s':''} — já exist${rejeitadosPendente.length>1?'em':'e'} em aberto no sistema. Apenas processos Concluídos/Pagos podem ser reimportados:${detalhe}`,
+      'error', 9000
     );
-    // Remove os rejeitados da lista a importar, mantendo os demais
-    const rejNums = new Set(rejeitadosPendente.map(p=>p.processo));
-    const paraImportar = novos.filter(p=>!rejNums.has(p.processo));
+    // Remove os rejeitados, prossegue apenas com os genuinamente novos
+    const rejNums = new Set(rejeitadosPendente.map(p=>(p.processo||'').trim().toLowerCase()));
+    const paraImportar = novos.filter(p=>!rejNums.has((p.processo||'').trim().toLowerCase()));
 
     if(!paraImportar.length && !ignorados){
       nxSuapPending = [];
       document.getElementById('nx-m-import-suap').classList.remove('on');
       return;
     }
-    // Se ainda houver processos válidos (ex.: processo novo no mesmo arquivo), segue com eles
+    // Se ainda houver processos genuinamente novos, importa apenas eles
     nxSuapExecutarImportacao(paraImportar, ignorados + rejeitadosPendente.length);
     return;
   }
@@ -14781,16 +14864,14 @@ function nxSuapExecutarImportacao(novos, ignorados){
 /* ── Ações dos cards SUAP ── */
 function nxSuapFinalizar(id){
   const t = State.nxTasks.find(x=>x.id===id); if(!t) return;
-  // Verifica se existe lançamento vinculado no módulo Contas a Pagar
-  const numProc = (t.titulo||'').trim();
-  const lancVinc = (State.capContas||[]).find(c=>
-    (c.processoAdmin||'').trim().toLowerCase() === numProc.toLowerCase() &&
-    (c.situacao||'') === 'Aguardando comprovante'
+  // Verifica TODOS os lançamentos vinculados (independente da situação atual)
+  const numProc = (t.titulo||t.proc||'').trim().toLowerCase();
+  const lancsVinc = (State.capContas||[]).filter(c=>
+    (c.processoAdmin||'').trim().toLowerCase() === numProc
   );
-  const vincMsg = lancVinc
-    ? `\n\nUm lançamento vinculado (${lancVinc.documento}) será atualizado automaticamente para PROCESSO ENVIADO.`
+  const vincMsg = lancsVinc.length
+    ? `\n\n${lancsVinc.length} lançamento(s) vinculado(s) em Contas a Pagar ser${lancsVinc.length>1?'ão':'á'} atualizado${lancsVinc.length>1?'s':''} automaticamente para PROCESSO ENVIADO (independentemente da situação atual).`
     : '';
-
   // Modal de confirmação personalizado
   nxShowFinalizarModal(id, vincMsg);
 }
@@ -14816,7 +14897,7 @@ function nxShowFinalizarModal(id, vincMsg){
     document.body.appendChild(modal);
   }
   const msgEl = document.getElementById('nx-fin-modal-msg');
-  if(msgEl) msgEl.innerHTML = 'Ao concluir este processo, seu status será alterado para <strong style="color:#4ade80">Concluído</strong>' + (vincMsg ? ', e o lançamento vinculado no módulo Contas a Pagar será atualizado automaticamente para <strong style="color:#60a5fa">PROCESSO ENVIADO</strong>.' : '.');
+  if(msgEl) msgEl.innerHTML = 'Ao concluir este processo, seu status será alterado para <strong style="color:#4ade80">Concluído</strong>' + (vincMsg ? ' e todos os lançamentos vinculados no módulo <strong style="color:#60a5fa">Contas a Pagar</strong> serão atualizados automaticamente para <strong style="color:#60a5fa">Processo Enviado</strong> — independentemente da situação anterior.' : '.');
   modal.style.display = 'flex';
   // Handlers
   const cancelBtn = document.getElementById('nx-fin-modal-cancel');
@@ -14832,54 +14913,35 @@ function nxShowFinalizarModal(id, vincMsg){
 
 function nxSuapFinalizarConfirmado(id){
   const t = State.nxTasks.find(x=>x.id===id); if(!t) return;
-  // Se estava na aba Em andamento, remove o flag
-  if(t.emAndamentoAba) delete t.emAndamentoAba;
-  t.status = 'concluido'; t.atualizado = new Date().toISOString();
-  nxAddHist(`"${t.titulo}" finalizado → Concluído`);
-  // Integração automática com Contas a Pagar
-  const numProc = (t.titulo||'').trim();
-  const lancamentos = (State.capContas||[]);
-  let atualizados = 0;
-  lancamentos.forEach(c => {
-    if((c.processoAdmin||'').trim().toLowerCase() === numProc.toLowerCase() &&
-       (c.situacao||'') === 'Aguardando comprovante'){
-      c.situacao = 'Processo enviado';
-      c.historico = [...(c.historico||[]), {at: new Date().toISOString(), msg: `Situação alterada automaticamente para "Processo enviado" ao concluir processo ${numProc} no módulo Atividades`}];
-      atualizados++;
-    }
-  });
-  nxPersist();
-  if(atualizados>0){ capPersist(); showToast('✅ Processo concluído e '+atualizados+' lançamento(s) em Contas a Pagar atualizado(s) para PROCESSO ENVIADO.','success'); }
-  else { showToast('✅ Processo marcado como Concluído.','success'); }
-  nxRenderPage(nxCurTab);
-  if(atualizados>0 && typeof renderFinanceiro==='function') renderFinanceiro();
+  // Conta lançamentos que serão atualizados para exibir mensagem precisa
+  const numProc = (t.titulo||t.proc||'').trim().toLowerCase();
+  const lancAntes = (State.capContas||[]).filter(c=>
+    (c.processoAdmin||'').trim().toLowerCase() === numProc
+  ).length;
+  // Delega para a fonte única de verdade (aplica conclusão + integração Cap + persist + render)
+  nxSuapSetStatusUnificado(id, 'concluido');
+  // Mensagem de feedback contextualizada
+  if(lancAntes > 0){
+    showToast(`✅ Processo concluído e ${lancAntes} lançamento(s) em Contas a Pagar atualizado(s) para PROCESSO ENVIADO.`, 'success');
+  } else {
+    showToast('✅ Processo marcado como Concluído.', 'success');
+  }
 }
 
 function nxSuapMoverStandBy(id){
   const t = State.nxTasks.find(x=>x.id===id); if(!t) return;
-  t.status = 'stand_by';
-  t.atualizado = new Date().toISOString();
-  if(t.emAndamentoAba) delete t.emAndamentoAba;
-  nxAddHist(`"${t.titulo}" → Stand By`);
-  nxPersist(); nxRenderPage(nxCurTab);
+  nxSuapSetStatusUnificado(id, 'stand_by');
   showToast('⏸ Processo movido para Stand By.','info');
 }
 function nxSuapSairStandBy(id){
   const t = State.nxTasks.find(x=>x.id===id); if(!t) return;
-  t.status = 'pendente';
-  t.atualizado = new Date().toISOString();
-  if(t.emAndamentoAba) delete t.emAndamentoAba;
-  nxAddHist(`"${t.titulo}" → Pendente (saiu de Stand By)`);
-  nxPersist(); nxRenderPage(nxCurTab);
+  nxSuapSetStatusUnificado(id, 'pendente');
   showToast('↩ Processo retornado para Pendente.','success');
 }
 function nxSuapMoverAndamento(id){
   const t = State.nxTasks.find(x=>x.id===id); if(!t) return;
   if(t.emAndamentoAba){ showToast('Este processo já está na aba Em andamento.','info'); return; }
-  t.emAndamentoAba = true;
-  t.atualizado = new Date().toISOString();
-  nxAddHist(`"${t.titulo}" movido para Em andamento (stand by)`);
-  nxPersist(); nxRenderPage(nxCurTab); nxRenderAndamento();
+  nxSuapSetStatusUnificado(id, 'em_andamento');
   showToast('⏳ Processo movido para Em andamento.','info');
 }
 
@@ -14937,36 +14999,73 @@ function nxAndamentoCardHTML(t){
 }
 
 function nxAndamentoVoltarPendente(id){
-  const t = State.nxTasks.find(x=>x.id===id); if(!t) return;
-  delete t.emAndamentoAba;
-  t.status = 'pendente';
-  t.atualizado = new Date().toISOString();
-  nxAddHist(`"${t.titulo}" retornou de Em andamento → Pendente`);
-  nxPersist(); nxRenderPage(nxCurTab); nxRenderAndamento();
+  nxSuapSetStatusUnificado(id, 'pendente');
   showToast('↩ Processo retornado para Pendente (aba Trabalho).','success');
 }
 
-function nxSuapAlterarStatus(id, novoStatus){
-  const t = State.nxTasks.find(x=>x.id===id); if(!t||t.status===novoStatus) return;
+/* ============================================================
+   FONTE ÚNICA DE VERDADE — todas as mudanças de status dos cards
+   SUAP passam obrigatoriamente por esta função, que sincroniza:
+   tarja, cor do card, botões disponíveis, filtros, dashboard e
+   integração automática com Contas a Pagar.
+   ============================================================ */
+function nxSuapSetStatusUnificado(id, novoStatus){
+  const t = State.nxTasks.find(x=>x.id===id);
+  if(!t) return;
+  if(t.status === novoStatus && !t.emAndamentoAba) return; // já está nesse status
+
+  // 1. Ajusta flags de estado interno
   if(novoStatus === 'pendente'){
-    const outroPendente = State.nxTasks.find(x=>x.id!==id && x.proc===t.proc && x.status==='pendente');
+    const outroPendente = State.nxTasks.find(x=>x.id!==id && (x.proc||x.titulo)===(t.proc||t.titulo) && x.status==='pendente');
     if(outroPendente){
-      showToast(`❌ Já existe um registro Pendente com o processo ${t.proc}.`,'error');
+      showToast(`❌ Já existe um registro Pendente com o processo ${t.proc||t.titulo}.`,'error');
       setTimeout(()=>nxRenderPage(nxCurTab), 50);
       return;
     }
-    // FIX: remover do painel Em andamento ao retornar para Pendente
     if(t.emAndamentoAba) delete t.emAndamentoAba;
   } else if(novoStatus === 'em_andamento'){
-    // ao setar Em andamento via select inline, marca emAndamentoAba
     t.emAndamentoAba = true;
   } else {
-    // concluido / cancelado: remove do painel Em andamento
     if(t.emAndamentoAba) delete t.emAndamentoAba;
   }
-  t.status = novoStatus; t.atualizado = new Date().toISOString();
+
+  t.status    = novoStatus;
+  t.atualizado = new Date().toISOString();
   nxAddHist(`"${t.titulo}" → ${NX_STAT_LBL[novoStatus]}`);
-  nxPersist(); nxRenderPage(nxCurTab); nxRenderAndamento();
+
+  // 2. Integração automática com Contas a Pagar quando concluído/pago
+  //    Atualiza QUALQUER situação existente (sem exceções), conforme regra da ALTERAÇÃO 4
+  if(novoStatus === 'concluido' || novoStatus === 'pago'){
+    const numProc = (t.titulo||t.proc||'').trim().toLowerCase();
+    let atualizados = 0;
+    (State.capContas||[]).forEach(c => {
+      const procVinc = (c.processoAdmin||'').trim().toLowerCase();
+      if(procVinc && procVinc === numProc){
+        c.situacao = 'Processo enviado';
+        c.historico = [...(c.historico||[]), {
+          at: new Date().toISOString(),
+          msg: `Situação alterada automaticamente para "Processo enviado" ao concluir processo ${t.titulo||t.proc} no módulo Atividades`
+        }];
+        atualizados++;
+      }
+    });
+    if(atualizados > 0) capPersist();
+    // Recorrência automática
+    if(t.recorrencia) nxGeraProximaRec(t);
+  }
+
+  // 3. Persiste e atualiza todas as telas simultaneamente
+  nxPersist();
+  nxRenderPage(nxCurTab);
+  nxRenderAndamento();
+  updateDashboard();
+  if(typeof renderFinanceiro === 'function') renderFinanceiro();
+}
+
+function nxSuapAlterarStatus(id, novoStatus){
+  // Wrapper que mantém compatibilidade com onchange="nxSuapAlterarStatus(...)"
+  // e redireciona para a fonte única de verdade
+  nxSuapSetStatusUnificado(id, novoStatus);
 }
 function nxSuapDuplicar(id){
   const t = State.nxTasks.find(x=>x.id===id); if(!t) return;
@@ -15315,20 +15414,25 @@ function nxSuapSalvarEdicao(id){
     if(outro){ showToast('❌ Já existe um registro Pendente com este número de processo.','error'); return; }
   }
 
-  t.desc          = desc;
-  t.recebimento   = rec;
-  t.suapRotulo    = rotul === 'Sem rótulo' ? '' : rotul;
-  t.status        = stat;
-  t.prioridade    = prio;
-  t.atualizado    = new Date().toISOString();
-  // Atualiza a prioridade com base no novo rótulo (se mudou)
+  // Atualiza campos não-status diretamente
+  t.desc        = desc;
+  t.recebimento = rec;
+  t.suapRotulo  = rotul === 'Sem rótulo' ? '' : rotul;
+  // Prioridade: baseia no rótulo, mas override manual do usuário prevalece
   if(rotul) t.prioridade = NX_SUAP_ROTULO_PRIORIDADE[rotul] || prio;
-  // Override manual do usuário
-  t.prioridade = prio;
+  t.prioridade  = prio;
+  t.atualizado  = new Date().toISOString();
 
   nxAddHist(`"${t.titulo}" editado.`);
-  nxPersist();
-  nxRenderPage(nxCurTab);
+
+  // Se o status mudou, usa a fonte única de verdade (que cuida de emAndamentoAba,
+  // integração com Contas a Pagar, persist e render simultâneos)
+  if(stat !== t.status){
+    nxSuapSetStatusUnificado(id, stat);
+  } else {
+    nxPersist();
+    nxRenderPage(nxCurTab);
+  }
   showToast('✅ Processo atualizado com sucesso.','success');
 }
 
