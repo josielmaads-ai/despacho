@@ -8270,7 +8270,7 @@ input.cap-date.form-input {
           <div class="energia-metric-card em-6190">
             <div class="energia-metric-label">Base DARF 6190</div>
             <div class="energia-metric-value" id="energia-base-6190">R$ 0,00</div>
-            <div class="energia-metric-sub">Demanda Isenta ICMS + Demanda Ativa</div>
+            <div class="energia-metric-sub">Demanda Isenta ICMS + Demanda Ativa + Ultrapassagem</div>
           </div>
           <div class="energia-metric-card em-6190">
             <div class="energia-metric-label">DARF 6190 (9,45%)</div>
@@ -19213,6 +19213,9 @@ function groupItemsIntoLines(items) {
 const ITENS_6190 = [
   { key: 'demandaIsenta', label: 'demanda ativa isenta de icms', nome: 'Demanda Ativa Isenta de ICMS (kW)' },
   { key: 'demandaAtiva',  label: 'demanda ativa',                 nome: 'Demanda Ativa (kW)' },
+  // Demanda de Ultrapassagem também é cobrada como demanda e sofre retenção pela
+  // mesma base do DARF 6190. Sem ela o líquido ficava menor que o Total a Pagar.
+  { key: 'demandaUltrapassagem', label: 'demanda ultrapassagem',  nome: 'Demanda Ultrapassagem (kW)' },
 ];
 // Base DARF 6147 — alíquota total 5,85% (IRRF 1,20% + CSLL 1,00% + PIS 0,65% + COFINS 3,00%)
 const ITENS_6147 = [
@@ -19347,7 +19350,7 @@ async function extrairFatura(file) {
 
   const { mes, total: totalFatura } = acharTotalAPagarEMes(linhas);
 
-  const base6190 = (itens.demandaIsenta || 0) + (itens.demandaAtiva || 0);
+  const base6190 = (itens.demandaIsenta || 0) + (itens.demandaAtiva || 0) + (itens.demandaUltrapassagem || 0);
   const base6147 = (itens.consumoForaPonta || 0) + (itens.consumoPonta || 0) + (itens.reativoExcedNP || 0) + (itens.reativoExcedFP || 0) + (itens.adicionalBandeira || 0);
   const calc6190 = calcularDarfPorTributos(base6190, TRIBUTOS_6190);
   const calc6147 = calcularDarfPorTributos(base6147, TRIBUTOS_6147);
