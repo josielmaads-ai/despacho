@@ -2903,6 +2903,15 @@ input.cap-date.form-input {
   box-shadow: 0 10px 48px rgba(0,0,0,.5), 0 0 0 1px rgba(99,179,255,.12);
   transform: translateY(-2px);
 }
+/* Destaque visual discreto: borda vermelha suave para processos PENDENTES */
+#page-nexus .suap-card.suap-card--pendente {
+  border-color: rgba(220,38,38,.45);
+  box-shadow: 0 4px 32px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.05), 0 0 0 1px rgba(220,38,38,.12);
+}
+#page-nexus .suap-card.suap-card--pendente:hover {
+  border-color: rgba(239,68,68,.65);
+  box-shadow: 0 10px 48px rgba(0,0,0,.5), 0 0 0 1px rgba(220,38,38,.22);
+}
 
 /* ── Cabeçalho: pills esquerda | botões direita ── */
 #page-nexus .suap-card-hdr {
@@ -14204,7 +14213,8 @@ function nxSuapCardHTML(t){
     </div>
   </div>`;
 
-  return `<div class="suap-card" data-nxid="${t.id}">
+  const pendenteCls = (st === 'pendente') ? ' suap-card--pendente' : '';
+  return `<div class="suap-card${pendenteCls}" data-nxid="${t.id}">
   <div class="suap-card-hdr">
     <div class="suap-hdr-pills">
       <span class="suap-pill ${rotuloCls}"><svg viewBox="0 0 24 24" fill="currentColor" width="11" height="11"><circle cx="12" cy="12" r="6"/></svg>${nxEscH(rotulo||'Sem rótulo')}</span>
@@ -14701,18 +14711,25 @@ function nxSuapFileSelected(ev){
       const recISO = nxSuapDataParaISO(rec.slice(0,10));
       // Status que BLOQUEIAM nova importação (processo ainda em aberto no sistema)
       // Chave única: numero_processo buscado em t.proc OU t.titulo (compatibilidade)
+      // REGRA CORRIGIDA: verifica TODOS os registros com o mesmo número, não apenas o primeiro.
+      // Se qualquer registro existir com status bloqueante (pendente/em_andamento/stand_by),
+      // a importação é bloqueada — mesmo que outro registro com o mesmo número esteja concluído.
       const STATUS_BLOQUEADOS_IMP = ['pendente','em_andamento','stand_by','cancelado','nao_iniciado'];
       const STATUS_PERMITIDOS_IMP = ['concluido','pago'];
       const numNorm = num.trim().toLowerCase();
+      // Verifica se ALGUM registro com este número está em status bloqueante (any → bloqueia)
+      const jaExisteBloqueado = State.nxTasks.some(t=>
+        ((t.proc  && t.proc.trim().toLowerCase()  === numNorm) ||
+         (t.titulo && t.titulo.trim().toLowerCase() === numNorm)) &&
+        (STATUS_BLOQUEADOS_IMP.includes(t.status) || !!t.emAndamentoAba)
+      );
+      // Para exibição: encontra qualquer tarefa com este número (para mostrar status atual)
       const tarefaExistente = State.nxTasks.find(t=>
         (t.proc  && t.proc.trim().toLowerCase()  === numNorm) ||
         (t.titulo && t.titulo.trim().toLowerCase() === numNorm)
       );
-      const jaExisteBloqueado = tarefaExistente
-        ? (STATUS_BLOQUEADOS_IMP.includes(tarefaExistente.status) || !!tarefaExistente.emAndamentoAba)
-        : false;
-      // Existe mas com status permitido (concluido/pago) → pode ser reimportado
-      const jaExisteConcluido = !!(tarefaExistente && !jaExisteBloqueado);
+      // Existe apenas com status permitido (concluido/pago) → pode ser reimportado
+      const jaExisteConcluido = !jaExisteBloqueado && !!tarefaExistente;
       return {
         rotulo,
         processo:          num,
