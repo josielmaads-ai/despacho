@@ -13825,6 +13825,16 @@ async function driveSaveData() {
   setDriveStatus('syncing', 'Salvando…');
   showAutosave('saving');
 
+  // ── PAYLOAD: limita arrays grandes para evitar timeout no Supabase ──────────
+  // O erro "canceling statement due to statement timeout" ocorre quando o JSON
+  // enviado é muito grande e a query demora além do limite do plano (≈8-10s).
+  // Estratégia: enviar apenas as últimas 50 entradas de capAuditLog (log de
+  // auditoria, não crítico para restauração) e últimos 20 ciclos de relatório.
+  // O localStorage local preserva o histórico completo; o Supabase recebe o
+  // suficiente para restaurar o estado operacional em outro navegador.
+  const auditLogPayload       = (State.capAuditLog          || []).slice(0, 50);
+  const relCiclosPayload      = (State.capRelatoriosCiclos   || []).slice(-20);
+
   const payload = {
     version: '2.2',
     savedAt: new Date().toISOString(),
@@ -13841,8 +13851,8 @@ async function driveSaveData() {
     capCelulasOrc:        State.capCelulasOrc        || [],
     capCelulasEmpenho:    State.capCelulasEmpenho    || [],
     capDetalhaCredBannerTexto: State.capDetalhaCredBannerTexto || 'DETALHAMENTO DE CRÉDITO PARA INCLUSÃO DE PLANO INTERNO',
-    capAuditLog:          State.capAuditLog          || [],
-    capRelatoriosCiclos:  State.capRelatoriosCiclos  || [],
+    capAuditLog:          auditLogPayload,
+    capRelatoriosCiclos:  relCiclosPayload,
     capCicloLabel:        State.capCicloLabel        || '',
     capCicloInicioAt:     State.capCicloInicioAt     || null,
     nxTasks:              State.nxTasks              || [],
@@ -13861,70 +13871,70 @@ async function driveSaveData() {
   // de registros existentes e causaria falsos "Checksum inválido").
   payload._checksum = (payload.capContas.length * 7 + payload.capSaldos.length * 13 + payload.capHistorico.length * 31).toString(36);
 
-  try {
-    let { data: updRows, error } = await GDRIVE._client
+  // ── Função interna de execução com fallback de schema ────────────────────
+  async function _executarUpsert(incluirColunaExtras) {
+    // Usa UPSERT (onConflict: 'slug') em vez de update + insert separados.
+    // Uma única operação = menor chance de timeout e sem race condition.
+    const row = incluirColunaExtras
+      ? { slug: GDRIVE.SLUG, data: payload, checksum: payload._checksum, version: payload.version }
+      : { slug: GDRIVE.SLUG, data: payload };
+    return GDRIVE._client
       .from('sigde_state')
-      .update({ data: payload, checksum: payload._checksum, version: payload.version })
-      .eq('slug', GDRIVE.SLUG)
-      .select('id');
+      .upsert(row, { onConflict: 'slug' });
+  }
 
-    // ← CORREÇÃO: se a tabela não tiver as colunas extras `checksum`/`version`
-    // (schema mínimo: id, slug, data), o update acima falha com erro de coluna
-    // inexistente (ex: PGRST204 / "column ... does not exist"). Nesse caso,
-    // tenta novamente salvando apenas a coluna `data` (que já contém
-    // version/checksum dentro do próprio JSON).
+  try {
+    let { error } = await _executarUpsert(true);
+
+    // Fallback: se o schema não tiver as colunas extras (checksum/version),
+    // repete o upsert apenas com a coluna `data`.
     if (error && /column|schema cache/i.test(error.message || '')) {
-      console.warn('Supabase: colunas extras (checksum/version) não encontradas, salvando apenas em "data".', error.message);
-      const retry = await GDRIVE._client
-        .from('sigde_state')
-        .update({ data: payload })
-        .eq('slug', GDRIVE.SLUG)
-        .select('id');
+      console.warn('Supabase: colunas extras não encontradas, salvando apenas em "data".', error.message);
+      const retry = await _executarUpsert(false);
       error = retry.error;
-      updRows = retry.data;
-    }
-
-    // ← CORREÇÃO: se não houve erro mas nenhuma linha foi afetada, significa
-    // que o registro com este slug ainda não existe na tabela (por exemplo,
-    // foi apagado manualmente ou o connectGoogleDrive() não chegou a criá-lo).
-    // Nesse caso o UPDATE não falha, apenas não atualiza nada — então
-    // inserimos o registro para não perder os dados locais.
-    if (!error && (!updRows || updRows.length === 0)) {
-      console.warn('Supabase: nenhuma linha com slug="'+GDRIVE.SLUG+'" foi encontrada para atualizar — inserindo novo registro.');
-      let ins = await GDRIVE._client
-        .from('sigde_state')
-        .insert({ slug: GDRIVE.SLUG, data: payload, checksum: payload._checksum, version: payload.version });
-      if (ins.error && /column|schema cache/i.test(ins.error.message || '')) {
-        ins = await GDRIVE._client
-          .from('sigde_state')
-          .insert({ slug: GDRIVE.SLUG, data: payload });
-      }
-      error = ins.error;
     }
 
     if (error) throw error;
 
     setDriveStatus('connected', 'Supabase sincronizado');
     showAutosave('saved');
+    GDRIVE._retryCount = 0; // reset contador de tentativas após sucesso
   } catch(e) {
     setDriveStatus('error', 'Erro ao salvar');
     showAutosave('error');
     console.error('[Supabase] save error:', e);
-    // ← Exibe a mensagem real do erro (RLS, schema, rede, etc.) para
-    // facilitar o diagnóstico — em vez de apenas "Erro ao salvar".
+
     const rawMsg = (e && (e.message || e.error_description || e.hint || JSON.stringify(e))) || 'desconhecido';
-    // ← DIAGNÓSTICO: a causa mais comum de "editar/lançar dá erro de
-    // salvamento" é a tabela sigde_state não ter uma policy de RLS
-    // liberando UPDATE (ou INSERT) para o papel "anon". Detecta esse
-    // padrão de erro e orienta o usuário na própria mensagem.
+
+    // Diagnóstico de RLS
     const isRls = /permission denied|row-level security|rls|401|403|42501/i.test(rawMsg) || (e && e.code === '42501');
-    const hint = isRls ? ' — verifique se a tabela "sigde_state" tem policies de RLS liberando INSERT/UPDATE para o role anon no Supabase.' : '';
-    showToast('❌ Falha ao salvar no Supabase: ' + rawMsg + hint, 'error');
-    // ← Nova tentativa automática única após 5s (cobre falhas de rede
-    // transitórias). Evita loop infinito marcando _retried.
-    if (!GDRIVE._retried) {
+    const hintRls = isRls ? ' — verifique as policies de RLS da tabela "sigde_state" no Supabase (libere INSERT/UPDATE para o role anon).' : '';
+
+    // Diagnóstico de timeout — não exibe toast de erro (seria ruído), apenas
+    // agenda nova tentativa com backoff exponencial: 10s → 30s → 60s.
+    const isTimeout = /timeout|canceling statement|statement canceled/i.test(rawMsg);
+    if (isTimeout) {
+      if (!GDRIVE._retryCount) GDRIVE._retryCount = 0;
+      GDRIVE._retryCount++;
+      const delays = [10000, 30000, 60000];
+      const delay  = delays[Math.min(GDRIVE._retryCount - 1, delays.length - 1)];
+      console.warn(`[Supabase] Timeout na tentativa ${GDRIVE._retryCount}. Nova tentativa em ${delay/1000}s.`);
+      showToast(`⚠️ Supabase: timeout ao salvar — nova tentativa em ${delay/1000}s (tentativa ${GDRIVE._retryCount}/3).`, 'warning');
+      if (GDRIVE._retryCount <= 3) {
+        setTimeout(() => driveSaveData(), delay);
+      } else {
+        GDRIVE._retryCount = 0;
+        showToast('❌ Falha ao salvar no Supabase após 3 tentativas. Dados preservados localmente — tente novamente mais tarde.', 'error');
+      }
+      return;
+    }
+
+    showToast('❌ Falha ao salvar no Supabase: ' + rawMsg + hintRls, 'error');
+
+    // Retry único para erros transitórios que não são timeout nem RLS
+    if (!GDRIVE._retried && !isRls) {
       GDRIVE._retried = true;
-      setTimeout(() => { GDRIVE._retried = false; driveSaveData(); }, 5000);
+      setTimeout(() => { GDRIVE._retried = false; driveSaveData(); }, 8000);
     }
   }
 }
