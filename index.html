@@ -7034,7 +7034,17 @@ input.cap-date.form-input {
           <div class="section-title">Células Orçamentárias por Empenho</div>
           <div class="section-subtitle">Cadastre empenhos com suas células orçamentárias vinculadas a um fornecedor — um mesmo fornecedor pode ter vários empenhos</div>
         </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <!-- INPUT OCULTO PARA SELEÇÃO DO PDF -->
+          <input type="file" id="cemp-pdf-input" accept="application/pdf" style="display:none" onchange="cempImportarPDF(this)">
+          <button class="btn btn-ghost" onclick="document.getElementById('cemp-pdf-input').value='';document.getElementById('cemp-pdf-input').click()" style="display:flex;align-items:center;gap:7px;font-size:12px;border:1px solid rgba(249,115,22,0.35);color:var(--accent-orange);background:rgba(249,115,22,0.07);padding:7px 14px;border-radius:8px;cursor:pointer;white-space:nowrap" title="Selecione um PDF de Nota de Empenho para preencher o formulário automaticamente">
+            <svg style="width:15px;height:15px;flex-shrink:0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            IMPORTAR EMPENHO PDF
+          </button>
+        </div>
       </div>
+      <!-- TOAST DE FEEDBACK DA IMPORTAÇÃO PDF -->
+      <div id="cemp-pdf-toast" style="display:none;padding:10px 16px;border-radius:8px;font-size:12px;font-weight:600;margin-bottom:10px;border:1px solid;"></div>
       <div class="cap-form-card">
         <div class="cap-form-body">
           <input type="hidden" id="cemp-edit-id">
@@ -11283,6 +11293,285 @@ function cancelCempEmpenho(){
     const el = document.getElementById(eid); if(el) el.value = '';
   });
   const cancelBtn = document.getElementById('cemp-cancel-btn'); if(cancelBtn) cancelBtn.style.display='none';
+}
+
+/* ============================================================
+   IMPORTAÇÃO DE EMPENHO VIA PDF — SISMINT v2
+   Extração posicional (X/Y) via pdf.js.
+   Importa APENAS: Nº Empenho, Célula Orçamentária e Valor.
+   CNPJ/Fornecedor são completamente ignorados.
+   ============================================================ */
+async function cempImportarPDF(input){
+  const toast = document.getElementById('cemp-pdf-toast');
+  function showPdfToast(msg, tipo){
+    if(!toast) return;
+    const cores = {
+      info:  {bg:'rgba(59,130,246,0.1)',  border:'rgba(59,130,246,0.4)',  color:'#60a5fa'},
+      ok:    {bg:'rgba(34,197,94,0.1)',   border:'rgba(34,197,94,0.4)',   color:'#4ade80'},
+      warn:  {bg:'rgba(245,158,11,0.1)',  border:'rgba(245,158,11,0.4)',  color:'#fbbf24'},
+      error: {bg:'rgba(244,63,94,0.1)',   border:'rgba(244,63,94,0.4)',   color:'#fb7185'},
+    };
+    const c = cores[tipo] || cores.info;
+    toast.style.cssText = `display:block;padding:10px 16px;border-radius:8px;font-size:12px;font-weight:600;margin-bottom:10px;border:1px solid ${c.border};background:${c.bg};color:${c.color}`;
+    toast.innerHTML = msg;
+    if(tipo === 'ok') setTimeout(() => { toast.style.display = 'none'; }, 8000);
+  }
+
+  const file = input && input.files && input.files[0];
+  if(!file){ return; }
+  if(file.type !== 'application/pdf'){
+    showPdfToast('⚠️ Arquivo inválido. Selecione um PDF de Nota de Empenho.', 'error'); return;
+  }
+  showPdfToast('⏳ Lendo PDF… aguarde.', 'info');
+
+  try {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdfLib = window.pdfjsLib || (typeof pdfjsLib !== 'undefined' ? pdfjsLib : null);
+    if(!pdfLib) throw new Error('Biblioteca pdf.js não disponível.');
+    pdfLib.GlobalWorkerOptions.workerSrc =
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    const pdf = await pdfLib.getDocument({ data: arrayBuffer }).promise;
+
+    // ── Extrai todas as páginas como linhas posicionais (X/Y) ──────────────────
+    // Cada "linha" = conjunto de tokens com mesma Y (tolerância 4px), ordenados por X.
+    // Isso reconstrói corretamente tabelas de múltiplas colunas.
+    const todasLinhas = []; // [{y, cells:[{x,text}]}]
+
+    for(let p = 1; p <= pdf.numPages; p++){
+      const page  = await pdf.getPage(p);
+      const tc    = await page.getTextContent();
+      for(const it of tc.items){
+        const text = (it.str || '').trim();
+        if(!text) continue;
+        const x = Math.round(it.transform[4]);
+        const y = Math.round(it.transform[5]);
+        // PDF Y cresce para cima; usamos como chave negada para ordenar top→bottom
+        let row = todasLinhas.find(r => Math.abs(r.y - y) <= 4);
+        if(!row){ row = { y, pageY: -y + p * 100000, cells: [] }; todasLinhas.push(row); }
+        row.cells.push({ x, text });
+      }
+    }
+    // Ordena linhas de cima para baixo
+    todasLinhas.sort((a, b) => a.pageY - b.pageY);
+    // Ordena células da esquerda para a direita em cada linha
+    todasLinhas.forEach(r => r.cells.sort((a, b) => a.x - b.x));
+
+    // Helper: texto completo de uma linha (cells concatenadas)
+    const lineText = r => r.cells.map(c => c.text).join(' ');
+
+    // Helper: busca índice de linha que contém todos os termos
+    const findLine = (...terms) => todasLinhas.findIndex(r => {
+      const t = lineText(r).toLowerCase();
+      return terms.every(term => t.includes(term.toLowerCase()));
+    });
+
+    // Helper: valor de coluna pelo índice de posição X aproximado
+    // dado cabeçalho [h1,h2,...] e linha de valores, mapeia pelo X mais próximo
+    function mapColsByX(headerRow, valuesRow){
+      const result = {};
+      headerRow.cells.forEach(hc => {
+        // Encontra a célula de valor com X mais próximo do header
+        let best = null, bestDist = Infinity;
+        for(const vc of valuesRow.cells){
+          const d = Math.abs(vc.x - hc.x);
+          if(d < bestDist){ bestDist = d; best = vc; }
+        }
+        if(best && bestDist < 120) result[hc.text.trim()] = best.text.trim();
+      });
+      return result;
+    }
+
+    // ── 1. ANO / TIPO / NÚMERO do empenho ────────────────────────────────────
+    let anoEmp = '', tipoEmp = '', numEmp = '';
+    const idxAnoHeader = findLine('Ano', 'Tipo', 'N'); // "Número" pode aparecer como "N mero" etc.
+    // Também aceita linha onde "Ano" "Tipo" "Número" estão em células separadas
+    const idxAnoHeader2 = todasLinhas.findIndex(r => {
+      const texts = r.cells.map(c => c.text.trim());
+      return texts.includes('Ano') && texts.some(t => /^Tipo$/i.test(t)) && texts.some(t => /^N[uú]/i.test(t));
+    });
+    const idxAnoh = idxAnoHeader2 >= 0 ? idxAnoHeader2 : idxAnoHeader;
+    if(idxAnoh >= 0){
+      // Próxima linha com valores
+      for(let i = idxAnoh + 1; i < Math.min(idxAnoh + 5, todasLinhas.length); i++){
+        const r = todasLinhas[i];
+        const mapped = mapColsByX(todasLinhas[idxAnoh], r);
+        // Chaves variáveis; tentar por nome
+        const ano  = mapped['Ano']    || '';
+        const tipo = mapped['Tipo']   || (Object.values(mapped).find(v => /^(NE|NS|NA|ND|NR)$/i.test(v)) || '');
+        const num  = mapped['Número'] || mapped['Numero'] || mapped['N mero'] || '';
+        if(/^\d{4}$/.test(ano)){ anoEmp = ano; tipoEmp = tipo.toUpperCase(); numEmp = num; break; }
+        // Fallback: linha com 3 células sendo ano, tipo, número sequencial
+        const cells = r.cells.map(c => c.text.trim());
+        if(cells.length >= 3 && /^\d{4}$/.test(cells[0]) && /^(NE|NS|NA|ND|NR)$/i.test(cells[1])){
+          anoEmp = cells[0]; tipoEmp = cells[1].toUpperCase(); numEmp = cells[2]; break;
+        }
+        if(cells.length === 1 && /^\d{4}$/.test(cells[0])){ anoEmp = cells[0]; continue; }
+        if(cells.length === 1 && /^(NE|NS|NA|ND|NR)$/i.test(cells[0])){ tipoEmp = cells[0].toUpperCase(); continue; }
+        if(anoEmp && tipoEmp && cells.length === 1 && /^\d+$/.test(cells[0])){ numEmp = cells[0]; break; }
+      }
+    }
+    // Fallback regex no texto concatenado
+    if(!anoEmp){
+      const flat = todasLinhas.map(r => lineText(r)).join('\n');
+      const m = flat.match(/\b(\d{4})\s+(NE|NS|NA|ND|NR)\s+(\d+)\b/i);
+      if(m){ anoEmp = m[1]; tipoEmp = m[2].toUpperCase(); numEmp = m[3]; }
+    }
+
+    // ── 2. CÉLULA ORÇAMENTÁRIA ────────────────────────────────────────────────
+    let esfera = '', ptres = '', fonte = '', natureza = '', ugr = '', planoInterno = '';
+
+    // Localiza linha de cabeçalho da célula orçamentária
+    const idxCelHeader = todasLinhas.findIndex(r => {
+      const t = lineText(r).toLowerCase();
+      return t.includes('esfera') && t.includes('ptres');
+    });
+
+    if(idxCelHeader >= 0){
+      // Próxima linha não-cabeçalho com os valores
+      for(let i = idxCelHeader + 1; i < Math.min(idxCelHeader + 6, todasLinhas.length); i++){
+        const r = todasLinhas[i];
+        const t = lineText(r).toLowerCase();
+        if(/esfera|ptres|fonte|natureza|ugr|plano/i.test(t)) continue; // outra linha de header
+        const mapped = mapColsByX(todasLinhas[idxCelHeader], r);
+        // Chaves exatas dos headers
+        esfera       = mapped['Esfera']              || mapped['Esfera ']            || '';
+        ptres        = mapped['PTRES']               || mapped['Ptres']              || '';
+        fonte        = mapped['Fonte de Recurso']    || mapped['Fonte de recurso']   || '';
+        natureza     = mapped['Natureza da Despesa'] || mapped['Natureza da despesa']|| '';
+        ugr          = mapped['UGR']                 || mapped['Ugr']               || '';
+        planoInterno = mapped['Plano Interno']       || mapped['Plano interno']      || '';
+
+        // Fallback: se mapeamento por nome falhou, usar posição (index) das colunas do header
+        if(!esfera && !ptres){
+          const hTexts = todasLinhas[idxCelHeader].cells.map(c => c.text.trim());
+          const vTexts = r.cells.map(c => c.text.trim());
+          hTexts.forEach((h, idx) => {
+            const v = vTexts[idx] || '';
+            if(/^esfera$/i.test(h))              esfera       = v;
+            else if(/^ptres$/i.test(h))          ptres        = v;
+            else if(/fonte/i.test(h))            fonte        = v;
+            else if(/natureza/i.test(h))         natureza     = v;
+            else if(/^ugr$/i.test(h))            ugr          = v;
+            else if(/plano/i.test(h))            planoInterno = v;
+          });
+        }
+        if(esfera || ptres) break;
+      }
+    }
+
+    // Fallback: busca linha a linha por rótulo seguido de valor
+    const flat = todasLinhas.map(r => lineText(r)).join('\n');
+    if(!esfera){
+      // Célula pode ter linha "1  231708  1000000000  339018  -  L29AFP2300N"
+      // sem cabeçalho mapeado — tentar extrair por regex
+      const m = flat.match(/C[eé]lula Or[cç]ament[aá]ria[\s\S]{0,300}?(\d)\s+(\d{4,6})\s+(\d{8,10})\s+(\d{4,6})\s+([\d\-]+)\s+([A-Z0-9]{4,11})/i);
+      if(m){ esfera=m[1]; ptres=m[2]; fonte=m[3]; natureza=m[4]; ugr=m[5]; planoInterno=m[6].toUpperCase(); }
+    }
+    // Fallback individual
+    if(!esfera){ const m=flat.match(/Esfera\s*\n?\s*(\d)\b/); if(m) esfera=m[1]; }
+    if(!ptres){ const m=flat.match(/PTRES\s*\n?\s*(\d{4,6})/i); if(m) ptres=m[1]; }
+    if(!fonte){ const m=flat.match(/Fonte de Recurso\s*\n?\s*(\d{6,10})/i); if(m) fonte=m[1]; }
+    if(!natureza){ const m=flat.match(/Natureza da Despesa\s*\n?\s*(\d{4,6})/i); if(m) natureza=m[1]; }
+    if(!ugr){ const m=flat.match(/\bUGR\b\s*\n?\s*([^\n]{1,15})/i); if(m) ugr=m[1].trim(); }
+    if(!planoInterno){ const m=flat.match(/Plano Interno\s*\n?\s*([A-Z0-9]{4,11})/i); if(m) planoInterno=m[1].toUpperCase(); }
+
+    // ── 3. VALOR ─────────────────────────────────────────────────────────────
+    let valor = '';
+    // Localiza linha de cabeçalho que contém "Taxa de Câmbio" e "Valor"
+    const idxValHeader = todasLinhas.findIndex(r => {
+      const t = lineText(r).toLowerCase();
+      return t.includes('taxa') && t.includes('valor');
+    });
+    if(idxValHeader >= 0){
+      for(let i = idxValHeader + 1; i < Math.min(idxValHeader + 5, todasLinhas.length); i++){
+        const r = todasLinhas[i];
+        const t = lineText(r).toLowerCase();
+        if(/taxa|câmbio|cambio|valor|data|tipo|processo/i.test(t)) continue;
+        const mapped = mapColsByX(todasLinhas[idxValHeader], r);
+        valor = mapped['Valor'] || mapped['valor'] || '';
+        // Fallback: última célula da linha de valores (Valor é sempre a última coluna)
+        if(!valor && r.cells.length){
+          const last = r.cells[r.cells.length - 1].text.trim();
+          if(/^\d[\d\.]*,\d{2}$/.test(last)) valor = last;
+        }
+        if(valor) break;
+      }
+    }
+    // Fallback regex
+    if(!valor){
+      const m = flat.match(/Taxa de C[aâ]mbio\s*\n?\s*[-–]\s*\n?\s*([\d\.]+,\d{2})/i)
+             || flat.match(/\bValor\b\s*\n\s*([\d\.]+,\d{2})/i);
+      if(m) valor = m[1];
+    }
+
+    // ── 4. Monta número do empenho ────────────────────────────────────────────
+    // Formato SISMINT: AnoTipoNNN (ex: 2026NE000062)
+    // Preserva o número exato do PDF, apenas padeia com zeros à esquerda até 6 dígitos
+    const numPadded = numEmp ? String(parseInt(numEmp, 10) || numEmp).padStart(6, '0') : '';
+    const numeroEmpenhoFmt = (anoEmp && tipoEmp && numPadded)
+      ? (anoEmp + tipoEmp.toUpperCase() + numPadded) : '';
+
+    // ── 5. Verificar duplicidade ──────────────────────────────────────────────
+    if(numeroEmpenhoFmt){
+      const jaExiste = (State.capCelulasEmpenho || []).find(x =>
+        (x.numeroEmpenho || '').toUpperCase() === numeroEmpenhoFmt.toUpperCase()
+      );
+      if(jaExiste){
+        showPdfToast(`⚠️ O empenho <strong>${numeroEmpenhoFmt}</strong> já está cadastrado. Nenhum campo foi alterado.`, 'warn');
+        input.value = ''; return;
+      }
+    }
+
+    // ── 6. Preencher formulário (somente Etapa 2) ─────────────────────────────
+    const setVal = (id, v) => {
+      const el = document.getElementById(id);
+      if(el && v !== undefined && v !== null) el.value = v;
+    };
+    setVal('cemp-esfera',         esfera);
+    setVal('cemp-ptres',          ptres);
+    setVal('cemp-fonte',          fonte);
+    setVal('cemp-natureza',       natureza);
+    setVal('cemp-ugr',            ugr);
+    setVal('cemp-planointerno',   planoInterno ? planoInterno.toUpperCase() : '');
+    setVal('cemp-numero-empenho', numeroEmpenhoFmt);
+
+    if(valor){
+      const elV = document.getElementById('cemp-valor');
+      if(elV){ elV.value = valor; if(typeof maskMoneyInput === 'function') maskMoneyInput(elV); }
+    }
+
+    // ── 7. Scroll até o formulário ────────────────────────────────────────────
+    const elBusca = document.getElementById('cemp-busca-forn');
+    if(elBusca) elBusca.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    // ── 8. Feedback ───────────────────────────────────────────────────────────
+    const naoId = [];
+    if(!esfera)          naoId.push('Esfera');
+    if(!ptres)           naoId.push('PTRES');
+    if(!fonte)           naoId.push('Fonte de Recurso');
+    if(!natureza)        naoId.push('Natureza da Despesa');
+    if(!ugr)             naoId.push('UGR');
+    if(!planoInterno)    naoId.push('Plano Interno');
+    if(!numeroEmpenhoFmt) naoId.push('Nº do Empenho');
+    if(!valor)           naoId.push('Valor');
+
+    if(naoId.length){
+      showPdfToast(
+        `⚠️ Campos preenchidos parcialmente. Não identificados: <strong>${naoId.join(', ')}</strong> — preencha manualmente.<br>Selecione o fornecedor na Etapa 1 e clique em <strong>Salvar</strong>.`,
+        'warn'
+      );
+    } else {
+      showPdfToast(
+        `✅ Dados importados com sucesso! Selecione o fornecedor na Etapa 1, confira os campos e clique em <strong>Salvar</strong>.`,
+        'ok'
+      );
+    }
+
+  } catch(err){
+    showPdfToast('❌ Erro ao ler o PDF: ' + (err.message || err), 'error');
+    console.error('[CEMP-PDF]', err);
+  }
+  input.value = '';
 }
 
 function renderCempTable(){
