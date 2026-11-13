@@ -933,6 +933,9 @@ body::before {
   gap: 16px;
   margin-bottom: 24px;
 }
+.option-cards.four-cols {
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
 .option-card {
   background: var(--bg-card);
   border: 2px solid var(--border);
@@ -1003,6 +1006,50 @@ body::before {
 .option-card:nth-child(2) .option-card-num { color: var(--accent-purple); }
 .option-card-label { font-size: 12px; color: var(--text-muted); font-weight: 600; }
 .option-card.selected .option-card-label { color: var(--text-secondary); }
+/* Opção 03 — teal */
+.option-card:nth-child(3) {
+  border-color: rgba(20,184,166,0.25);
+  background: rgba(20,184,166,0.04);
+}
+.option-card:nth-child(3):hover {
+  border-color: var(--accent-teal);
+  background: rgba(20,184,166,0.1);
+  box-shadow: 0 0 28px rgba(20,184,166,0.3);
+  transform: translateY(-3px);
+}
+.option-card:nth-child(3).selected {
+  border-color: var(--accent-teal);
+  background: rgba(20,184,166,0.12);
+  box-shadow: 0 0 28px rgba(20,184,166,0.3);
+}
+.option-card:nth-child(3) .option-card-icon {
+  background: rgba(20,184,166,0.15);
+  border: 1px solid rgba(20,184,166,0.3);
+  color: var(--accent-teal);
+}
+.option-card:nth-child(3) .option-card-num { color: var(--accent-teal); }
+/* Opção 04 — emerald */
+.option-card:nth-child(4) {
+  border-color: rgba(34,197,94,0.25);
+  background: rgba(34,197,94,0.04);
+}
+.option-card:nth-child(4):hover {
+  border-color: var(--accent-green);
+  background: rgba(34,197,94,0.1);
+  box-shadow: var(--glow-green);
+  transform: translateY(-3px);
+}
+.option-card:nth-child(4).selected {
+  border-color: var(--accent-green);
+  background: rgba(34,197,94,0.12);
+  box-shadow: var(--glow-green);
+}
+.option-card:nth-child(4) .option-card-icon {
+  background: rgba(34,197,94,0.15);
+  border: 1px solid rgba(34,197,94,0.3);
+  color: var(--accent-green);
+}
+.option-card:nth-child(4) .option-card-num { color: var(--accent-green); }
 
 /* ============================================================
    DESPACHO CARDS
@@ -4396,6 +4443,55 @@ input.cap-date.form-input {
   #page-reinf .badge-ok { background: var(--verde-bg);  color: var(--verde);  border: 1px solid var(--verde-claro); }
   #page-reinf .badge-warn { background: #FFF9C4; color: #E65100; border: 1px solid #FFE082; }
 
+  /* ── Botão copiar observação ── */
+  #page-reinf .obs-copy-btn {
+    display: inline-flex; align-items: center; gap: 4px;
+    margin-top: 6px;
+    padding: 3px 10px;
+    font-size: 0.68rem; font-weight: 600;
+    font-family: 'IBM Plex Mono', monospace;
+    text-transform: uppercase; letter-spacing: 0.04em;
+    background: var(--verde-bg); color: var(--verde);
+    border: 1px solid var(--verde-claro);
+    border-radius: 3px; cursor: pointer;
+    transition: all 0.15s;
+  }
+  #page-reinf .obs-copy-btn:hover { background: var(--verde-medio); color: #fff; border-color: var(--verde-medio); }
+  #page-reinf .obs-copy-btn.copied {
+    background: #FFF9C4; color: #856404;
+    border-color: #FFE082;
+  }
+  #page-reinf .obs-copy-btn.copied:hover { background: #FFF3CD; }
+  /* Texto copiado → tachado */
+  #page-reinf .obs-text.obs-tachado {
+    text-decoration: line-through;
+    opacity: 0.52;
+    color: var(--texto-muted);
+  }
+  /* CNPJ do campus no cabeçalho do módulo */
+  #page-reinf .header-cnpj-campus {
+    display: inline-block;
+    margin-top: 6px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #fff;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 4px;
+    padding: 4px 12px;
+    letter-spacing: 0.03em;
+  }
+  #page-reinf .header-cnpj-campus span { opacity: 0.65; font-weight: 400; font-size: 0.75rem; margin-right: 6px; }
+  /* Sub-linha de natureza dentro do grupo CNPJ */
+  #page-reinf tr.reinf-subrow td { padding: 5px 12px 5px 20px; background: #f5f9f5; border-bottom: 1px dashed var(--cinza-borda); }
+  #page-reinf tr.reinf-subrow:last-of-type td { border-bottom: 1px solid var(--cinza-borda); }
+  #page-reinf tr.reinf-subrow.warn-row td { background: #FFFDE7; }
+  #page-reinf tr.reinf-subrow:hover td { background: var(--verde-bg); }
+  #page-reinf .nat-sub-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; color: var(--texto-muted); font-weight: 500; }
+  #page-reinf tr.reinf-group-header td { background: #edf5ed; font-weight: 600; padding: 8px 12px 4px 12px; border-top: 2px solid var(--verde-claro); }
+  #page-reinf tr.reinf-group-header:hover td { background: #dceede; }
+
   #page-reinf .actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 2rem; }
   #page-reinf button {
     font-family: 'IBM Plex Sans', sans-serif;
@@ -5887,7 +5983,7 @@ input.cap-date.form-input {
         <div class="topbar-title">
           <div class="topbar-subtitle">SETOR DE CONTABILIDADE</div>
           <div class="topbar-main">SISMINT — Sistema Integrados de <span>Módulos</span> <span>Independentes</span></div>
-          <div style="font-size:10.5px;color:var(--text-muted);margin-top:3px;font-weight:500">Gestão integrada para um controle público mais eficiente</div>
+          <div style="font-size:10.5px;color:var(--text-muted);margin-top:3px;font-weight:500">Gestão integrada para um controle público mais eficiente &nbsp;·&nbsp; <span style="font-family:var(--font-mono);letter-spacing:0.02em;opacity:0.6">CNPJ: 10.806.496/0013-82</span></div>
         </div>
       </div>
       <div class="topbar-actions">
@@ -7708,7 +7804,7 @@ input.cap-date.form-input {
         </div>
         <div class="field">
           <label>Conta Bancária</label>
-          <input type="text" id="mon-fav_conta" placeholder="Ex.: 123456" inputmode="numeric">
+          <input type="text" id="mon-fav_conta" placeholder="Ex.: 123456 ou 12345-X">
         </div>
       </div>
       <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;align-items:center;">
@@ -7975,6 +8071,7 @@ input.cap-date.form-input {
   <div class="header-left">
     <h1>Agente REINF — Processador de Deduções</h1>
     <p>IFPI · Campus São João do Piauí · DDF025 / SIAFI-Web</p>
+    <span class="header-cnpj-campus"><span>CNPJ Campus</span>10.806.496/0013-82</span>
   </div>
   <span class="header-badge">EFD-REINF</span>
 </header>
@@ -8547,7 +8644,7 @@ input.cap-date.form-input {
       <!-- STEP 1: OPCAO -->
       <div id="desp-step1">
         <div class="form-label">Selecione a Opção</div>
-        <div class="option-cards">
+        <div class="option-cards four-cols">
           <div class="option-card" id="opt-card-001" onclick="selectOpcao('001')">
             <div class="option-card-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
@@ -8561,6 +8658,20 @@ input.cap-date.form-input {
             </div>
             <div class="option-card-num">02</div>
             <div class="option-card-label">Dois documentos hábeis</div>
+          </div>
+          <div class="option-card" id="opt-card-003" onclick="selectOpcao('003')">
+            <div class="option-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><polyline points="9 15 11 17 15 13"/></svg>
+            </div>
+            <div class="option-card-num">03</div>
+            <div class="option-card-label">Finalização</div>
+          </div>
+          <div class="option-card" id="opt-card-004" onclick="selectOpcao('004')">
+            <div class="option-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+            </div>
+            <div class="option-card-num">04</div>
+            <div class="option-card-label">Outros Despachos</div>
           </div>
         </div>
       </div>
@@ -12882,15 +12993,15 @@ const DESPACHOS = {
   contratos: {
     opt1: [
       { title: 'DESPACHO 001 — GESTOR FINANCEIRO', body: 'Sr. Gestor Financeiro, Informo que a contabilização patrimonial e orçamentária referente ao documento hábil {DOC1} está em consonância com as normas de Contabilidade Aplicadas ao Setor Público, ao Manual Técnico de Orçamento e à Lei 4.320/64 (Art. 63) conforme segue: a) As contas de estoque e a pagar estão devidamente classificadas; b) O empenho utilizado é correlato ao contrato e foi emitido anteriormente à execução da despesa; c) A Nota Fiscal foi devidamente atestada; d) Os dados bancários do fornecedor foram devidamente informados no documento fiscal para o devido repasse do financeiro. e) Foram anexados todos os documentos previstos no instrumento contratual. Assim, solicitamos autorização de pagamento das despesas, conforme determina o art. 64 da Lei 4.320/64. Atenciosamente, Setor de Contabilidade.' },
-      { title: 'DESPACHO 002 — TRIB. FEDERAIS + INSS', body: 'Sr(a). Fiscal, Informo que o referido processo foi devidamente liquidado, pago e anexado os comprovantes de pagamento, de acordo com a macrofunção 020323, referente ao documento hábil {DOC1}, Assim, conforme determina o fluxo de pagamentos da IN 02/2020 da PROAD, segue processo para ciência e posterior devolução, em razão do fornecedor ter contrato vigente com a instituição e informo ainda que todos os comprovantes de pagamento de retenção de INSS e dos Tributos Federais (IN 1234/2012) serão anexados no encerramento do processo, tendo em vista que serão pagos pela Reitoria e ainda não estão disponíveis. Atenciosamente, Setor da Contabilidade.' },
-      { title: 'DESPACHO 003 — TRIBUTOS FEDERAIS', body: 'Sr(a). Fiscal, Informo que o referido processo foi devidamente liquidado, pago e anexado os comprovantes de pagamento, de acordo com a macrofunção 020323, referente ao documento hábil {DOC1}, Assim, conforme determina o fluxo de pagamentos da IN 02/2020 da PROAD, segue processo para ciência e posterior devolução, em razão do fornecedor ter contrato vigente com a instituição e informo ainda que os comprovantes de pagamento de retenção dos Tributos Federais (IN 1234/2012) serão anexados no encerramento do processo, tendo em vista que serão pagos pela Reitoria e ainda não estão disponíveis. Atenciosamente, Setor da Contabilidade.' },
-      { title: 'DESPACHO 004 — INSS', body: 'Sr(a). Fiscal, Informo que o referido processo foi devidamente liquidado, pago e anexado os comprovantes de pagamento, de acordo com a macrofunção 020323, referente ao documento hábil {DOC1}, Assim, conforme determina o fluxo de pagamentos da IN 02/2020 da PROAD, segue processo para ciência e posterior devolução, em razão do fornecedor ter contrato vigente com a instituição e informo ainda que os comprovantes de pagamento da retenção de INSS serão anexados no encerramento do processo, tendo em vista que serão pagos pela Reitoria e ainda não estão disponíveis. Atenciosamente, Setor da Contabilidade.' },
+      { title: 'DESPACHO 002 — TRIB. FEDERAIS + INSS', body: 'Sr(a). Fiscal, Informo que o referido processo foi devidamente liquidado, pago e anexado os comprovantes de pagamento, de acordo com a macrofunção 020323, referente ao documento hábil {DOC1}, Assim, conforme determina o fluxo de pagamentos da IN 02/2020 da PROAD, segue processo para ciência e posterior devolução, em razão do fornecedor ter contrato vigente com a instituição e informo ainda que todos os comprovantes de pagamento de retenção de INSS e dos Tributos Federais (IN 1234/2012) serão anexados no encerramento do processo, tendo em vista que serão pagos posteriormente e ainda não estão disponíveis. Atenciosamente, Setor da Contabilidade.' },
+      { title: 'DESPACHO 003 — TRIBUTOS FEDERAIS', body: 'Sr(a). Fiscal, Informo que o referido processo foi devidamente liquidado, pago e anexado os comprovantes de pagamento, de acordo com a macrofunção 020323, referente ao documento hábil {DOC1}, Assim, conforme determina o fluxo de pagamentos da IN 02/2020 da PROAD, segue processo para ciência e posterior devolução, em razão do fornecedor ter contrato vigente com a instituição e informo ainda que os comprovantes de pagamento de retenção dos Tributos Federais (IN 1234/2012) serão anexados no encerramento do processo, tendo em vista que serão pagos posteriormente e ainda não estão disponíveis. Atenciosamente, Setor da Contabilidade.' },
+      { title: 'DESPACHO 004 — INSS', body: 'Sr(a). Fiscal, Informo que o referido processo foi devidamente liquidado, pago e anexado os comprovantes de pagamento, de acordo com a macrofunção 020323, referente ao documento hábil {DOC1}, Assim, conforme determina o fluxo de pagamentos da IN 02/2020 da PROAD, segue processo para ciência e posterior devolução, em razão do fornecedor ter contrato vigente com a instituição e informo ainda que os comprovantes de pagamento da retenção de INSS serão anexados no encerramento do processo, tendo em vista que serão pagos posteriormente e ainda não estão disponíveis. Atenciosamente, Setor da Contabilidade.' },
     ],
     opt2: [
       { title: 'DESPACHO 001 — GESTOR FINANCEIRO', body: 'Sr. Gestor Financeiro, Informo que a contabilização patrimonial e orçamentária referente aos documentos hábeis {DOC1} e {DOC2}, estão em consonância com as normas de Contabilidade Aplicadas ao Setor Público, ao Manual Técnico de Orçamento e à Lei 4.320/64 (Art. 63) conforme segue: a) As contas de estoque e a pagar estão devidamente classificadas; b) O empenho utilizado é correlato ao contrato e foi emitido anteriormente à execução da despesa; c) A Nota Fiscal foi devidamente atestada; d) Os dados bancários do fornecedor foram devidamente informados no documento fiscal para o devido repasse do financeiro. e) Foram anexados todos os documentos previstos no instrumento contratual. Assim, solicitamos autorização de pagamento das despesas, conforme determina o art. 64 da Lei 4.320/64. Atenciosamente, Setor de Contabilidade.' },
-      { title: 'DESPACHO 002 — TRIB. FEDERAIS + INSS', body: 'Sr(a). Fiscal, Informo que o referido processo foi devidamente liquidado, pago e anexado os comprovantes de pagamento, de acordo com a macrofunção 020323, referente aos documentos hábeis {DOC1} e {DOC2}. Assim, conforme determina o fluxo de pagamentos da IN 02/2020 da PROAD, segue processo para ciência e posterior devolução, em razão do fornecedor ter contrato vigente com a instituição e informo ainda que todos os comprovantes de pagamento de retenção de INSS e dos Tributos Federais (IN 1234/2012) serão anexados no encerramento do processo, tendo em vista que serão pagos pela Reitoria e ainda não estão disponíveis. Atenciosamente, Setor da Contabilidade.' },
-      { title: 'DESPACHO 003 — TRIBUTOS FEDERAIS', body: 'Sr(a). Fiscal, Informo que o referido processo foi devidamente liquidado, pago e anexado os comprovantes de pagamento, de acordo com a macrofunção 020323, referente aos documentos hábeis {DOC1} e {DOC2}. Assim, conforme determina o fluxo de pagamentos da IN 02/2020 da PROAD, segue processo para ciência e posterior devolução, em razão do fornecedor ter contrato vigente com a instituição e informo ainda que os comprovantes de pagamento de retenção dos Tributos Federais (IN 1234/2012) serão anexados no encerramento do processo, tendo em vista que serão pagos pela Reitoria e ainda não estão disponíveis. Atenciosamente, Setor da Contabilidade.' },
-      { title: 'DESPACHO 004 — INSS', body: 'Sr(a). Fiscal, Informo que o referido processo foi devidamente liquidado, pago e anexado os comprovantes de pagamento, de acordo com a macrofunção 020323, referente aos documentos hábeis {DOC1} e {DOC2}. Assim, conforme determina o fluxo de pagamentos da IN 02/2020 da PROAD, segue processo para ciência e posterior devolução, em razão do fornecedor ter contrato vigente com a instituição e informo ainda que os comprovantes de pagamento da retenção de INSS serão anexados no encerramento do processo, tendo em vista que serão pagos pela Reitoria e ainda não estão disponíveis. Atenciosamente, Setor da Contabilidade.' },
+      { title: 'DESPACHO 002 — TRIB. FEDERAIS + INSS', body: 'Sr(a). Fiscal, Informo que o referido processo foi devidamente liquidado, pago e anexado os comprovantes de pagamento, de acordo com a macrofunção 020323, referente aos documentos hábeis {DOC1} e {DOC2}. Assim, conforme determina o fluxo de pagamentos da IN 02/2020 da PROAD, segue processo para ciência e posterior devolução, em razão do fornecedor ter contrato vigente com a instituição e informo ainda que todos os comprovantes de pagamento de retenção de INSS e dos Tributos Federais (IN 1234/2012) serão anexados no encerramento do processo, tendo em vista que serão pagos posteriormente e ainda não estão disponíveis. Atenciosamente, Setor da Contabilidade.' },
+      { title: 'DESPACHO 003 — TRIBUTOS FEDERAIS', body: 'Sr(a). Fiscal, Informo que o referido processo foi devidamente liquidado, pago e anexado os comprovantes de pagamento, de acordo com a macrofunção 020323, referente aos documentos hábeis {DOC1} e {DOC2}. Assim, conforme determina o fluxo de pagamentos da IN 02/2020 da PROAD, segue processo para ciência e posterior devolução, em razão do fornecedor ter contrato vigente com a instituição e informo ainda que os comprovantes de pagamento de retenção dos Tributos Federais (IN 1234/2012) serão anexados no encerramento do processo, tendo em vista que serão pagos posteriormente e ainda não estão disponíveis. Atenciosamente, Setor da Contabilidade.' },
+      { title: 'DESPACHO 004 — INSS', body: 'Sr(a). Fiscal, Informo que o referido processo foi devidamente liquidado, pago e anexado os comprovantes de pagamento, de acordo com a macrofunção 020323, referente aos documentos hábeis {DOC1} e {DOC2}. Assim, conforme determina o fluxo de pagamentos da IN 02/2020 da PROAD, segue processo para ciência e posterior devolução, em razão do fornecedor ter contrato vigente com a instituição e informo ainda que os comprovantes de pagamento da retenção de INSS serão anexados no encerramento do processo, tendo em vista que serão pagos posteriormente e ainda não estão disponíveis. Atenciosamente, Setor da Contabilidade.' },
     ]
   },
   material: {
@@ -12935,6 +13046,42 @@ const DESPACHOS = {
     opt2: [
       { title: 'DESPACHO 001 — GESTOR FINANCEIRO', body: 'Sr. Gestor Financeiro, Informo que a contabilização patrimonial e orçamentária referente aos documentos hábeis {DOC1} e {DOC2} estão em consonância com as normas de Contabilidade Aplicadas ao Setor Público, ao Manual Técnico de Orçamento e à Lei 4.320/64 (Art. 63) conforme segue: a) As contas de estoque e a pagar estão devidamente classificadas; b) O empenho utilizado é correlato ao contrato e foi emitido anteriormente à execução da despesa; c) A Nota Fiscal foi devidamente atestada; d) Os dados bancários do fornecedor foram devidamente informados no documento fiscal para o devido repasse do financeiro. e) Foram anexados todos os documentos previstos no instrumento contratual. Assim, solicitamos autorização de pagamento das despesas, conforme determina o art. 64 da Lei 4.320/64. Atenciosamente, Setor de Contabilidade.' },
       { title: 'DESPACHO 002 — COMPROVANTES PGTO', body: 'Sr(a). Fiscal, Informo que o referido processo foi devidamente liquidado, pago e anexado os comprovantes de pagamento, de acordo com a macrofunção 020323, referente aos documentos hábeis {DOC1} e {DOC2}. Assim, conforme determina o fluxo de pagamentos da IN 02/2020 da PROAD, segue processo para ciência e posterior devolução, em razão do fornecedor ter contrato vigente com a instituição e informo ainda que todos os comprovantes de pagamento dos Tributos Federais (IN 1234/2012) serão anexados no encerramento do processo, tendo em vista que ainda não estão disponíveis. Atenciosamente, Setor da Contabilidade.' },
+    ]
+  },
+  /* ── CARD 03: FINALIZAÇÃO ── */
+  finalizacao: {
+    despachos: [
+      { title: 'FINALIZAÇÃO — LIQUIDADO, PAGO E DEDUZIDO',
+        body: 'Sr. Solicitante,\nInformo que o processo já foi devidamente liquidado e pago, e todos os comprovantes de pagamento, documentos e respectivas deduções foram anexados.\nApós conferência pela Contabilidade, verificou-se que o saldo do empenho foi totalmente utilizado.\nDessa forma, como todas as etapas foram concluídas e a documentação está devidamente anexada, o processo encontra-se finalizado.' },
+      { title: 'FINALIZAÇÃO — LIQUIDADO E PAGO',
+        body: 'Sr. Solicitante,\nInformo que o processo já foi devidamente liquidado e pago, e todos os comprovantes de pagamento foram anexados.\nDessa forma, como todas as etapas foram concluídas e a documentação está devidamente anexada, o processo encontra-se finalizado.' },
+      { title: 'FINALIZAÇÃO — GESTOR DE CONTRATOS (NP ANO)',
+        body: 'Sr(a). Gestor de Contratos, Informo que o referido processo foi devidamente liquidado, pago e anexados os comprovantes de pagamento, de acordo com a macrofunção 020323, referente a todas NP do ano {ANO_NP}. Assim, conforme determina o fluxo de pagamentos da IN 02/2020 da PROAD, segue processo para ciência e finalização, pois todas as etapas foram devidamente concluídas. Atenciosamente, Setor da Contabilidade.' },
+      { title: 'FINALIZAÇÃO — GESTOR DE CONTRATOS (NP ESPECÍFICA)',
+        body: 'Sr(a). Gestor de Contratos, Informo que o referido processo foi devidamente liquidado, pago e anexados os comprovantes de pagamento, de acordo com a macrofunção 020323, referente a {COD_NP}. Assim, conforme determina o fluxo de pagamentos da IN 02/2020 da PROAD, segue processo para ciência e finalização, pois todas as etapas foram devidamente concluídas. Atenciosamente, Setor da Contabilidade.' },
+      { title: 'FINALIZAÇÃO — REGISTRO DE DATA',
+        body: 'Nessa data, {DATA_MANUAL}, todas as etapas foram concluídas e a documentação está devidamente anexada, o processo encontra-se finalizado.' },
+    ]
+  },
+  /* ── CARD 04: OUTROS DESPACHOS ── */
+  outros: {
+    despachos: [
+      { title: 'EMPENHO EMITIDO: ASSISTÊNCIA ESTUDANTIL',
+        body: 'O empenho foi emitido e está anexado neste processo. Segue para os demais trâmites de pagamento.\nCOMO ABRIR O PROCESSO DE PAGAMENTO:\n* Abrir um novo processo exclusivo para pagamento;\n* Anexar esse empenho;\n* Incluir o ofício com os dados bancários e objeto da solicitação;\n* Encaminhar ao Diretor Geral para autorizar.\n \n** ATENÇÃO — DADOS BANCÁRIOS **\nOs dados bancários dos beneficiários devem ser enviados em ofício ou PDF separado, dentro de um NOVO PROCESSO EXCLUSIVO PARA PAGAMENTO, com as seguintes colunas:\nCada Coluna: O que colocar\n1ª - Nome completo do beneficiário\n2ª - CPF com pontos e traço — ex.: 000.000.000-00\n3ª - Código do banco com 3 dígitos — ex.: 001, 104, 260, 380, 077\n4ª - Agência com 4 dígitos (SEM o dígito verificador)\n5ª  - Número da conta COM o dígito verificador\nCaso os dados sejam insuficientes, o processo será devolvido para correção.' },
+      { title: 'DEVOLUÇÃO DE PROCESSO COM EMPENHOS',
+        body: 'Conforme solicitado, o empenho foi emitido e anexado no processo, segue para os demais trâmites de pagamento…' },
+      { title: 'DEVOLUÇÃO DE PROCESSO COM EMPENHOS',
+        body: 'Conforme solicitado, os empenhos foram emitidos e anexados no processo, segue para os demais trâmites de pagamento…' },
+      { title: 'DEMANDA NÃO DA CONTABILIDADE',
+        body: 'Prezado(a) Solicitante,\nApós análise, observei que a demanda não se enquadra nas atribuições do Setor de Contabilidade, devolvo o presente processo ao setor de origem, para que seja encaminhado ao órgão/área competente para a devida análise e providências.' },
+      { title: 'INFORMAÇÕES INCOMPLETAS NO PROCESSO',
+        body: 'Prezado(a) Solicitante,\nApós análise, verificou-se que as informações encontram-se incompletas, dessa forma, devolvo o processo  para que sejam providenciadas as devidas inclusões e complementações necessárias (ofício e termo de ateste). Att setor contabilidade.' },
+      { title: 'DEVOLUÇÃO POR FALTA INSTRUMENTO DE COBRANÇA',
+        body: 'Prezado(a) Solicitante,\nApós análise, verificamos que o instrumento de cobrança não foi gerado no sistema Contratos Gov. Para que possamos dar continuidade à liquidação da despesa, solicitamos, por gentileza, a inclusão do referido documento no sistema, a fim de viabilizar a continuidade da tramitação do pagamento.' },
+      { title: 'DISPONIBILIDADE ORÇAMENTÁRIA',
+        body: 'Prezado(a) Solicitante,\nEm atendimento à solicitação de disponibilidade orçamentária para a contratação emergencial de ............ , informamos que as informações foram devidamente incluídas e segue para análise e providências. ' },
+      { title: 'TETO SCDP',
+        body: 'Conforme solicitado, o empenho foi reforçado e o teto do SCDP foi atualizado, segue para inclusão das diárias/passagens ' },
     ]
   }
 };
@@ -13009,16 +13156,36 @@ function selectOpcao(opcao) {
   setTimeout(() => {
     document.getElementById('desp-step1').style.display = 'none';
     document.getElementById('desp-step2').style.display = 'block';
-    document.getElementById('opcao-badge').textContent = 'OPÇÃO ' + opcao;
-    document.getElementById('categoria-select').value = '';
     document.getElementById('code-inputs').style.display = 'none';
     document.getElementById('despachos-output').style.display = 'none';
+
+    if (opcao === '003') {
+      document.getElementById('opcao-badge').textContent = 'FINALIZAÇÃO';
+      // Esconde seletor de categoria, mostra inputs específicos + despachos
+      document.getElementById('categoria-select').closest('.form-group').style.display = 'none';
+      renderDespachosFin();
+    } else if (opcao === '004') {
+      document.getElementById('opcao-badge').textContent = 'OUTROS DESPACHOS';
+      document.getElementById('categoria-select').closest('.form-group').style.display = 'none';
+      renderDespachosOutros();
+    } else {
+      document.getElementById('opcao-badge').textContent = 'OPÇÃO ' + opcao;
+      document.getElementById('categoria-select').closest('.form-group').style.display = '';
+      document.getElementById('categoria-select').value = '';
+    }
   }, 150);
 }
 
 function backToStep1() {
   document.getElementById('desp-step1').style.display = 'block';
   document.getElementById('desp-step2').style.display = 'none';
+  // Restaura o seletor de categoria para o próximo uso (opções 01/02)
+  const catGroup = document.getElementById('categoria-select');
+  if (catGroup) catGroup.closest('.form-group').style.display = '';
+  document.getElementById('code-inputs').innerHTML = '';
+  document.getElementById('code-inputs').style.display = 'none';
+  document.getElementById('despachos-output').style.display = 'none';
+  document.getElementById('despachos-output').innerHTML = '';
 }
 
 function getDefaultCode(catId, num) {
@@ -13137,6 +13304,193 @@ function renderDespachos() {
     output.appendChild(card);
   });
   // Estatísticas NÃO são incrementadas aqui — apenas ao clicar em Copiar
+}
+
+/* ──────────────────────────────────────────────
+   CARD 03 — FINALIZAÇÃO
+   ────────────────────────────────────────────── */
+function getAnos() {
+  const ano = new Date().getFullYear();
+  const anos = [];
+  for (let a = ano + 1; a >= ano - 5; a--) anos.push(a);
+  return anos;
+}
+
+function renderDespachosFin() {
+  const inputsEl = document.getElementById('code-inputs');
+  inputsEl.style.display = 'block';
+
+  const anoAtual = new Date().getFullYear();
+  const anosOptions = getAnos().map(a =>
+    `<option value="${a}"${a === anoAtual ? ' selected' : ''}>${a}</option>`).join('');
+
+  const hoje = new Date();
+  const dataHoje = String(hoje.getDate()).padStart(2,'0') + '/' +
+                   String(hoje.getMonth()+1).padStart(2,'0') + '/' + hoje.getFullYear();
+
+  inputsEl.innerHTML = `
+    <div class="input-row">
+      <div class="form-group">
+        <label class="form-label">Entrada Manual 01 — Ano (NP)</label>
+        <select class="form-select highlight" id="fin-ano-np" onchange="renderDespachosFin()">
+          ${anosOptions}
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Entrada Manual 02 — Código NP</label>
+        <input type="text" class="form-input highlight" id="fin-cod-np" value="2026NP000XYZ" oninput="renderDespachosFin()" placeholder="2026NP000XYZ">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Data Manual (DD/MM/AAAA)</label>
+      <input type="text" class="form-input highlight" id="fin-data" value="${dataHoje}" oninput="renderDespachosFin()" placeholder="DD/MM/AAAA" maxlength="10">
+    </div>`;
+
+  _buildDespachosFin();
+}
+
+function _buildDespachosFin() {
+  const anoEl = document.getElementById('fin-ano-np');
+  const codEl = document.getElementById('fin-cod-np');
+  const dataEl = document.getElementById('fin-data');
+  if (!anoEl) return;
+
+  const ano = anoEl ? anoEl.value : new Date().getFullYear();
+  const cod = codEl ? (codEl.value || codEl.placeholder) : '2026NP000XYZ';
+  const data = dataEl ? (dataEl.value || dataEl.placeholder) : 'DD/MM/AAAA';
+
+  const templates = DESPACHOS.finalizacao.despachos;
+  const output = document.getElementById('despachos-output');
+  output.style.display = 'flex';
+  output.innerHTML = '';
+
+  templates.forEach((tpl, idx) => {
+    let body = tpl.body
+      .replace(/\{ANO_NP\}/g, ano)
+      .replace(/\{COD_NP\}/g, cod)
+      .replace(/\{DATA_MANUAL\}/g, data);
+
+    const plainText = body;
+
+    // Highlight variáveis substituídas
+    const hlSpan = (text, val) => {
+      if (!val) return text;
+      const esc = val.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      return text.replace(new RegExp(esc, 'g'), `<span class="doc-code">${val}</span>`);
+    };
+    let bodyHtml = body.replace(/\n/g, '<br>');
+    bodyHtml = hlSpan(bodyHtml, ano);
+    bodyHtml = hlSpan(bodyHtml, cod);
+    bodyHtml = hlSpan(bodyHtml, data);
+
+    const favKey = 'finalizacao_' + idx;
+    const isFav = State.favorites.includes(favKey);
+    const numStr = String(idx + 1).padStart(2, '0');
+
+    const card = document.createElement('div');
+    card.className = 'despacho-card';
+    card.dataset.plain = plainText;
+    card.dataset.favkey = favKey;
+    card.innerHTML = `
+      <div class="despacho-header">
+        <div class="despacho-title-wrap">
+          <div class="despacho-num">${numStr}</div>
+          <div class="despacho-title-text">${tpl.title}</div>
+        </div>
+        <div class="despacho-actions">
+          <button class="act-btn copy-btn" title="Copiar" onclick="copyDespacho(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </button>
+          <button class="act-btn fav-btn${isFav ? ' active' : ''}" title="Favoritar" onclick="toggleFav(this)">
+            <svg viewBox="0 0 24 24" fill="${isFav ? '#f59e0b' : 'none'}" stroke="#f59e0b" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </button>
+          <button class="act-btn print-btn" title="Imprimir" onclick="printDespacho(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          </button>
+          <button class="act-btn" title="Exportar TXT" onclick="exportTxt(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="despacho-body">
+        <p class="despacho-text">${bodyHtml}</p>
+      </div>`;
+    output.appendChild(card);
+  });
+}
+
+/* ──────────────────────────────────────────────
+   CARD 04 — OUTROS DESPACHOS (com filtro)
+   ────────────────────────────────────────────── */
+function renderDespachosOutros() {
+  const inputsEl = document.getElementById('code-inputs');
+  inputsEl.style.display = 'block';
+  inputsEl.innerHTML = `
+    <div class="form-group">
+      <label class="form-label">Filtrar despachos</label>
+      <input type="text" class="form-input" id="outros-filtro"
+        placeholder="Buscar pelo título ou trecho do texto…"
+        oninput="_buildDespachosOutros()" autofocus>
+    </div>`;
+  _buildDespachosOutros();
+}
+
+function _buildDespachosOutros() {
+  const filtroEl = document.getElementById('outros-filtro');
+  const filtro = filtroEl ? filtroEl.value.toLowerCase().trim() : '';
+
+  const templates = DESPACHOS.outros.despachos;
+  const output = document.getElementById('despachos-output');
+  output.style.display = 'flex';
+  output.innerHTML = '';
+
+  const filtered = filtro
+    ? templates.filter(t =>
+        t.title.toLowerCase().includes(filtro) ||
+        t.body.toLowerCase().includes(filtro))
+    : templates;
+
+  if (filtered.length === 0) {
+    output.innerHTML = `<div style="color:var(--text-muted);font-size:13px;padding:16px;">Nenhum despacho encontrado para "<strong>${filtroEl.value}</strong>".</div>`;
+    return;
+  }
+
+  filtered.forEach((tpl, idx) => {
+    const bodyHtml = tpl.body.replace(/\n/g, '<br>');
+    const favKey = 'outros_' + idx;
+    const isFav = State.favorites.includes(favKey);
+    const numStr = String(idx + 1).padStart(2, '0');
+
+    const card = document.createElement('div');
+    card.className = 'despacho-card';
+    card.dataset.plain = tpl.body;
+    card.dataset.favkey = favKey;
+    card.innerHTML = `
+      <div class="despacho-header">
+        <div class="despacho-title-wrap">
+          <div class="despacho-num">${numStr}</div>
+          <div class="despacho-title-text">${tpl.title}</div>
+        </div>
+        <div class="despacho-actions">
+          <button class="act-btn copy-btn" title="Copiar" onclick="copyDespacho(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </button>
+          <button class="act-btn fav-btn${isFav ? ' active' : ''}" title="Favoritar" onclick="toggleFav(this)">
+            <svg viewBox="0 0 24 24" fill="${isFav ? '#f59e0b' : 'none'}" stroke="#f59e0b" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </button>
+          <button class="act-btn print-btn" title="Imprimir" onclick="printDespacho(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          </button>
+          <button class="act-btn" title="Exportar TXT" onclick="exportTxt(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="despacho-body">
+        <p class="despacho-text">${bodyHtml}</p>
+      </div>`;
+    output.appendChild(card);
+  });
 }
 
 function copyDespacho(btn) {
@@ -16059,52 +16413,59 @@ function extractLocal(obs) {
 }
 
 // ─── MONTAGEM DA OBSERVAÇÃO ──────────────────────────────────────────────────
+// Novo formato compacto: RETENÇÃO IN 1234/2012 REF À [DESC] NFs Nº x, y - NPs a, b
 // Estratégia em cascata: tenta manter tudo, encurta progressivamente se > 200 chars.
 // Nunca mistura dados entre CNPJs.
 function buildObs(rowsData) {
-  const nfs    = [];
-  const nps    = [];
-  const refs   = [];
-  const locals = [];
+  const nfs  = [];
+  const nps  = [];
+  const refs = [];
 
   rowsData.forEach(r => {
     const nfList = extractNF(r.obs);
-    nfList.forEach(n => nfs.push(n));
-    nps.push('NP' + r.np);
+    nfList.forEach(n => { if (!nfs.includes(n)) nfs.push(n); });
+    const npNum = r.np ? String(Math.round(Number(r.np))) : '';
+    if (npNum && !nps.includes(npNum)) nps.push(npNum);
     const ref = extractRef(r.obs);
     if (ref && !refs.includes(ref)) refs.push(ref);
-    const loc = extractLocal(r.obs);
-    if (loc && !locals.includes(loc)) locals.push(loc);
   });
 
-  const refStr   = refs[0]   || '';
-  const localStr = locals[0] || 'NO IFPI-CAMPUS SÃO JOÃO/PI';
-  const nfFull   = nfs.map(n => 'Nº ' + n).join(', ');
-  const npFull   = nps.join(' e ');
+  const refStr  = refs[0] || '';
+  const nfStr   = nfs.length ? 'NFs Nº ' + nfs.join(', ')   : '';
+  const npStr   = nps.length ? 'NPs ' + nps.join(', ')       : '';
+  const sufixo  = [nfStr, npStr].filter(Boolean).join(' - ');
 
-  // Tentativa 1 — completo
-  let obs = `RET TRIB FED CONF IN 1234/2012 DA NF ${nfFull} - REF À ${refStr} - ${localStr} - ${npFull}`;
+  // Tentativa 1 — formato completo
+  let obs = `RETENÇÃO IN 1234/2012 REF À ${refStr} ${sufixo}`.trim();
   if (obs.length <= 200) return { obs, len: obs.length, truncated: false };
 
-  // Tentativa 2 — encurtar descrição do serviço
-  const refShort = refStr.length > 35 ? refStr.substring(0, 35) + '...' : refStr;
-  obs = `RET TRIB FED CONF IN 1234/2012 DA NF ${nfFull} - REF À ${refShort} - ${localStr} - ${npFull}`;
+  // Tentativa 2 — descrição encurtada (40 chars)
+  const refShort40 = refStr.length > 40 ? refStr.substring(0, 40) + '...' : refStr;
+  obs = `RETENÇÃO IN 1234/2012 REF À ${refShort40} ${sufixo}`.trim();
   if (obs.length <= 200) return { obs, len: obs.length, truncated: false };
 
-  // Tentativa 3 — encurtar lista de NFs (primeiras 3 + contagem do restante)
-  const nfShort = nfs.length > 3
-    ? nfs.slice(0, 3).map(n => 'Nº ' + n).join(', ') + ` (+${nfs.length - 3})`
-    : nfFull;
-  obs = `RET TRIB FED CONF IN 1234/2012 DA NF ${nfShort} - REF À ${refShort} - ${localStr} - ${npFull}`;
+  // Tentativa 3 — descrição encurtada (25 chars)
+  const refShort25 = refStr.length > 25 ? refStr.substring(0, 25) + '...' : refStr;
+  obs = `RETENÇÃO IN 1234/2012 REF À ${refShort25} ${sufixo}`.trim();
+  if (obs.length <= 200) return { obs, len: obs.length, truncated: false };
+
+  // Tentativa 4 — NFs e NPs compactos (primeiros 3 + quantidade restante)
+  const nfComp = nfs.length > 3
+    ? 'NFs Nº ' + nfs.slice(0, 3).join(', ') + ` (+${nfs.length - 3})`
+    : nfStr;
+  const npComp = nps.length > 2
+    ? 'NPs ' + nps[0] + ' a ' + nps[nps.length - 1]
+    : npStr;
+  const sufComp = [nfComp, npComp].filter(Boolean).join(' - ');
+  obs = `RETENÇÃO IN 1234/2012 REF À ${refShort25} ${sufComp}`.trim();
   if (obs.length <= 200) return { obs, len: obs.length, truncated: true };
 
-  // Tentativa 4 — encurtar lista de NPs (primeiro ao último)
-  const npShort = nps.length > 2 ? `${nps[0]} a ${nps[nps.length - 1]}` : npFull;
-  obs = `RET TRIB FED CONF IN 1234/2012 DA NF ${nfShort} - REF À ${refShort} - ${localStr} - ${npShort}`;
+  // Tentativa 5 — sem descrição
+  obs = `RETENÇÃO IN 1234/2012 ${sufComp}`.trim();
   if (obs.length <= 200) return { obs, len: obs.length, truncated: true };
 
-  // Tentativa 5 — sem descrição, só NFs + local + NPs
-  obs = `RET TRIB FED CONF IN 1234/2012 DA NF ${nfShort} - ${localStr} - ${npShort}`;
+  // Último recurso — trunca em 200
+  obs = `RETENÇÃO IN 1234/2012 ${sufComp}`;
   return { obs: obs.substring(0, 200), len: obs.length, truncated: true };
 }
 
@@ -16217,7 +16578,7 @@ function handleFile(file) {
 
       mesRef = parseDate(dataRows[0][colMap.data]);
 
-      // Agrupa por CNPJ + Natureza de Rendimento
+      // Agrupa por CNPJ + Natureza de Rendimento (chave interna)
       const groups = {};
       dataRows.forEach(r => {
         const cnpj = normCNPJ(r[colMap.cnpj]);
@@ -16236,30 +16597,37 @@ function handleFile(file) {
         });
       });
 
-      // Gera resultado por grupo
-      processedData = Object.values(groups).map(grp => {
+      // Gera resultado por grupo (CNPJ + Natureza)
+      const flatData = Object.values(groups).map(grp => {
         const base = Math.round(grp.reduce((s, r) => s + r.base, 0) * 100) / 100;
         const rec  = Math.round(grp.reduce((s, r) => s + r.rec,  0) * 100) / 100;
         const { obs, len, truncated } = buildObs(grp);
-
-        // Coleta NFs e NPs para exibição auxiliar
         const nfsList = grp.flatMap(r => extractNF(r.obs));
-        const npsList = grp.map(r => 'NP' + r.np);
-
+        const npsList = grp.map(r => r.np).filter(Boolean);
         return {
           cnpj:     grp[0].cnpj,
           nat:      grp[0].nat,
           dataFG:   parseDate(grp[0].data),
-          base,
-          rec,
-          obs,
-          len,
-          truncated,
+          base, rec, obs, len, truncated,
           nfs:  nfsList.join(', '),
           nps:  npsList.join(', '),
           qtd:  grp.length
         };
       });
+
+      // Agrupa por CNPJ para detectar múltiplas naturezas
+      const cnpjMap = {};
+      flatData.forEach(r => {
+        if (!cnpjMap[r.cnpj]) cnpjMap[r.cnpj] = [];
+        cnpjMap[r.cnpj].push(r);
+      });
+
+      // processedData: cada entrada tem { cnpj, nats: [...], multiNat: bool }
+      processedData = Object.entries(cnpjMap).map(([cnpj, nats]) => ({
+        cnpj,
+        nats,          // array de sub-entradas por natureza
+        multiNat: nats.length > 1
+      }));
 
       renderResult();
     } catch (err) {
@@ -16271,18 +16639,82 @@ function handleFile(file) {
 }
 
 // ─── RENDERIZAÇÃO ─────────────────────────────────────────────────────────────
+// Gera ID único para cada linha de observação (usado pelo botão copiar)
+let _obsIdCounter = 0;
+function nextObsId() { return 'obs-' + (++_obsIdCounter); }
+
+function toggleObsTachado(btnEl, obsId) {
+  const obsEl = document.getElementById(obsId);
+  if (!obsEl) return;
+  const tachado = obsEl.classList.toggle('obs-tachado');
+  btnEl.classList.toggle('copied', tachado);
+  btnEl.innerHTML = tachado
+    ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="width:11px;height:11px"><path d="M18 6L6 18M6 6l12 12"/></svg> Desmarcar`
+    : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="width:11px;height:11px"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copiar`;
+}
+
+function copyObs(btnEl, obsId) {
+  const obsEl = document.getElementById(obsId);
+  if (!obsEl) return;
+  const text = obsEl.textContent;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).catch(() => {});
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta);
+  }
+  toggleObsTachado(btnEl, obsId);
+}
+
+function renderNatRow(r, isSub) {
+  const obsId = nextObsId();
+  const pct   = Math.min(100, Math.round((r.len / 200) * 100));
+  const over  = r.len > 200;
+  const rowClass = (isSub ? 'reinf-subrow ' : '') + (r.truncated ? 'warn-row' : '');
+  const natLabel = isSub
+    ? `<span class="nat-sub-label">↳ ${r.nat}</span>`
+    : `<span class="nat-cell">${r.nat}</span>`;
+  return `
+    <tr class="${rowClass}">
+      ${isSub ? '<td></td>' : `<td class="cnpj-cell" rowspan="1">${maskCNPJ(r.cnpj)}</td>`}
+      <td>${natLabel}</td>
+      <td style="font-size:0.78rem;white-space:nowrap">${r.dataFG}</td>
+      <td class="money-cell">${fmtMoeda(r.base)}</td>
+      <td class="money-cell">${fmtMoeda(r.rec)}</td>
+      <td>
+        <div class="obs-text" id="${obsId}">${r.obs}</div>
+        <div class="obs-meta">NFs: ${r.nfs || '—'} &nbsp;|&nbsp; NPs: ${r.nps || '—'}</div>
+        <div class="char-bar"><div class="char-fill ${over ? 'over' : ''}" style="width:${pct}%"></div></div>
+        <button class="obs-copy-btn" onclick="copyObs(this,'${obsId}')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="width:11px;height:11px"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copiar
+        </button>
+      </td>
+      <td style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:0.78rem">${r.len}</td>
+      <td style="text-align:center">
+        <span class="badge ${r.truncated ? 'badge-warn' : 'badge-ok'}">${r.truncated ? '⚠ Revisar' : '✓ OK'}</span>
+      </td>
+    </tr>
+  `;
+}
+
 function renderResult() {
-  const data      = processedData;
-  const truncados = data.filter(r => r.truncated).length;
-  const totalBase = data.reduce((s, r) => s + r.base, 0);
-  const totalRec  = data.reduce((s, r) => s + r.rec,  0);
-  const totalNotas = data.reduce((s, r) => s + r.qtd, 0);
+  const data = processedData;
+  // Aplana todas as sub-naturezas para totais
+  const allNats    = data.flatMap(d => d.nats);
+  const truncados  = allNats.filter(r => r.truncated).length;
+  const totalBase  = allNats.reduce((s, r) => s + r.base, 0);
+  const totalRec   = allNats.reduce((s, r) => s + r.rec,  0);
+  const totalNotas = allNats.reduce((s, r) => s + r.qtd,  0);
+  const totalCNPJs = data.length;  // CNPJs únicos
 
   document.getElementById('reinf-cards-grid').innerHTML = `
     <div class="card-resumo">
       <div class="lbl">CNPJs para lançar</div>
-      <div class="val">${data.length}</div>
-      <div class="sub">registros no REINF</div>
+      <div class="val">${totalCNPJs}</div>
+      <div class="sub">registros únicos no REINF</div>
     </div>
     <div class="card-resumo">
       <div class="lbl">Total base de cálculo</div>
@@ -16302,38 +16734,35 @@ function renderResult() {
   `;
 
   document.getElementById('reinf-tbl-sub').textContent =
-    `Mês de referência: ${mesRef} · ${data.length} CNPJs · ${totalNotas} notas fiscais agrupadas`;
+    `Mês de referência: ${mesRef} · ${totalCNPJs} CNPJs · ${totalNotas} notas fiscais agrupadas`;
 
+  _obsIdCounter = 0;
   const tbody = document.getElementById('reinf-result-body');
-  tbody.innerHTML = data.map(r => {
-    const pct  = Math.min(100, Math.round((r.len / 200) * 100));
-    const over = r.len > 200;
-    return `
-      <tr class="${r.truncated ? 'warn-row' : ''}">
-        <td class="cnpj-cell">${maskCNPJ(r.cnpj)}</td>
-        <td class="nat-cell">${r.nat}</td>
-        <td style="font-size:0.78rem;white-space:nowrap">${r.dataFG}</td>
-        <td class="money-cell">${fmtMoeda(r.base)}</td>
-        <td class="money-cell">${fmtMoeda(r.rec)}</td>
-        <td>
-          <div class="obs-text">${r.obs}</div>
-          <div class="obs-meta">NFs: ${r.nfs || '—'} &nbsp;|&nbsp; ${r.nps}</div>
-          <div class="char-bar"><div class="char-fill ${over ? 'over' : ''}" style="width:${pct}%"></div></div>
-        </td>
-        <td style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:0.78rem">${r.len}</td>
-        <td style="text-align:center">
-          <span class="badge ${r.truncated ? 'badge-warn' : 'badge-ok'}">${r.truncated ? '⚠ Revisar' : '✓ OK'}</span>
-        </td>
+  tbody.innerHTML = data.map(group => {
+    if (!group.multiNat) {
+      // CNPJ com uma única natureza — linha simples
+      return renderNatRow(group.nats[0], false);
+    }
+    // CNPJ com múltiplas naturezas — linha de grupo + sub-linhas
+    const totalGBase = group.nats.reduce((s, r) => s + r.base, 0);
+    const totalGRec  = group.nats.reduce((s, r) => s + r.rec,  0);
+    const headerRow = `
+      <tr class="reinf-group-header">
+        <td class="cnpj-cell">${maskCNPJ(group.cnpj)}</td>
+        <td colspan="3" class="nat-sub-label" style="font-size:0.72rem;opacity:0.75">${group.nats.length} naturezas · Base total: ${fmtMoeda(totalGBase)} · Retenção total: ${fmtMoeda(totalGRec)}</td>
+        <td></td><td></td><td></td><td></td>
       </tr>
     `;
+    const subRows = group.nats.map(nat => renderNatRow(nat, true)).join('');
+    return headerRow + subRows;
   }).join('');
 
   document.getElementById('reinf-sec-upload').style.display = 'none';
   document.getElementById('reinf-sec-result').style.display = 'block';
 
   const msg = truncados > 0
-    ? `✓ Concluído. ${data.length} CNPJs agrupados. ${truncados} observação(ões) encurtadas (amarelo) — revise antes de lançar.`
-    : `✓ Concluído. ${data.length} CNPJs agrupados. Todas as observações dentro do limite de 200 caracteres.`;
+    ? `✓ Concluído. ${totalCNPJs} CNPJs agrupados. ${truncados} observação(ões) encurtadas (amarelo) — revise antes de lançar.`
+    : `✓ Concluído. ${totalCNPJs} CNPJs agrupados. Todas as observações dentro do limite de 200 caracteres.`;
   setStatus(msg, 'ok');
 }
 
@@ -16342,11 +16771,14 @@ function downloadResult() {
   if (!processedData.length) return;
   const wb2 = XLSX.utils.book_new();
 
+  // Aplana grupos (suporte a múltiplas naturezas por CNPJ)
+  const flatRows = processedData.flatMap(g => g.nats);
+
   const wsData = [
     ['CNPJ', 'Natureza de Rendimento', 'Data Fato Gerador', 'Valor Bruto (Base de Cálculo)',
      'Valor da Receita (Retenção)', 'Observação REINF', 'Qtd Chars', 'Status',
      'NFs Incluídas', 'NPs Incluídas', 'Qtd Notas Agrupadas'],
-    ...processedData.map(r => [
+    ...flatRows.map(r => [
       maskCNPJ(r.cnpj), r.nat, r.dataFG,
       r.base, r.rec,
       r.obs, r.len,
@@ -16379,8 +16811,12 @@ function resetApp() {
   statusEl.style.display = 'none';
 }
 
-  return { downloadResult: downloadResult, resetApp: resetApp };
+  return { downloadResult: downloadResult, resetApp: resetApp, copyObs: copyObs, toggleObsTachado: toggleObsTachado };
 })();
+
+// Expõe funções de interação REINF no escopo global (chamadas pelo onclick inline)
+function copyObs(btnEl, obsId) { window.SIS_REINF.copyObs(btnEl, obsId); }
+function toggleObsTachado(btnEl, obsId) { window.SIS_REINF.toggleObsTachado(btnEl, obsId); }
 
 </script>
 
