@@ -5888,6 +5888,245 @@ input.cap-date.form-input {
 }
 
 </style>
+<style id="rateio-module-styles">
+/* ============================================================
+   MÓDULO RATEIO — CALCULADORA DE RATEIO PROPORCIONAL POR PERCENTUAIS
+   Estilos isolados em #page-rateio (prefixo .rt-) para não colidir com outros módulos.
+   ============================================================ */
+
+/* Card no dashboard — teal */
+.module-card.rateio {
+  background: linear-gradient(145deg, rgba(20,184,166,0.09) 0%, rgba(19,23,40,0.8) 55%);
+  border-color: rgba(20,184,166,0.22);
+}
+.module-card.rateio::before {
+  background: radial-gradient(ellipse 80% 60% at 20% 0%, rgba(20,184,166,0.14), transparent);
+}
+.module-card.rateio::after { background: linear-gradient(90deg, #14b8a6, transparent); }
+.module-card.rateio:hover {
+  box-shadow: 0 0 50px rgba(20,184,166,.28), 0 20px 40px rgba(0,0,0,.5);
+  border-color: rgba(20,184,166,0.5);
+}
+.rateio .card-icon-wrap {
+  background: linear-gradient(135deg, rgba(20,184,166,0.2), rgba(13,148,136,0.15));
+  border: 1px solid rgba(20,184,166,0.35);
+  color: #14b8a6;
+}
+.module-card.rateio .card-tag { color: #14b8a6; }
+
+/* Página */
+#page-rateio {
+  --rt-accent: #14b8a6;
+  --rt-accent-2: #2dd4bf;
+  --rt-accent-soft: rgba(20,184,166,0.12);
+  --rt-accent-line: rgba(20,184,166,0.35);
+  --rt-ok: #22c55e;
+  --rt-warn: #f59e0b;
+  --rt-err: #f43f5e;
+  --rt-mono: 'DM Mono','Cascadia Code','Courier New',monospace;
+}
+#page-rateio .rt-wrap { max-width: 1280px; margin: 0 auto; }
+
+#page-rateio .rt-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap; margin-bottom: 22px;
+}
+#page-rateio .rt-brand { display: flex; align-items: center; gap: 14px; }
+#page-rateio .rt-logo {
+  width: 48px; height: 48px; border-radius: 13px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, rgba(20,184,166,0.28), rgba(13,148,136,0.16));
+  border: 1px solid var(--rt-accent-line); color: var(--rt-accent-2);
+  box-shadow: 0 0 24px rgba(20,184,166,0.18);
+}
+#page-rateio .rt-logo svg { width: 24px; height: 24px; }
+#page-rateio .rt-title { font-size: 22px; font-weight: 800; letter-spacing: .5px; color: var(--text-primary); line-height: 1.15; }
+#page-rateio .rt-sub { font-size: 12.5px; color: var(--text-secondary); margin-top: 2px; }
+
+#page-rateio .rt-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+#page-rateio .rt-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 15px; border-radius: var(--radius-sm);
+  background: var(--bg-elevated); color: var(--text-primary);
+  border: 1px solid var(--border-bright);
+  font: 600 13px var(--font-body); cursor: pointer; transition: var(--transition);
+}
+#page-rateio .rt-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+#page-rateio .rt-btn:hover { border-color: var(--rt-accent-line); background: var(--rt-accent-soft); color: var(--rt-accent-2); }
+#page-rateio .rt-btn.primary { background: var(--rt-accent); border-color: var(--rt-accent); color: #04211e; }
+#page-rateio .rt-btn.primary:hover { background: var(--rt-accent-2); border-color: var(--rt-accent-2); color: #04211e; }
+#page-rateio .rt-btn.danger:hover { border-color: rgba(244,63,94,.5); background: rgba(244,63,94,.1); color: #fda4af; }
+
+/* Resumo */
+#page-rateio .rt-summary {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 22px;
+}
+#page-rateio .rt-stat {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-top: 3px solid var(--rt-accent); border-radius: var(--radius-md);
+  padding: 16px 18px; min-width: 0;
+}
+#page-rateio .rt-stat.s2 { border-top-color: var(--accent-orange); }
+#page-rateio .rt-stat.s3 { border-top-color: var(--accent-violet); }
+#page-rateio .rt-stat.s4 { border-top-color: var(--rt-ok); }
+#page-rateio .rt-stat.s4.bad { border-top-color: var(--rt-err); }
+#page-rateio .rt-stat-label { font-size: 11px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--text-secondary); }
+#page-rateio .rt-stat-value {
+  font: 700 22px var(--rt-mono); color: var(--text-primary); margin-top: 6px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+#page-rateio .rt-stat-note { font-size: 11.5px; color: var(--text-secondary); margin-top: 3px; }
+
+/* Painéis */
+#page-rateio .rt-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: 20px; align-items: start; }
+#page-rateio .rt-panel {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-card);
+  overflow: hidden; min-width: 0;
+}
+#page-rateio .rt-panel-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  padding: 16px 20px; border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(20,184,166,0.07), transparent);
+}
+#page-rateio .rt-panel-title { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 800; letter-spacing: .8px; color: var(--text-primary); }
+#page-rateio .rt-step {
+  width: 24px; height: 24px; border-radius: 7px; display: inline-flex; align-items: center; justify-content: center;
+  background: var(--rt-accent-soft); border: 1px solid var(--rt-accent-line); color: var(--rt-accent-2);
+  font: 700 12px var(--rt-mono);
+}
+#page-rateio .rt-panel-body { padding: 18px 20px 20px; }
+#page-rateio .rt-hint { font-size: 12.5px; color: var(--text-secondary); margin-bottom: 14px; line-height: 1.5; }
+
+/* Linhas de itens */
+#page-rateio .rt-cols, #page-rateio .rt-row {
+  display: grid; grid-template-columns: minmax(110px,1fr) minmax(130px,1.1fr) 108px 36px;
+  gap: 10px; align-items: center;
+}
+#page-rateio .rt-cols { padding: 0 2px 8px; font-size: 10.5px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--text-muted); }
+#page-rateio .rt-cols span:nth-child(3) { text-align: right; }
+#page-rateio .rt-row { padding: 6px 0; border-top: 1px solid var(--border); }
+#page-rateio .rt-row:first-of-type { border-top: 0; }
+#page-rateio .rt-input {
+  width: 100%; min-width: 0; background: var(--bg-base); color: var(--text-primary);
+  border: 1px solid var(--border-bright); border-radius: var(--radius-sm);
+  padding: 11px 12px; font: 500 14px var(--font-body); outline: none; transition: var(--transition);
+}
+#page-rateio .rt-input.money { font: 600 15px var(--rt-mono); text-align: right; }
+#page-rateio .rt-input::placeholder { color: var(--text-muted); }
+#page-rateio .rt-input:focus { border-color: var(--rt-accent); box-shadow: 0 0 0 3px rgba(20,184,166,0.18); }
+
+#page-rateio .rt-pct { text-align: right; }
+#page-rateio .rt-pct-val { font: 700 15px var(--rt-mono); color: var(--rt-accent-2); }
+#page-rateio .rt-bar { height: 5px; border-radius: 3px; background: rgba(255,255,255,0.07); margin-top: 5px; overflow: hidden; }
+#page-rateio .rt-bar > i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--rt-accent), var(--rt-accent-2)); transition: width .25s ease; }
+
+#page-rateio .rt-del {
+  width: 36px; height: 36px; border-radius: var(--radius-sm); cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; border: 1px solid var(--border); color: var(--text-secondary); transition: var(--transition);
+}
+#page-rateio .rt-del svg { width: 15px; height: 15px; }
+#page-rateio .rt-del:hover:not(:disabled) { color: #fda4af; border-color: rgba(244,63,94,.5); background: rgba(244,63,94,.1); }
+#page-rateio .rt-del:disabled { opacity: .3; cursor: not-allowed; }
+
+#page-rateio .rt-add {
+  width: 100%; margin-top: 12px; padding: 12px; cursor: pointer;
+  background: transparent; color: var(--rt-accent-2);
+  border: 1.5px dashed var(--rt-accent-line); border-radius: var(--radius-sm);
+  font: 700 13px var(--font-body); letter-spacing: .6px; transition: var(--transition);
+}
+#page-rateio .rt-add:hover { background: var(--rt-accent-soft); border-style: solid; }
+
+/* Totais */
+#page-rateio .rt-total {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
+  margin-top: 14px; padding: 14px 16px; border-radius: var(--radius-md);
+  background: var(--rt-accent-soft); border: 1px solid var(--rt-accent-line);
+}
+#page-rateio .rt-total-label { font-size: 12px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--text-secondary); }
+#page-rateio .rt-total-val { font: 800 20px var(--rt-mono); color: var(--text-primary); }
+#page-rateio .rt-total-pct { font: 700 14px var(--rt-mono); color: var(--rt-accent-2); }
+
+/* Distribuição */
+#page-rateio .rt-field-label { display: block; font-size: 11px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 7px; }
+#page-rateio .rt-input.big { font: 700 24px var(--rt-mono); padding: 14px 16px; border-color: var(--rt-accent-line); }
+
+#page-rateio table.rt-table { width: 100%; border-collapse: collapse; margin-top: 18px; }
+#page-rateio .rt-table th {
+  text-align: left; padding: 8px 10px; font-size: 10.5px; font-weight: 700; letter-spacing: .8px;
+  text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border-bright);
+}
+#page-rateio .rt-table th.r, #page-rateio .rt-table td.r { text-align: right; }
+#page-rateio .rt-table td { padding: 11px 10px; border-bottom: 1px solid var(--border); font-size: 13.5px; }
+#page-rateio .rt-table td.name { max-width: 190px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+#page-rateio .rt-table td.num { font-family: var(--rt-mono); font-weight: 600; }
+#page-rateio .rt-table td.val { white-space: nowrap; font-family: var(--rt-mono); font-weight: 800; font-size: 14.5px; color: var(--text-primary); }
+#page-rateio .rt-table td.pc { font-family: var(--rt-mono); color: var(--rt-accent-2); font-weight: 700; }
+#page-rateio .rt-table tfoot td { border-bottom: 0; border-top: 2px solid var(--rt-accent-line); font-weight: 800; background: var(--rt-accent-soft); }
+#page-rateio .rt-table tr.adj td.val::after { content: " *"; color: var(--rt-warn); }
+#page-rateio .rt-empty { padding: 22px 10px; text-align: center; color: var(--text-secondary); font-size: 13px; }
+
+/* Conferência */
+#page-rateio .rt-check { margin-top: 16px; display: grid; gap: 8px; }
+#page-rateio .rt-check-item {
+  display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: var(--radius-sm);
+  font-size: 12.5px; line-height: 1.4; border: 1px solid var(--border); background: var(--bg-surface); color: var(--text-secondary);
+}
+#page-rateio .rt-check-item b { color: var(--text-primary); }
+#page-rateio .rt-check-item .ic {
+  width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800;
+}
+#page-rateio .rt-check-item.ok { border-color: rgba(34,197,94,.3); background: rgba(34,197,94,.07); }
+#page-rateio .rt-check-item.ok .ic { background: rgba(34,197,94,.2); color: #4ade80; }
+#page-rateio .rt-check-item.warn { border-color: rgba(245,158,11,.3); background: rgba(245,158,11,.07); }
+#page-rateio .rt-check-item.warn .ic { background: rgba(245,158,11,.2); color: #fbbf24; }
+#page-rateio .rt-check-item.err { border-color: rgba(244,63,94,.3); background: rgba(244,63,94,.07); }
+#page-rateio .rt-check-item.err .ic { background: rgba(244,63,94,.2); color: #fda4af; }
+
+#page-rateio .rt-principle {
+  margin-top: 22px; padding: 14px 18px; border-radius: var(--radius-md);
+  border: 1px solid var(--border); background: var(--bg-surface);
+  font-size: 12.5px; color: var(--text-secondary); line-height: 1.6;
+}
+#page-rateio .rt-principle b { color: var(--rt-accent-2); }
+
+#page-rateio .rt-toast {
+  position: fixed; bottom: 24px; right: 24px; z-index: 10000;
+  background: var(--bg-elevated); border: 1px solid var(--border-bright); border-left: 3px solid var(--rt-accent);
+  color: var(--text-primary); padding: 12px 18px; border-radius: var(--radius-md);
+  font-size: 13px; font-weight: 500; box-shadow: var(--shadow-card);
+  opacity: 0; transform: translateY(10px); pointer-events: none; transition: opacity .25s, transform .25s;
+}
+#page-rateio .rt-toast.show { opacity: 1; transform: translateY(0); }
+#page-rateio .rt-toast.err { border-left-color: var(--rt-err); }
+
+/* Responsivo */
+@media (max-width: 1100px) {
+  #page-rateio .rt-grid { grid-template-columns: 1fr; }
+  #page-rateio .rt-summary { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 640px) {
+  #page-rateio .rt-summary { grid-template-columns: 1fr; }
+  #page-rateio .rt-cols { display: none; }
+  #page-rateio .rt-row {
+    grid-template-columns: 1fr 1fr 36px; grid-template-areas: "name name del" "val pct pct";
+    padding: 12px 0;
+  }
+  #page-rateio .rt-row .c-name { grid-area: name; }
+  #page-rateio .rt-row .c-val { grid-area: val; }
+  #page-rateio .rt-row .c-pct { grid-area: pct; }
+  #page-rateio .rt-row .c-del { grid-area: del; }
+  #page-rateio .rt-title { font-size: 19px; }
+  #page-rateio .rt-actions { width: 100%; }
+  #page-rateio .rt-actions .rt-btn { flex: 1; justify-content: center; }
+  #page-rateio .rt-input.big { font-size: 20px; }
+  #page-rateio .rt-table td.name { max-width: 90px; }
+  #page-rateio .rt-table td.val { font-size: 12.5px; }
+  #page-rateio .rt-table td, #page-rateio .rt-table th { padding-left: 6px; padding-right: 6px; }
+}
+</style>
 </head>
 <body>
 <div id="app">
@@ -5959,6 +6198,10 @@ input.cap-date.form-input {
     <button class="sidebar-btn" onclick="showPage('numera')" title="NUMERA — Normalizador Universal de CPF e CNPJ">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h5M8 17h3"/></svg>
       <span class="sb-label">NUMERA</span>
+    </button>
+    <button class="sidebar-btn" onclick="showPage('rateio')" title="RATEIO — Calculadora de Rateio Proporcional por Percentuais">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
+      <span class="sb-label">Rateio</span>
     </button>
     <button class="sidebar-btn" onclick="showPage('config')" title="Configurações">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -6249,6 +6492,15 @@ input.cap-date.form-input {
           <div class="card-tag">Módulo Incorporado</div>
           <div class="card-name">NUMERA</div>
           <div class="card-desc">Normalizador universal de CPF e CNPJ: extração e padronização de documentos a partir de texto ou planilhas.</div>
+          <div class="card-arrow">↗</div>
+        </div>
+        <div class="module-card rateio" onclick="showPage('rateio')">
+          <div class="card-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
+          </div>
+          <div class="card-tag">Módulo Incorporado</div>
+          <div class="card-name">RATEIO</div>
+          <div class="card-desc">Calculadora de rateio proporcional: apura o percentual de cada item e distribui um novo valor mantendo a proporção.</div>
           <div class="card-arrow">↗</div>
         </div>
       </div>
@@ -8581,6 +8833,96 @@ input.cap-date.form-input {
 <footer>NUMERA — processamento 100% local no navegador. Nenhum dado é enviado a servidores externos.</footer>
 
 <div class="toast" id="numera-toast"></div>
+    </div>
+
+
+    <!-- ==================== MÓDULO: RATEIO — CALCULADORA DE RATEIO PROPORCIONAL POR PERCENTUAIS ====================
+         Módulo independente: cálculo 100% local, aritmética exata em centavos (BigInt).
+         Estado em memória + localStorage próprio (chave sismint_rateio_v1); não usa State.* nem Supabase. ==================== -->
+    <div id="page-rateio" class="page">
+      <div class="rt-wrap">
+
+        <div class="rt-head">
+          <div class="rt-brand">
+            <div class="rt-logo">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
+            </div>
+            <div>
+              <div class="rt-title">RATEIO PROPORCIONAL</div>
+              <div class="rt-sub">Calcula a participação percentual de cada item e distribui um novo valor mantendo a proporção.</div>
+            </div>
+          </div>
+          <div class="rt-actions">
+            <button class="rt-btn" id="rateio-btnCopy" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copiar resultados
+            </button>
+            <button class="rt-btn" id="rateio-btnPrint" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+              Imprimir / PDF
+            </button>
+            <button class="rt-btn danger" id="rateio-btnClear" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+              Limpar
+            </button>
+          </div>
+        </div>
+
+        <!-- RESUMO -->
+        <div class="rt-summary">
+          <div class="rt-stat"><div class="rt-stat-label">Total de referência</div><div class="rt-stat-value" id="rateio-sumRef">R$ 0,00</div><div class="rt-stat-note" id="rateio-sumRefNote">0 itens</div></div>
+          <div class="rt-stat s2"><div class="rt-stat-label">Total a distribuir</div><div class="rt-stat-value" id="rateio-sumDist">R$ 0,00</div><div class="rt-stat-note">Valor informado para rateio</div></div>
+          <div class="rt-stat s3"><div class="rt-stat-label">Soma dos percentuais</div><div class="rt-stat-value" id="rateio-sumPct">—</div><div class="rt-stat-note" id="rateio-sumPctNote">Aguardando valores</div></div>
+          <div class="rt-stat s4" id="rateio-statCheck"><div class="rt-stat-label">Conferência</div><div class="rt-stat-value" id="rateio-sumCheck">—</div><div class="rt-stat-note" id="rateio-sumCheckNote">Aguardando valores</div></div>
+        </div>
+
+        <div class="rt-grid">
+
+          <!-- ETAPA 1 -->
+          <section class="rt-panel">
+            <div class="rt-panel-head">
+              <div class="rt-panel-title"><span class="rt-step">1</span>VALORES DE REFERÊNCIA</div>
+            </div>
+            <div class="rt-panel-body">
+              <p class="rt-hint">Informe os valores originais. O percentual de cada item é calculado automaticamente: <b>valor do item ÷ soma total × 100</b>.</p>
+              <div class="rt-cols"><span>Item</span><span style="text-align:right">Valor (R$)</span><span>Participação</span><span></span></div>
+              <div id="rateio-rows"></div>
+              <button class="rt-add" id="rateio-btnAdd" type="button">+ ADICIONAR ITEM</button>
+              <div class="rt-total">
+                <span class="rt-total-label">Total dos valores de referência</span>
+                <span><span class="rt-total-val" id="rateio-totalRef">R$ 0,00</span> <span class="rt-total-pct" id="rateio-totalRefPct"></span></span>
+              </div>
+            </div>
+          </section>
+
+          <!-- ETAPA 2 -->
+          <section class="rt-panel">
+            <div class="rt-panel-head">
+              <div class="rt-panel-title"><span class="rt-step">2</span>DISTRIBUIÇÃO PROPORCIONAL</div>
+            </div>
+            <div class="rt-panel-body">
+              <label class="rt-field-label" for="rateio-newTotal">Novo valor total para distribuição</label>
+              <input class="rt-input big money" id="rateio-newTotal" type="text" inputmode="numeric" autocomplete="off" placeholder="0,00">
+
+              <table class="rt-table">
+                <thead><tr><th>Item</th><th class="r">Percentual aplicado</th><th class="r">Valor distribuído</th></tr></thead>
+                <tbody id="rateio-distBody"></tbody>
+                <tfoot id="rateio-distFoot"></tfoot>
+              </table>
+
+              <div class="rt-check" id="rateio-checks"></div>
+            </div>
+          </section>
+
+        </div>
+
+        <div class="rt-principle">
+          <b>Princípio:</b> os valores originais determinam os percentuais; os percentuais determinam a distribuição do novo valor.
+          Os cálculos usam o percentual com precisão integral (não o valor arredondado exibido) e qualquer diferença de centavos é ajustada no último item, de modo que a soma distribuída seja sempre exatamente igual ao valor informado.
+        </div>
+
+      </div>
+      <div class="rt-toast" id="rateio-toast"></div>
     </div>
 
   </main><!-- /main -->
@@ -20943,6 +21285,440 @@ renderTable();
 
 })();
 
+</script>
+
+<!-- ============================================================
+     MÓDULO RATEIO — SCRIPT INDEPENDENTE
+     Aritmética exata em centavos (BigInt): sem erros de ponto flutuante.
+     Persistência própria (localStorage, chave sismint_rateio_v1); não toca em State.* nem Supabase.
+     ============================================================ -->
+<script id="rateio-module-script">
+(function(){
+"use strict";
+
+const root = document.getElementById("page-rateio");
+if (!root) return;
+
+const LS_KEY = "sismint_rateio_v1";
+const MAX_DIGITS = 15;            // até 9.999.999.999.999,99
+const MIN_ITEMS = 2;
+
+/* ===================== FORMATAÇÃO ===================== */
+const pad2 = n => String(n).padStart(2, "0");
+const groupInt = bi => bi.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+function fmtMoney(c) {               // BigInt centavos -> "R$ 1.234,56"
+  const neg = c < 0n, a = neg ? -c : c;
+  return (neg ? "-" : "") + "R$ " + groupInt(a / 100n) + "," + pad2(a % 100n);
+}
+function fmtInput(c) {               // BigInt centavos -> "1.234,56" ("" se zero)
+  return c === 0n ? "" : groupInt(c / 100n) + "," + pad2(c % 100n);
+}
+function fmtPct(h) {                 // centésimos de % (BigInt) -> "71,61%"
+  return (h / 100n).toString() + "," + pad2(h % 100n) + "%";
+}
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+}
+
+/* ===================== ENTRADA DE VALORES ===================== */
+// Máscara de digitação: só dígitos são aceitos (nunca negativos); os 2 últimos são centavos.
+function maskToCents(raw) {
+  let d = String(raw).replace(/\D/g, "").replace(/^0+/, "");
+  if (d.length > MAX_DIGITS) d = d.slice(0, MAX_DIGITS);
+  return d === "" ? 0n : BigInt(d);
+}
+// Interpreta texto colado: "29.080,22", "29080.22", "R$ 1.500", "1,234.56"...
+function parseLoose(text) {
+  const t = String(text).replace(/[^\d.,]/g, "");
+  if (!/\d/.test(t)) return null;
+  const lc = t.lastIndexOf(","), ld = t.lastIndexOf(".");
+  let intp = t, frac = "";
+  if (lc > -1 && ld > -1) {                       // os dois: o último é o decimal
+    const k = Math.max(lc, ld);
+    intp = t.slice(0, k); frac = t.slice(k + 1);
+  } else if (lc > -1) {                           // só vírgula: decimal (padrão BR)
+    intp = t.slice(0, lc); frac = t.slice(lc + 1);
+  } else if (ld > -1) {                           // só ponto: decimal apenas se único e com 1–2 casas
+    const after = t.length - ld - 1;
+    if (t.indexOf(".") === ld && after >= 1 && after <= 2) { intp = t.slice(0, ld); frac = t.slice(ld + 1); }
+  }
+  intp = intp.replace(/\D/g, "").replace(/^0+/, "");
+  frac = (frac.replace(/\D/g, "") + "00").slice(0, 2);
+  if (intp.length + 2 > MAX_DIGITS) return null;
+  return BigInt(intp || "0") * 100n + BigInt(frac);
+}
+function setMoneyInput(el, c) {
+  el.value = fmtInput(c);
+  try { el.setSelectionRange(el.value.length, el.value.length); } catch (e) {}
+}
+
+/* ===================== NÚCLEO DE CÁLCULO (puro) ===================== */
+// values: BigInt[] (centavos). total: BigInt (centavos).
+// Percentual real = valor ÷ soma (precisão integral, mantida como fração exata).
+// Distribuição = total × valor ÷ soma, arredondada ao centavo; a diferença vai para o
+// último item com participação, garantindo soma exatamente igual ao total.
+function compute(values, total) {
+  const n = values.length;
+  const S = values.reduce((a, v) => a + v, 0n);
+  if (S === 0n) return { valid: false, S, total };
+
+  // percentuais exibidos: centésimos de ponto percentual, arredondamento half-up
+  const pct = values.map(v => (v * 20000n + S) / (2n * S));
+  const pctShownSum = pct.reduce((a, v) => a + v, 0n);
+
+  let dist = values.map(v => (2n * v * total + S) / (2n * S));
+  let last = -1;
+  for (let i = n - 1; i >= 0; i--) if (values[i] > 0n) { last = i; break; }
+
+  let adjIdx = -1, adjust = 0n, method = "ultimo";
+  let others = 0n;
+  for (let i = 0; i < n; i++) if (i !== last) others += dist[i];
+  const lastVal = total - others;
+
+  if (lastVal >= 0n) {
+    adjust = lastVal - dist[last];
+    dist[last] = lastVal;
+    if (adjust !== 0n) adjIdx = last;
+  } else {
+    // caso raríssimo (item minúsculo): método dos maiores restos
+    method = "restos";
+    dist = values.map(v => (v * total) / S);
+    const rem = values.map(v => (v * total) % S);
+    let left = total - dist.reduce((a, v) => a + v, 0n);
+    const order = rem.map((r, i) => i).sort((a, b) => (rem[b] > rem[a] ? 1 : rem[b] < rem[a] ? -1 : b - a));
+    for (let k = 0; left > 0n && k < order.length; k++, left--) dist[order[k]] += 1n;
+  }
+
+  const distSum = dist.reduce((a, v) => a + v, 0n);
+  return {
+    valid: true, S, total, pct, pctShownSum, dist, distSum,
+    adjIdx, adjust, method,
+    exactOk: distSum === total
+  };
+}
+
+/* ===================== ESTADO ===================== */
+let items = [];     // { id, name, cents:BigInt }
+let newTotal = 0n;
+let seq = 0;        // contador para nomes "Item N"
+
+function newItem(cents) {
+  seq++;
+  return { id: "r" + Date.now().toString(36) + seq, name: "Item " + seq, cents: cents || 0n };
+}
+function resetState() {
+  seq = 0;
+  items = [newItem(), newItem()];
+  newTotal = 0n;
+}
+function save() {
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify({
+      v: 1, seq, newTotal: newTotal.toString(),
+      items: items.map(i => ({ id: i.id, name: i.name, cents: i.cents.toString() }))
+    }));
+  } catch (e) {}
+}
+function load() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return false;
+    const d = JSON.parse(raw);
+    if (!d || !Array.isArray(d.items) || d.items.length < MIN_ITEMS) return false;
+    items = d.items.map(i => ({
+      id: String(i.id), name: String(i.name || "").slice(0, 60),
+      cents: /^\d{1,15}$/.test(i.cents) ? BigInt(i.cents) : 0n
+    }));
+    newTotal = /^\d{1,15}$/.test(d.newTotal) ? BigInt(d.newTotal) : 0n;
+    seq = Math.max(parseInt(d.seq, 10) || 0, items.length);
+    return true;
+  } catch (e) { return false; }
+}
+
+/* ===================== DOM ===================== */
+const $ = id => document.getElementById("rateio-" + id);
+const rowsEl = $("rows");
+const dispName = (it, idx) => (it.name.trim() || "Item " + (idx + 1));
+
+const ICON_TRASH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>';
+
+function renderRows() {
+  const canDel = items.length > MIN_ITEMS;
+  rowsEl.innerHTML = items.map((it, idx) => `
+    <div class="rt-row" data-id="${esc(it.id)}">
+      <div class="c-name"><input class="rt-input" data-f="name" type="text" maxlength="60" value="${esc(it.name)}" placeholder="Item ${idx + 1}" aria-label="Nome do item ${idx + 1}" autocomplete="off"></div>
+      <div class="c-val"><input class="rt-input money" data-f="val" type="text" inputmode="numeric" value="${fmtInput(it.cents)}" placeholder="0,00" aria-label="Valor de referência do item ${idx + 1}" autocomplete="off"></div>
+      <div class="c-pct rt-pct"><div class="rt-pct-val" data-pct>—</div><div class="rt-bar"><i data-bar></i></div></div>
+      <div class="c-del"><button class="rt-del" type="button" data-del ${canDel ? "" : "disabled"} title="${canDel ? "Excluir item" : "Mínimo de 2 itens"}" aria-label="Excluir item ${idx + 1}">${ICON_TRASH}</button></div>
+    </div>`).join("");
+}
+
+function checkItem(kind, icon, html) {
+  return `<div class="rt-check-item ${kind}"><span class="ic">${icon}</span><span>${html}</span></div>`;
+}
+
+function update() {
+  const r = compute(items.map(i => i.cents), newTotal);
+  const S = r.S;
+
+  // — linhas de referência
+  rowsEl.querySelectorAll(".rt-row").forEach((row, idx) => {
+    row.querySelector("[data-pct]").textContent = r.valid ? fmtPct(r.pct[idx]) : "—";
+    row.querySelector("[data-bar]").style.width = r.valid ? (Number(items[idx].cents) * 100 / Number(S)).toFixed(2) + "%" : "0%";
+  });
+
+  // — totais de referência
+  $("totalRef").textContent = fmtMoney(S);
+  $("totalRefPct").textContent = r.valid ? "· 100,00%" : "";
+  $("sumRef").textContent = fmtMoney(S);
+  $("sumRefNote").textContent = items.length + " itens";
+  $("sumDist").textContent = fmtMoney(newTotal);
+
+  // — tabela de distribuição
+  const body = $("distBody"), foot = $("distFoot");
+  const checks = [];
+  if (!r.valid) {
+    body.innerHTML = `<tr><td colspan="3" class="rt-empty">Informe ao menos um valor de referência maior que zero para calcular os percentuais.</td></tr>`;
+    foot.innerHTML = "";
+    $("sumPct").textContent = "—";
+    $("sumPctNote").textContent = "Aguardando valores";
+    $("sumCheck").textContent = "—";
+    $("sumCheckNote").textContent = "Aguardando valores";
+    $("statCheck").classList.remove("bad");
+    checks.push(checkItem("warn", "!", "Todos os valores de referência estão zerados — os percentuais não são calculados."));
+  } else {
+    body.innerHTML = items.map((it, idx) => `
+      <tr class="${r.adjIdx === idx ? "adj" : ""}">
+        <td class="name" title="${esc(dispName(it, idx))}">${esc(dispName(it, idx))}</td>
+        <td class="r pc">${fmtPct(r.pct[idx])}</td>
+        <td class="r val">${fmtMoney(r.dist[idx])}</td>
+      </tr>`).join("");
+    foot.innerHTML = `<tr><td>Total</td><td class="r pc">100,00%</td><td class="r val">${fmtMoney(r.distSum)}</td></tr>`;
+
+    const shownOk = r.pctShownSum === 10000n;
+    $("sumPct").textContent = "100,00%";
+    $("sumPctNote").textContent = shownOk ? "Soma exata dos percentuais" : "Exibidos somam " + fmtPct(r.pctShownSum) + " (arredondamento visual)";
+
+    checks.push(checkItem("ok", "✓", `Soma dos percentuais = <b>100,00%</b> (precisão integral).` +
+      (shownOk ? "" : ` Os valores exibidos somam ${fmtPct(r.pctShownSum)} apenas por arredondamento visual; o cálculo usa o percentual completo.`)));
+
+    if (newTotal === 0n) {
+      checks.push(checkItem("warn", "!", "Informe o <b>novo valor total</b> para distribuir entre os itens."));
+      $("sumCheck").textContent = "OK";
+      $("sumCheckNote").textContent = "Percentuais = 100%";
+      $("statCheck").classList.remove("bad");
+    } else if (r.exactOk) {
+      checks.push(checkItem("ok", "✓", `Soma distribuída = <b>${fmtMoney(r.distSum)}</b> = total informado.`));
+      $("sumCheck").textContent = "OK";
+      $("sumCheckNote").textContent = "Distribuído = total informado";
+      $("statCheck").classList.remove("bad");
+    } else {
+      checks.push(checkItem("err", "✕", `Soma distribuída (${fmtMoney(r.distSum)}) difere do total informado.`));
+      $("sumCheck").textContent = "ERRO";
+      $("sumCheckNote").textContent = "Soma divergente";
+      $("statCheck").classList.add("bad");
+    }
+
+    if (r.adjIdx > -1 && r.adjust !== 0n) {
+      const sgn = r.adjust > 0n ? "+" : "−";
+      const abs = r.adjust < 0n ? -r.adjust : r.adjust;
+      checks.push(checkItem("warn", "*", `Diferença de arredondamento de <b>${sgn}${fmtMoney(abs)}</b> ajustada em <b>${esc(dispName(items[r.adjIdx], r.adjIdx))}</b> (marcado com *), para fechar exatamente o total.`));
+    } else if (r.method === "restos") {
+      checks.push(checkItem("warn", "*", "Diferença de centavos distribuída pelo método dos maiores restos."));
+    }
+  }
+  $("checks").innerHTML = checks.join("");
+  save();
+  return r;
+}
+
+/* ===================== TOAST ===================== */
+let toastTimer = null;
+function toast(msg, isErr) {
+  const t = $("toast");
+  t.textContent = msg;
+  t.classList.toggle("err", !!isErr);
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 2600);
+}
+
+/* ===================== EVENTOS ===================== */
+rowsEl.addEventListener("input", e => {
+  const el = e.target, row = el.closest(".rt-row");
+  if (!row) return;
+  const it = items.find(i => i.id === row.dataset.id);
+  if (!it) return;
+  if (el.dataset.f === "name") {
+    it.name = el.value;
+  } else if (el.dataset.f === "val") {
+    it.cents = maskToCents(el.value);
+    setMoneyInput(el, it.cents);
+  }
+  update();
+});
+
+rowsEl.addEventListener("paste", e => {
+  const el = e.target;
+  if (el.dataset.f !== "val") return;
+  e.preventDefault();
+  const c = parseLoose((e.clipboardData || window.clipboardData).getData("text"));
+  if (c === null) { toast("Não foi possível interpretar o valor colado.", true); return; }
+  const it = items.find(i => i.id === el.closest(".rt-row").dataset.id);
+  it.cents = c;
+  setMoneyInput(el, c);
+  update();
+});
+
+rowsEl.addEventListener("click", e => {
+  const btn = e.target.closest("[data-del]");
+  if (!btn || btn.disabled) return;
+  const id = btn.closest(".rt-row").dataset.id;
+  if (items.length <= MIN_ITEMS) return;
+  items = items.filter(i => i.id !== id);
+  renderRows();
+  update();
+});
+
+$("btnAdd").addEventListener("click", () => {
+  items.push(newItem());
+  renderRows();
+  update();
+  const inputs = rowsEl.querySelectorAll('[data-f="name"]');
+  const last = inputs[inputs.length - 1];
+  if (last) { last.focus(); last.select(); }
+});
+
+const newTotalEl = $("newTotal");
+newTotalEl.addEventListener("input", () => {
+  newTotal = maskToCents(newTotalEl.value);
+  setMoneyInput(newTotalEl, newTotal);
+  update();
+});
+newTotalEl.addEventListener("paste", e => {
+  e.preventDefault();
+  const c = parseLoose((e.clipboardData || window.clipboardData).getData("text"));
+  if (c === null) { toast("Não foi possível interpretar o valor colado.", true); return; }
+  newTotal = c;
+  setMoneyInput(newTotalEl, c);
+  update();
+});
+
+$("btnClear").addEventListener("click", () => {
+  const hasData = newTotal > 0n || items.some(i => i.cents > 0n) || items.length > MIN_ITEMS;
+  if (hasData && !window.confirm("Limpar todos os dados e iniciar um novo cálculo?")) return;
+  resetState();
+  renderRows();
+  setMoneyInput(newTotalEl, 0n);
+  update();
+  toast("Dados limpos. Novo cálculo iniciado.");
+});
+
+/* ===================== RELATÓRIO: COPIAR / IMPRIMIR ===================== */
+function buildReport() {
+  const r = compute(items.map(i => i.cents), newTotal);
+  if (!r.valid) return null;
+  const now = new Date().toLocaleString("pt-BR");
+  const refRows = items.map((it, i) => ({ name: dispName(it, i), val: fmtMoney(it.cents), pct: fmtPct(r.pct[i]) }));
+  const hasDist = newTotal > 0n;
+  const distRows = items.map((it, i) => ({ name: dispName(it, i), pct: fmtPct(r.pct[i]), val: fmtMoney(r.dist[i]), adj: r.adjIdx === i }));
+  const notes = [];
+  notes.push("Soma dos percentuais = 100,00% (precisão integral)." + (r.pctShownSum === 10000n ? "" : " Valores exibidos somam " + fmtPct(r.pctShownSum) + " por arredondamento visual."));
+  if (hasDist) notes.push("Soma distribuída = " + fmtMoney(r.distSum) + " = total informado.");
+  if (hasDist && r.adjIdx > -1) {
+    const abs = r.adjust < 0n ? -r.adjust : r.adjust;
+    notes.push("Ajuste de centavos (" + (r.adjust > 0n ? "+" : "-") + fmtMoney(abs) + ") aplicado em \"" + dispName(items[r.adjIdx], r.adjIdx) + "\".");
+  }
+
+  // texto (tabulado: cola bem em Excel/Sheets)
+  const L = [];
+  L.push("RATEIO PROPORCIONAL — SISMINT", "Gerado em " + now, "");
+  L.push("VALORES DE REFERÊNCIA", "Item\tValor de referência\tParticipação");
+  refRows.forEach(x => L.push(x.name + "\t" + x.val + "\t" + x.pct));
+  L.push("Total\t" + fmtMoney(r.S) + "\t100,00%", "");
+  if (hasDist) {
+    L.push("DISTRIBUIÇÃO PROPORCIONAL — Total a distribuir: " + fmtMoney(newTotal), "Item\tPercentual aplicado\tValor distribuído");
+    distRows.forEach(x => L.push(x.name + "\t" + x.pct + "\t" + x.val));
+    L.push("Total\t100,00%\t" + fmtMoney(r.distSum), "");
+  } else {
+    L.push("DISTRIBUIÇÃO PROPORCIONAL — novo valor total não informado.", "");
+  }
+  notes.forEach(n => L.push("• " + n));
+
+  // html (impressão)
+  const tr = (cells, cls) => "<tr" + (cls ? ' class="' + cls + '"' : "") + ">" + cells + "</tr>";
+  let h = `<h1>Rateio Proporcional</h1><div class="meta">SISMINT · Gerado em ${esc(now)}</div>`;
+  h += `<h2>Valores de referência</h2><table><thead><tr><th>Item</th><th class="r">Valor de referência</th><th class="r">Participação</th></tr></thead><tbody>`;
+  h += refRows.map(x => tr(`<td>${esc(x.name)}</td><td class="r">${esc(x.val)}</td><td class="r">${esc(x.pct)}</td>`)).join("");
+  h += `</tbody><tfoot><tr><td>Total</td><td class="r">${esc(fmtMoney(r.S))}</td><td class="r">100,00%</td></tr></tfoot></table>`;
+  if (hasDist) {
+    h += `<h2>Distribuição proporcional</h2><div class="meta">Total a distribuir: <b>${esc(fmtMoney(newTotal))}</b></div>`;
+    h += `<table><thead><tr><th>Item</th><th class="r">Percentual aplicado</th><th class="r">Valor distribuído</th></tr></thead><tbody>`;
+    h += distRows.map(x => tr(`<td>${esc(x.name)}</td><td class="r">${esc(x.pct)}</td><td class="r">${esc(x.val)}${x.adj ? " *" : ""}</td>`)).join("");
+    h += `</tbody><tfoot><tr><td>Total</td><td class="r">100,00%</td><td class="r">${esc(fmtMoney(r.distSum))}</td></tr></tfoot></table>`;
+  } else {
+    h += `<h2>Distribuição proporcional</h2><div class="meta">Novo valor total para distribuição não informado.</div>`;
+  }
+  h += `<ul class="notes">${notes.map(n => "<li>" + esc(n) + "</li>").join("")}</ul>`;
+  return { text: L.join("\n"), html: h };
+}
+
+$("btnCopy").addEventListener("click", async () => {
+  const rep = buildReport();
+  if (!rep) { toast("Informe os valores de referência antes de copiar.", true); return; }
+  try {
+    await navigator.clipboard.writeText(rep.text);
+  } catch (err) {
+    const ta = document.createElement("textarea");
+    ta.value = rep.text; ta.style.cssText = "position:fixed;opacity:0;top:0;left:0";
+    document.body.appendChild(ta); ta.select();
+    let ok = false;
+    try { ok = document.execCommand("copy"); } catch (e2) {}
+    ta.remove();
+    if (!ok) { toast("Não foi possível copiar automaticamente.", true); return; }
+  }
+  toast("Resultados copiados para a área de transferência.");
+});
+
+$("btnPrint").addEventListener("click", () => {
+  const rep = buildReport();
+  if (!rep) { toast("Informe os valores de referência antes de imprimir.", true); return; }
+  const css = `
+    @page { size: A4; margin: 16mm; }
+    * { box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; color: #111; font-size: 12.5px; margin: 0; }
+    h1 { font-size: 20px; margin: 0 0 2px; border-bottom: 3px solid #0d9488; padding-bottom: 6px; }
+    h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .6px; margin: 22px 0 6px; color: #0f766e; }
+    .meta { color: #555; font-size: 11.5px; margin-bottom: 6px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 6px; }
+    th, td { padding: 7px 9px; border: 1px solid #cbd5d1; text-align: left; }
+    th { background: #e6f4f1; font-size: 11px; text-transform: uppercase; letter-spacing: .4px; }
+    td.r, th.r { text-align: right; font-variant-numeric: tabular-nums; }
+    tfoot td { font-weight: 700; background: #f1f5f4; }
+    ul.notes { margin: 16px 0 0; padding-left: 18px; color: #333; font-size: 11.5px; line-height: 1.6; }`;
+  const f = document.createElement("iframe");
+  f.style.cssText = "position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden";
+  document.body.appendChild(f);
+  const d = f.contentWindow.document;
+  d.open();
+  d.write(`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Rateio Proporcional</title><style>${css}</style></head><body>${rep.html}</body></html>`);
+  d.close();
+  setTimeout(() => {
+    try { f.contentWindow.focus(); f.contentWindow.print(); } catch (e) { toast("Não foi possível abrir a impressão.", true); }
+    setTimeout(() => f.remove(), 60000);
+  }, 300);
+});
+
+/* ===================== INICIALIZAÇÃO ===================== */
+if (!load()) resetState();
+renderRows();
+setMoneyInput(newTotalEl, newTotal);
+update();
+
+// API mínima para testes/integrações
+window.RateioCalc = { compute, parseLoose, fmtMoney, fmtPct, maskToCents };
+})();
 </script>
 
 </body>
