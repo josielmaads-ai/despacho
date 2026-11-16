@@ -6102,6 +6102,19 @@ input.cap-date.form-input {
 #page-rateio .rt-toast.show { opacity: 1; transform: translateY(0); }
 #page-rateio .rt-toast.err { border-left-color: var(--rt-err); }
 
+
+#page-rateio [hidden] { display: none !important; }
+#page-rateio .rt-toggle { display: flex; gap: 10px; align-items: flex-start; margin-top: 14px; font-size: 12.5px; color: var(--text-secondary); cursor: pointer; line-height: 1.45; }
+#page-rateio .rt-toggle input { margin-top: 3px; accent-color: var(--rt-accent); width: 16px; height: 16px; flex-shrink: 0; }
+#page-rateio .rt-toggle b { color: var(--rt-accent-2); }
+#page-rateio .rt-siafi-opts { display: flex; align-items: center; gap: 10px; margin-top: 10px; font-size: 12px; color: var(--text-secondary); }
+#page-rateio .rt-siafi-opts select { width: 80px; padding: 6px 8px; font-size: 13px; }
+#page-rateio .rt-opt { display: flex; align-items: center; gap: 7px; padding: 3px 0; font: 600 12px var(--rt-mono); cursor: pointer; white-space: nowrap; }
+#page-rateio .rt-opt input { accent-color: var(--rt-accent); }
+#page-rateio .rt-opt small { color: var(--text-secondary); font-weight: 500; }
+#page-rateio .rt-apply { margin-left: 8px; padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(245,158,11,.5); background: transparent; color: #fbbf24; font: 700 11.5px var(--font-body); cursor: pointer; }
+#page-rateio .rt-apply:hover { background: rgba(245,158,11,.15); }
+
 /* Responsivo */
 @media (max-width: 1100px) {
   #page-rateio .rt-grid { grid-template-columns: 1fr; }
@@ -8904,10 +8917,21 @@ input.cap-date.form-input {
               <label class="rt-field-label" for="rateio-newTotal">Novo valor total para distribuição</label>
               <input class="rt-input big money" id="rateio-newTotal" type="text" inputmode="numeric" autocomplete="off" placeholder="0,00">
 
-              <table class="rt-table">
+              <label class="rt-toggle"><input type="checkbox" id="rateio-siafi"><span><b>Modo SIAFI</b> — valor do item = quantidade × valor unitário (evita a "diferença de arredondamento" no empenho)</span></label>
+              <div class="rt-siafi-opts" id="rateio-siafiOpts" hidden>
+                <label for="rateio-dec">Casas decimais da quantidade</label>
+                <select class="rt-input" id="rateio-dec"><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5" selected>5</option><option value="6">6</option><option value="7">7</option></select>
+              </div>
+
+              <table class="rt-table" id="rateio-tblNormal">
                 <thead><tr><th>Item</th><th class="r">Percentual aplicado</th><th class="r">Valor distribuído</th></tr></thead>
                 <tbody id="rateio-distBody"></tbody>
                 <tfoot id="rateio-distFoot"></tfoot>
+              </table>
+              <table class="rt-table" id="rateio-tblSiafi" hidden>
+                <thead><tr><th>Item</th><th class="r">Valor unitário</th><th>Quantidade (escolha)</th><th class="r">Valor calculado</th></tr></thead>
+                <tbody id="rateio-siafiBody"></tbody>
+                <tfoot id="rateio-siafiFoot"></tfoot>
               </table>
 
               <div class="rt-check" id="rateio-checks"></div>
@@ -21398,25 +21422,69 @@ function compute(values, total) {
   };
 }
 
+/* ===================== MODO SIAFI (quantidade × valor unitário) ===================== */
+// No empenho, valor do item = round(quantidade × valor unitário, 2) e a quantidade tem N casas.
+// Como o rateio dá a MESMA quantidade ideal a todos os itens (total ÷ soma), ela é truncada/arredondada
+// para N casas gerando duas opções válidas (piso e teto), exatamente como a tela do SIAFI.
+// A combinação padrão é a que deixa a soma mais próxima do total informado.
+function computeSiafi(values, total, dec, picks) {
+  const S = values.reduce((a, v) => a + v, 0n);
+  if (S === 0n) return { valid: false };
+  const P = 10n ** BigInt(dec);
+  const num = total * P;
+  const qf = num / S, exact = (num % S) === 0n, qc = exact ? qf : qf + 1n;
+  const valOf = (q, u) => (2n * q * u + P) / (2n * P);        // half-up ao centavo
+  const n = values.length;
+  const vf = values.map(u => valOf(qf, u)), vc = values.map(u => valOf(qc, u));
+  const dev = (val, i) => { const d = val * S - total * values[i]; return d < 0n ? -d : d; };
+  const idx = []; values.forEach((u, i) => { if (u > 0n) idx.push(i); });
+  const auto = new Array(n).fill("f");
+  if (!exact) {
+    if (idx.length <= 16) {
+      let best = null;
+      for (let mask = 0; mask < (1 << idx.length); mask++) {
+        let sum = 0n, dv = 0n;
+        idx.forEach((i, b) => { const v = (mask >> b) & 1 ? vc[i] : vf[i]; sum += v; dv += dev(v, i); });
+        const diff = sum > total ? sum - total : total - sum;
+        if (!best || diff < best.diff || (diff === best.diff && dv < best.dv)) best = { mask, diff, dv };
+      }
+      idx.forEach((i, b) => { auto[i] = (best.mask >> b) & 1 ? "c" : "f"; });
+    } else {
+      idx.forEach(i => { auto[i] = dev(vc[i], i) < dev(vf[i], i) ? "c" : "f"; });
+    }
+  }
+  const choice = values.map((u, i) => (!exact && picks && picks[i] && u > 0n) ? picks[i] : auto[i]);
+  const qty = choice.map(c => (c === "c" ? qc : qf));
+  const val = choice.map((c, i) => (c === "c" ? vc[i] : vf[i]));
+  const sum = val.reduce((a, v) => a + v, 0n);
+  return { valid: true, S, P, dec, qf, qc, exact, vf, vc, choice, qty, val, sum, diff: sum - total };
+}
+function fmtQty(q, P, dec) {
+  return groupInt(q / P) + "," + (q % P).toString().padStart(dec, "0");
+}
+
 /* ===================== ESTADO ===================== */
 let items = [];     // { id, name, cents:BigInt }
 let newTotal = 0n;
 let seq = 0;        // contador para nomes "Item N"
+let siafi = false;  // Modo SIAFI
+let dec = 5;        // casas decimais da quantidade
+const clearPicks = () => items.forEach(i => { i.q = null; });
 
 function newItem(cents) {
   seq++;
-  return { id: "r" + Date.now().toString(36) + seq, name: "Item " + seq, cents: cents || 0n };
+  return { id: "r" + Date.now().toString(36) + seq, name: "Item " + seq, cents: cents || 0n, q: null };
 }
 function resetState() {
-  seq = 0;
+  seq = 0; siafi = false; dec = 5;
   items = [newItem(), newItem()];
   newTotal = 0n;
 }
 function save() {
   try {
     localStorage.setItem(LS_KEY, JSON.stringify({
-      v: 1, seq, newTotal: newTotal.toString(),
-      items: items.map(i => ({ id: i.id, name: i.name, cents: i.cents.toString() }))
+      v: 2, seq, siafi, dec, newTotal: newTotal.toString(),
+      items: items.map(i => ({ id: i.id, name: i.name, cents: i.cents.toString(), q: i.q }))
     }));
   } catch (e) {}
 }
@@ -21428,8 +21496,11 @@ function load() {
     if (!d || !Array.isArray(d.items) || d.items.length < MIN_ITEMS) return false;
     items = d.items.map(i => ({
       id: String(i.id), name: String(i.name || "").slice(0, 60),
-      cents: /^\d{1,15}$/.test(i.cents) ? BigInt(i.cents) : 0n
+      cents: /^\d{1,15}$/.test(i.cents) ? BigInt(i.cents) : 0n,
+      q: (i.q === "f" || i.q === "c") ? i.q : null
     }));
+    siafi = d.siafi === true;
+    dec = [2,3,4,5,6,7].includes(d.dec) ? d.dec : 5;
     newTotal = /^\d{1,15}$/.test(d.newTotal) ? BigInt(d.newTotal) : 0n;
     seq = Math.max(parseInt(d.seq, 10) || 0, items.length);
     return true;
@@ -21478,6 +21549,15 @@ function update() {
   // — tabela de distribuição
   const body = $("distBody"), foot = $("distFoot");
   const checks = [];
+  $("tblNormal").hidden = siafi;
+  $("tblSiafi").hidden = !siafi;
+  $("siafiOpts").hidden = !siafi;
+  if (siafi && r.valid) {
+    updateSiafi(r, checks);
+    $("checks").innerHTML = checks.join("");
+    save();
+    return r;
+  }
   if (!r.valid) {
     body.innerHTML = `<tr><td colspan="3" class="rt-empty">Informe ao menos um valor de referência maior que zero para calcular os percentuais.</td></tr>`;
     foot.innerHTML = "";
@@ -21533,6 +21613,47 @@ function update() {
   return r;
 }
 
+function updateSiafi(r, checks) {
+  const sf = computeSiafi(items.map(i => i.cents), newTotal, dec, items.map(i => i.q));
+  const body = $("siafiBody"), foot = $("siafiFoot");
+  $("sumPct").textContent = "100,00%";
+  $("sumPctNote").textContent = "Soma exata dos percentuais";
+  if (newTotal === 0n) {
+    body.innerHTML = `<tr><td colspan="4" class="rt-empty">Informe o novo valor total para calcular a quantidade de cada item.</td></tr>`;
+    foot.innerHTML = "";
+    $("sumCheck").textContent = "OK"; $("sumCheckNote").textContent = "Percentuais = 100%";
+    $("statCheck").classList.remove("bad");
+    checks.push(checkItem("warn", "!", "Informe o <b>novo valor total</b> para calcular as quantidades."));
+    return;
+  }
+  body.innerHTML = items.map((it, idx) => {
+    const u = it.cents;
+    let opts;
+    if (u === 0n) opts = '<span style="color:var(--text-muted)">—</span>';
+    else if (sf.exact) opts = `<span class="rt-opt" style="cursor:default">${fmtQty(sf.qf, sf.P, dec)} = ${fmtMoney(sf.vf[idx])}</span>`;
+    else opts = ["f", "c"].map(k => {
+      const q = k === "f" ? sf.qf : sf.qc, v = k === "f" ? sf.vf[idx] : sf.vc[idx];
+      return `<label class="rt-opt"><input type="radio" name="rt-q-${esc(it.id)}" data-q="${k}" data-id="${esc(it.id)}" ${sf.choice[idx] === k ? "checked" : ""}>${fmtQty(q, sf.P, dec)} = ${fmtMoney(v)}</label>`;
+    }).join("");
+    return `<tr><td class="name" title="${esc(dispName(it, idx))}">${esc(dispName(it, idx))}</td><td class="r num">${fmtMoney(u)}</td><td>${opts}</td><td class="r val">${fmtMoney(sf.val[idx])}</td></tr>`;
+  }).join("");
+  foot.innerHTML = `<tr><td>Total</td><td></td><td></td><td class="r val">${fmtMoney(sf.sum)}</td></tr>`;
+
+  const ok = sf.diff === 0n;
+  $("sumCheck").textContent = ok ? "OK" : "AJUSTAR";
+  $("sumCheckNote").textContent = ok ? "Σ qtd × unit. = total informado" : "Diferença de " + (sf.diff > 0n ? "+" : "−") + fmtMoney(sf.diff < 0n ? -sf.diff : sf.diff);
+  $("statCheck").classList.remove("bad");
+  checks.push(checkItem("ok", "✓", `Percentuais somam <b>100,00%</b>. Valor do item = <b>quantidade × valor unitário</b> (${dec} casas), arredondado ao centavo — o mesmo cálculo do SIAFI.`));
+  if (sf.exact) {
+    checks.push(checkItem("ok", "✓", `Quantidade <b>${fmtQty(sf.qf, sf.P, dec)}</b> fecha exatamente o total informado.`));
+  } else if (ok) {
+    checks.push(checkItem("ok", "✓", `A combinação escolhida fecha exatamente em <b>${fmtMoney(sf.sum)}</b> = total informado.`));
+  } else {
+    const abs = sf.diff < 0n ? -sf.diff : sf.diff;
+    checks.push(checkItem("warn", "!", `Com a quantidade limitada a ${dec} casas, o total só pode ser <b>${fmtMoney(sf.sum)}</b> (diferença de ${sf.diff > 0n ? "+" : "−"}${fmtMoney(abs)} do informado). Para fechar sem diferença, use esse valor como total ou aumente as casas decimais. <button type="button" class="rt-apply" data-apply="${sf.sum.toString()}">Usar ${fmtMoney(sf.sum)} como total</button>`));
+  }
+}
+
 /* ===================== TOAST ===================== */
 let toastTimer = null;
 function toast(msg, isErr) {
@@ -21555,6 +21676,7 @@ rowsEl.addEventListener("input", e => {
   } else if (el.dataset.f === "val") {
     it.cents = maskToCents(el.value);
     setMoneyInput(el, it.cents);
+    clearPicks();
   }
   update();
 });
@@ -21568,6 +21690,7 @@ rowsEl.addEventListener("paste", e => {
   const it = items.find(i => i.id === el.closest(".rt-row").dataset.id);
   it.cents = c;
   setMoneyInput(el, c);
+  clearPicks();
   update();
 });
 
@@ -21577,12 +21700,14 @@ rowsEl.addEventListener("click", e => {
   const id = btn.closest(".rt-row").dataset.id;
   if (items.length <= MIN_ITEMS) return;
   items = items.filter(i => i.id !== id);
+  clearPicks();
   renderRows();
   update();
 });
 
 $("btnAdd").addEventListener("click", () => {
   items.push(newItem());
+  clearPicks();
   renderRows();
   update();
   const inputs = rowsEl.querySelectorAll('[data-f="name"]');
@@ -21594,6 +21719,7 @@ const newTotalEl = $("newTotal");
 newTotalEl.addEventListener("input", () => {
   newTotal = maskToCents(newTotalEl.value);
   setMoneyInput(newTotalEl, newTotal);
+  clearPicks();
   update();
 });
 newTotalEl.addEventListener("paste", e => {
@@ -21602,7 +21728,26 @@ newTotalEl.addEventListener("paste", e => {
   if (c === null) { toast("Não foi possível interpretar o valor colado.", true); return; }
   newTotal = c;
   setMoneyInput(newTotalEl, c);
+  clearPicks();
   update();
+});
+
+$("siafi").addEventListener("change", e => { siafi = e.target.checked; clearPicks(); update(); });
+$("dec").addEventListener("change", e => { dec = parseInt(e.target.value, 10) || 5; clearPicks(); update(); });
+$("siafiBody").addEventListener("change", e => {
+  const el = e.target;
+  if (!el.dataset.q) return;
+  const it = items.find(i => i.id === el.dataset.id);
+  if (it) { it.q = el.dataset.q; update(); }
+});
+$("checks").addEventListener("click", e => {
+  const b = e.target.closest("[data-apply]");
+  if (!b) return;
+  newTotal = BigInt(b.dataset.apply);
+  setMoneyInput(newTotalEl, newTotal);
+  clearPicks();
+  update();
+  toast("Total ajustado para " + fmtMoney(newTotal) + ".");
 });
 
 $("btnClear").addEventListener("click", () => {
@@ -21625,8 +21770,11 @@ function buildReport() {
   const distRows = items.map((it, i) => ({ name: dispName(it, i), pct: fmtPct(r.pct[i]), val: fmtMoney(r.dist[i]), adj: r.adjIdx === i }));
   const notes = [];
   notes.push("Soma dos percentuais = 100,00% (precisão integral)." + (r.pctShownSum === 10000n ? "" : " Valores exibidos somam " + fmtPct(r.pctShownSum) + " por arredondamento visual."));
-  if (hasDist) notes.push("Soma distribuída = " + fmtMoney(r.distSum) + " = total informado.");
-  if (hasDist && r.adjIdx > -1) {
+  const sfN = (siafi && hasDist) ? computeSiafi(items.map(i => i.cents), newTotal, dec, items.map(i => i.q)) : null;
+  if (sfN) {
+    notes.push("Modo SIAFI: soma dos valores calculados = " + fmtMoney(sfN.sum) + (sfN.diff === 0n ? " (igual ao total informado)." : " (diferença de " + (sfN.diff > 0n ? "+" : "-") + fmtMoney(sfN.diff < 0n ? -sfN.diff : sfN.diff) + " em relação ao total informado, por limitação de " + dec + " casas na quantidade)."));
+  } else if (hasDist) notes.push("Soma distribuída = " + fmtMoney(r.distSum) + " = total informado.");
+  if (!sfN && hasDist && r.adjIdx > -1) {
     const abs = r.adjust < 0n ? -r.adjust : r.adjust;
     notes.push("Ajuste de centavos (" + (r.adjust > 0n ? "+" : "-") + fmtMoney(abs) + ") aplicado em \"" + dispName(items[r.adjIdx], r.adjIdx) + "\".");
   }
@@ -21637,7 +21785,12 @@ function buildReport() {
   L.push("VALORES DE REFERÊNCIA", "Item\tValor de referência\tParticipação");
   refRows.forEach(x => L.push(x.name + "\t" + x.val + "\t" + x.pct));
   L.push("Total\t" + fmtMoney(r.S) + "\t100,00%", "");
-  if (hasDist) {
+  const sf = (siafi && hasDist) ? computeSiafi(items.map(i => i.cents), newTotal, dec, items.map(i => i.q)) : null;
+  if (sf) {
+    L.push("DISTRIBUIÇÃO PROPORCIONAL (MODO SIAFI) — Total informado: " + fmtMoney(newTotal), "Item\tValor unitário\tQuantidade\tValor calculado");
+    items.forEach((it, i) => L.push(dispName(it, i) + "\t" + fmtMoney(it.cents) + "\t" + (it.cents > 0n ? fmtQty(sf.qty[i], sf.P, dec) : "—") + "\t" + fmtMoney(sf.val[i])));
+    L.push("Total\t\t\t" + fmtMoney(sf.sum), "");
+  } else if (hasDist) {
     L.push("DISTRIBUIÇÃO PROPORCIONAL — Total a distribuir: " + fmtMoney(newTotal), "Item\tPercentual aplicado\tValor distribuído");
     distRows.forEach(x => L.push(x.name + "\t" + x.pct + "\t" + x.val));
     L.push("Total\t100,00%\t" + fmtMoney(r.distSum), "");
@@ -21652,7 +21805,12 @@ function buildReport() {
   h += `<h2>Valores de referência</h2><table><thead><tr><th>Item</th><th class="r">Valor de referência</th><th class="r">Participação</th></tr></thead><tbody>`;
   h += refRows.map(x => tr(`<td>${esc(x.name)}</td><td class="r">${esc(x.val)}</td><td class="r">${esc(x.pct)}</td>`)).join("");
   h += `</tbody><tfoot><tr><td>Total</td><td class="r">${esc(fmtMoney(r.S))}</td><td class="r">100,00%</td></tr></tfoot></table>`;
-  if (hasDist) {
+  if (sf) {
+    h += `<h2>Distribuição proporcional (modo SIAFI)</h2><div class="meta">Total informado: <b>${esc(fmtMoney(newTotal))}</b> · valor do item = quantidade (${dec} casas) × valor unitário</div>`;
+    h += `<table><thead><tr><th>Item</th><th class="r">Valor unitário</th><th class="r">Quantidade</th><th class="r">Valor calculado</th></tr></thead><tbody>`;
+    h += items.map((it, i) => tr(`<td>${esc(dispName(it, i))}</td><td class="r">${esc(fmtMoney(it.cents))}</td><td class="r">${it.cents > 0n ? esc(fmtQty(sf.qty[i], sf.P, dec)) : "—"}</td><td class="r">${esc(fmtMoney(sf.val[i]))}</td>`)).join("");
+    h += `</tbody><tfoot><tr><td colspan="3">Total</td><td class="r">${esc(fmtMoney(sf.sum))}</td></tr></tfoot></table>`;
+  } else if (hasDist) {
     h += `<h2>Distribuição proporcional</h2><div class="meta">Total a distribuir: <b>${esc(fmtMoney(newTotal))}</b></div>`;
     h += `<table><thead><tr><th>Item</th><th class="r">Percentual aplicado</th><th class="r">Valor distribuído</th></tr></thead><tbody>`;
     h += distRows.map(x => tr(`<td>${esc(x.name)}</td><td class="r">${esc(x.pct)}</td><td class="r">${esc(x.val)}${x.adj ? " *" : ""}</td>`)).join("");
@@ -21714,10 +21872,12 @@ $("btnPrint").addEventListener("click", () => {
 if (!load()) resetState();
 renderRows();
 setMoneyInput(newTotalEl, newTotal);
+$("siafi").checked = siafi;
+$("dec").value = String(dec);
 update();
 
 // API mínima para testes/integrações
-window.RateioCalc = { compute, parseLoose, fmtMoney, fmtPct, maskToCents };
+window.RateioCalc = { compute, computeSiafi, fmtQty, parseLoose, fmtMoney, fmtPct, maskToCents };
 })();
 </script>
 
