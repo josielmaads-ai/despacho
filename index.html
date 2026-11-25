@@ -18569,6 +18569,13 @@ function sheetExtractCpfFromRow(cellsRaw){
     const digits = cleanCpf(c);
     if(digits.length === 11 && isValidCpfMath(digits)) return digits;
   }
+  // Estratégia 3 (fallback): 11 dígitos mas com dígito verificador inconsistente.
+  // NÃO descarta a linha: o sistema (cadastro manual e exportação) só exige 11 dígitos,
+  // então a importação segue a mesma regra e apenas sinaliza o CPF no resumo.
+  for(const c of cellsRaw){
+    const digits = cleanCpf(c);
+    if(digits.length === 11 && !/^(\d)\1{10}$/.test(digits) && !/[A-Za-z]/.test(c)) return digits;
+  }
   return "";
 }
 function sheetExtractBancoFromRow(cellsRaw, cpfValue){
@@ -18645,7 +18652,8 @@ function sheetExtractRecordFromRow(rowArray){
     bancoCodigo: bancoCodigo || "",
     agencia: agencia || "",
     conta: conta || "",
-    incompleto: !(bancoCodigo && agencia && conta)
+    incompleto: !(bancoCodigo && agencia && conta),
+    cpfDvInconsistente: !isValidCpfMath(cpf)
   };
 }
 
@@ -18654,24 +18662,28 @@ async function sheetReadFile(file){
   const buf = await file.arrayBuffer();
   const wb = XLSX.read(buf, {type:"array"});
   const records = [];
+  const descartadas = [];
   let linhasLidas = 0;
   wb.SheetNames.forEach(sheetName=>{
     const ws = wb.Sheets[sheetName];
     const rows = XLSX.utils.sheet_to_json(ws, {header:1, raw:false, defval:""});
-    rows.forEach(row=>{
+    rows.forEach((row, idx)=>{
       linhasLidas++;
       const rec = sheetExtractRecordFromRow(row);
       if(rec) records.push(rec);
+      else if(row.some(v=>v!==null && v!==undefined && v.toString().trim()!=="")){
+        descartadas.push(`${sheetName} · linha ${idx+1}`);
+      }
     });
   });
-  return {records, linhas: linhasLidas};
+  return {records, linhas: linhasLidas, descartadas};
 }
 
 /* ---------- mescla registros extraídos no mesmo array `students` já usado pela tabela ---------- */
 function sheetMergeRecordsIntoStudents(records){
   let importados = 0, duplicados = 0;
   records.forEach(rec=>{
-    if(!rec.cpf || !isValidCpfMath(rec.cpf)) return;
+    if(!rec.cpf) return;
     const existing = students.find(s => cleanCpf(s.cpf) === rec.cpf);
     if(existing){
       duplicados++;
@@ -18710,6 +18722,8 @@ function pdfShowImportSummary(stats){
           <li><b>Registros importados:</b> ${stats.importados}</li>
           <li><b>Duplicados (atualizados):</b> ${stats.duplicados}</li>
           <li><b>Registros incompletos:</b> ${stats.incompletos}</li>
+          <li><b>CPF com dígito verificador inconsistente (importados, marque para conferir):</b> ${stats.dvInconsistente}</li>
+          <li><b>Linhas ignoradas (sem CPF de 11 dígitos):</b> ${stats.descartadas.length}${stats.descartadas.length?'<br><small>'+stats.descartadas.slice(0,15).join('<br>')+(stats.descartadas.length>15?'<br>…':'')+'</small>':''}</li>
           <li><b>Erros:</b> ${stats.erros}</li>
           <li><b>Tempo:</b> ${stats.tempo}s</li>
         </ul>
@@ -18737,14 +18751,17 @@ async function pdfHandleFiles(fileList){
   progressBar.style.width = "0%";
 
   const t0 = performance.now();
-  let totalLinhas = 0, totalEncontrados = 0, totalErros = 0, totalImportados = 0, totalDuplicados = 0, totalIncompletos = 0;
+  let totalLinhas = 0, totalEncontrados = 0, totalErros = 0, totalImportados = 0, totalDuplicados = 0, totalIncompletos = 0, totalDvInconsistente = 0;
+  const listaDescartadas = [];
 
   for(let i=0;i<files.length;i++){
     const file = files[i];
     progressLabel.textContent = `Processando arquivo ${i+1} de ${files.length}: ${file.name}`;
     progressBar.style.width = Math.round(((i)/files.length)*100)+"%";
     try{
-      const {records, linhas} = await sheetReadFile(file);
+      const {records, linhas, descartadas} = await sheetReadFile(file);
+      descartadas.forEach(d=>listaDescartadas.push(`${file.name} · ${d}`));
+      totalDvInconsistente += records.filter(r=>r.cpfDvInconsistente).length;
       totalLinhas += linhas;
       totalEncontrados += records.length;
       totalIncompletos += records.filter(r=>r.incompleto).length;
@@ -18773,6 +18790,8 @@ async function pdfHandleFiles(fileList){
     importados: totalImportados,
     duplicados: totalDuplicados,
     incompletos: totalIncompletos,
+    dvInconsistente: totalDvInconsistente,
+    descartadas: listaDescartadas,
     erros: totalErros,
     tempo
   });
